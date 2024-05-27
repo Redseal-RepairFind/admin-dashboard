@@ -27,7 +27,7 @@ const Overview = () => {
     <>
       <Header />
       {/* Page Body - Use for side padding on the top and sides */}
-      {loading && <LoadingTemplate />}
+      {/* {loading && <LoadingTemplate />} */}
       <PageBody>
         <div className="flex justify-between mb-6 items-center">
           <PageHeading page_title="Overview" />
