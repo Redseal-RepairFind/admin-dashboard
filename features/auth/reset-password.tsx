@@ -127,7 +127,7 @@ export default function ResetPassword() {
             <div>
               {passwordMismatch && (
                 <p className="text-sm text-red-600 font-[500]">
-                  You passwords don't match
+                  You passwords do not match
                 </p>
               )}
             </div>
