@@ -1,7 +1,10 @@
+import Layout from "@/features/layout/layout";
+import OverviewPage from "@/features/overview";
+
 export default function Overview() {
-    return (
-        <>
-            <h1>Overview</h1>
-        </>
-    )
+  return (
+    <Layout>
+        <OverviewPage />
+      </Layout>
+  );
 }

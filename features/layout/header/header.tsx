@@ -1,9 +1,10 @@
 "use client";
 import { NotificationBell } from "@/public/svg";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Link from "next/link";
 import { getTotalUnseenNotification } from "@/lib/api/api";
+import { UserContext } from "@/context/user-context";
 
 interface IProps {
   children?: React.ReactNode;
@@ -16,25 +17,10 @@ const Header: React.FC<IProps> = ({ children }) => {
   const [isSuperAdmin, setIsSuperAdmin] = useState("");
   const [totalUnseenNotification, setTotalUnseenNotification] = useState(0);
 
-  useEffect(() => {
-    const storedFirstName = localStorage.getItem("firstName");
-    const storedLastName = localStorage.getItem("lastName");
-    const storedImage = localStorage.getItem("image");
-    const storedIsSuperAdmin = localStorage.getItem("isSuperAdmin");
+  const { currentUser } = useContext(UserContext);
 
-    setFirstName(storedFirstName || "");
-    setLastName(storedLastName || "");
-    setImage(storedImage || "");
-    setIsSuperAdmin(storedIsSuperAdmin || "");
-  }, []);
+  console.log(currentUser);
 
-  useEffect(() => {
-    getTotalUnseenNotification().then((res) => {
-      if (res?.success) {
-        setTotalUnseenNotification(res.data.totalUnseenNotification);
-      }
-    });
-  }, []);
   return (
     <div
       className="flex px-[3vw] pt-8 pb-6 justify-between border-b-[#ddd] border-b 
@@ -42,7 +28,8 @@ const Header: React.FC<IProps> = ({ children }) => {
     >
       {/* Name */}
       <p className="text-xl font-[500] whitespace-nowrap">
-        Welcome, <span className="font-[600]">{firstName || ""}</span>
+        Welcome,{" "}
+        <span className="font-[600]">{currentUser?.firstName || ""}</span>
       </p>
 
       <div className="flex items-center gap-7">
@@ -66,7 +53,7 @@ const Header: React.FC<IProps> = ({ children }) => {
         <div className="flex gap-3">
           {image && image !== "" && (
             <Image
-              src={image}
+              src={currentUser?.profilePhoto?.url}
               width={32}
               height={32}
               alt="admin picture"
@@ -76,15 +63,23 @@ const Header: React.FC<IProps> = ({ children }) => {
           {(!image || image === "") && (
             <div className="w-10 h-10 rounded-[50%] bg-[#444]/40 flex items-center justify-center">
               <p className="text font-[600] text-white">
-                <span className="capitalize">{firstName?.slice(0, 1)}</span>
-                <span className="capitalize">{lastName?.slice(0, 1)}</span>
+                <span className="capitalize">
+                  {currentUser?.firstName?.slice(0, 1)}
+                </span>
+                <span className="capitalize">
+                  {currentUser?.lastName?.slice(0, 1)}
+                </span>
               </p>
             </div>
           )}
           <div className="">
-            <p className="font-[500]">{`${firstName} ${lastName}`}</p>
+            <p className="font-[500]">
+              {currentUser?.firstName
+                ? `${currentUser?.firstName} ${currentUser?.lastName}`
+                : ""}
+            </p>
             <p className="font-[400] ml-1">
-              {isSuperAdmin === "true" ? "Super Admin" : "Admin"}
+              {currentUser?.superAdmin ? "Super Admin" : "Admin"}
             </p>
           </div>
         </div>

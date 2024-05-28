@@ -28,12 +28,12 @@ const Sidebar = () => {
   }
 
   const logOut = () => {
-    localStorage.removeItem("token");
     router.push("/auth/login");
+    localStorage.clear();
   };
 
   const navLinks: INavLinks[] = [
-    { name: "Overview", svg: <Overview />, route: "/" },
+    { name: "Overview", svg: <Overview />, route: "/overview" },
     { name: "Jobs", svg: <Jobs />, route: "/jobs" },
     { name: "Analytics", svg: <Analytics />, route: "/analytics" },
     { name: "Customers", svg: <Customers />, route: "/customers" },

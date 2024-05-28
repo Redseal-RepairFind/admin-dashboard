@@ -21,29 +21,29 @@ const Layout: React.FC<IProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token !== null && token !== undefined) {
-      getOverviewDetail().then((response) => {
-        if (!response) {
-          localStorage.removeItem("token");
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token !== null && token !== undefined) {
+  //     getOverviewDetail().then((response) => {
+  //       if (!response) {
+  //         localStorage.removeItem("token");
 
-          setAuthenticated(false);
-          router.push("/auth/login");
-        } else {
-          dispatch(setOverviewDetails(response));
-          console.log(response);
-          setAuthenticated(true);
-        }
-      });
-    } else {
-      redirect("/auth/login");
-    }
-  }, []);
+  //         setAuthenticated(false);
+  //         router.push("/auth/login");
+  //       } else {
+  //         dispatch(setOverviewDetails(response));
+  //         console.log(response);
+  //         setAuthenticated(true);
+  //       }
+  //     });
+  //   } else {
+  //     redirect("/auth/login");
+  //   }
+  // }, []);
 
-  if (!authenticated && details.totalContractor === 0) {
-    return <LoadingTemplate />;
-  }
+  // if (!authenticated && details.totalContractor === 0) {
+  //   return <LoadingTemplate />;
+  // }
 
   return <LayoutElement>{children}</LayoutElement>;
 };

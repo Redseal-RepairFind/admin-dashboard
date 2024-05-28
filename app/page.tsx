@@ -1,14 +1,10 @@
 import Layout from "@/features/layout/layout";
-import Overview from "@/features/overview";
+import OverviewPage from "@/features/overview";
 
-const Home = () => {
+export default function Overview() {
   return (
-    <>
-      <Layout>
-        <Overview />
-      </Layout>
-    </>
+    <Layout>
+      <OverviewPage />
+    </Layout>
   );
-};
-
-export default Home;
+}
