@@ -55,35 +55,33 @@ const PinInput: React.FC<IProps> = ({ label, pinArr, setPinArr }) => {
   };
 
   return (
-    <>
-      <div>
-        <label className="block text-sm font-medium leading-6 text-gray-900">
-          {label}
-        </label>
-        <div className="flex gap-1 sm:gap-3">
-          {pinArr.map((item, index) => (
-            <input
-              key={index}
-              ref={index === activeBoxIndex ? inputRef : null}
-              type="number"
-              placeholder="-"
-              name="pin"
-              min={0}
-              max={9}
-              id="index"
-              onFocus={stopScrollIncrement}
-              onChange={handleChange}
-              onKeyDown={(event) => handleKeyDown(event, index)}
-              value={pinArr[index]}
-              className="w-14 h-14 flex flex-col items-center justify-center 
+    <div className="w-full">
+      <label className="block text-sm font-medium leading-6 text-gray-900">
+        {label}
+      </label>
+      <div className="grid grid-cols-4 gap-2 mt-2 sm:gap-3">
+        {pinArr.map((item, index) => (
+          <input
+            key={index}
+            ref={index === activeBoxIndex ? inputRef : null}
+            type="number"
+            placeholder="-"
+            name="pin"
+            min={0}
+            max={9}
+            id="index"
+            onFocus={stopScrollIncrement}
+            onChange={handleChange}
+            onKeyDown={(event) => handleKeyDown(event, index)}
+            value={pinArr[index]}
+            className="h-14 flex flex-col items-center justify-center 
               text-center px-4 outline-none rounded-xl border 
             border-gray-200 text-lg bg-white focus:bg-gray-50 
               focus:ring-1 ring-[#444]"
-            />
-          ))}
-        </div>
+          />
+        ))}
       </div>
-    </>
+    </div>
   );
 };
 

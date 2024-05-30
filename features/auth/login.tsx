@@ -35,6 +35,7 @@ export default function Login() {
                 {...register("email", {
                   required: true,
                 })}
+                type="email"
                 placeholder="Enter your email address"
                 className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
               />

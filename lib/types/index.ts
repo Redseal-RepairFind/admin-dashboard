@@ -11,7 +11,7 @@ export interface ISignupData {
 }
 
 export interface IVerifyEmailData {
-  email: string;
+  email: string | null;
   otp: string;
 }
 
@@ -20,7 +20,7 @@ export interface IForgotPasswordData {
 }
 
 export interface IResetPasswordData {
-  email: string;
+  email: string | null;
   password: string;
   otp: string;
 }
