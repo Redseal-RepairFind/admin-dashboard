@@ -13,6 +13,7 @@ import {
   Overview,
   RFReps,
   Transactions,
+  Gst,
 } from "@/public/svg";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -29,18 +30,19 @@ const Sidebar = () => {
 
   const logOut = () => {
     router.push("/auth/login");
-    localStorage.clear();
+    sessionStorage.clear();
   };
 
   const navLinks: INavLinks[] = [
     { name: "Overview", svg: <Overview />, route: "/overview" },
     { name: "Jobs", svg: <Jobs />, route: "/jobs" },
+    { name: "Employees", svg: <RFReps />, route: "/staff" },
     { name: "Analytics", svg: <Analytics />, route: "/analytics" },
     { name: "Customers", svg: <Customers />, route: "/customers" },
     { name: "Contractors", svg: <Contractors />, route: "/contractors" },
     { name: "Sub Admins", svg: <Customers />, route: "/sub-admins" },
     { name: "Transactions", svg: <Transactions />, route: "/transactions" },
-    // { name: "RF Reps", svg: <RFReps />, route: "/rf-reps" },
+    { name: "Gst Validation", svg: <Gst />, route: "/gst" },
     { name: "Customise", svg: <Customise />, route: "/customise" },
     {
       name: "Account Settings",
