@@ -1,161 +1,131 @@
 "use client";
-import { signup } from "@/lib/api/api";
-import { useAppDispatch } from "@/lib/redux/hooks";
-import { setSignUpMail } from "@/lib/redux/slices/auth";
-import { ISignupData } from "@/lib/types";
+
 import logo from "@/public/logo.svg";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-export default function Signup() {
-  const router = useRouter();
-  const dispatch = useAppDispatch();
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event?.preventDefault();
-    signup(formField).then((response) => {
-      if (response?.success) {
-        dispatch(setSignUpMail(formField.email));
-        router.push("/auth/verify-email");
-      } else {
-        if (response?.message === "Email exists already")
-          router.push("/auth/verify-email");
-      }
-    });
-  };
+import SubmitBtn from "@/components/ui/submit-btn";
+import useAuth from "@/lib/hooks/useAuth";
+import PasswordField from "@/components/ui/password-input";
+import { useForm } from "react-hook-form";
 
-  const [formField, setFormField] = useState<ISignupData>({
-    email: "",
-    password: "",
-    firstName: "",
-    lastName: "",
-  });
+export default function Signup() {
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm();
+
+  const { handleRegister } = useAuth();
 
   return (
-    <>
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <main className="flex bg-white h-screen items-center justify-center px-6 py-12 lg:px-8">
+      <div className="p-5 max-w-[600px] w-full">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <div className="flex flex-col items-center py-10">
-            <Image
-              src={logo}
-              alt="Logo"
-              width={110}
-              height={110}
-              className="w-[110px] h-[110px]"
-            />
+          <div className="py-5 mb-8 flex items-center justify-center">
+            <Image src={logo} alt="Logo" className="w-[80px] object-contain" />
           </div>
 
           <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Create an account
           </h2>
         </div>
-
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label
-                htmlFor="first-name"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                First Name
-              </label>
-              <div className="mt-2">
-                <input
-                  id="first-name"
-                  type="text"
-                  value={formField.firstName}
-                  onChange={(e) =>
-                    setFormField({ ...formField, firstName: e.target.value })
-                  }
-                  required
-                  className="block w-full rounded-md border-0 py-2 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo/10 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="lastName"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Last Name
-              </label>
-              <div className="mt-2">
-                <input
-                  id="lastname"
-                  type="text"
-                  value={formField.lastName}
-                  onChange={(e) =>
-                    setFormField({ ...formField, lastName: e.target.value })
-                  }
-                  required
-                  className="block w-full rounded-md border-0 py-2 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo/10 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Email address
-              </label>
-              <div className="mt-2">
-                <input
-                  id="email"
-                  type="email"
-                  value={formField.email}
-                  onChange={(e) =>
-                    setFormField({ ...formField, email: e.target.value })
-                  }
-                  required
-                  className="block w-full rounded-md border-0 py-2 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo/10 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Password
-                </label>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  type="password"
-                  value={formField.password}
-                  onChange={(e) =>
-                    setFormField({ ...formField, password: e.target.value })
-                  }
-                  required
-                  className="block w-full rounded-md border-0 py-2 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo/10 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-[#262626] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Sign up
-              </button>
-            </div>
-          </form>
-
-          <p className="mt-10 text-center text-sm text-gray-500">
-            Already have an account?
-            <a
-              href="/auth/login"
-              className="font-semibold leading-6 ml-2 text-indigo-600 hover:text-indigo-500"
+        <form className="space-y-6" onSubmit={handleSubmit(handleRegister)}>
+          <div>
+            <label
+              htmlFor="first-name"
+              className="block text-sm font-medium leading-6 text-gray-900"
             >
-              Login
-            </a>
-          </p>
-        </div>
+              First Name
+            </label>
+            <div className="mt-1">
+              <input
+                {...register("firstName", {
+                  required: true,
+                })}
+                className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor="lastName"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
+              Last Name
+            </label>
+            <div className="mt-1">
+              <input
+                {...register("lastName", {
+                  required: true,
+                })}
+                className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
+              Email address
+            </label>
+            <div className="mt-1">
+              <input
+                {...register("email", {
+                  required: true,
+                })}
+                type="email"
+                className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor="phoneNumber"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
+              Phone Number
+            </label>
+            <div className="mt-1">
+              <input
+                {...register("phoneNumber", {
+                  required: true,
+                })}
+                type="text"
+                className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
+              />
+            </div>
+          </div>
+          <div>
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Password
+              </label>
+            </div>
+            <div className="mt-2">
+              <PasswordField
+                {...register("password", {
+                  required: true,
+                })}
+              />
+            </div>
+          </div>
+          <div>
+            <SubmitBtn isSubmitting={isSubmitting}>Sign up</SubmitBtn>
+          </div>
+        </form>
+        <p className="mt-3 text-center text-sm text-gray-500">
+          Already have an account?
+          <a
+            href="/auth/login"
+            className="font-semibold leading-6 ml-2 text-indigo-600 hover:text-indigo-500"
+          >
+            Login
+          </a>
+        </p>
       </div>
-    </>
+    </main>
   );
 }
