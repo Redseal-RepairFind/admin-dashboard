@@ -12,29 +12,52 @@ import DownloadButton from "../shared/page-body/download-button";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { RootState } from "@/lib/redux/store";
 import { extractInitials } from "@/lib/utils/extract-initials";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
+import { useQuery } from "react-query";
 import Image from "next/image";
+import { customers } from "../../lib/api/customers";
 
 const SingleCustomer = () => {
   const { value: customerDetails } = useAppSelector(
     (state: RootState) => state.singleCustomerDetail
   );
 
-  const router = useRouter();
-  useLayoutEffect(() => {
-    console.log(customerDetails.customer._id);
-    if (customerDetails.customer._id === "") {
-      router.push("/customers");
+  const params = useParams();
+
+  const id = params?.slug;
+
+  console.log(id);
+
+  const { isLoading, data: customerInfo } = useQuery(
+    ["Customer Information", id],
+    () => {
+      return customers.getCustomerDetails({
+        id,
+      });
+    },
+    {
+      refetchOnWindowFocus: true,
+      select: (response) => response?.customer,
     }
-  }, []);
+  );
+
+  console.log(customerInfo);
+
+  const router = useRouter();
+  // useLayoutEffect(() => {
+  //   console.log(customerDetails.customer._id);
+  //   if (customerDetails.customer._id === "") {
+  //     router.push("/customers");
+  //   }
+  // }, []);
 
   return (
     <>
       <Header>
         <Wrapper>
           <div className="flex gap-x-6 items-center">
-            {(customerDetails.customer.profileImg === "" ||
-              !customerDetails.customer.profileImg) && (
+            {(customerInfo?.profilePhoto?.url === "" ||
+              !customerInfo?.profilePhoto?.url) && (
               <div className="w-[86px] h-[86px] rounded-[50%] bg-[#D9D9D9] flex items-center justify-center">
                 <p className="text-[30px] font-[600] text-white capitalize">
                   {extractInitials(customerDetails?.customer?.fullName)}
@@ -42,8 +65,8 @@ const SingleCustomer = () => {
               </div>
             )}
 
-            {(customerDetails.customer.profileImg !== "" ||
-              customerDetails.customer.profileImg) && (
+            {(customerInfo?.profilePhoto?.url !== "" ||
+              customerInfo?.profilePhoto?.url) && (
               <Image
                 alt=""
                 width={60}
@@ -55,7 +78,7 @@ const SingleCustomer = () => {
 
             <div className="-mt-2">
               <p className="text-[28px] font-[600] capitalize">
-                {customerDetails?.customer?.fullName}
+                {customerInfo?.name}
               </p>
               <div className="flex gap-x-1">
                 {filledArrayFromNumber(5).map((item, index) => (
@@ -75,19 +98,16 @@ const SingleCustomer = () => {
           <BorderRectangle>
             <table className="w-full">
               <tbody>
-                <SingleLineColumn
-                  name="Email"
-                  value={customerDetails?.customer?.email}
-                />
+                <SingleLineColumn name="Email" value={customerInfo?.email} />
                 <SingleLineColumn
                   name="Contact"
-                  value={customerDetails?.customer?.phoneNumber}
+                  value={`${customerInfo?.phoneNumber?.code}${customerInfo?.phoneNumber?.number}`}
                 />
                 <SingleLineColumn name="Amount Spent" value="$" />
                 <SingleLineColumn
                   name="NO. of jobs"
                   value={
-                    customerDetails?.jobHistory?.length > 0
+                    customerInfo?.jobHistory > 0
                       ? customerDetails?.jobHistory?.length?.toString()
                       : "No jobs yet"
                   }
