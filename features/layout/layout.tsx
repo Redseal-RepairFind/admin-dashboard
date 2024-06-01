@@ -21,29 +21,34 @@ const Layout: React.FC<IProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (token !== null && token !== undefined) {
-  //     getOverviewDetail().then((response) => {
-  //       if (!response) {
-  //         localStorage.removeItem("token");
+  useEffect(() => {
+    const token = sessionStorage.getItem("userToken");
+    if (!token) {
+      // getOverviewDetail().then((response) => {
+      //   if (!response) {
+      //     localStorage.removeItem("token");
 
-  //         setAuthenticated(false);
-  //         router.push("/auth/login");
-  //       } else {
-  //         dispatch(setOverviewDetails(response));
-  //         console.log(response);
-  //         setAuthenticated(true);
-  //       }
-  //     });
-  //   } else {
-  //     redirect("/auth/login");
-  //   }
-  // }, []);
+      //     setAuthenticated(false);
+      //     router.push("/auth/login");
+      //   } else {
+      //     dispatch(setOverviewDetails(response));
+      //     console.log(response);
+      //     setAuthenticated(true);
+      //   }
+      // });
+      // console.log(token, true);
+      setAuthenticated(false);
+      router.push("/auth/login");
+    } else {
+      // console.log(false);
+      setAuthenticated(true);
+      // redirect("/auth/login");
+    }
+  }, []);
 
-  // if (!authenticated && details.totalContractor === 0) {
-  //   return <LoadingTemplate />;
-  // }
+  if (!authenticated && details.totalContractor === 0) {
+    return <LoadingTemplate />;
+  }
 
   return <LayoutElement>{children}</LayoutElement>;
 };

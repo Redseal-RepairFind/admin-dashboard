@@ -42,9 +42,9 @@ export const useCustomersTable = ({ setLoading }: UseJobsTableProps) => {
   const dispatch = useAppDispatch();
 
   const handleViewACustomer = (item: ICustomerData) => {
-    setLoading(true);
-    dispatch(setSingleCustomersDetail(item));
-    router.push(`${pathname}/${item.customer._id}`);
+    // setLoading(true);
+    // dispatch(setSingleCustomersDetail(item));
+    router.push(`${pathname}/${item?._id}`);
   };
 
   const handleQuery = (value: string) => {
