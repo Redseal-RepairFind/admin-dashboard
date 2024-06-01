@@ -59,6 +59,7 @@ export interface IRating {
 }
 
 export interface ICustomerData {
+  _id?: string;
   customer: ICustomer;
   jobHistory: IJobHistory[];
   rating: IRating | null;

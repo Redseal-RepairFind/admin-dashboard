@@ -19,6 +19,7 @@ const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldProps>(
       <div className="w-full relative">
         <span
           onClick={toggleShowPassword}
+          style={{ top: "50%", right: "10px", transform: "translateY(-50%)" }}
           className="absolute cursor-pointer translate-y-[-50%] top-[50%] right-2"
         >
           {showPassword ? <FaEye /> : <FaEyeSlash />}
