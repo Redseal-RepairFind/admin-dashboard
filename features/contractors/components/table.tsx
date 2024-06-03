@@ -21,6 +21,7 @@ import { filledArrayFromNumber } from "@/lib/utils/array-from-number";
 import { trimString } from "@/lib/utils/trim-string";
 import { useContractorTable } from "../hooks/table";
 import FilterBox from "@/features/customers/components/filter-box";
+import useContractors from "@/lib/hooks/useContractors";
 
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
@@ -52,6 +53,10 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
     currentContractors,
     handleViewAContractors,
   } = useContractorTable({ setLoading });
+
+  const { contractorData } = useContractors();
+
+  console.log(contractorData);
 
   return (
     <TableCard>
@@ -86,21 +91,14 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
           </Thead>
 
           <tbody>
-            {currentContractors?.artisans.map((item, index) => (
+            {contractorData?.contractors.map((item: any, index: number) => (
               <tr
                 key={index}
                 className="cursor-pointer"
                 onClick={() => handleViewAContractors(item)}
               >
                 <Td>
-                  <span className="capitalize">
-                    {trimString(item.contractorProfile.firstName, 10)}
-                  </span>
-
-                  <span className="capitalize">
-                    {" "}
-                    {trimString(item.contractorProfile.lastName, 5)}
-                  </span>
+                  <span className="capitalize">{item?.name}</span>
                 </Td>
                 <Td>
                   <span className="capitalize">
@@ -123,7 +121,7 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
                   )}
                 </Td>
 
-                <Td>{trimString(item.contractorProfile.email, 16)}</Td>
+                <Td>{item?.email}</Td>
 
                 <Td>None</Td>
 
@@ -142,10 +140,7 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
 
                 {/* Actions */}
                 <Td>
-                  <Action
-                    setLoading={setLoading}
-                    id={item.contractorProfile._id}
-                  />
+                  <Action setLoading={setLoading} id={item?._id} />
                 </Td>
               </tr>
             ))}

@@ -93,6 +93,7 @@ export interface IContractorPostData {
 
 export interface IContractorsDetails {
   availability: string;
+  _id: string;
   contractorProfile: {
     _id: string;
     email: string;

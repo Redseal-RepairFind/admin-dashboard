@@ -20,8 +20,10 @@ import {
   validateAContractorDocument,
 } from "@/lib/api/api";
 import LoadingTemplate from "../layout/loading";
-import { redirect, useRouter } from "next/navigation";
+import { redirect, useRouter, useParams } from "next/navigation";
 import { toast } from "react-toastify";
+import { useQuery } from "react-query";
+import { contractors } from "../../lib/api/contractors";
 
 const SingleContractor = () => {
   const { value: contractorDetails } = useAppSelector(
@@ -29,16 +31,37 @@ const SingleContractor = () => {
   );
 
   const router = useRouter();
-  useLayoutEffect(() => {
-    console.log(contractorDetails.contractorProfile._id);
-    if (
-      contractorDetails.contractorProfile._id === "" ||
-      !contractorDetails.contractorProfile._id
-    ) {
-      router.push("/contractors");
-    }
-  }, [contractorDetails.contractorProfile._id]);
+  // useLayoutEffect(() => {
+  //   console.log(contractorDetails.contractorProfile._id);
+  //   if (
+  //     contractorDetails.contractorProfile._id === "" ||
+  //     !contractorDetails.contractorProfile._id
+  //   ) {
+  //     router.push("/contractors");
+  //   }
+  // }, [contractorDetails.contractorProfile._id]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const params = useParams();
+
+  const id = params?.slug;
+
+  // console.log(id);
+
+  const { isLoading: loadingInfo, data: contractorInfo } = useQuery(
+    ["Contractor Information", id],
+    () => {
+      return contractors.getContractorDetails({
+        id,
+      });
+    },
+    {
+      refetchOnWindowFocus: true,
+      select: (response) => response?.contractor,
+    }
+  );
+
+  console.log(contractorInfo);
 
   const validateDocuments = () => {
     if (contractorDetails.contractorProfile.documentVerification) {
@@ -96,14 +119,10 @@ const SingleContractor = () => {
                 <div className="w-[86px] h-[86px] rounded-[50%] bg-[#D9D9D9] flex items-center justify-center">
                   <p className="text-[30px] font-[600] text-white">
                     <span className="capitalize">
-                      {extractFirstLetter(
-                        contractorDetails.contractorProfile.firstName
-                      )}
+                      {extractFirstLetter(contractorInfo?.firstName)}
                     </span>
                     <span className="capitalize">
-                      {extractFirstLetter(
-                        contractorDetails.contractorProfile.lastName
-                      )}
+                      {extractFirstLetter(contractorInfo?.lastName)}
                     </span>
                   </p>
                 </div>
@@ -112,12 +131,7 @@ const SingleContractor = () => {
 
             <div className="-mt-2">
               <p className="text-[28px] font-[600]">
-                <span className="capitalize">
-                  {contractorDetails.contractorProfile.firstName}
-                </span>{" "}
-                <span className="capitalize">
-                  {contractorDetails.contractorProfile.lastName}
-                </span>
+                <span className="capitalize">{contractorInfo?.name}</span>
               </p>
 
               <p className="mt-[2px] mb-[6px] text-sm capitalize">
@@ -146,22 +160,20 @@ const SingleContractor = () => {
           <BorderRectangle>
             <table className="w-full">
               <tbody>
-                <SingleLineColumn
-                  name="Email"
-                  value={contractorDetails.contractorProfile.email}
-                />
+                <SingleLineColumn name="Email" value={contractorInfo?.email} />
                 <SingleLineColumn
                   name="Phone"
-                  value={contractorDetails?.document?.phoneNumber}
-                />
-                <SingleLineColumn
-                  name="Skill"
                   value={
-                    contractorDetails?.document?.skill === undefined
-                      ? "Not Submitted"
-                      : contractorDetails?.document?.skill
+                    contractorInfo?.phoneNumber
+                      ? `${contractorInfo?.phoneNumber?.code}${contractorInfo?.phoneNumber?.number}`
+                      : "-"
                   }
                 />
+                <SingleLineColumn
+                  name="Certn Status"
+                  value={contractorInfo?.certnReport?.status}
+                />
+                <SingleLineColumn name="Skill" value={contractorInfo?.skill} />
                 <SingleLineColumn
                   name="Postal code"
                   value={contractorDetails?.document?.postalCode}
@@ -183,11 +195,11 @@ const SingleContractor = () => {
                 <SingleLineColumn name="Payment account" value="" />
                 <SingleLineColumn
                   name="Account status"
-                  value={contractorDetails.contractorProfile.status}
+                  value={contractorInfo?.status}
                 />
                 <ActionColumn>
                   <div className="flex gap-x-4">
-                    <ActionButton
+                    {/* <ActionButton
                       actionName="Validate Document"
                       onClick={() => validateDocuments}
                       color="border-green-600 text-green-600"
@@ -206,7 +218,7 @@ const SingleContractor = () => {
                       actionName="Close"
                       onClick={() => handleChangeStatus("closed")}
                       color="border-red-600 text-red-600"
-                    />
+                    /> */}
                     <ActionButton
                       actionName="Suspend"
                       onClick={() => handleChangeStatus("suspend")}
