@@ -10,4 +10,9 @@ export const customers = {
 
   getCustomerDetails: ({ id }: { id: any }) =>
     client.get(`/admin/customer/detail/${id}`).then(({ data }) => data),
+
+  getCustomerHistory: ({ id }: { id: any }) =>
+    client
+      .get(`/admin/customer/job/detail/${id}?page=1&limit=50`)
+      .then(({ data }) => data),
 };

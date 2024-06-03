@@ -17,6 +17,10 @@ import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 import { trimString } from "@/lib/utils/trim-string";
 import { useCustomerHistoryTable } from "../hooks/jobhistory";
 import FilterBox from "@/features/shared/job-history-filter/filter-box";
+import { useQuery } from "react-query";
+import { useRouter, useParams } from "next/navigation";
+import Image from "next/image";
+import { customers } from "../../../lib/api/customers";
 
 const table_headings = [
   "Contractor’s Name",
@@ -43,6 +47,27 @@ export const JobsHistory: React.FC<IProps> = ({ jobHistory }) => {
     handleViewJob,
     currentCustomerHistory,
   } = useCustomerHistoryTable({ jobHistory });
+
+  const params = useParams();
+
+  const id = params?.slug;
+
+  // console.log(id);
+
+  const { isLoading, data: jobInfo } = useQuery(
+    ["Job Information", id],
+    () => {
+      return customers.getCustomerHistory({
+        id,
+      });
+    },
+    {
+      refetchOnWindowFocus: true,
+      select: (response) => response,
+    }
+  );
+
+  console.log(jobInfo);
 
   return (
     <BorderedTableCard>

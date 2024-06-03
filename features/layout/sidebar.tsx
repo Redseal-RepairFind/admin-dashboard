@@ -17,6 +17,7 @@ import {
 } from "@/public/svg";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { MdEmergency } from "react-icons/md";
 
 const Sidebar = () => {
   const router = useRouter();
@@ -40,7 +41,8 @@ const Sidebar = () => {
     { name: "Analytics", svg: <Analytics />, route: "/analytics" },
     { name: "Customers", svg: <Customers />, route: "/customers" },
     { name: "Contractors", svg: <Contractors />, route: "/contractors" },
-    { name: "Sub Admins", svg: <Customers />, route: "/sub-admins" },
+    { name: "Emergency", svg: <MdEmergency />, route: "/emergency" },
+    // { name: "Sub Admins", svg: <Customers />, route: "/customers" },
     { name: "Transactions", svg: <Transactions />, route: "/transactions" },
     { name: "Gst Validation", svg: <Gst />, route: "/gst" },
     { name: "Customise", svg: <Customise />, route: "/customise" },

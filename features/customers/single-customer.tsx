@@ -16,6 +16,8 @@ import { useRouter, useParams } from "next/navigation";
 import { useQuery } from "react-query";
 import Image from "next/image";
 import { customers } from "../../lib/api/customers";
+import LoadingTemplate from "../layout/loading";
+import { extractFirstLetter } from "@/lib/utils/extract-initials";
 
 const SingleCustomer = () => {
   const { value: customerDetails } = useAppSelector(
@@ -26,7 +28,7 @@ const SingleCustomer = () => {
 
   const id = params?.slug;
 
-  console.log(id);
+  // console.log(id);
 
   const { isLoading, data: customerInfo } = useQuery(
     ["Customer Information", id],
@@ -41,7 +43,7 @@ const SingleCustomer = () => {
     }
   );
 
-  console.log(customerInfo);
+  // console.log(customerInfo);
 
   const router = useRouter();
   // useLayoutEffect(() => {
@@ -51,30 +53,37 @@ const SingleCustomer = () => {
   //   }
   // }, []);
 
+  if (isLoading) return <LoadingTemplate />;
+
   return (
     <>
       <Header>
+        {isLoading && <LoadingTemplate />}
         <Wrapper>
           <div className="flex gap-x-6 items-center">
-            {(customerInfo?.profilePhoto?.url === "" ||
-              !customerInfo?.profilePhoto?.url) && (
-              <div className="w-[86px] h-[86px] rounded-[50%] bg-[#D9D9D9] flex items-center justify-center">
-                <p className="text-[30px] font-[600] text-white capitalize">
-                  {extractInitials(customerDetails?.customer?.fullName)}
-                </p>
-              </div>
-            )}
-
-            {(customerInfo?.profilePhoto?.url !== "" ||
-              customerInfo?.profilePhoto?.url) && (
-              <Image
-                alt=""
-                width={60}
-                height={60}
-                src={customerDetails.customer.profileImg}
-                className="w-[80px] h-[80px] object-cover rounded-[50%]"
-              />
-            )}
+            <div className="w-[86px] h-[86px] flex item-center justify-center">
+              {customerDetails?.customer.profileImg && (
+                <Image
+                  src={customerDetails?.customer.profileImg}
+                  alt=""
+                  width={87}
+                  height={87}
+                  className="rounded-[50%]"
+                />
+              )}
+              {!customerDetails?.customer.profileImg && (
+                <div className="w-[86px] h-[86px] rounded-[50%] bg-[#D9D9D9] flex items-center justify-center">
+                  <p className="text-[30px] font-[600] text-white">
+                    <span className="capitalize">
+                      {extractFirstLetter(customerInfo?.firstName)}
+                    </span>
+                    <span className="capitalize">
+                      {extractFirstLetter(customerInfo?.lastName)}
+                    </span>
+                  </p>
+                </div>
+              )}
+            </div>
 
             <div className="-mt-2">
               <p className="text-[28px] font-[600] capitalize">
@@ -98,10 +107,17 @@ const SingleCustomer = () => {
           <BorderRectangle>
             <table className="w-full">
               <tbody>
-                <SingleLineColumn name="Email" value={customerInfo?.email} />
+                <SingleLineColumn
+                  name="Email"
+                  value={customerInfo?.email || ""}
+                />
                 <SingleLineColumn
                   name="Contact"
-                  value={`${customerInfo?.phoneNumber?.code}${customerInfo?.phoneNumber?.number}`}
+                  value={
+                    customerInfo?.phoneNumber
+                      ? `${customerInfo?.phoneNumber?.code}${customerInfo?.phoneNumber?.number}`
+                      : "-"
+                  }
                 />
                 <SingleLineColumn name="Amount Spent" value="$" />
                 <SingleLineColumn

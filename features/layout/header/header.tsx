@@ -19,7 +19,7 @@ const Header: React.FC<IProps> = ({ children }) => {
 
   const { currentUser } = useContext(UserContext);
 
-  console.log(currentUser);
+  // console.log(currentUser);
 
   return (
     <div

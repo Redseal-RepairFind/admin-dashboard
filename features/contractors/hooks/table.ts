@@ -47,9 +47,9 @@ export const useContractorTable = ({ setLoading }: IProps) => {
   const dispatch = useAppDispatch();
 
   const handleViewAContractors = (item: IContractorsDetails) => {
-    setLoading(true);
-    dispatch(setsingleContractorsDetail(item));
-    router.push(`${pathname}/${item.contractorProfile._id}`);
+    // setLoading(true);
+    // dispatch(setsingleContractorsDetail(item));
+    router.push(`${pathname}/${item?._id}`);
   };
 
   const handleQuery = (value: string) => {
