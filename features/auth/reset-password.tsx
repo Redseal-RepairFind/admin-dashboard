@@ -4,7 +4,7 @@ import logo from "@/public/logo.svg";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import PinInput from "./pin-input";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useAuth from "@/lib/hooks/useAuth";
 import toast from "react-hot-toast";
 import SubmitBtn from "@/components/ui/submit-btn";
@@ -13,8 +13,8 @@ import PasswordField from "@/components/ui/password-input";
 export default function ResetPassword() {
   const router = useRouter();
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get("email");
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
 
   // console.log(email);
 

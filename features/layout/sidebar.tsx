@@ -36,21 +36,21 @@ const Sidebar = () => {
 
   const navLinks: INavLinks[] = [
     { name: "Overview", svg: <Overview />, route: "/overview" },
-    { name: "Jobs", svg: <Jobs />, route: "/jobs" },
+    // { name: "Jobs", svg: <Jobs />, route: "/jobs" },
     { name: "Employees", svg: <RFReps />, route: "/staff" },
-    { name: "Analytics", svg: <Analytics />, route: "/analytics" },
+    // { name: "Analytics", svg: <Analytics />, route: "/analytics" },
     { name: "Customers", svg: <Customers />, route: "/customers" },
     { name: "Contractors", svg: <Contractors />, route: "/contractors" },
-    { name: "Emergency", svg: <MdEmergency />, route: "/emergency" },
+    // { name: "Emergency", svg: <MdEmergency />, route: "/emergency" },
     // { name: "Sub Admins", svg: <Customers />, route: "/customers" },
-    { name: "Transactions", svg: <Transactions />, route: "/transactions" },
-    { name: "Gst Validation", svg: <Gst />, route: "/gst" },
-    { name: "Customise", svg: <Customise />, route: "/customise" },
-    {
-      name: "Account Settings",
-      svg: <AccountSettings />,
-      route: "/account-settings",
-    },
+    // { name: "Transactions", svg: <Transactions />, route: "/transactions" },
+    // { name: "Gst Validation", svg: <Gst />, route: "/gst" },
+    // { name: "Customise", svg: <Customise />, route: "/customise" },
+    // {
+    //   name: "Account Settings",
+    //   svg: <AccountSettings />,
+    //   route: "/account-settings",
+    // },
   ];
 
   return (
