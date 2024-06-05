@@ -7,7 +7,7 @@ import logo from "@/public/logo.svg";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import PinInput from "./pin-input";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useAuth from "@/lib/hooks/useAuth";
 import toast from "react-hot-toast";
 import SubmitBtn from "@/components/ui/submit-btn";
@@ -18,8 +18,8 @@ export default function VerifyEmail() {
 
   const { VerifyEmail } = useAuth();
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const userEmail = urlParams.get("id");
+  const searchParams = useSearchParams();
+  const userEmail = searchParams.get("id");
 
   // create array filled with 4 items
   const filledArray = new Array(4).fill("");
