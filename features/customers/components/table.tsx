@@ -46,10 +46,10 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
   const { customerData, loadingCustomers } = useCustomers();
 
   let rowOptions = [
-    {
-      name: "Restrict",
-      action: (item: any) => {},
-    },
+    // {
+    //   name: "Restrict",
+    //   action: (item: any) => {},
+    // },
     {
       name: "Suspend",
       action: async (item: any) => {},
