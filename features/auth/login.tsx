@@ -69,7 +69,7 @@ export default function Login() {
           </div>
           <SubmitBtn isSubmitting={isSubmitting}>Sign in</SubmitBtn>
         </form>
-        <p className="mt-3 text-center text-sm text-gray-500">
+        {/* <p className="mt-3 text-center text-sm text-gray-500">
           Don&apos;t have an account?{" "}
           <a
             href="/auth/signup"
@@ -77,7 +77,7 @@ export default function Login() {
           >
             Create an account
           </a>
-        </p>
+        </p> */}
       </div>
     </main>
   );
