@@ -26,9 +26,7 @@ interface IProps {
 }
 
 const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
-  const { contractorData, loadingContractors } = useGst();
-
-  const { emergencyData } = useEmergency();
+  const { emergencyData, loadingEmergencies } = useEmergency();
 
   console.log(emergencyData, "d");
 
@@ -40,7 +38,7 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
         <div className="flex gap-8">All</div>
       </div>
 
-      {loadingContractors ? (
+      {loadingEmergencies ? (
         <LoadingTemplate />
       ) : (
         <TableOverflow>
@@ -54,7 +52,7 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
             </Thead>
 
             <tbody>
-              {contractorData?.contractor?.map((item: any, index: number) => (
+              {/* {contractorData?.contractor?.map((item: any, index: number) => (
                 <tr
                   key={item?._id}
                   className="cursor-pointer border-b border-gray-100"
@@ -62,10 +60,10 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
                   <Td>{index + 1}</Td>
                   <Td>{item?.companyName || "-"}</Td>
                   <Td>{item?.gstDetails?.gstNumber}</Td>
-                  {/* <Td>{item?.}</Td> */}
+                  <Td>{item?.}</Td>
                   <Td>Add</Td>
                 </tr>
-              ))}
+              ))} */}
             </tbody>
           </Table>
         </TableOverflow>
