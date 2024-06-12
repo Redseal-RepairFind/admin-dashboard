@@ -46,7 +46,7 @@ const SingleContractor = () => {
 
   const id = params?.slug;
 
-  // console.log(id);
+  console.log(contractorDetails);
 
   const { isLoading: loadingInfo, data: contractorInfo } = useQuery(
     ["Contractor Information", id],
@@ -119,10 +119,10 @@ const SingleContractor = () => {
                 <div className="w-[86px] h-[86px] rounded-[50%] bg-[#D9D9D9] flex items-center justify-center">
                   <p className="text-[30px] font-[600] text-white">
                     <span className="capitalize">
-                      {extractFirstLetter(contractorInfo?.firstName)}
+                      {extractFirstLetter(contractorInfo?.firstName || "U")}
                     </span>
                     <span className="capitalize">
-                      {extractFirstLetter(contractorInfo?.lastName)}
+                      {extractFirstLetter(contractorInfo?.lastName || "U")}
                     </span>
                   </p>
                 </div>
