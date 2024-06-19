@@ -27,12 +27,15 @@ interface IProps {
 const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
   const { contractorData, loadingContractors } = useGst();
 
-  //   console.log(contractorData, "d");
+  console.log(contractorData, "d");
 
   return (
     <TableCard>
-      <div className="flex items-center justify-between w-full">
-        <div className="flex gap-8">All</div>
+      <div className="flex items-center justify-start gap-4 w-full">
+        <div className="flex">All</div>
+        <div className="flex">Approved</div>
+        <div className="flex">Declined</div>
+        <div className="flex">Reviewing</div>
       </div>
 
       {loadingContractors ? (
