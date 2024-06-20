@@ -141,7 +141,7 @@ const AddStaff = () => {
             Permissions
           </label>
           <ul className="list-disc">
-            {permissionList.map((permission: any) => (
+            {permissionList?.map((permission: any) => (
               <li
                 key={permission._id}
                 className="flex justify-between mb-1 items-center"

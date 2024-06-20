@@ -36,6 +36,7 @@ export interface IJobHistory {
   };
   customer?: {
     fullName: string;
+    name?:string;
     phoneNumber: string;
     profileImg: string;
     email: string;

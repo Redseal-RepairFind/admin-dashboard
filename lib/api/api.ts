@@ -244,10 +244,10 @@ export const getCustomerDetail = async (data: IContractorPostData) => {
           toastId: "axios-get-customer-detail-error",
         });
       } else if (error.request) {
-        toast.error("Network error. Please check your connection.", {
-          position: toast.POSITION.TOP_LEFT,
-          toastId: "network",
-        });
+        // toast.error("Network error. Please check your connection.", {
+        //   position: toast.POSITION.TOP_LEFT,
+        //   toastId: "network",
+        // });
       }
     } else {
       toast.error("An error occurred. Please try again.", {
@@ -274,10 +274,10 @@ export const getSingleCustomerDetail = async (data: { customerId: string }) => {
           toastId: "axios-get-single-customer-detail-error",
         });
       } else if (error.request) {
-        toast.error("Network error. Please check your connection.", {
-          position: toast.POSITION.TOP_LEFT,
-          toastId: "network",
-        });
+        // toast.error("Network error. Please check your connection.", {
+        //   position: toast.POSITION.TOP_LEFT,
+        //   toastId: "network",
+        // });
       }
     } else {
       toast.error("An error occurred. Please try again.", {
@@ -306,10 +306,10 @@ export const getSingleContractorsDetail = async (data: {
           toastId: "axios-get-single-contractor-detail-error",
         });
       } else if (error.request) {
-        toast.error("Network error. Please check your connection.", {
-          position: toast.POSITION.TOP_LEFT,
-          toastId: "network",
-        });
+        // toast.error("Network error. Please check your connection.", {
+        //   position: toast.POSITION.TOP_LEFT,
+        //   toastId: "network",
+        // });
       }
     } else {
       toast.error("An error occurred. Please try again.", {
@@ -333,10 +333,10 @@ export const getOverviewDetail = async () => {
           toastId: "axios-get-overview-detail-error",
         });
       } else if (error.request) {
-        toast.error("Network error. Please check your connection.", {
-          position: toast.POSITION.TOP_LEFT,
-          toastId: "network",
-        });
+        // toast.error("Network error. Please check your connection.", {
+        //   position: toast.POSITION.TOP_LEFT,
+        //   toastId: "network",
+        // });
       }
     } else {
       toast.error("An error occurred. Please try again.", {
@@ -362,10 +362,10 @@ export const getContactorDetail = async (data: IContractorPostData) => {
           toastId: "axios-get-contractor-detail-error",
         });
       } else if (error.request) {
-        toast.error("Network error. Please check your connection.", {
-          position: toast.POSITION.TOP_LEFT,
-          toastId: "network",
-        });
+        // toast.error("Network error. Please check your connection.", {
+        //   position: toast.POSITION.TOP_LEFT,
+        //   toastId: "network",
+        // });
       }
     } else {
       toast.error("An error occurred. Please try again.", {
@@ -392,10 +392,10 @@ export const getTransactionDetail = async (data: IContractorPostData) => {
           toastId: "axios-get-transaction-detail-error",
         });
       } else if (error.request) {
-        toast.error("Network error. Please check your connection.", {
-          position: toast.POSITION.TOP_LEFT,
-          toastId: "network",
-        });
+        // toast.error("Network error. Please check your connection.", {
+        //   position: toast.POSITION.TOP_LEFT,
+        //   toastId: "network",
+        // });
       }
     } else {
       toast.error("An error occurred. Please try again.", {
@@ -420,10 +420,10 @@ export const getSubAdmins = async () => {
           toastId: "axios-get-sub-admins-error",
         });
       } else if (error.request) {
-        toast.error("Network error. Please check your connection.", {
-          position: toast.POSITION.TOP_LEFT,
-          toastId: "network",
-        });
+        // toast.error("Network error. Please check your connection.", {
+        //   position: toast.POSITION.TOP_LEFT,
+        //   toastId: "network",
+        // });
       }
     } else {
       toast.error("An error occurred. Please try again.", {
@@ -448,10 +448,10 @@ export const getAllNotifications = async (data: IContractorPostData) => {
           toastId: "axios-get-all-notifications-error",
         });
       } else if (error.request) {
-        toast.error("Network error. Please check your connection.", {
-          position: toast.POSITION.TOP_LEFT,
-          toastId: "error-get-all-notifications-error",
-        });
+        // toast.error("Network error. Please check your connection.", {
+        //   position: toast.POSITION.TOP_LEFT,
+        //   toastId: "error-get-all-notifications-error",
+        // });
       }
     } else {
       toast.error("An error occurred. Please try again.", {
@@ -474,10 +474,10 @@ export const getTotalUnseenNotification = async () => {
           toastId: "axios-get-total-notifications-error",
         });
       } else if (error.request) {
-        toast.error("Network error. Please check your connection.", {
-          position: toast.POSITION.TOP_LEFT,
-          toastId: "network",
-        });
+        // toast.error("Network error. Please check your connection.", {
+        //   position: toast.POSITION.TOP_LEFT,
+        //   toastId: "network",
+        // });
       }
     } else {
       toast.error("An error occurred. Please try again.", {
@@ -500,10 +500,10 @@ export const viewNotification = async () => {
           toastId: "axios-view-notifications-error",
         });
       } else if (error.request) {
-        toast.error("Network error. Please check your connection.", {
-          position: toast.POSITION.TOP_LEFT,
-          toastId: "network",
-        });
+        // toast.error("Network error. Please check your connection.", {
+        //   position: toast.POSITION.TOP_LEFT,
+        //   toastId: "network",
+        // });
       }
     } else {
       toast.error("An error occurred. Please try again.", {

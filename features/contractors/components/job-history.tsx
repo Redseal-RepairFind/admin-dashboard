@@ -18,19 +18,18 @@ import { usePathname, useRouter } from "next/navigation";
 import { useContractorHistoryTable } from "../hooks/jobhistory";
 import FilterBox from "@/features/shared/job-history-filter/filter-box";
 import { trimString } from "@/lib/utils/trim-string";
-import { formatDateToDDMMYY } from "@/lib/utils/format-date";
+import { formatDateToDDMMYY, convertDate } from "@/lib/utils/format-date";
 import { IJobHistory } from "@/lib/types";
 
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
 
 const table_headings = [
-  "Customers’s Name",
+  "Customer’s Name",
   "Phone Number",
-  "Job ID",
-  "Date",
+  "Category",
+  "Date & Time",
   "Job Address",
-  "Inspection",
   "Status",
 ];
 
@@ -38,37 +37,25 @@ interface IProps {
   jobHistory: IJobHistory[];
 }
 
-export const JobsHistory: React.FC<IProps> = ({ jobHistory }) => {
-  const {
-    handleQuery,
-    notFound,
-    showFilters,
-    setShowFilters,
-    handleMonthFiltering,
-    handleYearFiltering,
-    availableYears,
-    currentContractorHistory,
-    handleViewJob,
-  } = useContractorHistoryTable({ jobHistory });
-
+export const JobsHistory = ({ jobHistory }: { jobHistory: any }) => {
   return (
     <BorderedTableCard>
       <div className="flex items-center justify-between w-full">
         <Heading name="Job History" />
         <div className="flex gap-8">
-          <Searchbar
+          {/* <Searchbar
             placeholder="Search by name or job id"
             handleQuery={handleQuery}
             notFound={notFound}
-          />
-          <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
+          /> */}
+          {/* <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
             <FilterBox
               handleMonthFiltering={handleMonthFiltering}
               handleYearFiltering={handleYearFiltering}
               availableYears={availableYears}
               setShowFilters={setShowFilters}
             />
-          </Filter>
+          </Filter> */}
         </div>
       </div>
 
@@ -83,20 +70,23 @@ export const JobsHistory: React.FC<IProps> = ({ jobHistory }) => {
           </Thead>
 
           <tbody>
-            {currentContractorHistory?.map((item, index) => (
+            {jobHistory?.map((item: any, index: number) => (
               <tr
                 key={index}
-                onClick={() => handleViewJob(item)}
-                className="cursor-pointer"
+                // onClick={() => handleViewJob(item)}
+                // className="cursor-pointer"
               >
-                <Td>{item?.customer?.fullName}</Td>
-                <Td>{item?.customer?.phoneNumber} </Td>
-
-                <Td>{trimString(item.job._id, 8)}</Td>
-                <Td>{formatDateToDDMMYY(item.job.createdAt)}</Td>
-                <Td>{trimString(item.job.address, 25)}</Td>
-                <Td>{item.job.inspection.status ? "True" : "False"}</Td>
-                <Td>{trimString(item.job.status, 12)}</Td>
+                <Td>{item?.customer?.name}</Td>
+                <Td>
+                  {item?.customer?.phoneNumber
+                    ? `${item?.customer?.phoneNumber?.code}${item?.customer?.phoneNumber?.number}`
+                    : "-"}{" "}
+                </Td>
+                <Td>{item?.category}</Td>
+                <Td>{convertDate(item?.time)}</Td>
+                <Td>{trimString(item?.location?.address, 25)}</Td>
+                {/* <Td>{item.job.inspection.status ? "True" : "False"}</Td> */}
+                <Td>{item?.status?.replace(/_/g, " ")}</Td>
               </tr>
             ))}
           </tbody>
