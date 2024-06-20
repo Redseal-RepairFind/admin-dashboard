@@ -8,6 +8,11 @@ export const contractors = {
       .get("/admin/contractor/detail?page=1&limit=20  ")
       .then(({ data }) => data),
 
+  suspendContractor: (payload: any) =>
+    client
+      .post("/admin/contractor/account/status", payload)
+      .then(({ data }) => data),
+
   getContractorDetails: ({ id }: { id: any }) =>
     client.get(`/admin/contractor/detail/${id}`).then(({ data }) => data),
 

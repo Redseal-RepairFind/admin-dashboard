@@ -2,7 +2,15 @@ import React, { useState } from "react";
 import useStaff from "@/lib/hooks/useStaff";
 import toast from "react-hot-toast";
 
-const EditPermissions = ({ currentStaff }: { currentStaff: any }) => {
+const EditPermissions = ({
+  currentStaff,
+  hideModal,
+  refetch,
+}: {
+  currentStaff: any;
+  hideModal: any;
+  refetch: any;
+}) => {
   const {
     permissionList,
     AddStaff: InviteUser,
@@ -38,7 +46,8 @@ const EditPermissions = ({ currentStaff }: { currentStaff: any }) => {
         toast.remove();
         toast.success(data?.message);
         setTimeout(() => {
-          location.reload();
+          refetch();
+          hideModal();
         }, 1000);
       } catch (e: any) {
         console.log(e);
@@ -75,7 +84,7 @@ const EditPermissions = ({ currentStaff }: { currentStaff: any }) => {
           All Permissions
         </label>
         <ul className="list-disc">
-          {permissionList.map((permission: any) => (
+          {permissionList?.map((permission: any) => (
             <li
               key={permission._id}
               className="flex justify-between mb-1 items-center"

@@ -22,6 +22,7 @@ import { trimString } from "@/lib/utils/trim-string";
 import { useContractorTable } from "../hooks/table";
 import FilterBox from "@/features/customers/components/filter-box";
 import useContractors from "@/lib/hooks/useContractors";
+import Ratings from "@/components/shared/ratings";
 
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
@@ -33,7 +34,6 @@ const table_headings = [
   "Email Address",
   "No of Jobs",
   "Ratings",
-  "Action",
 ];
 
 interface IProps {
@@ -68,7 +68,7 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
             handleQuery={handleQuery}
             notFound={notFound}
           />
-          <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
+          {/* <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
             <FilterBox
               handleRatingFiltering={handleRatingFiltering}
               availableYears={availableYears}
@@ -76,7 +76,7 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
               handleMonthFiltering={handleMonthFiltering}
               handleYearFiltering={handleYearFiltering}
             />
-          </Filter>
+          </Filter> */}
         </div>
       </div>
 
@@ -95,20 +95,27 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
               <tr
                 key={index}
                 className="cursor-pointer"
-                onClick={() => handleViewAContractors(item)}
+                onClick={() => {
+                  sessionStorage.setItem(
+                    "current_contractor_jobs",
+                    JSON.stringify(item?.job)
+                  );
+                  handleViewAContractors(item?.contractor);
+                }}
               >
                 <Td>
-                  <span className="capitalize">{item?.name}</span>
+                  <span className="capitalize">{item?.contractor?.name}</span>
                 </Td>
                 <Td>
                   <span className="capitalize">
-                    {item?.document?.skill === undefined
+                    {item?.contractor?.profile?.skill === undefined
                       ? "Not Submitted"
-                      : item?.document?.skill}
+                      : item?.contractor?.profile?.skill}
                   </span>
                 </Td>
                 <Td>
-                  {item.document !== null ? (
+                  {item?.contractor?.accountStatus?.toLowerCase() ===
+                  "approved" ? (
                     <div className="flex gap-[6px] items-center">
                       <CompletedState />
                       <span className="capitalize">Verified</span>
@@ -121,27 +128,18 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
                   )}
                 </Td>
 
-                <Td>{item?.email}</Td>
+                <Td>{item?.contractor?.email}</Td>
 
-                <Td>None</Td>
+                <Td>{item?.job?.length}</Td>
 
                 <Td>
-                  <div className="flex gap-1">
-                    {filledArrayFromNumber(5).map((item, index) => (
-                      <RatingStar key={index} />
-                    ))}
-                  </div>
-                  <div className="flex gap-1">
-                    {filledArrayFromNumber(5 - 5).map((item, index) => (
-                      <YellowStar key={index} />
-                    ))}
-                  </div>
+                  <Ratings rating={item?.contractor?.rating} />
                 </Td>
 
                 {/* Actions */}
-                <Td>
+                {/* <Td>
                   <Action setLoading={setLoading} id={item?._id} />
-                </Td>
+                </Td> */}
               </tr>
             ))}
           </tbody>

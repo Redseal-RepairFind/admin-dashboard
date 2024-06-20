@@ -6,14 +6,17 @@ import PageHeading from "../shared/page-body/page-heading";
 import DownloadButton from "../shared/page-body/download-button";
 import LoadingTemplate from "../layout/loading";
 import ContractorsTable from "./components/table";
+import useContractors from "@/lib/hooks/useContractors";
 
 const Contractors = () => {
   const [loading, setLoading] = useState(true);
 
+  const { loadingContractors } = useContractors();
+
   return (
     <>
       <Header />
-      {loading && <LoadingTemplate />}
+      {loadingContractors && <LoadingTemplate />}
       {/* Page Body - Use for side padding on the top and sides */}
       <PageBody>
         <div className="flex justify-between mb-6 items-center">

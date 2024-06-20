@@ -12,8 +12,15 @@ const useStaff = () => {
     staff.removeStaffPermission
   );
   const { mutateAsync: SuspendStaff } = useMutation(staff.suspendStaff);
+  const { mutateAsync: AddNewPermission } = useMutation(
+    permissions.addPermission
+  );
 
-  const { data: staffData, isLoading: loadingStaff } = useQuery(
+  const {
+    data: staffData,
+    refetch: refetchStaffData,
+    isLoading: loadingStaff,
+  } = useQuery(
     ["Staff"],
     () => {
       return staff.getStaff();
@@ -21,7 +28,11 @@ const useStaff = () => {
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
 
-  const { data: permissionList, isLoading: loadingPermissions } = useQuery(
+  const {
+    data: permissionList,
+    refetch: refetchPermissionList,
+    isLoading: loadingPermissions,
+  } = useQuery(
     ["Permissions"],
     () => {
       return permissions.getPermissions();
@@ -34,9 +45,12 @@ const useStaff = () => {
   return {
     staffData,
     loadingStaff,
+    refetchStaffData,
+    refetchPermissionList,
     permissionList: permissionList?.permissions,
     AddStaff,
     AddPermission,
+    AddNewPermission,
     RemovePermission,
     SuspendStaff,
   };

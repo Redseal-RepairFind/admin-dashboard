@@ -21,9 +21,10 @@ import {
 } from "@/lib/api/api";
 import LoadingTemplate from "../layout/loading";
 import { redirect, useRouter, useParams } from "next/navigation";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { useQuery } from "react-query";
 import { contractors } from "../../lib/api/contractors";
+import useContractors from "@/lib/hooks/useContractors";
 
 const SingleContractor = () => {
   const { value: contractorDetails } = useAppSelector(
@@ -31,6 +32,9 @@ const SingleContractor = () => {
   );
 
   const router = useRouter();
+
+  const { SuspendContractor } = useContractors();
+
   // useLayoutEffect(() => {
   //   console.log(contractorDetails.contractorProfile._id);
   //   if (
@@ -46,7 +50,17 @@ const SingleContractor = () => {
 
   const id = params?.slug;
 
-  console.log(contractorDetails);
+  // console.log(contractorDetails);
+
+  const stringified_jobs =
+    typeof window !== undefined
+      ? sessionStorage.getItem("current_contractor_jobs")
+      : null;
+
+  const current_contractor_jobs =
+    stringified_jobs && JSON.parse(stringified_jobs);
+
+  // console.log(current_contractor_jobs);
 
   const { isLoading: loadingInfo, data: contractorInfo } = useQuery(
     ["Contractor Information", id],
@@ -61,47 +75,29 @@ const SingleContractor = () => {
     }
   );
 
-  console.log(contractorInfo);
+  // console.log(contractorInfo);
 
-  const validateDocuments = () => {
-    if (contractorDetails.contractorProfile.documentVerification) {
-      toast.error("You have already performed this action", {
-        position: toast.POSITION.TOP_LEFT,
-      });
-      return;
-    }
-    setIsLoading(true);
-    validateAContractorDocument({
-      contractorDocsId: contractorDetails.contractorProfile._id,
-    }).then((response) => {
-      if (response) {
+  const handleChangeStatus = async (status: string) => {
+    if (confirm("Kindly confirm this action")) {
+      toast.loading("Processing...");
+      try {
+        const data = await SuspendContractor({
+          contractorId: contractorInfo?._id,
+          status,
+        });
+        toast.remove();
+        toast.success(data?.message);
         router.push("/contractors");
-        setIsLoading(false);
+      } catch (e: any) {
+        toast.remove();
+        toast.error(e?.response?.message);
       }
-    });
-  };
-
-  const handleChangeStatus = (status: string) => {
-    if (contractorDetails.contractorProfile.status === status) {
-      toast.error("You have already performed this action", {
-        position: toast.POSITION.TOP_LEFT,
-      });
-      return;
     }
-    setIsLoading(true);
-    changeContractorStatus({
-      contractorId: contractorDetails.contractorProfile._id,
-      status: status,
-    }).then((response) => {
-      if (response) {
-        setIsLoading(false);
-        router.push("/contractors");
-      }
-    });
   };
 
   return (
     <>
+      {loadingInfo && <LoadingTemplate />}
       <Header>
         <Wrapper>
           <div className="flex gap-x-6 item-center">
@@ -171,24 +167,30 @@ const SingleContractor = () => {
                 />
                 <SingleLineColumn
                   name="Certn Status"
-                  value={contractorInfo?.certnReport?.status}
+                  value={contractorInfo?.certnReport?.status?.replace(
+                    /_/g,
+                    " "
+                  )}
                 />
-                <SingleLineColumn name="Skill" value={contractorInfo?.skill} />
                 <SingleLineColumn
-                  name="Postal code"
-                  value={contractorDetails?.document?.postalCode}
+                  name="Skill"
+                  value={contractorInfo?.profile?.skill}
+                />
+                <SingleLineColumn
+                  name="Available Days"
+                  value={contractorInfo?.profile?.availableDays?.join(",")}
                 />
                 <SingleLineColumn
                   name="City"
-                  value={contractorDetails?.document?.city}
+                  value={contractorInfo?.profile?.location?.address}
                 />
                 <SingleLineColumn
                   name="Website"
-                  value={contractorDetails?.document?.website}
+                  value={contractorInfo?.profile?.website}
                 />
                 <SingleLineColumn
                   name="Years of Exp."
-                  value={contractorDetails?.document?.yearExpirence}
+                  value={contractorInfo?.profile?.experienceYear}
                 />
                 <SingleLineColumn name="Amount Spent" value="$" />
                 <SingleLineColumn name="NO. of jobs" value="No jobs yet" />
@@ -219,11 +221,20 @@ const SingleContractor = () => {
                       onClick={() => handleChangeStatus("closed")}
                       color="border-red-600 text-red-600"
                     /> */}
-                    <ActionButton
-                      actionName="Suspend"
-                      onClick={() => handleChangeStatus("suspend")}
-                      color="border-red-600 text-red-600"
-                    />
+                    {contractorInfo?.status !== "active" && (
+                      <ActionButton
+                        actionName="Activate"
+                        onClick={() => handleChangeStatus("active")}
+                        color="border-green-600 text-green-600"
+                      />
+                    )}
+                    {contractorInfo?.status === "active" && (
+                      <ActionButton
+                        actionName="Suspend"
+                        onClick={() => handleChangeStatus("suspend")}
+                        color="border-red-600 text-red-600"
+                      />
+                    )}
                   </div>
                 </ActionColumn>
               </tbody>
@@ -235,7 +246,7 @@ const SingleContractor = () => {
           <div className="self-end mb-7">
             <DownloadButton text="Download JOB HISTORY" />
           </div>
-          <JobsHistory jobHistory={contractorDetails.jobHistory} />
+          <JobsHistory jobHistory={current_contractor_jobs} />
         </div>
       </Wrapper>
     </>

@@ -21,6 +21,7 @@ import AddStaff from "./AddStaff";
 import "react-responsive-modal/styles.css";
 import VerticalMenu from "@/components/shared/vertical-menu";
 import EditPermissions from "./EditPermissions";
+import AddPermission from "./AddPermission";
 import toast from "react-hot-toast";
 
 const table_headings = [
@@ -36,9 +37,10 @@ interface IProps {
 }
 
 const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
-  const { staffData, SuspendStaff } = useStaff();
+  const { staffData, refetchStaffData, SuspendStaff } = useStaff();
 
   const [open, setOpen] = useState(false);
+  const [openPAdd, setOpenPAdd] = useState(false);
   const [openPermissions, setOpenPermissions] = useState(false);
 
   const [currentStaff, setCurrentStaff] = useState();
@@ -48,6 +50,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
 
   const modalRef = useRef(null);
   const permissionRef = useRef(null);
+  const addPermissionRef = useRef(null);
 
   let rowOptions = [
     {
@@ -78,7 +81,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
             toast.remove();
             toast.success(data?.message);
             setTimeout(() => {
-              location.reload();
+              refetchStaffData();
             }, 1000);
           } catch (e: any) {
             console.log(e);
@@ -110,12 +113,20 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
             />
           </Filter> */}
         </div>
-        <button
-          onClick={() => setOpen(true)}
-          className="border border-black bg-black text-white py-2.5 px-5 rounded-md"
-        >
-          Create Employee
-        </button>
+        <div className="flex items-center justify-end gap-4">
+          <button
+            onClick={() => setOpenPAdd(true)}
+            className="border border-black bg-black text-white py-2.5 px-5 rounded-md"
+          >
+            Add Permission
+          </button>
+          <button
+            onClick={() => setOpen(true)}
+            className="border border-black bg-black text-white py-2.5 px-5 rounded-md"
+          >
+            Create Employee
+          </button>
+        </div>
       </div>
       <Modal
         open={open}
@@ -140,7 +151,24 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
         container={permissionRef.current}
       >
         <div className="w-[600px] pt-6">
-          <EditPermissions currentStaff={currentStaff} />
+          <EditPermissions
+            refetch={refetchStaffData}
+            hideModal={() => setOpenPermissions(false)}
+            currentStaff={currentStaff}
+          />
+        </div>
+      </Modal>
+      <Modal
+        open={openPAdd}
+        onClose={() => setOpenPAdd(false)}
+        center
+        classNames={{
+          modal: "customModal",
+        }}
+        container={addPermissionRef.current}
+      >
+        <div className="w-[600px] pt-6">
+          <AddPermission hideModal={() => setOpenPAdd(false)} />
         </div>
       </Modal>
 

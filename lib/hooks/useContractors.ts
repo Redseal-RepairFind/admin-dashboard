@@ -4,6 +4,10 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 const useContractors = () => {
+  const { mutateAsync: SuspendContractor } = useMutation(
+    contractors.suspendContractor
+  );
+
   const { data: contractorData, isLoading: loadingContractors } = useQuery(
     ["Contractors"],
     () => {
@@ -17,6 +21,7 @@ const useContractors = () => {
   return {
     contractorData,
     loadingContractors,
+    SuspendContractor,
   };
 };
 

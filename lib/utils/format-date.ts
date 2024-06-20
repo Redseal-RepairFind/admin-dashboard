@@ -8,10 +8,22 @@ export function formatDateToDDMMYY(isoDateString: string) {
   return `${day}/${month}/${year}`;
 }
 
-export function formatTimeDDMMYY( inputDateString:string) {
+export const convertDate = (isoDate: string) => {
+  if (!isoDate) return isoDate || "";
+
+  let timestamp = Date.parse(isoDate);
+  let jsDate = new Date(timestamp);
+  let fDate = new Intl.DateTimeFormat("en-uk", {
+    dateStyle: "short",
+    timeStyle: "short",
+  });
+  return fDate.format(jsDate);
+};
+
+export function formatTimeDDMMYY(inputDateString: string) {
   const date: Date = new Date(inputDateString);
-  const day: string = ('0' + date.getDate()).slice(-2);
-  const month: string = ('0' + (date.getMonth() + 1)).slice(-2);
+  const day: string = ("0" + date.getDate()).slice(-2);
+  const month: string = ("0" + (date.getMonth() + 1)).slice(-2);
   const year: string = date.getFullYear().toString().slice(-2);
 
   return `${day}/${month}/${year}`;
