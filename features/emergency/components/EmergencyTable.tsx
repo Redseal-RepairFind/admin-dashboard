@@ -15,27 +15,46 @@ import LoadingTemplate from "../../layout/loading";
 
 const table_headings = [
   "ID",
-  "Business Name",
-  "GST Number",
-  //   "Certificate of Incorporation",
-  "Action",
+  "Initiated by",
+  "Description",
+  "Priority",
+  "Status",
 ];
 
 interface IProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const types = [
+  { id: 1, value: "New", slug: "new" },
+  { id: 2, value: "Active", slug: "active" },
+  { id: 3, value: "Resolved", slug: "resolve" },
+];
+
 const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
-  const { emergencyData, loadingEmergencies } = useEmergency();
+  const {
+    emergencyData,
+    type: currentType,
+    setType,
+    loadingEmergencies,
+  } = useEmergency();
 
   console.log(emergencyData, "d");
 
   return (
     <TableCard>
-      <div className="flex items-center justify-between w-full">
-        <div className="flex gap-8">All</div>
-        <div className="flex gap-8">All</div>
-        <div className="flex gap-8">All</div>
+      <div className="flex items-center justify-start gap-5 w-full">
+        {types.map((type: any, index: number) => (
+          <button
+            className={
+              currentType === type?.slug ? "font-semibold" : "text-gray-400"
+            }
+            onClick={() => setType(type.slug)}
+            key={index}
+          >
+            {type.value}
+          </button>
+        ))}
       </div>
 
       {loadingEmergencies ? (
@@ -52,18 +71,20 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
             </Thead>
 
             <tbody>
-              {/* {contractorData?.contractor?.map((item: any, index: number) => (
-                <tr
-                  key={item?._id}
-                  className="cursor-pointer border-b border-gray-100"
-                >
-                  <Td>{index + 1}</Td>
-                  <Td>{item?.companyName || "-"}</Td>
-                  <Td>{item?.gstDetails?.gstNumber}</Td>
-                  <Td>{item?.}</Td>
-                  <Td>Add</Td>
-                </tr>
-              ))} */}
+              {emergencyData?.jobEmergencies?.map(
+                (item: any, index: number) => (
+                  <tr
+                    key={index}
+                    className="cursor-pointer border-b border-gray-100"
+                  >
+                    <Td>{index + 1}</Td>
+                    <Td>{item?.triggeredBy || "-"}</Td>
+                    <Td>{item?.description}</Td>
+                    <Td>{item?.priority}</Td>
+                    <Td>{item?.status}</Td>
+                  </tr>
+                )
+              )}
             </tbody>
           </Table>
         </TableOverflow>

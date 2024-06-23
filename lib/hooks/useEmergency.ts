@@ -8,7 +8,7 @@ const useEmergency = () => {
   const [type, setType] = useState("new");
 
   const { data: emergencyData, isLoading: loadingEmergencies } = useQuery(
-    ["Emergency Info"],
+    ["Emergency Info", type],
     () => {
       return emergency.getEmergencyList(type);
     },
