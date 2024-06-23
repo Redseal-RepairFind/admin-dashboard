@@ -13,7 +13,7 @@ import Thead from "@/features/shared/table/components/thead";
 import Th from "@/features/shared/table/components/th";
 import Td from "@/features/shared/table/components/td";
 import { IJobHistory } from "@/lib/types";
-import { formatDateToDDMMYY } from "@/lib/utils/format-date";
+import { convertDate, formatDateToDDMMYY } from "@/lib/utils/format-date";
 import { trimString } from "@/lib/utils/trim-string";
 import { useCustomerHistoryTable } from "../hooks/jobhistory";
 import FilterBox from "@/features/shared/job-history-filter/filter-box";
@@ -21,13 +21,14 @@ import { useQuery } from "react-query";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { customers } from "../../../lib/api/customers";
+import Ratings from "@/components/shared/ratings";
 
 const table_headings = [
   "Contractor’s Name",
-  "Job ID",
+  "Title",
   "Date",
   "Job Address",
-  "Inspection",
+  "Type",
   "Status",
 ];
 
@@ -101,20 +102,18 @@ export const JobsHistory: React.FC<IProps> = ({ jobHistory }) => {
           </Thead>
 
           <tbody>
-            {currentCustomerHistory?.map((item, index) => (
+            {jobInfo?.jobs?.map((item: any, index: any) => (
               <tr
-                key={item.job._id}
-                onClick={() => handleViewJob(item)}
-                className="cursor-pointer"
+                key={index}
+                // onClick={() => handleViewJob(item)}
+                // className="cursor-pointer"
               >
-                <Td>
-                  {item.contractor?.firstName} {item.contractor?.lastName}
-                </Td>
-                <Td>{trimString(item.job._id, 8)}</Td>
-                <Td>{formatDateToDDMMYY(item.job.createdAt)}</Td>
-                <Td>{trimString(item.job.address, 25)}</Td>
-                <Td>{item.job.inspection.status ? "True" : "False"}</Td>
-                <Td>{trimString(item.job.status, 12)}</Td>
+                <Td>{item.contractor?.name}</Td>
+                <Td>{item?.title}</Td>
+                <Td>{convertDate(item?.time)}</Td>
+                <Td>{item?.location?.address}</Td>
+                <Td>{item?.type}</Td>
+                <Td>{item?.status}</Td>
               </tr>
             ))}
           </tbody>
