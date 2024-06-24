@@ -7,15 +7,49 @@ import { useState } from "react";
 const useEmergency = () => {
   const [type, setType] = useState("new");
 
-  const { data: emergencyData, isLoading: loadingEmergencies } = useQuery(
+  const {
+    data: emergencyData,
+    isLoading: loadingEmergencies,
+    refetch,
+  } = useQuery(
     ["Emergency Info", type],
     () => {
       return emergency.getEmergencyList(type);
     },
-    { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
+    { cacheTime: 100, staleTime: 100, refetchOnWindowFocus: true }
   );
 
-  return { type, setType, emergencyData, loadingEmergencies };
+  const { mutateAsync: AcceptEmergency } = useMutation(
+    emergency.acceptEmergency
+  );
+  const { mutateAsync: ResolveEmergency } = useMutation(
+    emergency.resolveEmergency
+  );
+
+  const handleAccept = async (payload: any) => {
+    toast.loading("Processing...");
+    try {
+      const response = await AcceptEmergency(payload);
+      toast.remove();
+      toast.success(response?.message);
+      setTimeout(() => {
+        refetch();
+      }, 1000);
+    } catch (e: any) {
+      toast.remove();
+      toast.error(e?.data?.response?.message);
+    }
+  };
+
+  return {
+    type,
+    setType,
+    emergencyData,
+    loadingEmergencies,
+    handleAccept,
+    ResolveEmergency,
+    refetch,
+  };
 };
 
 export default useEmergency;
