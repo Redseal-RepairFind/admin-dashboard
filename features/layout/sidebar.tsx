@@ -45,7 +45,7 @@ const Sidebar = () => {
     // { name: "Sub Admins", svg: <Customers />, route: "/customers" },
     // { name: "Transactions", svg: <Transactions />, route: "/transactions" },
     { name: "Gst Validation", svg: <Gst />, route: "/gst" },
-    // { name: "Customise", svg: <Customise />, route: "/customise" },
+    { name: "Customise", svg: <Customise />, route: "/customise" },
     // {
     //   name: "Account Settings",
     //   svg: <AccountSettings />,

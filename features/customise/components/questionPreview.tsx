@@ -2,6 +2,9 @@
 import { addQuestions, getAllQuestions } from "@/lib/api/api";
 import React, { useEffect, useState } from "react";
 import { PreviewData } from "./quiz";
+import { ClipLoader } from "react-spinners";
+import useCustomise from "@/lib/hooks/useCustomise";
+import toast from "react-hot-toast";
 interface QuestionPreviewProps {
   question: string;
   options: string[];
@@ -17,19 +20,29 @@ const QuestionPreview: React.FC<QuestionPreviewProps> = ({
   setShowPreview,
   isUpdating,
 }) => {
-  const handleFormSubmit = () => {
+  const { AddQuestion } = useCustomise();
+
+  const handleFormSubmit = async () => {
     setIsLoading(true);
-    addQuestions({
+    const payload = {
       question: question,
       options: options,
       answer: [correctOption],
-    }).then((res) => {
-      if (res?.success) {
-        setIsLoading(false);
-        setPreview({ question: "", options: ["", "", ""] });
+    };
+
+    // console.log(payload);
+    try {
+      const response = await AddQuestion(payload);
+      toast.success(response?.message);
+      setIsLoading(false);
+      setTimeout(() => {
+        setPreview({ question: "", options: ["", "", "", ""] });
         setShowPreview(false);
-      }
-    });
+      }, 1000);
+    } catch (e: any) {
+      toast.error(e?.data?.response?.message);
+      setIsLoading(false);
+    }
   };
   const [correctOption, setCorrectOption] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +54,7 @@ const QuestionPreview: React.FC<QuestionPreviewProps> = ({
 
   return (
     <div className="max-w-md mx-auto mt-2 bg-white px-8 py-4 min-w-[500px] rounded-md">
-      <h2 className="text-2xl font-[500] mb-4">Preiew</h2>
+      <h2 className="text-2xl font-[500] mb-4">Preview</h2>
       <div className="">
         <p className="text-sm text-[#999] font-[600] pb-2">Question</p>
         <p className="mb-2">{question}</p>
@@ -94,10 +107,14 @@ const QuestionPreview: React.FC<QuestionPreviewProps> = ({
             ? "bg-[#262626]/60"
             : "bg-[#262626]"
         }
-      text-[#fff] px-6 py-2 rounded mt-5 border-0 
+      text-[#fff] w-full px-6 py-2 rounded mt-5 border-0 
       text-sm hover:opacity-90 hover:scale-[0.99] transition-all`}
       >
-        {isLoading ? "Loading..." : "Proceed to Submit"}
+        {isLoading ? (
+          <ClipLoader size={15} color="#fff" />
+        ) : (
+          "Proceed to Submit"
+        )}
       </button>
     </div>
   );
