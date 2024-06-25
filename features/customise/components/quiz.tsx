@@ -11,7 +11,7 @@ export interface PreviewData {
 const Quiz: React.FC = () => {
   const [preview, setPreview] = useState<PreviewData>({
     question: "",
-    options: ["", "", ""],
+    options: ["", "", "", ""],
   });
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
