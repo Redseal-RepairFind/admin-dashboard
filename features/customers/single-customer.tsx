@@ -18,6 +18,10 @@ import Image from "next/image";
 import { customers } from "../../lib/api/customers";
 import LoadingTemplate from "../layout/loading";
 import { extractFirstLetter } from "@/lib/utils/extract-initials";
+import ActionColumn from "../shared/inner-pages/action-column";
+import ActionButton from "../shared/inner-pages/action-button";
+import toast from "react-hot-toast";
+import useCustomers from "@/lib/hooks/useCustomers";
 
 const SingleCustomer = () => {
   const { value: customerDetails } = useAppSelector(
@@ -25,6 +29,8 @@ const SingleCustomer = () => {
   );
 
   const params = useParams();
+
+  const { SuspendCustomer } = useCustomers();
 
   const id = params?.slug;
 
@@ -52,6 +58,24 @@ const SingleCustomer = () => {
   //     router.push("/customers");
   //   }
   // }, []);
+
+  const handleChangeStatus = async (status: string) => {
+    if (confirm("Kindly confirm this action")) {
+      toast.loading("Processing...");
+      try {
+        const data = await SuspendCustomer({
+          customerId: customerInfo?._id,
+          status,
+        });
+        toast.remove();
+        toast.success(data?.message);
+        router.push("/customers");
+      } catch (e: any) {
+        toast.remove();
+        toast.error(e?.response?.message);
+      }
+    }
+  };
 
   if (isLoading) return <LoadingTemplate />;
 
@@ -130,6 +154,24 @@ const SingleCustomer = () => {
                 />
                 <SingleLineColumn name="Payment account" value="" />
                 <SingleLineColumn name="Address" value="" />
+                <ActionColumn>
+                  <div className="flex gap-x-4">
+                    {customerInfo?.status !== "active" && (
+                      <ActionButton
+                        actionName="Activate"
+                        onClick={() => handleChangeStatus("active")}
+                        color="border-green-600 text-green-600"
+                      />
+                    )}
+                    {customerInfo?.status === "active" && (
+                      <ActionButton
+                        actionName="Suspend"
+                        onClick={() => handleChangeStatus("suspend")}
+                        color="border-red-600 text-red-600"
+                      />
+                    )}
+                  </div>
+                </ActionColumn>
               </tbody>
             </table>
           </BorderRectangle>
