@@ -7,7 +7,15 @@ import { useState } from "react";
 const useCustomise = () => {
   const { mutateAsync: AddQuestion } = useMutation(customise.addQuestion);
 
-  return { AddQuestion };
+  const { data: quiz, isLoading } = useQuery(
+    ["Customers"],
+    () => {
+      return customise.getQuizzes();
+    },
+    { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
+  );
+
+  return { AddQuestion, quiz };
 };
 
 export default useCustomise;
