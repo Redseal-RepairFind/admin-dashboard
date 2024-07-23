@@ -98,11 +98,11 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
       <div className="flex items-center justify-between w-full">
         {/* <Heading name="Staff list" /> */}
         <div className="flex gap-8">
-          <Searchbar
-            placeholder="Search by name or email"
-            // handleQuery={handleQuery}
-            // notFound={notFound}
-          />
+          {/* <Searchbar */}
+          {/* // placeholder="Search by name or email" */}
+          {/* // handleQuery={handleQuery} */}
+          {/* // notFound={notFound} */}
+          {/* /> */}
           {/* <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
             <FilterBox
               handleRatingFiltering={handleRatingFiltering}

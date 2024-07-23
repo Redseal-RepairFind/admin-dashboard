@@ -3,9 +3,9 @@ import apiClient from "./apii";
 const client = apiClient();
 
 export const contractors = {
-  getContractors: () =>
+  getContractors: ({ search }: { search?: string }) =>
     client
-      .get("/admin/contractor/detail?page=1&limit=20  ")
+      .get(`/admin/contractors?page=1&limit=20&search=${search}`)
       .then(({ data }) => data),
 
   suspendContractor: (payload: any) =>
@@ -14,7 +14,7 @@ export const contractors = {
       .then(({ data }) => data),
 
   getContractorDetails: ({ id }: { id: any }) =>
-    client.get(`/admin/contractor/detail/${id}`).then(({ data }) => data),
+    client.get(`/admin/contractors/${id}`).then(({ data }) => data),
 
   getContractorHistory: ({ id }: { id: any }) =>
     client

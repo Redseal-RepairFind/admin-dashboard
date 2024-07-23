@@ -3,7 +3,7 @@ import { RatingStar, YellowStar } from "@/public/svg";
 
 const Ratings = ({ rating }: { rating: number }) => {
   const renderRatingLogos = () => {
-    switch (rating) {
+    switch (Math.floor(rating)) {
       case 1:
         return (
           <div className="flex gap-1">

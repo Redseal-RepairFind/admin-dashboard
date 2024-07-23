@@ -30,9 +30,9 @@ import Ratings from "@/components/shared/ratings";
 const table_headings = [
   "Contractor’s Name",
   "Skill",
-  "Status",
+  "GST Status",
   "Email Address",
-  "No of Jobs",
+  // "No of Jobs",
   "Ratings",
 ];
 
@@ -54,9 +54,9 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
     handleViewAContractors,
   } = useContractorTable({ setLoading });
 
-  const { contractorData } = useContractors();
+  const { contractorData, setSearch } = useContractors();
 
-  console.log(contractorData);
+  // console.log(contractorData);
 
   return (
     <TableCard>
@@ -65,7 +65,7 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
         <div className="flex gap-8">
           <Searchbar
             placeholder="Search by name or email"
-            handleQuery={handleQuery}
+            handleQuery={setSearch}
             notFound={notFound}
           />
           {/* <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
@@ -91,7 +91,7 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
           </Thead>
 
           <tbody>
-            {contractorData?.contractors.map((item: any, index: number) => (
+            {contractorData?.data?.data?.map((item: any, index: number) => (
               <tr
                 key={index}
                 className="cursor-pointer"
@@ -100,22 +100,21 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
                     "current_contractor_jobs",
                     JSON.stringify(item?.job)
                   );
-                  handleViewAContractors(item?.contractor);
+                  handleViewAContractors(item);
                 }}
               >
                 <Td>
-                  <span className="capitalize">{item?.contractor?.name}</span>
+                  <span className="capitalize">{item?.name}</span>
                 </Td>
                 <Td>
                   <span className="capitalize">
-                    {item?.contractor?.profile?.skill === undefined
+                    {item?.profile?.skill === undefined
                       ? "Not Submitted"
-                      : item?.contractor?.profile?.skill}
+                      : item?.profile?.skill}
                   </span>
                 </Td>
                 <Td>
-                  {item?.contractor?.accountStatus?.toLowerCase() ===
-                  "approved" ? (
+                  {item?.gstDetails?.status?.toLowerCase() === "approved" ? (
                     <div className="flex gap-[6px] items-center">
                       <CompletedState />
                       <span className="capitalize">Verified</span>
@@ -128,12 +127,12 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
                   )}
                 </Td>
 
-                <Td>{item?.contractor?.email}</Td>
+                <Td>{item?.email}</Td>
 
-                <Td>{item?.job?.length}</Td>
+                {/* <Td>{item?.job?.length}</Td> */}
 
                 <Td>
-                  <Ratings rating={item?.contractor?.rating} />
+                  <Ratings rating={item?.rating} />
                 </Td>
 
                 {/* Actions */}

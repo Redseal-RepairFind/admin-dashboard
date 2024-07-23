@@ -52,13 +52,14 @@ const SingleContractor = () => {
 
   // console.log(contractorDetails);
 
-  const stringified_jobs =
-    typeof window !== undefined
-      ? sessionStorage.getItem("current_contractor_jobs")
-      : null;
+  // const stringified_jobs =
+  //   typeof window !== undefined
+  //     ? sessionStorage.getItem("current_contractor_jobs")
+  //     : null;
 
-  const current_contractor_jobs =
-    stringified_jobs && JSON.parse(stringified_jobs);
+  // const current_contractor_jobs = stringified_jobs
+  //   ? JSON?.parse(stringified_jobs)
+  //   : [];
 
   // console.log(current_contractor_jobs);
 
@@ -246,7 +247,7 @@ const SingleContractor = () => {
           <div className="self-end mb-7">
             <DownloadButton text="Download JOB HISTORY" />
           </div>
-          <JobsHistory jobHistory={current_contractor_jobs} />
+          {/* <JobsHistory jobHistory={current_contractor_jobs} /> */}
         </div>
       </Wrapper>
     </>
