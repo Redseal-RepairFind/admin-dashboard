@@ -72,7 +72,7 @@ const Sidebar = () => {
             className={`flex gap-2 text-sm items-center pl-14 py-3 transition-all duration-500 
           border-transparent outline-none hover:border-l-[4px] hover:border-l-[#333]/50 
           hover:bg-[#F1F1F1]/60 ${
-            pathname === link.route &&
+            pathname.includes(link.route) &&
             "border-l-[6px] border-l-[#333] bg-[#F1F1F1]"
           }`}
             href={link.route}

@@ -10,6 +10,7 @@ const useAuth = () => {
   const { mutateAsync: Register } = useMutation(auth.register);
   const { mutateAsync: ForgotPassword } = useMutation(auth.forgotPassword);
   const { mutateAsync: ResetPassword } = useMutation(auth.resetPassword);
+  const { mutateAsync: ChangePassword } = useMutation(auth.changePassword);
   const { mutateAsync: VerifyEmail } = useMutation(auth.verifyEmail);
 
   const { setCurrentUser } = useContext(UserContext);
@@ -20,13 +21,17 @@ const useAuth = () => {
     // console.log(values);
     try {
       const data = await Login(values);
-      //   console.log(data);
+      // console.log(data);
       setCurrentUser(data?.profile);
       sessionStorage.setItem("userToken", data?.Token);
       sessionStorage.setItem(
         "repairfind_session_user",
         JSON.stringify(data?.profile)
       );
+      if (data?.profile?.hasWeakPassword) {
+        toast.error("Kindly change your password...");
+        return router.push(`/auth/change-password?email=${values?.email}`);
+      }
       router.push("/");
       toast.success(data?.message);
     } catch (e: any) {
@@ -66,6 +71,7 @@ const useAuth = () => {
     handleRegister,
     handleForgotPassword,
     ResetPassword,
+    ChangePassword,
     VerifyEmail,
   };
 };

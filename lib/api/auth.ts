@@ -15,6 +15,9 @@ export const auth = {
   resetPassword: (payload: any) =>
     client.post("/admin/reset/password", payload).then(({ data }) => data),
 
+  changePassword: (payload: any) =>
+    client.post("/admin/change-password", payload).then(({ data }) => data),
+
   verifyEmail: (payload: any) =>
     client.post("/admin/email/verification", payload).then(({ data }) => data),
 };
