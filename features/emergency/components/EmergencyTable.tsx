@@ -30,9 +30,9 @@ interface IProps {
 }
 
 const types = [
-  { id: 1, value: "New", slug: "new" },
-  { id: 2, value: "Active", slug: "active" },
-  { id: 3, value: "Resolved", slug: "resolve" },
+  { id: 1, value: "Pending", slug: "PENDING" },
+  { id: 2, value: "In Progress", slug: "IN_PROGRESS" },
+  { id: 3, value: "Resolved", slug: "RESOLVED" },
 ];
 
 const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
@@ -121,15 +121,15 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
                       <Td>{item?.status}</Td>
                       <Td>
                         <button
-                          disabled={currentType === "resolve"}
+                          disabled={currentType === "RESOLVED"}
                           onClick={handleAction(item?._id)}
                           className={`text-white px-5 py-3 rounded-md text-sm ${
-                            currentType === "resolve"
+                            currentType === "RESOLVED"
                               ? "cursor-not-allowed bg-gray-500"
                               : "bg-black "
                           }`}
                         >
-                          {currentType === "new" ? "Accept" : "Resolve"}
+                          {currentType === "PENDING" ? "Accept" : "Resolve"}
                         </button>
                       </Td>
                     </tr>

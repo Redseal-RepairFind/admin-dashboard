@@ -42,7 +42,7 @@ const Sidebar = () => {
     { name: "Customers", svg: <Customers />, route: "/customers" },
     { name: "Contractors", svg: <Contractors />, route: "/contractors" },
     { name: "Emergency", svg: <MdEmergency />, route: "/emergency" },
-    // { name: "Sub Admins", svg: <Customers />, route: "/customers" },
+    { name: "Dispute", svg: <Transactions />, route: "/dispute" },
     // { name: "Transactions", svg: <Transactions />, route: "/transactions" },
     { name: "Gst Validation", svg: <Gst />, route: "/gst" },
     { name: "Customise", svg: <Customise />, route: "/customise" },

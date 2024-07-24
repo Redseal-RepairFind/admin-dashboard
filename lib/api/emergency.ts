@@ -5,12 +5,12 @@ const client = apiClient();
 export const emergency = {
   getEmergencyList: (type: string) =>
     client
-      .get(`/admin/emergecy/${type}?page=1&limit=20`)
+      .get(`/admin/emergencies?page=1&limit=20&status=${type}`)
       .then(({ data }) => data),
 
-  acceptEmergency: (payload: string) =>
-    client.post(`/admin/emergecy/accept`, payload).then(({ data }) => data),
+  acceptEmergency: (id: string) =>
+    client.post(`/admin/emergencies/${id}/accept`).then(({ data }) => data),
 
-  resolveEmergency: (payload: string) =>
-    client.post(`/admin/emergecy/resolved`, payload).then(({ data }) => data),
+  resolveEmergency: (id: string) =>
+    client.post(`/admin/emergencies/${id}/accept`).then(({ data }) => data),
 };
