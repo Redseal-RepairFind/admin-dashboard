@@ -8,7 +8,6 @@ import JobInformation from "./components/JobInformation";
 import Chat from "./components/Chat";
 import useDisputes from "@/lib/hooks/useDisputes";
 import { useRouter } from "next/navigation";
-import { LoadScript } from "@react-google-maps/api";
 
 const SingleDispute = () => {
   const [currentDisputeTab, setCurrentDisputeTab] = useState("information");
@@ -49,12 +48,7 @@ const SingleDispute = () => {
         </div>
       </div>
       <div className="mt-5">
-        <LoadScript
-          googleMapsApiKey={`${process.env.NEXT_PUBLIC_MAP_API_KEY}`}
-          libraries={["places"]}
-        >
-          {currentDisputeTab === "information" ? <JobInformation /> : <Chat />}
-        </LoadScript>
+        {currentDisputeTab === "information" ? <JobInformation /> : <Chat />}
       </div>
     </div>
   );
