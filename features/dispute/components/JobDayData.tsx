@@ -19,13 +19,13 @@ const JobDayData = ({ info }: { info: any }) => {
   };
 
   const defaultCenter = {
-    lng: info?.jobLocation?.longitude,
-    lat: info?.jobLocation?.latitude,
+    lng: parseInt(info?.jobLocation?.longitude),
+    lat: parseInt(info?.jobLocation?.latitude),
   };
 
   const defaultContractorCenter = {
-    lng: info?.contractorLocation?.longitude,
-    lat: info?.contractorLocation?.latitude,
+    lng: parseInt(info?.contractorLocation?.longitude),
+    lat: parseInt(info?.contractorLocation?.latitude),
   };
 
   return (

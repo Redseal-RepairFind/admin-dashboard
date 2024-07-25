@@ -24,8 +24,8 @@ const JobDetail = ({ info }: { info: any }) => {
   };
 
   const defaultCenter = {
-    lng: info?.location?.longitude,
-    lat: info?.location?.latitude,
+    lng: parseInt(info?.location?.longitude),
+    lat: parseInt(info?.location?.latitude),
   };
 
   return (
