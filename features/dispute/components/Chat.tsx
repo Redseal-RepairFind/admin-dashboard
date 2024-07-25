@@ -6,9 +6,10 @@ import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import CustomerChat from "./CustomerChat";
 import ContractorChat from "./ContractorChat";
+import { SyncLoader } from "react-spinners";
 
 const Chat = () => {
-  const { singleDispute, messages } = useDisputes();
+  const { singleDispute, messages, loadingMessages } = useDisputes();
 
   const [openCustomer, setOpenCustomer] = useState<boolean>(false);
   const customerModalRef = useRef(null);
@@ -63,6 +64,11 @@ const Chat = () => {
           </div>
         </div>
         <div className="mt-4 border border-gray-300 h-[50vh] overflow-y-scroll">
+          {loadingMessages && (
+            <div className="w-full flex items-center justify-center mt-10">
+              <SyncLoader size={10} color="#000" />
+            </div>
+          )}
           {messages?.data?.map((message: any) => (
             <div
               className={`w-full rounded-lg mb-2 flex items-center ${

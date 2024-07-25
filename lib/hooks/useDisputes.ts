@@ -52,25 +52,8 @@ const useDisputes = () => {
   );
 
   const {
-    data: singleConversation,
-    // isLoading: loadingDisputes,
-    // refetch,
-  } = useQuery(
-    ["Single Conversation"],
-    () => {
-      return (
-        singleDispute &&
-        dispute.getSingleConversation(
-          singleDispute?.data?.conversations?.customerContractorConversation?.id
-        )
-      );
-    },
-    { cacheTime: 100, staleTime: 100, refetchOnWindowFocus: true }
-  );
-
-  const {
     data: messages,
-    // isLoading: loadingDisputes,
+    isLoading: loadingMessages,
     // refetch,
   } = useQuery(
     ["Conversation Messages", singleDispute],
@@ -121,8 +104,8 @@ const useDisputes = () => {
     SettleDispute,
     messages,
     conversations,
-    singleConversation,
     SendMessage,
+    loadingMessages,
   };
 };
 

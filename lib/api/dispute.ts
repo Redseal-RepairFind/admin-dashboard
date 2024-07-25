@@ -29,7 +29,7 @@ export const dispute = {
 
   getConversationMessages: (id: any) =>
     client
-      .get(`admin/conversations/${id}/messages?page=1&limit=10000`)
+      .get(`admin/conversations/${id}/messages?page=1&limit=10000&sort=asc`)
       .then(({ data }) => data),
 
   sendMessage: ({ id, payload }: { id: string; payload: any }) =>
