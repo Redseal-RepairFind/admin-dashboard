@@ -11,6 +11,7 @@ const useDisputes = () => {
 
   const { mutateAsync: AcceptDispute } = useMutation(dispute.acceptDispute);
   const { mutateAsync: SettleDispute } = useMutation(dispute.settleDispute);
+  const { mutateAsync: SendMessage } = useMutation(dispute.sendMessage);
 
   const { id } = useParams();
 
@@ -59,7 +60,9 @@ const useDisputes = () => {
     () => {
       return (
         singleDispute &&
-        dispute.getSingleConversation(singleDispute?.data?.conversation)
+        dispute.getSingleConversation(
+          singleDispute?.data?.conversations?.customerContractorConversation?.id
+        )
       );
     },
     { cacheTime: 100, staleTime: 100, refetchOnWindowFocus: true }
@@ -74,10 +77,18 @@ const useDisputes = () => {
     () => {
       return (
         singleDispute &&
-        dispute.getConversationMessages(singleDispute?.data?.conversation)
+        dispute.getConversationMessages(
+          singleDispute?.data?.conversations?.customerContractorConversation?.id
+        )
       );
     },
-    { cacheTime: 100, staleTime: 100, refetchOnWindowFocus: true }
+    {
+      cacheTime: 100,
+      staleTime: 100,
+      refetchOnWindowFocus: true,
+      select: (data) => data?.data,
+      enabled: Boolean(singleDispute),
+    }
   );
 
   const handleAccept = async (id: any) => {
@@ -111,6 +122,7 @@ const useDisputes = () => {
     messages,
     conversations,
     singleConversation,
+    SendMessage,
   };
 };
 

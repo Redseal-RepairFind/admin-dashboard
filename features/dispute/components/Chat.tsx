@@ -8,16 +8,15 @@ import CustomerChat from "./CustomerChat";
 import ContractorChat from "./ContractorChat";
 
 const Chat = () => {
-  const { conversations, singleDispute, singleConversation } = useDisputes();
+  const { singleDispute, messages } = useDisputes();
 
   const [openCustomer, setOpenCustomer] = useState<boolean>(false);
   const customerModalRef = useRef(null);
   const [openContractor, setOpenContractor] = useState<boolean>(false);
   const contractorModalRef = useRef(null);
 
-  console.log(conversations);
+  // console.log(messages);
 
-  console.log(singleConversation, "single");
   return (
     <>
       <Modal
@@ -63,7 +62,30 @@ const Chat = () => {
             </div>
           </div>
         </div>
-        <div className="mt-4 border border-gray-300 h-[50vh] overflow-y-scroll"></div>
+        <div className="mt-4 border border-gray-300 h-[50vh] overflow-y-scroll">
+          {messages?.data?.map((message: any) => (
+            <div
+              className={`w-full rounded-lg mb-2 flex items-center ${
+                message?.senderType === "customer"
+                  ? "justify-start"
+                  : "justify-end"
+              }`}
+              key={message?._id}
+            >
+              {message?.senderType === "customer" ? (
+                <div className="bg-black text-white font-medium text-sm relative w-fit rounded-md px-5 py-2">
+                  {message?.message}
+                  <span className="bg-black w-2 h-2 absolute top-[-.5px] left-[-.5px]"></span>
+                </div>
+              ) : (
+                <div className="bg-gray-300 text-black font-medium text-sm relative w-fit rounded-md px-5 py-2">
+                  {message?.message}
+                  <span className="bg-gray-300 w-2 h-2 absolute top-[-.5px] right-[-.3px]"></span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
         <div className="flex items-center justify-start gap-5 mt-4">
           <button
             onClick={() => setOpenContractor(true)}

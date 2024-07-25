@@ -19,7 +19,7 @@ const JobInformation = () => {
   const modalRef = useRef(null);
   const { id } = useParams();
 
-  console.log(singleDispute);
+  // console.log(singleDispute);
 
   return (
     <>
