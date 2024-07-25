@@ -10,6 +10,7 @@ import ResolvedForm from "./ResolvedForm";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import { useParams } from "next/navigation";
+import LoadingTemplate from "@/features/layout/loading";
 
 const JobInformation = () => {
   const { singleDispute, loadingSingleDispute } = useDisputes();
@@ -22,6 +23,7 @@ const JobInformation = () => {
 
   return (
     <>
+      {loadingSingleDispute && <LoadingTemplate />}
       <Modal
         open={open}
         onClose={() => setOpen(false)}
