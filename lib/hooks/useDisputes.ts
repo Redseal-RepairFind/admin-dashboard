@@ -23,7 +23,7 @@ const useDisputes = () => {
     () => {
       return dispute.getDisputes({ status });
     },
-    { cacheTime: 100, staleTime: 100, refetchOnWindowFocus: true }
+    { cacheTime: 10000, staleTime: 10000, refetchOnWindowFocus: true }
   );
 
   const {
@@ -34,6 +34,48 @@ const useDisputes = () => {
     ["Current Dispute", id],
     () => {
       return id && dispute.getSingleDispute(id);
+    },
+    { cacheTime: 100, staleTime: 100, refetchOnWindowFocus: true }
+  );
+
+  const {
+    data: conversations,
+    // isLoading: loadingDisputes,
+    // refetch,
+  } = useQuery(
+    ["Conversations"],
+    () => {
+      return dispute.getConversation();
+    },
+    { cacheTime: 100, staleTime: 100, refetchOnWindowFocus: true }
+  );
+
+  const {
+    data: singleConversation,
+    // isLoading: loadingDisputes,
+    // refetch,
+  } = useQuery(
+    ["Single Conversation"],
+    () => {
+      return (
+        singleDispute &&
+        dispute.getSingleConversation(singleDispute?.data?.conversation)
+      );
+    },
+    { cacheTime: 100, staleTime: 100, refetchOnWindowFocus: true }
+  );
+
+  const {
+    data: messages,
+    // isLoading: loadingDisputes,
+    // refetch,
+  } = useQuery(
+    ["Conversation Messages", singleDispute],
+    () => {
+      return (
+        singleDispute &&
+        dispute.getConversationMessages(singleDispute?.data?.conversation)
+      );
     },
     { cacheTime: 100, staleTime: 100, refetchOnWindowFocus: true }
   );
@@ -66,6 +108,9 @@ const useDisputes = () => {
     loadingSingleDispute,
     refetchDispute,
     SettleDispute,
+    messages,
+    conversations,
+    singleConversation,
   };
 };
 

@@ -18,4 +18,17 @@ export const dispute = {
     client
       .post(`/admin/disputes/${id}/settle`, payload)
       .then(({ data }) => data),
+
+  getConversation: () =>
+    client
+      .get(`admin/conversations?page=1&limit=10000`)
+      .then(({ data }) => data),
+
+  getSingleConversation: (id: any) =>
+    client.get(`admin/conversations/${id}`).then(({ data }) => data),
+
+  getConversationMessages: (id: any) =>
+    client
+      .get(`admin/conversations/${id}/messages?page=1&limit=10000`)
+      .then(({ data }) => data),
 };
