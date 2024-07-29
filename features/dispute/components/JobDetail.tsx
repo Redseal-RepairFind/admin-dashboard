@@ -16,18 +16,6 @@ const JobDetail = ({ info }: { info: any }) => {
 
   const handleToggle = () => setShowData(!showData);
 
-  const mapStyles = {
-    height: "150px",
-    width: "100%",
-    border: "1px solid #ccc",
-    padding: "5px",
-  };
-
-  const defaultCenter = {
-    lng: parseInt(info?.location?.longitude),
-    lat: parseInt(info?.location?.latitude),
-  };
-
   return (
     <div className="p-5 bg-white rounded-lg my-4">
       <div className="flex items-center justify-between">
@@ -66,13 +54,14 @@ const JobDetail = ({ info }: { info: any }) => {
             value={
               <div className="">
                 <p className="font-semibold mb-2">Job Location</p>
-                <GoogleMap
-                  mapContainerStyle={mapStyles}
-                  zoom={13}
-                  center={defaultCenter}
-                >
-                  <Marker position={defaultCenter} />
-                </GoogleMap>
+                <div className="w-full">
+                  <GoogleMapsEmbed
+                    coords={{
+                      longitude: info?.location?.longitude,
+                      latitude: info?.location?.latitude,
+                    }}
+                  />
+                </div>
               </div>
             }
           />

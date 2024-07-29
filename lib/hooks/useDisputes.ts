@@ -54,7 +54,7 @@ const useDisputes = () => {
   const {
     data: messages,
     isLoading: loadingMessages,
-    // refetch,
+    refetch: refetchMessages,
   } = useQuery(
     ["Conversation Messages", singleDispute],
     () => {
@@ -106,6 +106,7 @@ const useDisputes = () => {
     conversations,
     SendMessage,
     loadingMessages,
+    refetchMessages,
   };
 };
 

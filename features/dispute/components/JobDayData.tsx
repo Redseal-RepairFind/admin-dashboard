@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import LineColumn from "./LineColumn";
 import { convertDate } from "@/lib/utils/format-date";
-import { GoogleMap, Marker } from "@react-google-maps/api";
 import GoogleMapsEmbed from "@/components/ui/google-maps";
 
 const JobDayData = ({ info }: { info: any }) => {
@@ -11,21 +10,14 @@ const JobDayData = ({ info }: { info: any }) => {
 
   const handleToggle = () => setShowData(!showData);
 
-  const mapStyles = {
-    height: "150px",
-    width: "100%",
-    border: "1px solid #ccc",
-    padding: "5px",
-  };
-
   const defaultCenter = {
-    lng: parseInt(info?.jobLocation?.longitude),
-    lat: parseInt(info?.jobLocation?.latitude),
+    longitude: info?.jobLocation?.longitude,
+    latitude: info?.jobLocation?.latitude,
   };
 
   const defaultContractorCenter = {
-    lng: parseInt(info?.contractorLocation?.longitude),
-    lat: parseInt(info?.contractorLocation?.latitude),
+    longitude: info?.contractorLocation?.longitude,
+    latitude: info?.contractorLocation?.latitude,
   };
 
   return (
@@ -49,20 +41,7 @@ const JobDayData = ({ info }: { info: any }) => {
                 <p className="font-semibold mb-2">
                   {info?.jobLocation?.address}
                 </p>
-                <GoogleMap
-                  mapContainerStyle={mapStyles}
-                  zoom={13}
-                  center={defaultCenter}
-                >
-                  <Marker position={defaultCenter} />
-                </GoogleMap>
-                {/* <GoogleMapsEmbed
-                  coords={{
-                    latitude: info?.jobLocation?.latitude,
-                    longitude: info?.jobLocation?.longitude,
-                    latitude:53.2734,
-                  }}
-                /> */}
+                <GoogleMapsEmbed coords={defaultCenter} />
               </div>
             }
           />
@@ -73,20 +52,7 @@ const JobDayData = ({ info }: { info: any }) => {
                 <p className="font-semibold mb-2">
                   {info?.jobLocation?.address}
                 </p>
-                <GoogleMap
-                  mapContainerStyle={mapStyles}
-                  zoom={13}
-                  center={defaultContractorCenter}
-                >
-                  <Marker position={defaultContractorCenter} />
-                </GoogleMap>
-                {/* <GoogleMapsEmbed
-                  coords={{
-                    latitude: info?.jobLocation?.latitude,
-                    longitude: info?.jobLocation?.longitude,
-                    latitude:53.2734,
-                  }}
-                /> */}
+                <GoogleMapsEmbed coords={defaultContractorCenter} />
               </div>
             }
           />

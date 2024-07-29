@@ -1,15 +1,17 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import useDisputes from "@/lib/hooks/useDisputes";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import CustomerChat from "./CustomerChat";
 import ContractorChat from "./ContractorChat";
 import { SyncLoader } from "react-spinners";
+import io, { Socket } from "socket.io-client";
 
 const Chat = () => {
-  const { singleDispute, messages, loadingMessages } = useDisputes();
+  const { singleDispute, messages, loadingMessages, refetchMessages } =
+    useDisputes();
 
   const [openCustomer, setOpenCustomer] = useState<boolean>(false);
   const customerModalRef = useRef(null);
@@ -17,6 +19,47 @@ const Chat = () => {
   const contractorModalRef = useRef(null);
 
   // console.log(messages);
+
+  const token = sessionStorage.getItem("userToken");
+
+  const url = process.env.NEXT_PUBLIC_URL;
+
+  useEffect(() => {
+    let socket: Socket;
+
+    if (token) {
+      socket = io(`${url}`, {
+        extraHeaders: {
+          token,
+        },
+      });
+
+      socket.on("connect", () => {
+        console.log("Disconnected from Socket.IO server");
+      });
+
+      socket.on("Conversation", (data) => {
+        console.log("Received stripe_identity event:", data);
+        setTimeout(() => {
+          refetchMessages();
+        }, 800);
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Disconnected from Socket.IO server");
+      });
+
+      socket.on("error", (error) => {
+        console.error("Socket.IO error:", error);
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
+  }, [token]);
 
   return (
     <>
@@ -63,7 +106,7 @@ const Chat = () => {
             </div>
           </div>
         </div>
-        <div className="mt-4 border border-gray-300 h-[50vh] overflow-y-scroll">
+        <div className="mt-4 border border-gray-300 h-[50vh] p-4 overflow-y-scroll">
           {loadingMessages && (
             <div className="w-full flex items-center justify-center mt-10">
               <SyncLoader size={10} color="#000" />
@@ -72,21 +115,19 @@ const Chat = () => {
           {messages?.data?.map((message: any) => (
             <div
               className={`w-full rounded-lg mb-2 flex items-center ${
-                message?.senderType === "customer"
+                message?.senderType !== "contractors"
                   ? "justify-start"
                   : "justify-end"
               }`}
               key={message?._id}
             >
-              {message?.senderType === "customer" ? (
-                <div className="bg-black text-white font-medium text-sm relative w-fit rounded-md px-5 py-2">
+              {message?.senderType !== "contractors" ? (
+                <div className="bg-gray-300 text-black font-medium text-sm w-fit rounded-tr-lg rounded-bl-lg rounded-br-lg px-5 py-2">
                   {message?.message}
-                  <span className="bg-black w-2 h-2 absolute top-[-.5px] left-[-.5px]"></span>
                 </div>
               ) : (
-                <div className="bg-gray-300 text-black font-medium text-sm relative w-fit rounded-md px-5 py-2">
+                <div className="bg-black text-white font-medium text-sm w-fit rounded-tl-lg rounded-bl-lg rounded-br-lg px-5 py-2">
                   {message?.message}
-                  <span className="bg-gray-300 w-2 h-2 absolute top-[-.5px] right-[-.3px]"></span>
                 </div>
               )}
             </div>

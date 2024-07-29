@@ -11,6 +11,7 @@ import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import { useParams } from "next/navigation";
 import LoadingTemplate from "@/features/layout/loading";
+import JobMedia from "./JobMedia";
 
 const JobInformation = () => {
   const { singleDispute, loadingSingleDispute } = useDisputes();
@@ -49,6 +50,7 @@ const JobInformation = () => {
         </div>
         <JobDayData info={singleDispute?.data?.jobDay} />
         <JobDetail info={singleDispute?.data?.job} />
+        <JobMedia info={singleDispute?.data?.jobDay} />
         <DisputeForm info={singleDispute?.data?.description} />
         <button
           onClick={() => setOpen(true)}

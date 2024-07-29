@@ -81,19 +81,17 @@ const CustomerChat = () => {
         {contractorChat?.data?.map((message: any) => (
           <div
             className={`w-full rounded-lg mb-2 flex items-center ${
-              message?.senderType === "admins" ? "justify-start" : "justify-end"
+              message?.senderType === "admins" ? "justify-end" : "justify-start"
             }`}
             key={message?._id}
           >
             {message?.senderType === "admins" ? (
-              <div className="bg-black text-white font-medium text-sm relative w-fit rounded-md px-5 py-2">
+              <div className="bg-black text-white font-medium text-sm w-fit rounded-tl-lg rounded-bl-lg rounded-br-lg px-5 py-2">
                 {message?.message}
-                <span className="bg-black w-2 h-2 absolute top-[-.5px] left-[-.5px]"></span>
               </div>
             ) : (
-              <div className="bg-gray-300 text-black font-medium text-sm relative w-fit rounded-md px-5 py-2">
+              <div className="bg-gray-300 text-black font-medium text-sm w-fit rounded-tr-lg rounded-bl-lg rounded-br-lg px-5 py-2">
                 {message?.message}
-                <span className="bg-gray-300 w-2 h-2 absolute top-[-.5px] right-[-.3px]"></span>
               </div>
             )}
           </div>
