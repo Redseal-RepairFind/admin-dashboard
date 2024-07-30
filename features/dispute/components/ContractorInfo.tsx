@@ -8,7 +8,15 @@ import "react-responsive-modal/styles.css";
 import CustomerChat from "./CustomerChat";
 import ContractorChat from "./ContractorChat";
 
-const ContractorInfo = ({ info, title }: { info: any; title: any }) => {
+const ContractorInfo = ({
+  info,
+  title,
+  count,
+}: {
+  info: any;
+  title: any;
+  count: number;
+}) => {
   const [openCustomer, setOpenCustomer] = useState<boolean>(false);
   const customerModalRef = useRef(null);
   const [openContractor, setOpenContractor] = useState<boolean>(false);
@@ -62,9 +70,14 @@ const ContractorInfo = ({ info, title }: { info: any; title: any }) => {
               ? setOpenCustomer(true)
               : setOpenContractor(true);
           }}
-          className="border rounded-md border-black bg-black text-white py-2 px-5"
+          className="border rounded-md flex items-center gap-3 justify-between border-black bg-black text-white py-2 px-5"
         >
-          Chat
+          <p>Chat</p>
+          {count ? (
+            <span className="border border-red-500 px-2 bg-red-500 rounded-lg text-white text-[10px]">
+              {count}
+            </span>
+          ) : null}
         </button>
       </div>
     </>

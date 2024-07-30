@@ -22,7 +22,7 @@ const Chat = () => {
 
   const token = sessionStorage.getItem("userToken");
 
-  const url = process.env.NEXT_PUBLIC_URL;
+  const url = process.env.NEXT_PUBLIC_SOCKET_URL;
 
   useEffect(() => {
     let socket: Socket;
@@ -32,14 +32,18 @@ const Chat = () => {
         extraHeaders: {
           token,
         },
+
+        // transports: ["websocket"],
       });
 
+      console.log("Before connection");
+
       socket.on("connect", () => {
-        console.log("Disconnected from Socket.IO server");
+        console.log("connected from Socket.IO server");
       });
 
       socket.on("Conversation", (data) => {
-        console.log("Received stripe_identity event:", data);
+        console.log("Received conversation event:", data);
         setTimeout(() => {
           refetchMessages();
         }, 800);
