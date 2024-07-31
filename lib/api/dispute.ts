@@ -3,9 +3,21 @@ import apiClient from "./apii";
 const client = apiClient();
 
 export const dispute = {
-  getDisputes: ({ status }: { status: string }) =>
+  getDisputes: ({
+    page,
+    limit,
+    search,
+    status,
+  }: {
+    page: any;
+    limit: any;
+    search: any;
+    status: string;
+  }) =>
     client
-      .get(`/admin/disputes?page=1&limit=20&status=${status}`)
+      .get(
+        `/admin/disputes?page=${page}&limit=${limit}&search=${search}&status=${status}`
+      )
       .then(({ data }) => data),
 
   getSingleDispute: (id?: any) =>

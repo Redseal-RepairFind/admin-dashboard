@@ -7,6 +7,10 @@ import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
 
 const useDisputes = () => {
+  const [perPage, setPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState("");
+
   const [status, setStatus] = useState("OPEN");
 
   const { mutateAsync: AcceptDispute } = useMutation(dispute.acceptDispute);
@@ -20,9 +24,14 @@ const useDisputes = () => {
     isLoading: loadingDisputes,
     refetch,
   } = useQuery(
-    ["Dispute List", status],
+    ["Dispute List", status, currentPage, perPage, search],
     () => {
-      return dispute.getDisputes({ status });
+      return dispute.getDisputes({
+        page: currentPage,
+        limit: perPage,
+        search,
+        status,
+      });
     },
     { cacheTime: 10000, staleTime: 10000, refetchOnWindowFocus: true }
   );
@@ -107,6 +116,12 @@ const useDisputes = () => {
     SendMessage,
     loadingMessages,
     refetchMessages,
+    perPage,
+    setPerPage,
+    currentPage,
+    setCurrentPage,
+    search,
+    setSearch,
   };
 };
 

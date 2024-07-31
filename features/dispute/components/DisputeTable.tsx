@@ -7,7 +7,6 @@ import Table from "@/features/shared/table/components/table";
 import Thead from "@/features/shared/table/components/thead";
 import Th from "@/features/shared/table/components/th";
 import Td from "@/features/shared/table/components/td";
-import { RatingStar } from "@/public/svg";
 import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 import { useRouter } from "next/navigation";
 import useGst from "@/lib/hooks/useGst";
@@ -17,6 +16,14 @@ import LoadingTemplate from "../../layout/loading";
 // import SettleEmergency from "./SettleEmergency";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
+import Pagination from "@/components/shared/pagination";
+import {
+  CompletedState,
+  PendingState,
+  RatingStar,
+  YellowStar,
+} from "@/public/svg";
+import Search from "@/components/shared/search";
 
 const table_headings = ["ID", "Disputer", "Dispute date", "Status", "Action"];
 
@@ -28,8 +35,19 @@ const types = [
 ];
 
 const DisputeTable = () => {
-  const { disputes, status, setStatus, loadingDisputes, handleAccept } =
-    useDisputes();
+  const {
+    disputes,
+    status,
+    setStatus,
+    loadingDisputes,
+    handleAccept,
+    perPage,
+    setPerPage,
+    currentPage,
+    setCurrentPage,
+    search,
+    setSearch,
+  } = useDisputes();
 
   // console.log(disputes);
 
@@ -44,20 +62,32 @@ const DisputeTable = () => {
     router.push(`/dispute/${id}`);
     // console.log("d");
   };
+
+  const pageProps = {
+    data: disputes?.data,
+    perPage,
+    setPerPage,
+    pageNo: currentPage,
+    setPageNo: setCurrentPage,
+  };
+
   return (
     <TableCard>
-      <div className="flex items-center justify-start gap-5 w-full">
-        {types.map((type: any, index: number) => (
-          <button
-            className={
-              status === type?.slug ? "font-semibold" : "text-gray-400"
-            }
-            onClick={() => setStatus(type.slug)}
-            key={index}
-          >
-            {type.value}
-          </button>
-        ))}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center justify-start gap-5">
+          {types.map((type: any, index: number) => (
+            <button
+              className={
+                status === type?.slug ? "font-semibold" : "text-gray-400"
+              }
+              onClick={() => setStatus(type.slug)}
+              key={index}
+            >
+              {type.value}
+            </button>
+          ))}
+        </div>
+        <Search search={search} setSearch={setSearch} placeholder="Search..." />
       </div>
       {loadingDisputes ? (
         <LoadingTemplate />
@@ -98,6 +128,9 @@ const DisputeTable = () => {
           </Table>
         </TableOverflow>
       )}
+      <div className="w-full mt-2">
+        <Pagination {...pageProps} />
+      </div>
     </TableCard>
   );
 };
