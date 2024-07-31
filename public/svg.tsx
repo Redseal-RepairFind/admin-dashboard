@@ -345,6 +345,26 @@ export const PendingState = () => (
   </svg>
 );
 
+export const SuspendedState = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="10"
+    height="11"
+    viewBox="0 0 10 11"
+    fill="none"
+  >
+    <circle
+      cx="4.74659"
+      cy="5.51295"
+      r="4.24502"
+      stroke="#FF0000" // Changed to red
+      strokeWidth="0.707493"
+    />
+    <circle cx="4.74323" cy="5.513" r="2.47626" fill="#FF0000" />{" "}
+    {/* Changed to red */}
+  </svg>
+);
+
 export const YellowStar = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

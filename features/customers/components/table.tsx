@@ -142,7 +142,13 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
                     ) : (
                       <PendingState />
                     )}
-                    <span className="capitalize">{item?.status}</span>
+                    <span
+                      className={`capitalize font-medium ${
+                        item?.status === "active" ? "text-green-500" : ""
+                      }`}
+                    >
+                      {item?.status}
+                    </span>
                   </div>
                 </Td>
                 <Td>

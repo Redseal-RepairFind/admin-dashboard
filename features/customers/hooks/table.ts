@@ -23,13 +23,13 @@ export const useCustomersTable = ({ setLoading }: UseJobsTableProps) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
-    getCustomerDetail({ page: 1, limit: 4 }).then((response) => {
-      console.log(response);
-      setLoading(false);
-      setCustomers(response);
-    });
-  }, []);
+  // useEffect(() => {
+  //   getCustomerDetail({ page: 1, limit: 4 }).then((response) => {
+  //     console.log(response);
+  //     setLoading(false);
+  //     setCustomers(response);
+  //   });
+  // }, []);
 
   useEffect(() => {
     if (!isQuerying) {

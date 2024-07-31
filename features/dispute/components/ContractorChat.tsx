@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useDisputes from "@/lib/hooks/useDisputes";
 import { useQuery } from "react-query";
 import { dispute } from "@/lib/api/dispute";
 import toast from "react-hot-toast";
 import { ClipLoader, SyncLoader } from "react-spinners";
+import io, { Socket } from "socket.io-client";
 
 const CustomerChat = () => {
   const { conversations, singleDispute, SendMessage } = useDisputes();
@@ -27,7 +28,6 @@ const CustomerChat = () => {
       cacheTime: 100,
       staleTime: 100,
       refetchOnWindowFocus: true,
-      refetchInterval: 3000,
       enabled: Boolean(singleDispute),
       select: (data) => data?.data,
     }
@@ -58,6 +58,47 @@ const CustomerChat = () => {
   };
 
   //   console.log(singleDispute);
+
+  const token = sessionStorage.getItem("userToken");
+
+  const url = process.env.NEXT_PUBLIC_SOCKET_URL;
+
+  useEffect(() => {
+    let socket: Socket;
+
+    if (token) {
+      socket = io(`${url}`, {
+        extraHeaders: {
+          token,
+        },
+      });
+
+      socket.on("connect", () => {
+        console.log("connected to server");
+      });
+
+      socket.on("NEW_UNREAD_MESSAGE", (data: any) => {
+        // console.log("Received conversation event:", data);
+        setTimeout(() => {
+          refetch();
+        }, 800);
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Disconnected from Socket.IO server");
+      });
+
+      socket.on("error", (error: any) => {
+        console.error("Socket.IO error:", error);
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
+  }, [token]);
 
   return (
     <div className="md:w-[700px] mx-2 w-full mt-10">

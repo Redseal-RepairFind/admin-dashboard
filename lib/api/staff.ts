@@ -3,7 +3,10 @@ import apiClient from "./apii";
 const client = apiClient();
 
 export const staff = {
-  getStaff: () => client.get("/admin/staffs").then(({ data }) => data),
+  getStaff: ({ page, limit, search }: { page: any; limit: any; search: any }) =>
+    client
+      .get(`/admin/staffs?page=${page}&limit=${limit}&search=${search}`)
+      .then(({ data }) => data),
 
   addStaff: (payload: any) =>
     client.post("/admin/staffs", payload).then(({ data }) => data),

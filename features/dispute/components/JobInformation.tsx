@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import useDisputes from "@/lib/hooks/useDisputes";
 import ContractorInfo from "./ContractorInfo";
 import JobDayData from "./JobDayData";
@@ -15,6 +15,7 @@ import JobMedia from "./JobMedia";
 import { useQuery } from "react-query";
 import { dispute } from "@/lib/api/dispute";
 import { UserContext } from "@/context/user-context";
+import io, { Socket } from "socket.io-client";
 
 const JobInformation = () => {
   const { singleDispute, loadingSingleDispute } = useDisputes();
@@ -31,7 +32,7 @@ const JobInformation = () => {
   const c_id =
     singleDispute?.data?.conversations?.arbitratorContractorConversation?.id;
 
-  const { data: contractorChat } = useQuery(
+  const { data: contractorChat, refetch: refetchContractor } = useQuery(
     ["Contractor Arbitrator Conversation Messages"],
     () => dispute.getConversationMessages(c_id),
     {
@@ -47,7 +48,7 @@ const JobInformation = () => {
   const customer_id =
     singleDispute?.data?.conversations?.arbitratorCustomerConversation?.id;
 
-  const { data: customerChat } = useQuery(
+  const { data: customerChat, refetch: refetchCustomer } = useQuery(
     ["Customer Arbitrator Conversation"],
     () => dispute.getConversationMessages(customer_id),
     {
@@ -77,6 +78,48 @@ const JobInformation = () => {
   );
 
   // console.log(unreadContractorCount);
+
+  const token = sessionStorage.getItem("userToken");
+
+  const url = process.env.NEXT_PUBLIC_SOCKET_URL;
+
+  useEffect(() => {
+    let socket: Socket;
+
+    if (token) {
+      socket = io(`${url}`, {
+        extraHeaders: {
+          token,
+        },
+      });
+
+      socket.on("connect", () => {
+        console.log("connected to server");
+      });
+
+      socket.on("NEW_UNREAD_MESSAGE", (data: any) => {
+        // console.log("Received conversation event:", data);
+        setTimeout(() => {
+          refetchCustomer();
+          refetchContractor();
+        }, 800);
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Disconnected from Socket.IO server");
+      });
+
+      socket.on("error", (error) => {
+        console.error("Socket.IO error:", error);
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
+  }, [token]);
 
   return (
     <>
