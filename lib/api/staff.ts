@@ -5,7 +5,11 @@ const client = apiClient();
 export const staff = {
   getStaff: ({ page, limit, search }: { page: any; limit: any; search: any }) =>
     client
-      .get(`/admin/staffs?page=${page}&limit=${limit}&search=${search}`)
+      .get(
+        `/admin/staffs?page=${page}&limit=${limit}${
+          search ? `&search=${search}` : ""
+        }`
+      )
       .then(({ data }) => data),
 
   addStaff: (payload: any) =>
