@@ -25,7 +25,12 @@ const useStaff = () => {
     () => {
       return staff.getStaff();
     },
-    { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
+    {
+      cacheTime: 30000,
+      staleTime: 30000,
+      refetchOnWindowFocus: true,
+      select: (data) => data?.data,
+    }
   );
 
   const {
@@ -47,7 +52,7 @@ const useStaff = () => {
     loadingStaff,
     refetchStaffData,
     refetchPermissionList,
-    permissionList: permissionList?.permissions,
+    permissionList: permissionList?.data,
     AddStaff,
     AddPermission,
     AddNewPermission,

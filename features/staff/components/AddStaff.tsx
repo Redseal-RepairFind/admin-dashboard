@@ -6,7 +6,11 @@ import PasswordField from "@/components/ui/password-input";
 import SubmitBtn from "@/components/ui/submit-btn";
 
 const AddStaff = () => {
-  const { permissionList, AddStaff: InviteUser } = useStaff();
+  const {
+    permissionList,
+    AddStaff: InviteUser,
+    refetchPermissionList,
+  } = useStaff();
 
   const [selectedPermissions, setSelectedPermissions] = useState<any>([]);
 
@@ -15,6 +19,8 @@ const AddStaff = () => {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm();
+
+  // console.log(permissionList);
 
   const onSubmit = async (data: any) => {
     if (!selectedPermissions.length)
@@ -27,7 +33,7 @@ const AddStaff = () => {
       console.log(data);
       toast.success(data?.message);
       setTimeout(() => {
-        location.reload();
+        refetchPermissionList();
       }, 1000);
     } catch (e: any) {
       console.log(e);
@@ -100,7 +106,7 @@ const AddStaff = () => {
           />
         </div>
 
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
             htmlFor="password"
@@ -117,7 +123,7 @@ const AddStaff = () => {
             })}
             className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
           />
-        </div>
+        </div> */}
 
         <div className="mb-4">
           <label

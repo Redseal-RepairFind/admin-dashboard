@@ -7,5 +7,5 @@ export const permissions = {
     client.get("admin/permissions").then(({ data }) => data),
 
   addPermission: (payload: any) =>
-    client.post("admin/permission", payload).then(({ data }) => data),
+    client.post("admin/permissions", payload).then(({ data }) => data),
 };

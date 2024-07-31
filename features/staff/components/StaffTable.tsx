@@ -45,7 +45,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
 
   const [currentStaff, setCurrentStaff] = useState();
 
-  // console.log(staffData?.admins);
+  // console.log(staffData);
   // console.log(permissionList);
 
   const modalRef = useRef(null);
@@ -183,8 +183,8 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
           </Thead>
 
           <tbody>
-            {staffData?.admins?.map((item: any, index: number) => (
-              <tr key={item?._id} className="cursor-pointer">
+            {staffData?.data?.map((item: any, index: number) => (
+              <tr key={item?._id}>
                 <Td>
                   {item?.firstName} {item?.lastName}
                 </Td>

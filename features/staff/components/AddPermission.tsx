@@ -16,14 +16,14 @@ const AddPermission = ({ hideModal }: { hideModal: any }) => {
   const onSubmit = async (payload: any) => {
     try {
       const data = await AddNewPermission(payload);
-      console.log(data);
+      // console.log(data);
       toast.success(data?.message);
       setTimeout(() => {
         refetchPermissionList();
         hideModal();
       }, 1000);
     } catch (e: any) {
-      console.log(e);
+      // console.log(e);
       toast.error(e?.response?.data?.message);
     }
 

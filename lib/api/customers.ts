@@ -3,15 +3,15 @@ import apiClient from "./apii";
 const client = apiClient();
 
 export const customers = {
-  getCustomers: () =>
+  getCustomers: ({ page, limit }: { page: any; limit: any }) =>
     client
-      .get("/admin/customer/detail?page=1&limit=20")
+      .get(`/admin/customer/detail?page=${page}&limit=${limit}`)
       .then(({ data }) => data),
 
-      suspendCustomer: (payload: any) =>
-        client
-          .post("/admin/customer/account/status", payload)
-          .then(({ data }) => data),
+  suspendCustomer: (payload: any) =>
+    client
+      .post("/admin/customer/account/status", payload)
+      .then(({ data }) => data),
 
   getCustomerDetails: ({ id }: { id: any }) =>
     client.get(`/admin/customer/detail/${id}`).then(({ data }) => data),

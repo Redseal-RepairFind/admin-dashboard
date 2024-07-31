@@ -16,12 +16,14 @@ import FilterBox from "./filter-box";
 import { useCustomersTable } from "../hooks/table";
 import useCustomers from "@/lib/hooks/useCustomers";
 import VerticalMenu from "@/components/shared/vertical-menu";
+import Pagination from "@/components/shared/pagination";
 
 const table_headings = [
   "Customer’s Name",
   "Date Joined",
   "Email Address",
-  "Ratings",
+  "Phone Number",
+  "Status",
   "Action",
 ];
 
@@ -43,7 +45,14 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     handleViewACustomer,
   } = useCustomersTable({ setLoading });
 
-  const { customerData, loadingCustomers } = useCustomers();
+  const {
+    customerData,
+    loadingCustomers,
+    perPage,
+    setPerPage,
+    currentPage,
+    setCurrentPage,
+  } = useCustomers();
 
   let rowOptions = [
     // {
@@ -55,6 +64,16 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
       action: async (item: any) => {},
     },
   ];
+
+  // console.log(customerData);
+
+  const pageProps = {
+    data: customerData,
+    perPage,
+    setPerPage,
+    pageNo: currentPage,
+    setPageNo: setCurrentPage,
+  };
 
   return (
     <TableCard>
@@ -98,17 +117,12 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
                 <Td>{item?.name}</Td>
                 <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
                 <Td>{item?.email}</Td>
-
-                {/* Rating */}
                 <Td>
-                  <div className="flex gap-1">
-                    <RatingStar />
-                    <RatingStar />
-                    <RatingStar />
-                    <RatingStar />
-                    <RatingStar />
-                  </div>
+                  {item?.phoneNumber?.code}
+                  {item?.phoneNumber?.number}
                 </Td>
+                {/* Rating */}
+                <Td>{item?.status}</Td>
                 <Td>
                   <div onClick={(e) => e.stopPropagation()} className="w-fit">
                     <VerticalMenu isBackground={true}>
@@ -134,6 +148,9 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
         </Table>
       </TableOverflow>
       {/* <Paginator /> */}
+      <div className="w-full mt-2">
+        <Pagination {...pageProps} />
+      </div>
     </TableCard>
   );
 };
