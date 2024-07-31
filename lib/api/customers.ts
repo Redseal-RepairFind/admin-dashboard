@@ -3,9 +3,19 @@ import apiClient from "./apii";
 const client = apiClient();
 
 export const customers = {
-  getCustomers: ({ page, limit }: { page: any; limit: any }) =>
+  getCustomers: ({
+    page,
+    limit,
+    search,
+  }: {
+    page: any;
+    limit: any;
+    search: any;
+  }) =>
     client
-      .get(`/admin/customer/detail?page=${page}&limit=${limit}`)
+      .get(
+        `/admin/customer/detail?page=${page}&limit=${limit}&search=${search}`
+      )
       .then(({ data }) => data),
 
   suspendCustomer: (payload: any) =>

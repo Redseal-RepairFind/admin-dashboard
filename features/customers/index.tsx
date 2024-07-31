@@ -23,7 +23,7 @@ const Customers = () => {
       <PageBody>
         <div className="flex justify-between mb-6 items-center">
           <PageHeading page_title="Customers" />
-          <DownloadButton text="Download Customer’S LIST" />
+          {/* <DownloadButton text="Download Customer’S LIST" /> */}
         </div>
         <CustomersTable setLoading={setLoading} />
       </PageBody>

@@ -10,13 +10,19 @@ import Table from "@/features/shared/table/components/table";
 import Thead from "@/features/shared/table/components/thead";
 import Th from "@/features/shared/table/components/th";
 import Td from "@/features/shared/table/components/td";
-import { RatingStar } from "@/public/svg";
 import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 import FilterBox from "./filter-box";
 import { useCustomersTable } from "../hooks/table";
 import useCustomers from "@/lib/hooks/useCustomers";
 import VerticalMenu from "@/components/shared/vertical-menu";
 import Pagination from "@/components/shared/pagination";
+import {
+  CompletedState,
+  PendingState,
+  RatingStar,
+  YellowStar,
+} from "@/public/svg";
+import Search from "@/components/shared/search";
 
 const table_headings = [
   "Customer’s Name",
@@ -52,6 +58,8 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     setPerPage,
     currentPage,
     setCurrentPage,
+    search,
+    setSearch,
   } = useCustomers();
 
   let rowOptions = [
@@ -79,13 +87,18 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     <TableCard>
       <div className="flex items-center justify-between w-full">
         <Heading name="Customers’ list" />
-        <div className="flex gap-8">
-          <Searchbar
+        <div className="flex w-full items-center justify-end">
+          {/* <Searchbar
             placeholder="Search by name or email"
             handleQuery={handleQuery}
             notFound={notFound}
+          /> */}
+          <Search
+            search={search}
+            setSearch={setSearch}
+            placeholder="Search..."
           />
-          <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
+          {/* <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
             <FilterBox
               handleRatingFiltering={handleRatingFiltering}
               handleMonthFiltering={handleMonthFiltering}
@@ -93,7 +106,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
               availableYears={availableYears}
               setShowFilters={setShowFilters}
             />
-          </Filter>
+          </Filter> */}
         </div>
       </div>
 
@@ -122,7 +135,16 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
                   {item?.phoneNumber?.number}
                 </Td>
                 {/* Rating */}
-                <Td>{item?.status}</Td>
+                <Td>
+                  <div className="flex gap-[6px] items-center">
+                    {item?.status === "active" ? (
+                      <CompletedState />
+                    ) : (
+                      <PendingState />
+                    )}
+                    <span className="capitalize">{item?.status}</span>
+                  </div>
+                </Td>
                 <Td>
                   <div onClick={(e) => e.stopPropagation()} className="w-fit">
                     <VerticalMenu isBackground={true}>
