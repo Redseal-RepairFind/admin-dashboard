@@ -16,7 +16,9 @@ export const dispute = {
   }) =>
     client
       .get(
-        `/admin/disputes?page=${page}&limit=${limit}&search=${search}&status=${status}`
+        `/admin/disputes?page=${page}&limit=${limit}${
+          search ? `&search=${search}` : ""
+        }&status=${status}`
       )
       .then(({ data }) => data),
 

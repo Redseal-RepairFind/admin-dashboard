@@ -14,7 +14,9 @@ export const customers = {
   }) =>
     client
       .get(
-        `/admin/customer/detail?page=${page}&limit=${limit}&search=${search}`
+        `/admin/customer/detail?page=${page}&limit=${limit}${
+          search ? `&search=${search}` : ""
+        }`
       )
       .then(({ data }) => data),
 
