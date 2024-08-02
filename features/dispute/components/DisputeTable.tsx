@@ -80,7 +80,10 @@ const DisputeTable = () => {
               className={
                 status === type?.slug ? "font-semibold" : "text-gray-400"
               }
-              onClick={() => setStatus(type.slug)}
+              onClick={() => {
+                sessionStorage.setItem("session_dispute_status", type.slug);
+                setStatus(type.slug);
+              }}
               key={index}
             >
               {type.value}

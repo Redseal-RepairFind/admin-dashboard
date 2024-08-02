@@ -33,6 +33,16 @@ export const dispute = {
       .post(`/admin/disputes/${id}/settle`, payload)
       .then(({ data }) => data),
 
+  refundContractor: ({ id }: { id?: any }) =>
+    client
+      .post(`/admin/disputes/${id}/refund-contractor`)
+      .then(({ data }) => data),
+
+  refundCustomer: ({ id }: { id?: any }) =>
+    client
+      .post(`/admin/disputes/${id}/refund-customer`)
+      .then(({ data }) => data),
+
   getConversation: () =>
     client
       .get(`admin/conversations?page=1&limit=10000`)

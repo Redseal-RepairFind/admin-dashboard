@@ -7,14 +7,22 @@ import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
 
 const useDisputes = () => {
+  const sessionStatus =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("session_dispute_status")
+      : null;
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
 
-  const [status, setStatus] = useState("OPEN");
+  const [status, setStatus] = useState(sessionStatus || "OPEN");
 
   const { mutateAsync: AcceptDispute } = useMutation(dispute.acceptDispute);
   const { mutateAsync: SettleDispute } = useMutation(dispute.settleDispute);
+  const { mutateAsync: RefundContractor } = useMutation(
+    dispute.refundContractor
+  );
+  const { mutateAsync: RefundCustomer } = useMutation(dispute.refundCustomer);
   const { mutateAsync: SendMessage } = useMutation(dispute.sendMessage);
 
   const { id } = useParams();
@@ -122,6 +130,8 @@ const useDisputes = () => {
     setCurrentPage,
     search,
     setSearch,
+    RefundCustomer,
+    RefundContractor,
   };
 };
 

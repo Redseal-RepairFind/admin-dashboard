@@ -16,9 +16,16 @@ import { useQuery } from "react-query";
 import { dispute } from "@/lib/api/dispute";
 import { UserContext } from "@/context/user-context";
 import io, { Socket } from "socket.io-client";
+import toast from "react-hot-toast";
 
 const JobInformation = () => {
-  const { singleDispute, loadingSingleDispute } = useDisputes();
+  const {
+    singleDispute,
+    loadingSingleDispute,
+    refetchDispute,
+    RefundContractor,
+    RefundCustomer,
+  } = useDisputes();
 
   const [open, setOpen] = useState<boolean>(false);
   const modalRef = useRef(null);
@@ -121,6 +128,40 @@ const JobInformation = () => {
     };
   }, [token]);
 
+  const handleRefundContractor = async () => {
+    if (confirm("Kindly confirm you wish to refund this contractor")) {
+      try {
+        const response = await RefundContractor({ id });
+        toast.remove();
+        toast.success(response?.message);
+        setTimeout(() => {
+          refetchDispute();
+        }, 1000);
+      } catch (e: any) {
+        toast.remove();
+        //   console.log({ e });
+        toast.error(e?.response?.data?.message);
+      }
+    }
+  };
+
+  const handleRefundCustomer = async () => {
+    if (confirm("Kindly confirm you wish to refund this customer")) {
+      try {
+        const response = await RefundCustomer({ id });
+        toast.remove();
+        toast.success(response?.message);
+        setTimeout(() => {
+          refetchDispute();
+        }, 1000);
+      } catch (e: any) {
+        toast.remove();
+        //   console.log({ e });
+        toast.error(e?.response?.data?.message);
+      }
+    }
+  };
+
   return (
     <>
       {loadingSingleDispute && <LoadingTemplate />}
@@ -153,12 +194,26 @@ const JobInformation = () => {
         <JobDetail info={singleDispute?.data?.job} />
         <JobMedia info={singleDispute?.data?.jobDay} />
         <DisputeForm info={singleDispute?.data?.description} />
-        <button
-          onClick={() => setOpen(true)}
-          className={`text-white px-8 py-3 rounded-md text-sm bg-black`}
-        >
-          Resolve
-        </button>
+        <div className="w-full flex items-center justify-start gap-5">
+          <button
+            onClick={() => setOpen(true)}
+            className={`text-white px-8 py-3 rounded-md text-sm bg-black`}
+          >
+            Resolve
+          </button>
+          <button
+            onClick={handleRefundContractor}
+            className={`px-8 py-3 rounded-md text-sm border border-black`}
+          >
+            Refund Contractor
+          </button>
+          <button
+            onClick={handleRefundCustomer}
+            className={`px-8 py-3 rounded-md text-sm border border-black`}
+          >
+            Refund Customer
+          </button>
+        </div>
       </div>
     </>
   );

@@ -16,6 +16,8 @@ const JobDetail = ({ info }: { info: any }) => {
 
   const handleToggle = () => setShowData(!showData);
 
+  // console.log(info);
+
   return (
     <div className="p-5 bg-white rounded-lg my-4">
       <div className="flex items-center justify-between">
