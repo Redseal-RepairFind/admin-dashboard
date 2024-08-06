@@ -40,7 +40,7 @@ const JobInformation = () => {
     singleDispute?.data?.conversations?.arbitratorContractorConversation?.id;
 
   const { data: contractorChat, refetch: refetchContractor } = useQuery(
-    ["Contractor Arbitrator Conversation Messages"],
+    ["Contractor Arbitrator Conversation"],
     () => dispute.getConversationMessages(c_id),
     {
       cacheTime: 100,

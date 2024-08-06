@@ -70,7 +70,7 @@ const CustomerChat = () => {
     s3.upload(params)
       .promise()
       .then(async (response: any) => {
-        console.log(response);
+        // console.log(response);
 
         const payload = {
           type: message?.type.includes("image") ? "IMAGE" : "VIDEO",
@@ -198,6 +198,7 @@ const CustomerChat = () => {
           </div>
         ))}
       </div>
+
       <div className="flex items-center justify-start gap-2 mt-4">
         {/* <input
           value={message}

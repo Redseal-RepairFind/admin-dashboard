@@ -16,6 +16,8 @@ const ChatBox = ({
 
   const [isText, setIsText] = useState(true);
 
+  const [showDialog, setShowDialog] = useState(true);
+
   const onDrop = (acceptedFiles: any) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];

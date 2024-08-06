@@ -7,11 +7,22 @@ import { dispute } from "@/lib/api/dispute";
 import toast from "react-hot-toast";
 import { ClipLoader, SyncLoader } from "react-spinners";
 import io, { Socket } from "socket.io-client";
+import ChatBox from "./ChatMessageBox";
+import AWS from "aws-sdk";
+import { v4 as uuidv4 } from "uuid";
+import ShowMessage from "./ShowMessage";
+
+const config = {
+  bucketName: process.env.NEXT_PUBLIC_AWS_S3_BUCKET,
+  region: process.env.NEXT_PUBLIC_AWS_REGION,
+  accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_KEY,
+};
 
 const CustomerChat = () => {
   const { conversations, singleDispute, SendMessage } = useDisputes();
 
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState<any>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const id =
@@ -34,10 +45,57 @@ const CustomerChat = () => {
     }
   );
 
-  const handleMessage = async () => {
-    const payload = { type: "TEXT", message };
+  const uploadMultimedia = async () => {
+    AWS.config.update({
+      region: config.region,
+      accessKeyId: config.accessKeyId,
+      secretAccessKey: config.secretAccessKey,
+    });
+    const s3 = new AWS.S3({ apiVersion: "2006-03-01" });
 
+    if (!config.bucketName) {
+      console.error("Bucket name is not defined.");
+      return;
+    }
+
+    const params = {
+      Bucket: config.bucketName,
+      Key: `images/${uuidv4()}`,
+      Body: message,
+    };
+
+    setIsSubmitting(true);
+
+    s3.upload(params)
+      .promise()
+      .then(async (response: any) => {
+        // console.log(response);
+
+        const payload = {
+          type: message?.type.includes("image") ? "IMAGE" : "VIDEO",
+          media: [{ url: response?.Location }],
+        };
+
+        try {
+          await SendMessage({ id, payload });
+          setMessage("");
+          setIsSubmitting(false);
+          setTimeout(() => {
+            refetch();
+          }, 100);
+        } catch (e: any) {
+          setIsSubmitting(false);
+          toast.error(e?.response?.data?.message);
+        }
+      });
+  };
+
+  const handleMessage = async () => {
     if (!message) return toast.error("Kindly type in a message...");
+
+    if (typeof message === "object") return uploadMultimedia();
+
+    const payload = { type: "TEXT", message };
 
     // toast.loading("Processing...");
     setIsSubmitting(true);
@@ -125,23 +183,24 @@ const CustomerChat = () => {
           >
             {message?.senderType === "admins" ? (
               <div className="bg-black text-white font-medium text-sm rounded-tl-lg rounded-bl-lg rounded-br-lg w-fit px-5 py-2">
-                {message?.message}
+                <ShowMessage message={message} type={message?.messageType} />
               </div>
             ) : (
-              <div className="bg-gray-300 text-black font-medium text-sm rounded-tl-lg rounded-bl-lg rounded-br-lg w-fit px-5 py-2">
-                {message?.message}
+              <div className="bg-gray-300 text-black font-medium text-sm rounded-tr-lg rounded-bl-lg rounded-br-lg w-fit px-5 py-2">
+                <ShowMessage message={message} type={message?.messageType} />
               </div>
             )}
           </div>
         ))}
       </div>
       <div className="flex items-center justify-start gap-2 mt-4">
-        <input
+        {/* <input
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           className="py-3 rounded-md px-4 outline-none focus:ring-0 focus:border-black duration-200 w-full border border-gray-200"
           placeholder="Send a message..."
-        />
+        /> */}
+        <ChatBox message={message} setMessage={setMessage} />
         <button
           disabled={isSubmitting}
           onClick={handleMessage}

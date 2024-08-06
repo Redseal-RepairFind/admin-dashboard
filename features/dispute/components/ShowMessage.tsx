@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import Img from "./Img";
 
@@ -11,7 +12,18 @@ const ShowMessage = ({
   const renderContent = () => {
     switch (type) {
       case "IMAGE":
-        return <Img url={message?.media?.url} />;
+        return (
+          <div className="w-full h-fit">
+            {message?.media?.map((item: any, index: number) => (
+              <img
+                key={index}
+                src={item?.url}
+                alt="Image"
+                className="h-[150px] object-contain"
+              />
+            ))}
+          </div>
+        );
       case "VIDEO":
         return (
           <video controls style={{ maxWidth: "100%", height: "auto" }}>
