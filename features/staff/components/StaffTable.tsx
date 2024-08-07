@@ -157,7 +157,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
         container={modalRef.current}
       >
         <div className="w-[600px] pt-6">
-          <AddStaff />
+          <AddStaff setOpen={setOpen} />
         </div>
       </Modal>
       <Modal

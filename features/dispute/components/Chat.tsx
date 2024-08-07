@@ -8,6 +8,7 @@ import CustomerChat from "./CustomerChat";
 import ContractorChat from "./ContractorChat";
 import { SyncLoader } from "react-spinners";
 import io, { Socket } from "socket.io-client";
+import ShowMessage from "./ShowMessage";
 
 const Chat = () => {
   const { singleDispute, messages, loadingMessages, refetchMessages } =
@@ -92,16 +93,16 @@ const Chat = () => {
 
       <div className="rounded-lg bg-white p-5">
         <div className="bg-gray-100 flex items-center justify-start gap-4 rounded-md py-5 px-3">
-          <h1 className="font-medium">Chat between</h1>
-          <div className="bg-white p-3 rounded-md flex items-center justify-between">
-            <div className="border-r border-gray-200 px-5">
+          {/* <h1 className="font-medium">Chat between</h1> */}
+          <div className="p-3 rounded-md flex items-center justify-between w-full">
+            <div className="px-5 bg-white rounded-md py-2">
               <p className="font-semibold mt-2">
                 {singleDispute?.data?.customer?.firstName}{" "}
                 {singleDispute?.data?.customer?.lastName}
               </p>
               <p className="text-gray-400">Customer</p>
             </div>
-            <div className="px-5">
+            <div className="px-5 bg-white rounded-md py-2">
               <p className="font-semibold mt-2">
                 {singleDispute?.data?.contractor?.firstName}{" "}
                 {singleDispute?.data?.contractor?.lastName}
@@ -127,11 +128,13 @@ const Chat = () => {
             >
               {message?.senderType !== "contractors" ? (
                 <div className="bg-gray-300 text-black font-medium text-sm w-fit rounded-tr-lg rounded-bl-lg rounded-br-lg px-5 py-2">
-                  {message?.message}
+                  {/* {message?.message} */}
+                  <ShowMessage message={message} type={message?.messageType} />
                 </div>
               ) : (
                 <div className="bg-black text-white font-medium text-sm w-fit rounded-tl-lg rounded-bl-lg rounded-br-lg px-5 py-2">
-                  {message?.message}
+                  {/* {message?.message} */}
+                  <ShowMessage message={message} type={message?.messageType} />
                 </div>
               )}
             </div>

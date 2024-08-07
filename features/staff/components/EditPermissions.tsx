@@ -34,7 +34,7 @@ const EditPermissions = ({
     );
   };
 
-  console.log(currentStaff, "edit");
+  // console.log(currentStaff, "edit");
 
   const handleAdd = (permissionId: string) => {
     const payload = { staffId: currentStaff?._id, permision: permissionId };

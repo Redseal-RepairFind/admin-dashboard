@@ -5,12 +5,8 @@ import toast from "react-hot-toast";
 import PasswordField from "@/components/ui/password-input";
 import SubmitBtn from "@/components/ui/submit-btn";
 
-const AddStaff = () => {
-  const {
-    permissionList,
-    AddStaff: InviteUser,
-    refetchPermissionList,
-  } = useStaff();
+const AddStaff = ({ setOpen }: { setOpen: any }) => {
+  const { permissionList, AddStaff: InviteUser, refetchStaffData } = useStaff();
 
   const [selectedPermissions, setSelectedPermissions] = useState<any>([]);
 
@@ -33,7 +29,8 @@ const AddStaff = () => {
       console.log(data);
       toast.success(data?.message);
       setTimeout(() => {
-        refetchPermissionList();
+        refetchStaffData();
+        setOpen();
       }, 1000);
     } catch (e: any) {
       console.log(e);
@@ -146,7 +143,7 @@ const AddStaff = () => {
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Permissions
           </label>
-          <ul className="list-disc">
+          <ul className="list-disc h-[200px] overflow-y-scroll p-5 border border-gray-200 rounded-md">
             {permissionList?.map((permission: any) => (
               <li
                 key={permission._id}
