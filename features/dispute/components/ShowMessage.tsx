@@ -11,6 +11,7 @@ import {
   RatingStar,
   YellowStar,
 } from "@/public/svg";
+import Image from "next/image";
 
 const ShowMessage = ({
   type,
@@ -33,9 +34,11 @@ const ShowMessage = ({
             className="w-full h-fit duration-200 hover:opacity-50 hover:blur-sm cursor-pointer relative"
           >
             {message?.media?.map((item: any, index: number) => (
-              <img
+              <Image
                 key={index}
                 src={item?.url}
+                width={100}
+                height={100}
                 alt="Image"
                 className="h-[150px] object-contain"
               />
