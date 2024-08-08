@@ -5,7 +5,15 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import SubmitBtn from "@/components/ui/submit-btn";
 
-const SettleEmergency = ({ id, setOpen }: { id: any; setOpen: any }) => {
+const SettleEmergency = ({
+  id,
+  setOpen,
+  resolveType,
+}: {
+  id: any;
+  setOpen: any;
+  resolveType: any;
+}) => {
   // console.log(emergencyID);
 
   const {
@@ -18,7 +26,7 @@ const SettleEmergency = ({ id, setOpen }: { id: any; setOpen: any }) => {
 
   const handleSettle = async (payload: any) => {
     try {
-      const response = await SettleDispute({ id, payload });
+      const response = await SettleDispute({ id, payload, type: resolveType });
       toast.remove();
       toast.success(response?.message);
       setTimeout(() => {
@@ -37,12 +45,15 @@ const SettleEmergency = ({ id, setOpen }: { id: any; setOpen: any }) => {
       <form onSubmit={handleSubmit(handleSettle)} className="w-full">
         <div className="w-full">
           <label className="block text-sm font-medium leading-6 text-gray-900">
+            {resolveType === "customer"
+              ? "Refund Customer - "
+              : "Pay Contractor - "}
             How was this resolved?
           </label>
           <div className="mt-1">
             <textarea
               rows={5}
-              {...register("resolvedWay", {
+              {...register("remark", {
                 required: true,
               })}
               className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"

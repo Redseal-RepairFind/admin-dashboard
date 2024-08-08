@@ -15,7 +15,7 @@ const Header: React.FC<IProps> = ({ children }) => {
   const [lastName, setLastName] = useState("");
   const [image, setImage] = useState("");
   const [isSuperAdmin, setIsSuperAdmin] = useState("");
-  const [totalUnseenNotification, setTotalUnseenNotification] = useState(0);
+  const [totalUnseenNotification, setTotalUnseenNotification] = useState(2);
 
   const { currentUser } = useContext(UserContext);
 
@@ -42,7 +42,7 @@ const Header: React.FC<IProps> = ({ children }) => {
           <NotificationBell />
           {totalUnseenNotification > 0 && (
             <div
-              className="bg-[#ccc] w-5 h-5 rounded-full absolute top-1.5
+              className="bg-red-500 w-5 h-5 rounded-full absolute top-1.5
           right-1.5 text-sm text-white flex items-center justify-center"
             >
               {totalUnseenNotification}

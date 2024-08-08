@@ -31,6 +31,8 @@ const JobInformation = () => {
   const modalRef = useRef(null);
   const { id } = useParams();
 
+  const [resolveType, setResolveType] = useState<string>("");
+
   const { currentUser } = useContext(UserContext);
   // console.log(singleDispute);
 
@@ -174,7 +176,7 @@ const JobInformation = () => {
         }}
         container={modalRef.current}
       >
-        <ResolvedForm setOpen={setOpen} id={id} />
+        <ResolvedForm resolveType={resolveType} setOpen={setOpen} id={id} />
       </Modal>
 
       <div className="p-5">
@@ -196,19 +198,19 @@ const JobInformation = () => {
         <DisputeForm info={singleDispute?.data?.description} />
         <div className="w-full flex items-center justify-start gap-5">
           <button
-            onClick={() => setOpen(true)}
+            onClick={() => {
+              setResolveType("contractor");
+              setOpen(true);
+            }}
             className={`text-white px-8 py-3 rounded-md text-sm bg-black`}
           >
-            Resolve
+            Pay Contractor
           </button>
           <button
-            onClick={handleRefundContractor}
-            className={`px-8 py-3 rounded-md text-sm border border-black`}
-          >
-            Refund Contractor
-          </button>
-          <button
-            onClick={handleRefundCustomer}
+            onClick={() => {
+              setResolveType("customer");
+              setOpen(true);
+            }}
             className={`px-8 py-3 rounded-md text-sm border border-black`}
           >
             Refund Customer

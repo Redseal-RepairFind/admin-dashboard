@@ -28,9 +28,17 @@ export const dispute = {
   acceptDispute: (id: string) =>
     client.post(`/admin/disputes/${id}/accept`).then(({ data }) => data),
 
-  settleDispute: ({ id, payload }: { id: string; payload: any }) =>
+  settleDispute: ({
+    id,
+    payload,
+    type,
+  }: {
+    id: string;
+    payload: any;
+    type: string;
+  }) =>
     client
-      .post(`/admin/disputes/${id}/settle`, payload)
+      .post(`/admin/disputes/${id}/refund-${type}`, payload)
       .then(({ data }) => data),
 
   refundContractor: ({ id }: { id?: any }) =>
