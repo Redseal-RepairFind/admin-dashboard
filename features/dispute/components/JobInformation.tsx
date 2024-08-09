@@ -19,13 +19,7 @@ import io, { Socket } from "socket.io-client";
 import toast from "react-hot-toast";
 
 const JobInformation = () => {
-  const {
-    singleDispute,
-    loadingSingleDispute,
-    refetchDispute,
-    RefundContractor,
-    RefundCustomer,
-  } = useDisputes();
+  const { singleDispute, loadingSingleDispute, refetchDispute } = useDisputes();
 
   const [open, setOpen] = useState<boolean>(false);
   const modalRef = useRef(null);
@@ -129,40 +123,6 @@ const JobInformation = () => {
       }
     };
   }, [token]);
-
-  const handleRefundContractor = async () => {
-    if (confirm("Kindly confirm you wish to refund this contractor")) {
-      try {
-        const response = await RefundContractor({ id });
-        toast.remove();
-        toast.success(response?.message);
-        setTimeout(() => {
-          refetchDispute();
-        }, 1000);
-      } catch (e: any) {
-        toast.remove();
-        //   console.log({ e });
-        toast.error(e?.response?.data?.message);
-      }
-    }
-  };
-
-  const handleRefundCustomer = async () => {
-    if (confirm("Kindly confirm you wish to refund this customer")) {
-      try {
-        const response = await RefundCustomer({ id });
-        toast.remove();
-        toast.success(response?.message);
-        setTimeout(() => {
-          refetchDispute();
-        }, 1000);
-      } catch (e: any) {
-        toast.remove();
-        //   console.log({ e });
-        toast.error(e?.response?.data?.message);
-      }
-    }
-  };
 
   return (
     <>

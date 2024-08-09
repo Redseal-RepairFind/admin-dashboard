@@ -131,15 +131,27 @@ const CustomerChat = () => {
         },
       });
 
+      const triggerConversationRead = () => {
+        const data = { conversationId: "" }; // Replace with relevant data
+        socket.emit("CONVERSATION_READ", data);
+        console.log("CONVERSATION_READ event triggered:", data);
+      };
+
       socket.on("connect", () => {
         console.log("connected to server");
+        // Trigger the event immediately (or based on some condition)
+        triggerConversationRead();
       });
 
       socket.on("NEW_UNREAD_MESSAGE", (data: any) => {
-        // console.log("Received conversation event:", data);
+        console.log("Received conversation event:", data);
         setTimeout(() => {
           refetch();
         }, 800);
+      });
+
+      socket.on("CONVERSATION_READ", (data) => {
+        console.log("Conversation read event received:", data);
       });
 
       socket.on("disconnect", () => {
@@ -153,6 +165,7 @@ const CustomerChat = () => {
 
     return () => {
       if (socket) {
+        socket.off("CONVERSATION_READ");
         socket.disconnect();
       }
     };

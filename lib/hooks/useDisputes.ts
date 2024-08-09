@@ -19,10 +19,6 @@ const useDisputes = () => {
 
   const { mutateAsync: AcceptDispute } = useMutation(dispute.acceptDispute);
   const { mutateAsync: SettleDispute } = useMutation(dispute.settleDispute);
-  const { mutateAsync: RefundContractor } = useMutation(
-    dispute.refundContractor
-  );
-  const { mutateAsync: RefundCustomer } = useMutation(dispute.refundCustomer);
   const { mutateAsync: SendMessage } = useMutation(dispute.sendMessage);
 
   const { id } = useParams();
@@ -130,8 +126,6 @@ const useDisputes = () => {
     setCurrentPage,
     search,
     setSearch,
-    RefundCustomer,
-    RefundContractor,
   };
 };
 

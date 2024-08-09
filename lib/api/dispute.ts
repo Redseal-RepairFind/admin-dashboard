@@ -2,6 +2,10 @@ import apiClient from "./apii";
 
 const client = apiClient();
 
+const user = JSON.parse(
+  sessionStorage.getItem("repairfind_session_user") || ""
+);
+
 export const dispute = {
   getDisputes: ({
     page,
@@ -18,7 +22,7 @@ export const dispute = {
       .get(
         `/admin/disputes?page=${page}&limit=${limit}${
           search ? `&search=${search}` : ""
-        }&status=${status}`
+        }&status=${status}${status === "ONGOING" && `&arbitrator=${user?._id}`}`
       )
       .then(({ data }) => data),
 
@@ -39,16 +43,6 @@ export const dispute = {
   }) =>
     client
       .post(`/admin/disputes/${id}/refund-${type}`, payload)
-      .then(({ data }) => data),
-
-  refundContractor: ({ id }: { id?: any }) =>
-    client
-      .post(`/admin/disputes/${id}/refund-contractor`)
-      .then(({ data }) => data),
-
-  refundCustomer: ({ id }: { id?: any }) =>
-    client
-      .post(`/admin/disputes/${id}/refund-customer`)
       .then(({ data }) => data),
 
   getConversation: () =>
