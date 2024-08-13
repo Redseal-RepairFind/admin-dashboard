@@ -25,8 +25,9 @@ const CustomerChat = () => {
   const [message, setMessage] = useState<any>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const id =
-    singleDispute?.data?.conversations?.arbitratorContractorConversation?.id;
+  const id = singleDispute?.data?.conversations?.arbitratorContractor?._id;
+
+  console.log(singleDispute);
 
   const {
     data: contractorChat,

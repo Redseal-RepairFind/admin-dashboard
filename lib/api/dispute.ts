@@ -22,7 +22,9 @@ export const dispute = {
       .get(
         `/admin/disputes?page=${page}&limit=${limit}${
           search ? `&search=${search}` : ""
-        }&status=${status}${status === "ONGOING" && `&arbitrator=${user?._id}`}`
+        }&status=${status}${
+          status === "ONGOING" ? `&arbitrator=${user?._id} ` : ""
+        }`
       )
       .then(({ data }) => data),
 
@@ -42,7 +44,12 @@ export const dispute = {
     type: string;
   }) =>
     client
-      .post(`/admin/disputes/${id}/refund-${type}`, payload)
+      .post(
+        `/admin/disputes/${id}/${
+          type === "revisit" ? "enable-revisit" : `refund-${type}`
+        }`,
+        payload
+      )
       .then(({ data }) => data),
 
   getConversation: () =>

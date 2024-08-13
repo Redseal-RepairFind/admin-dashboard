@@ -32,8 +32,7 @@ const JobInformation = () => {
 
   // console.log(currentUser);
 
-  const c_id =
-    singleDispute?.data?.conversations?.arbitratorContractorConversation?.id;
+  const c_id = singleDispute?.data?.conversations?.arbitratorContractor?._id;
 
   const { data: contractorChat, refetch: refetchContractor } = useQuery(
     ["Contractor Arbitrator Conversation"],
@@ -49,7 +48,7 @@ const JobInformation = () => {
   );
 
   const customer_id =
-    singleDispute?.data?.conversations?.arbitratorCustomerConversation?.id;
+    singleDispute?.data?.conversations?.arbitratorCustomer?._id;
 
   const { data: customerChat, refetch: refetchCustomer } = useQuery(
     ["Customer Arbitrator Conversation"],
@@ -174,6 +173,15 @@ const JobInformation = () => {
             className={`px-8 py-3 rounded-md text-sm border border-black`}
           >
             Refund Customer
+          </button>
+          <button
+            onClick={() => {
+              setResolveType("revisit");
+              setOpen(true);
+            }}
+            className={`px-8 py-3 rounded-md text-sm border border-black`}
+          >
+            Enable Revisit
           </button>
         </div>
       </div>

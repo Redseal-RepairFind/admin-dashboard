@@ -47,6 +47,8 @@ const SettleEmergency = ({
           <label className="block text-sm font-medium leading-6 text-gray-900">
             {resolveType === "customer"
               ? "Refund Customer - "
+              : resolveType === "revisit"
+              ? "Enable Revisit - "
               : "Pay Contractor - "}
             How was this resolved?
           </label>

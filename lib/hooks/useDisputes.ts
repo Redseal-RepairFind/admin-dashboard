@@ -74,7 +74,7 @@ const useDisputes = () => {
       return (
         singleDispute &&
         dispute.getConversationMessages(
-          singleDispute?.data?.conversations?.customerContractorConversation?.id
+          singleDispute?.data?.conversations?.customerContractor?._id
         )
       );
     },
