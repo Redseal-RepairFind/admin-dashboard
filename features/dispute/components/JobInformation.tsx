@@ -144,11 +144,13 @@ const JobInformation = () => {
             title={"Contractor"}
             count={unreadContractorCount}
             info={singleDispute?.data?.contractor}
+            refetch={refetchContractor}
           />
           <ContractorInfo
             title={"Customer"}
             count={unreadCustomerCount}
             info={singleDispute?.data?.customer}
+            refetch={refetchCustomer}
           />
         </div>
         <JobDayData info={singleDispute?.data?.jobDay} />

@@ -19,11 +19,12 @@ const config = {
   secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_KEY,
 };
 
-const CustomerChat = () => {
+const CustomerChat = ({ refetch: refetchConversation }: { refetch: any }) => {
   const { conversations, singleDispute, SendMessage } = useDisputes();
 
   const [message, setMessage] = useState<any>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isRead, setIsRead] = useState<boolean>(false);
 
   const id = singleDispute?.data?.conversations?.arbitratorCustomer?._id;
 
@@ -127,28 +128,48 @@ const CustomerChat = () => {
         },
       });
 
+      const triggerConversationRead = () => {
+        const data = { conversationId: id }; // Replace with relevant data
+        socket.emit("send_mark_conversation_as_read", data);
+        console.log("send_mark_conversation_as_read event triggered:", data);
+      };
+
       socket.on("connect", () => {
         console.log("connected to server");
+        // Trigger the event immediately (or based on some condition)
+        triggerConversationRead();
+        setIsRead(true);
+        setTimeout(() => {
+          refetchConversation();
+        }, 1000);
       });
 
       socket.on("NEW_UNREAD_MESSAGE", (data: any) => {
-        // console.log("Received conversation event:", data);
+        console.log("Received conversation event:", data);
         setTimeout(() => {
           refetch();
         }, 800);
       });
 
+      socket.on("CONVERSATION_READ", (data) => {
+        console.log("Conversation read event received:", data);
+      });
+
       socket.on("disconnect", () => {
         console.log("Disconnected from Socket.IO server");
+        setIsRead(false);
       });
 
       socket.on("error", (error: any) => {
         console.error("Socket.IO error:", error);
+        setIsRead(false);
       });
     }
 
     return () => {
       if (socket) {
+        setIsRead(false);
+        socket.off("CONVERSATION_READ");
         socket.disconnect();
       }
     };
@@ -168,7 +189,7 @@ const CustomerChat = () => {
         </div>
       </div>
       <div className="mt-4 p-5 border border-gray-300 h-[50vh] overflow-y-scroll">
-        {isLoading && (
+        {isLoading && !isRead && (
           <div className="w-full flex items-center justify-center mt-5">
             <SyncLoader size={10} color="#000" />
           </div>

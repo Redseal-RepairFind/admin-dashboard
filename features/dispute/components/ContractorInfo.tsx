@@ -12,10 +12,12 @@ const ContractorInfo = ({
   info,
   title,
   count,
+  refetch,
 }: {
   info: any;
   title: any;
   count: number;
+  refetch: any;
 }) => {
   const [openCustomer, setOpenCustomer] = useState<boolean>(false);
   const customerModalRef = useRef(null);
@@ -33,7 +35,7 @@ const ContractorInfo = ({
         }}
         container={customerModalRef.current}
       >
-        <CustomerChat />
+        <CustomerChat refetch={refetch} />
       </Modal>
       <Modal
         open={openContractor}
@@ -44,7 +46,7 @@ const ContractorInfo = ({
         }}
         container={contractorModalRef.current}
       >
-        <ContractorChat />
+        <ContractorChat refetch={refetch} />
       </Modal>
 
       <div className="p-3 rounded-md bg-white flex items-start justify-between gap-5">
