@@ -7,7 +7,7 @@ import Table from "@/features/shared/table/components/table";
 import Thead from "@/features/shared/table/components/thead";
 import Th from "@/features/shared/table/components/th";
 import Td from "@/features/shared/table/components/td";
-import { RatingStar } from "@/public/svg";
+import { RatingStar, PendingState, SuspendedState } from "@/public/svg";
 import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 import useGst from "@/lib/hooks/useGst";
 import useEmergency from "@/lib/hooks/useEmergency";
@@ -15,13 +15,14 @@ import LoadingTemplate from "../../layout/loading";
 import SettleEmergency from "./SettleEmergency";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
+import { useRouter } from "next/navigation";
 
 const table_headings = [
   "ID",
   "Initiated by",
   "Description",
   "Priority",
-  "Status",
+  // "Status",
   "Action",
 ];
 
@@ -42,6 +43,8 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
 
   const modalRef = useRef(null);
 
+  const router = useRouter();
+
   const {
     emergencyData,
     type: currentType,
@@ -54,13 +57,14 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
 
   const handleAction = (id: string) => {
     return () => {
-      console.log("d");
-      if (currentType === "new") return handleAccept({ emergencyId: id });
+      // console.log(id);
+      if (currentType === "PENDING") return handleAccept(id);
 
-      console.log("e");
+      // console.log("e");
       setEmergencyID(id);
       setTimeout(() => {
-        setOpen(true);
+        // setOpen(true);
+        router.push(`/emergency/${id}`);
       }, 100);
     };
   };
@@ -78,7 +82,6 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
       >
         <SettleEmergency setOpen={setOpen} emergencyID={emergencyID} />
       </Modal>
-
       <TableCard>
         <div className="flex items-center justify-start gap-5 w-full">
           {types.map((type: any, index: number) => (
@@ -108,33 +111,37 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
               </Thead>
 
               <tbody>
-                {emergencyData?.jobEmergencies?.map(
-                  (item: any, index: number) => (
-                    <tr
-                      key={index}
-                      className="cursor-pointer border-b border-gray-100"
-                    >
-                      <Td>{index + 1}</Td>
-                      <Td>{item?.triggeredBy || "-"}</Td>
-                      <Td>{item?.description}</Td>
-                      <Td>{item?.priority}</Td>
-                      <Td>{item?.status}</Td>
-                      <Td>
-                        <button
-                          disabled={currentType === "RESOLVED"}
-                          onClick={handleAction(item?._id)}
-                          className={`text-white px-5 py-3 rounded-md text-sm ${
-                            currentType === "RESOLVED"
-                              ? "cursor-not-allowed bg-gray-500"
-                              : "bg-black "
-                          }`}
-                        >
-                          {currentType === "PENDING" ? "Accept" : "Resolve"}
-                        </button>
-                      </Td>
-                    </tr>
-                  )
-                )}
+                {emergencyData?.data?.data?.map((item: any, index: number) => (
+                  <tr key={index} className="border-b border-gray-100">
+                    <Td>{index + 1}</Td>
+                    <Td>{item?.triggeredBy || "-"}</Td>
+                    <Td>{item?.description}</Td>
+                    <Td>
+                      <span className="flex items-center justify-center gap-1">
+                        {item?.priority?.toLowerCase() === "low" ? (
+                          <PendingState />
+                        ) : (
+                          <SuspendedState />
+                        )}
+                        {item?.priority}
+                      </span>
+                    </Td>
+                    {/* <Td>{item?.status}</Td> */}
+                    <Td>
+                      <button
+                        disabled={currentType === "RESOLVED"}
+                        onClick={handleAction(item?._id)}
+                        className={`text-white px-5 py-3 rounded-md text-sm ${
+                          currentType === "RESOLVED"
+                            ? "cursor-not-allowed bg-gray-500"
+                            : "bg-black "
+                        }`}
+                      >
+                        {currentType === "PENDING" ? "Accept" : "Resolve"}
+                      </button>
+                    </Td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </TableOverflow>

@@ -1,11 +1,15 @@
+"use client";
+
 import { emergency } from "../api/emergency";
 import { useMutation, useQuery } from "react-query";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
 
 const useEmergency = () => {
   const [type, setType] = useState("PENDING");
+
+  const { id } = useParams();
 
   const {
     data: emergencyData,
@@ -17,6 +21,23 @@ const useEmergency = () => {
       return emergency.getEmergencyList(type);
     },
     { cacheTime: 100, staleTime: 100, refetchOnWindowFocus: true }
+  );
+
+  const {
+    data: singleEmergency,
+    isLoading: loadingSingleEmergency,
+    refetch: refetchSingleEmergency,
+  } = useQuery(
+    ["Single Emergency", id],
+    () => {
+      return emergency.getSingleEmergency(`${id}`);
+    },
+    {
+      cacheTime: 100,
+      staleTime: 100,
+      refetchOnWindowFocus: true,
+      enabled: Boolean(id),
+    }
   );
 
   const { mutateAsync: AcceptEmergency } = useMutation(
@@ -49,6 +70,9 @@ const useEmergency = () => {
     handleAccept,
     ResolveEmergency,
     refetch,
+    singleEmergency,
+    loadingSingleEmergency,
+    refetchSingleEmergency,
   };
 };
 

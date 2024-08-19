@@ -11,7 +11,6 @@ import ChatBox from "./ChatMessageBox";
 import AWS from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
 import ShowMessage from "./ShowMessage";
-import { FaGalacticSenate } from "react-icons/fa";
 
 const config = {
   bucketName: process.env.NEXT_PUBLIC_AWS_S3_BUCKET,
