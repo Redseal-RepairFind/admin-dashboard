@@ -19,7 +19,7 @@ const config = {
   secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_KEY,
 };
 
-const CustomerChat = ({ refetch: refetchConversation }: { refetch: any }) => {
+const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
   const { conversations, singleDispute, SendMessage } = useDisputes();
 
   const [message, setMessage] = useState<any>("");

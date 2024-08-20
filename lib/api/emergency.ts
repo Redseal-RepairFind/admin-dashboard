@@ -14,6 +14,8 @@ export const emergency = {
   acceptEmergency: (id: string) =>
     client.post(`/admin/emergencies/${id}/accept`).then(({ data }) => data),
 
-  resolveEmergency: (id: string) =>
-    client.post(`/admin/emergencies/${id}/accept`).then(({ data }) => data),
+  resolveEmergency: ({ id, payload }: { id: string; payload: any }) =>
+    client
+      .post(`/admin/emergencies/${id}/accept`, payload)
+      .then(({ data }) => data),
 };

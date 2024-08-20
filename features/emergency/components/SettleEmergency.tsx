@@ -3,6 +3,7 @@ import useEmergency from "@/lib/hooks/useEmergency";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import SubmitBtn from "@/components/ui/submit-btn";
+import { useRouter } from "next/navigation";
 
 const SettleEmergency = ({
   emergencyID,
@@ -13,6 +14,8 @@ const SettleEmergency = ({
 }) => {
   // console.log(emergencyID);
 
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -21,19 +24,21 @@ const SettleEmergency = ({
 
   const { ResolveEmergency, refetch } = useEmergency();
 
-  const handleSettle = async (values: any) => {
-    const payload = { ...values, emergencyId: emergencyID };
+  const handleSettle = async (payload: any) => {
+    // const payload = { ...values, emergencyId: emergencyID };
     try {
-      const response = await ResolveEmergency(payload);
+      const response = await ResolveEmergency({ id: emergencyID, payload });
       toast.remove();
       toast.success(response?.message);
       setTimeout(() => {
         setOpen();
         refetch();
+        router.push("/emergency");
       }, 1000);
     } catch (e: any) {
       toast.remove();
-      toast.error(e?.data?.response?.message);
+      toast.error(e?.response?.data?.message);
+      // console.log({ e });
     }
   };
 

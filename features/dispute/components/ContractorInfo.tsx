@@ -16,8 +16,8 @@ const ContractorInfo = ({
 }: {
   info: any;
   title: any;
-  count: number;
-  refetch: any;
+  count?: number;
+  refetch?: any;
 }) => {
   const [openCustomer, setOpenCustomer] = useState<boolean>(false);
   const customerModalRef = useRef(null);
@@ -66,21 +66,23 @@ const ContractorInfo = ({
             Email: {info?.email}
           </p>
         </div>
-        <button
-          onClick={() => {
-            title === "Customer"
-              ? setOpenCustomer(true)
-              : setOpenContractor(true);
-          }}
-          className="border rounded-md flex items-center gap-3 justify-between border-black bg-black text-white py-2 px-5"
-        >
-          <p>Chat</p>
-          {count ? (
-            <span className="border border-red-500 px-2 bg-red-500 rounded-lg text-white text-[10px]">
-              {count}
-            </span>
-          ) : null}
-        </button>
+        {count ? (
+          <button
+            onClick={() => {
+              title === "Customer"
+                ? setOpenCustomer(true)
+                : setOpenContractor(true);
+            }}
+            className="border rounded-md flex items-center gap-3 justify-between border-black bg-black text-white py-2 px-5"
+          >
+            <p>Chat</p>
+            {count ? (
+              <span className="border border-red-500 px-2 bg-red-500 rounded-lg text-white text-[10px]">
+                {count}
+              </span>
+            ) : null}
+          </button>
+        ) : null}
       </div>
     </>
   );

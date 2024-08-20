@@ -18,7 +18,7 @@ const Refund = ({ id, setOpen }: { id: any; setOpen: any }) => {
 
   const handleSettle = async (payload: any) => {
     try {
-      const response = await SettleDispute({ id, payload });
+      const response = await SettleDispute({ id, payload, type: "revisit" });
       toast.remove();
       toast.success(response?.message);
       setTimeout(() => {
