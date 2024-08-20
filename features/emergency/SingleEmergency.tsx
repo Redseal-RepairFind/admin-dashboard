@@ -82,10 +82,12 @@ const SingleDispute = () => {
         <div className="mt-5 grid grid-cols-2 gap-5">
           <ContractorInfo
             title={"Contractor"}
+            count={"not_applicable"}
             info={singleEmergency?.data?.contractor}
           />
           <ContractorInfo
             title={"Customer"}
+            count={"not_applicable"}
             info={singleEmergency?.data?.customer}
           />
         </div>

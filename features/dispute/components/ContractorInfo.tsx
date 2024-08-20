@@ -16,7 +16,7 @@ const ContractorInfo = ({
 }: {
   info: any;
   title: any;
-  count?: number;
+  count?: any;
   refetch?: any;
 }) => {
   const [openCustomer, setOpenCustomer] = useState<boolean>(false);
@@ -66,7 +66,7 @@ const ContractorInfo = ({
             Email: {info?.email}
           </p>
         </div>
-        {count ? (
+        {count === "not_applicable" ? (
           <button
             onClick={() => {
               title === "Customer"
