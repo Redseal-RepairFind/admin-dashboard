@@ -66,7 +66,7 @@ const ContractorInfo = ({
             Email: {info?.email}
           </p>
         </div>
-        {count === "not_applicable" ? (
+        {count !== "not_applicable" ? (
           <button
             onClick={() => {
               title === "Customer"
