@@ -27,6 +27,8 @@ const CustomerMedia = ({ data }: { data: any }) => {
         <div className="mt-[40px]">
           <Image
             src={currentImg}
+            width={500}
+            height={500}
             alt="Image"
             className="h-[400px] object-contain"
           />
@@ -38,7 +40,10 @@ const CustomerMedia = ({ data }: { data: any }) => {
         <div className="mt-2 mb-5 grid md:grid-cols-4 grid-cols-1">
           {data?.preMedia?.map((url: any, index: number) => (
             <div
-              onClick={() => setCurrentImg(url)}
+              onClick={() => {
+                setOpen(true);
+                setCurrentImg(url);
+              }}
               className="cursor-pointer flex items-start justify-start"
               key={index}
             >
@@ -50,7 +55,10 @@ const CustomerMedia = ({ data }: { data: any }) => {
         <div className="mt-2 mb-5 grid md:grid-cols-4 grid-cols-1">
           {data?.postMedia?.map((url: any, index: number) => (
             <div
-              onClick={() => setCurrentImg(url)}
+              onClick={() => {
+                setOpen(true);
+                setCurrentImg(url);
+              }}
               className="cursor-pointer flex items-start justify-start"
               key={index}
             >

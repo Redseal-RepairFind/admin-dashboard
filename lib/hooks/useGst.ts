@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const useGst = () => {
-  const [gstType, setGstType] = useState("pending");
+  const [gstType, setGstType] = useState("PENDING");
+  const [perPage, setPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { mutateAsync: ChangeStatus } = useMutation(gst.changeStatus);
 
@@ -28,6 +30,10 @@ const useGst = () => {
     setGstType,
     ChangeStatus,
     refetch,
+    perPage,
+    setPerPage,
+    currentPage,
+    setCurrentPage,
   };
 };
 

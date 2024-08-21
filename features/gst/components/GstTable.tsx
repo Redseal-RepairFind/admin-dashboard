@@ -15,20 +15,22 @@ import LoadingTemplate from "../../layout/loading";
 import VerticalMenu from "@/components/shared/vertical-menu";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
+import Image from "next/image";
+import Pagination from "@/components/shared/pagination";
 
 const table_headings = [
   "ID",
   "Business Name",
+  "GST Certificate",
   "GST Number",
-  //   "Certificate of Incorporation",
   "Action",
 ];
 
 const statusTypes = [
-  { title: "All", slug: "pending" },
-  { title: "Approved", slug: "approve" },
-  { title: "Declined", slug: "decline" },
-  { title: "Reviewing", slug: "review" },
+  { title: "Pending", slug: "PENDING" },
+  { title: "Approved", slug: "APPROVED" },
+  { title: "Declined", slug: "DECLINED" },
+  { title: "Reviewing", slug: "REVIEWING" },
 ];
 
 interface IProps {
@@ -37,12 +39,14 @@ interface IProps {
 
 const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
   const [open, setOpen] = useState(false);
+  const [openImageModal, setOpenImageModal] = useState(false);
 
   const [currentContractor, setCurrentContractor] = useState<any>();
 
   const [declineMsg, setDeclineMsg] = useState("");
 
   const modalRef = useRef(null);
+  const modalImageRef = useRef(null);
 
   const {
     contractorData,
@@ -51,6 +55,10 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     setGstType,
     ChangeStatus,
     refetch,
+    perPage,
+    setPerPage,
+    currentPage,
+    setCurrentPage,
   } = useGst();
 
   // console.log(contractorData, "d");
@@ -60,7 +68,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     {
       name: "Accept",
       action: async (item: any) => {
-        if (gstType === "approve")
+        if (gstType === "APPROVED")
           return toast.error("Contractor has been approved already...");
         console.log(item);
         const payload = { contractorId: item?._id, gstStatus: "APPROVED" };
@@ -81,7 +89,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     {
       name: "Reject",
       action: async (item: any) => {
-        if (gstType === "decline")
+        if (gstType === "DECLINED")
           return toast.error("Contractor has been declined already...");
         setCurrentContractor(item);
         setOpen(true);
@@ -111,6 +119,14 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     }
   };
 
+  const pageProps = {
+    data: contractorData?.data,
+    perPage,
+    setPerPage,
+    pageNo: currentPage,
+    setPageNo: setCurrentPage,
+  };
+
   return (
     <>
       <Modal
@@ -135,6 +151,25 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
           >
             Decline
           </button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={openImageModal}
+        onClose={() => setOpenImageModal(false)}
+        center
+        classNames={{
+          modal: "customModal",
+        }}
+        container={modalImageRef.current}
+      >
+        <div className="mt-[40px] w-[500px] flex items-center justify-center">
+          <Image
+            src={currentContractor?.gstDetails?.gstCertificate || "/user.png"}
+            alt={currentContractor?.name}
+            width={500}
+            height={500}
+          />
         </div>
       </Modal>
 
@@ -169,12 +204,28 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
               </Thead>
 
               <tbody>
-                {contractorData?.contractor?.map((item: any, index: number) => (
+                {contractorData?.data?.data?.map((item: any, index: number) => (
                   <tr key={item?._id} className="border-b border-gray-100">
                     <Td>{index + 1}</Td>
-                    <Td>{item?.companyName || "-"}</Td>
+                    <Td>{item?.companyName || item?.name}</Td>
+                    <Td>
+                      {item?.gstDetails?.gstCertificate ? (
+                        <Image
+                          onClick={() => {
+                            setCurrentContractor(item);
+                            setOpenImageModal(true);
+                          }}
+                          src={item?.gstDetails?.gstCertificate || "/user.png"}
+                          alt={item?.name}
+                          width={100}
+                          height={20}
+                          className="cursor-pointer hover:opacity-80 duration-200"
+                        />
+                      ) : (
+                        <p>-</p>
+                      )}
+                    </Td>
                     <Td>{item?.gstDetails?.gstNumber}</Td>
-                    {/* <Td>{item?.}</Td> */}
                     <Td>
                       <VerticalMenu isBackground={true}>
                         <div>
@@ -199,6 +250,9 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
           </TableOverflow>
         )}
         {/* <Paginator /> */}
+        <div className="w-full mt-2">
+          <Pagination {...pageProps} />
+        </div>
       </TableCard>
     </>
   );

@@ -4,7 +4,9 @@ const client = apiClient();
 
 export const gst = {
   getContractorDetails: ({ type }: { type: any }) =>
-    client.get(`/admin/contractor/detail/${type}/gst`).then(({ data }) => data),
+    client
+      .get(`/admin/contractors?gstStatus=${type}&limit=5&page=1`)
+      .then(({ data }) => data),
 
   changeStatus: (payload: any) =>
     client
