@@ -45,6 +45,8 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
 
   const [declineMsg, setDeclineMsg] = useState("");
 
+  const [status, setStatus] = useState("");
+
   const modalRef = useRef(null);
   const modalImageRef = useRef(null);
 
@@ -70,20 +72,10 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
       action: async (item: any) => {
         if (gstType === "APPROVED")
           return toast.error("Contractor has been approved already...");
-        console.log(item);
-        const payload = { contractorId: item?._id, gstStatus: "APPROVED" };
-        toast.loading("Processing...");
-        try {
-          const data = await ChangeStatus(payload);
-          toast.remove();
-          toast.success(data?.message);
-          setTimeout(() => {
-            refetch();
-          }, 1000);
-        } catch (e: any) {
-          toast.remove();
-          toast.error(e?.response?.data?.message);
-        }
+        // console.log(item);
+        setCurrentContractor(item);
+        setStatus("APPROVED");
+        setOpen(true);
       },
     },
     {
@@ -92,6 +84,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
         if (gstType === "DECLINED")
           return toast.error("Contractor has been declined already...");
         setCurrentContractor(item);
+        setStatus("DECLINED");
         setOpen(true);
       },
     },
@@ -100,13 +93,12 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
   const handleDecline = async () => {
     if (!declineMsg) return toast.error("Kindly enter a reason");
     const payload = {
-      contractorId: currentContractor?._id,
-      gstStatus: "DECLINED",
+      gstStatus: status,
       reason: declineMsg,
     };
     toast.loading("Processing...");
     try {
-      const data = await ChangeStatus(payload);
+      const data = await ChangeStatus({ id: currentContractor?._id, payload });
       toast.remove();
       toast.success(data?.message);
       setTimeout(() => {
@@ -149,7 +141,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
             onClick={handleDecline}
             className="w-full mt-3 py-3 text-white bg-black rounded-md"
           >
-            Decline
+            {status === "APPROVED" ? "Approve" : "Decline"}
           </button>
         </div>
       </Modal>

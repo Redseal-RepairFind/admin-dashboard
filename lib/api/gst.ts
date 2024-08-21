@@ -8,8 +8,8 @@ export const gst = {
       .get(`/admin/contractors?gstStatus=${type}&limit=5&page=1`)
       .then(({ data }) => data),
 
-  changeStatus: (payload: any) =>
+  changeStatus: ({ id, payload }: { id: string; payload: any }) =>
     client
-      .post(`/admin/validate/contractor/gst`, payload)
+      .post(`/admin/contractors/${id}/gst`, payload)
       .then(({ data }) => data),
 };
