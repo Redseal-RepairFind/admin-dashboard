@@ -12,6 +12,8 @@ const MyComponent = ({
 
   const imageUrl = url || placeholder;
 
+  if (!url) return null;
+
   return <Image src={imageUrl} width={50} height={50} alt="contractor image" />;
 };
 

@@ -7,7 +7,12 @@ import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
 
 const useEmergency = () => {
-  const [type, setType] = useState("PENDING");
+  const emergencyStatus =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("session_emergency_status")
+      : null;
+
+  const [type, setType] = useState(emergencyStatus || "PENDING");
 
   const { id } = useParams();
 

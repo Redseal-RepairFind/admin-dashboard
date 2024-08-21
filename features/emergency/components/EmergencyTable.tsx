@@ -89,7 +89,10 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
               className={
                 currentType === type?.slug ? "font-semibold" : "text-gray-400"
               }
-              onClick={() => setType(type.slug)}
+              onClick={() => {
+                sessionStorage.setItem("session_emergency_status", type.slug);
+                setType(type.slug);
+              }}
               key={index}
             >
               {type.value}
