@@ -21,7 +21,7 @@ const Pagination = ({
 }) => {
   const [currentPageNo, setCurrentPageNo] = useState(0);
   // console.log({ data });
-  const length = data?.totalPages || null;
+  const length = data?.lastPage || null;
 
   const pages = Array.from({ length }, (_, index) => index + 1);
   const chunkPages: any[] = [];
@@ -47,7 +47,7 @@ const Pagination = ({
     setPerPage(e.target.value);
   };
 
-  if (!data || data?.totalPages === 1) {
+  if (!data || data?.lastPage === 1) {
     return (
       <div className="mt-6 mb-2 w-full flex items-center gap-4 justify-end">
         {perPage && (
@@ -127,13 +127,13 @@ const Pagination = ({
             <p>...</p>
             <button
               className={
-                pageNo === data?.totalPages ? "text-red-500" : "text-primary"
+                pageNo === data?.lastPage ? "text-red-500" : "text-primary"
               }
               onClick={() => {
-                setPageNo(data?.totalPages);
+                setPageNo(data?.lastPage);
               }}
             >
-              {data?.totalPages}
+              {data?.lastPage}
             </button>
           </div>
         )}

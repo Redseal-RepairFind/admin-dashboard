@@ -13,6 +13,18 @@ import {
 } from "@/public/svg";
 import Image from "next/image";
 
+function validateUrl(url: string) {
+  // Regular expression to validate URL starting with https://
+  const urlPattern = /^https:\/\/[^\s/$.?#].[^\s]*$/i;
+
+  // Test the URL against the pattern
+  if (urlPattern.test(url)) {
+    return url;
+  } else {
+    return null;
+  }
+}
+
 const ShowMessage = ({
   type,
   message,
@@ -33,16 +45,18 @@ const ShowMessage = ({
             onClick={() => setOpen(!open)}
             className="w-full h-fit duration-200 hover:opacity-50 hover:blur-sm cursor-pointer relative"
           >
-            {message?.media?.map((item: any, index: number) => (
-              <Image
-                key={index}
-                src={item?.url}
-                width={100}
-                height={100}
-                alt="Image"
-                className="h-[150px] object-contain"
-              />
-            ))}
+            {message?.media?.map((item: any, index: number) =>
+              validateUrl(item?.url) ? (
+                <Image
+                  key={index}
+                  src={`${validateUrl(item?.url)}`}
+                  width={100}
+                  height={100}
+                  alt="Image"
+                  className="h-[150px] object-contain"
+                />
+              ) : null
+            )}
             <Modal
               open={open}
               onClose={() => setOpen(false)}
@@ -56,7 +70,7 @@ const ShowMessage = ({
                 {message?.media?.map((item: any, index: number) => (
                   <img
                     key={index}
-                    src={item?.url}
+                    src={`${validateUrl(item?.url)}`}
                     alt="Image"
                     className="h-[400px] object-contain"
                   />
@@ -67,15 +81,16 @@ const ShowMessage = ({
         );
       case "VIDEO":
         return (
-          <div className="w-full h-[200px] duration-200 hover:opacity-50 hover:blur-sm cursor-pointer relative">
+          <div className="w-full min-h-[200px] duration-200 hover:opacity-50 hover:blur-sm cursor-pointer relative">
             <p className="mb-3">{message?.message}</p>
             {message?.media?.map((item: any, index: number) => (
               <video
+                className="mb-2"
                 key={index}
                 controls
                 style={{ maxWidth: "100%", height: "auto" }}
               >
-                <source src={item?.url} type="video/mp4" />
+                <source src={`${validateUrl(item?.url)}`} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             ))}

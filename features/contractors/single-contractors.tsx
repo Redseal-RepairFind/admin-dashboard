@@ -162,7 +162,9 @@ const SingleContractor = () => {
                   name="Phone"
                   value={
                     contractorInfo?.phoneNumber
-                      ? `${contractorInfo?.phoneNumber?.code}${contractorInfo?.phoneNumber?.number}`
+                      ? `${contractorInfo?.phoneNumber?.code || ""}${
+                          contractorInfo?.phoneNumber?.number || ""
+                        }`
                       : "-"
                   }
                 />

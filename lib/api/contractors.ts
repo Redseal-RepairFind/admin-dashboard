@@ -3,9 +3,21 @@ import apiClient from "./apii";
 const client = apiClient();
 
 export const contractors = {
-  getContractors: ({ search }: { search?: string }) =>
+  getContractors: ({
+    page,
+    limit,
+    search,
+  }: {
+    page: any;
+    limit: any;
+    search: any;
+  }) =>
     client
-      .get(`/admin/contractors?page=1&limit=20&search=${search}`)
+      .get(
+        `/admin/contractors?page=${page}&limit=${limit}${
+          search ? `&search=${search}` : ""
+        }`
+      )
       .then(({ data }) => data),
 
   suspendContractor: (payload: any) =>

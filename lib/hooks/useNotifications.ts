@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const useNotifications = () => {
+  const [perPage, setPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const {
     data,
     isLoading: loadingNotifications,
@@ -35,6 +38,10 @@ const useNotifications = () => {
     loadingNotifications,
     refetch,
     MarkAllAsRead,
+    perPage,
+    setPerPage,
+    currentPage,
+    setCurrentPage,
   };
 };
 

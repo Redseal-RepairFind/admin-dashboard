@@ -10,11 +10,17 @@ const useContractors = () => {
   );
 
   const [search, setSearch] = useState("");
+  const [perPage, setPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { data: contractorData, isLoading: loadingContractors } = useQuery(
-    ["Contractors", search],
+    ["Contractors", search, perPage, currentPage],
     () => {
-      return contractors.getContractors({ search });
+      return contractors.getContractors({
+        search,
+        limit: perPage,
+        page: currentPage,
+      });
     },
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
@@ -27,6 +33,10 @@ const useContractors = () => {
     SuspendContractor,
     setSearch,
     search,
+    perPage,
+    setPerPage,
+    currentPage,
+    setCurrentPage,
   };
 };
 

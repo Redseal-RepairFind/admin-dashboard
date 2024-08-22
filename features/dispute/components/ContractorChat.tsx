@@ -48,6 +48,18 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
 
   // console.log(contractorChat, "contractor");
 
+  function validateUrl(url: string) {
+    // Regular expression to validate URL starting with https://
+    const urlPattern = /^https:\/\/[^\s/$.?#].[^\s]*$/i;
+
+    // Test the URL against the pattern
+    if (urlPattern.test(url)) {
+      return url;
+    } else {
+      return null;
+    }
+  }
+
   const uploadMultimedia = async () => {
     AWS.config.update({
       region: config.region,
@@ -156,6 +168,14 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
         }, 800);
       });
 
+      socket.on("Conversation", (data) => {
+        console.log("Conversation read event received:", data);
+        setTimeout(() => {
+          triggerConversationRead();
+          refetch();
+        }, 800);
+      });
+
       socket.on("CONVERSATION_READ", (data) => {
         console.log("Conversation read event received:", data);
       });
@@ -208,12 +228,10 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
           >
             {message?.senderType === "admins" ? (
               <div className="bg-black text-white font-medium text-sm w-fit rounded-tl-lg rounded-bl-lg rounded-br-lg px-5 py-2">
-                {/* {message?.message} */}
                 <ShowMessage message={message} type={message?.messageType} />
               </div>
             ) : (
-              <div className="bg-gray-300 text-black font-medium text-sm w-fit rounded-tr-lg rounded-bl-lg rounded-br-lg px-5 py-2">
-                {/* {message?.message} */}
+              <div className="bg-gray-300 text-black h-fit font-medium text-sm w-fit rounded-tr-lg rounded-bl-lg rounded-br-lg px-5 py-2">
                 <ShowMessage message={message} type={message?.messageType} />
               </div>
             )}

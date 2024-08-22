@@ -23,6 +23,7 @@ import { useContractorTable } from "../hooks/table";
 import FilterBox from "@/features/customers/components/filter-box";
 import useContractors from "@/lib/hooks/useContractors";
 import Ratings from "@/components/shared/ratings";
+import Pagination from "@/components/shared/pagination";
 
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
@@ -54,9 +55,24 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
     handleViewAContractors,
   } = useContractorTable({ setLoading });
 
-  const { contractorData, setSearch } = useContractors();
+  const {
+    contractorData,
+    setSearch,
+    perPage,
+    setPerPage,
+    currentPage,
+    setCurrentPage,
+  } = useContractors();
 
   // console.log(contractorData);
+
+  const pageProps = {
+    data: contractorData?.data,
+    perPage,
+    setPerPage,
+    pageNo: currentPage,
+    setPageNo: setCurrentPage,
+  };
 
   return (
     <TableCard>
@@ -94,7 +110,7 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
             {contractorData?.data?.data?.map((item: any, index: number) => (
               <tr
                 key={index}
-                className="cursor-pointer"
+                className="cursor-pointer border-b border-gray-200"
                 onClick={() => {
                   sessionStorage.setItem(
                     "current_contractor_jobs",
@@ -145,6 +161,9 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
         </Table>
       </TableOverflow>
       {/* <Paginator /> */}
+      <div className="w-full mt-2">
+        <Pagination {...pageProps} />
+      </div>
     </TableCard>
   );
 };

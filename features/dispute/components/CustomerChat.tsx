@@ -151,6 +151,14 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
         }, 800);
       });
 
+      socket.on("Conversation", (data) => {
+        console.log("Conversation read event received:", data);
+        setTimeout(() => {
+          triggerConversationRead();
+          refetch();
+        }, 800);
+      });
+
       socket.on("CONVERSATION_READ", (data) => {
         console.log("Conversation read event received:", data);
       });
