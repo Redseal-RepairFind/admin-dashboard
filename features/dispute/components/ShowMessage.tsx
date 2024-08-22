@@ -67,10 +67,19 @@ const ShowMessage = ({
         );
       case "VIDEO":
         return (
-          <video controls style={{ maxWidth: "100%", height: "auto" }}>
-            <source src={message?.media?.url} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          <div className="w-full h-[200px] duration-200 hover:opacity-50 hover:blur-sm cursor-pointer relative">
+            <p className="mb-3">{message?.message}</p>
+            {message?.media?.map((item: any, index: number) => (
+              <video
+                key={index}
+                controls
+                style={{ maxWidth: "100%", height: "auto" }}
+              >
+                <source src={item?.url} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ))}
+          </div>
         );
       case "TEXT":
         return message?.message;

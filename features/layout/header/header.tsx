@@ -56,7 +56,8 @@ const Header: React.FC<IProps> = ({ children }) => {
     }
   };
 
-  const token = sessionStorage.getItem("userToken");
+  const token =
+    typeof window !== "undefined" ? sessionStorage.getItem("userToken") : "";
 
   const url = process.env.NEXT_PUBLIC_SOCKET_URL;
 
