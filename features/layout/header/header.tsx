@@ -10,6 +10,7 @@ import "react-responsive-modal/styles.css";
 import Notifications from "@/features/notifications/notifications";
 import useNotifications from "@/lib/hooks/useNotifications";
 import toast from "react-hot-toast";
+import io, { Socket } from "socket.io-client";
 
 interface IProps {
   children?: React.ReactNode;
@@ -54,6 +55,51 @@ const Header: React.FC<IProps> = ({ children }) => {
       toast.error(e?.response?.data?.message);
     }
   };
+
+  const token = sessionStorage.getItem("userToken");
+
+  const url = process.env.NEXT_PUBLIC_SOCKET_URL;
+
+  useEffect(() => {
+    let socket: Socket;
+
+    if (token) {
+      socket = io(`${url}`, {
+        extraHeaders: {
+          token,
+        },
+
+        // transports: ["websocket"],
+      });
+
+      console.log("Before connection");
+
+      socket.on("connect", () => {
+        console.log("connected from Socket.IO server");
+      });
+
+      socket.on("NEW_NOTIFICATION", (data: any) => {
+        console.log("Received notification event:", data);
+        setTimeout(() => {
+          refetch();
+        }, 500);
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Disconnected from Socket.IO server");
+      });
+
+      socket.on("error", (error: any) => {
+        console.error("Socket.IO error:", error);
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
+  }, [token]);
 
   return (
     <>
