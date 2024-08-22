@@ -1,13 +1,15 @@
 "use client";
 import { NotificationBell } from "@/public/svg";
 import Image from "next/image";
-import React, { useEffect, useState, useContext, useRef } from "react";
+import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
 import Link from "next/link";
 import { getTotalUnseenNotification } from "@/lib/api/api";
 import { UserContext } from "@/context/user-context";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import Notifications from "@/features/notifications/notifications";
+import useNotifications from "@/lib/hooks/useNotifications";
+import toast from "react-hot-toast";
 
 interface IProps {
   children?: React.ReactNode;
@@ -25,7 +27,33 @@ const Header: React.FC<IProps> = ({ children }) => {
   const [open, setOpen] = useState<boolean>(false);
   const modalRef = useRef(null);
 
-  // console.log(currentUser);
+  const { data, MarkAllAsRead, refetch } = useNotifications();
+
+  const unreadCount = useMemo(() => {
+    return data?.data?.reduce((count: number, item: any) => {
+      return item.readAt === null ? count + 1 : count;
+    }, 0);
+  }, [data]);
+
+  // console.log(unreadCount);
+
+  const markNotifications = async () => {
+    if (!unreadCount) return setOpen(true);
+    toast.loading("Loading notifications");
+    try {
+      const data = await MarkAllAsRead();
+      console.log(data);
+      toast.remove();
+      toast.success("Loaded successfully...");
+      setTimeout(() => {
+        refetch();
+        setOpen(true);
+      }, 1000);
+    } catch (e: any) {
+      toast.remove();
+      toast.error(e?.response?.data?.message);
+    }
+  };
 
   return (
     <>
@@ -54,16 +82,16 @@ const Header: React.FC<IProps> = ({ children }) => {
           {children}
           {/* Notification Bell */}
           <button
-            onClick={() => setOpen(true)}
+            onClick={markNotifications}
             className="bg-white flex justify-center items-center w-14 h-12 rounded relative"
           >
             <NotificationBell />
-            {totalUnseenNotification > 0 && (
+            {unreadCount > 0 && (
               <div
                 className="bg-red-500 w-5 h-5 rounded-full absolute top-1.5
           right-1.5 text-sm text-white flex items-center justify-center"
               >
-                {totalUnseenNotification}
+                {unreadCount}
               </div>
             )}
           </button>

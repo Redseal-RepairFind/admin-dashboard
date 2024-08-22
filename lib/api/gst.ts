@@ -10,6 +10,6 @@ export const gst = {
 
   changeStatus: ({ id, payload }: { id: string; payload: any }) =>
     client
-      .post(`/admin/contractors/${id}/gst`, payload)
+      .patch(`/admin/contractors/${id}/gst`, payload)
       .then(({ data }) => data),
 };

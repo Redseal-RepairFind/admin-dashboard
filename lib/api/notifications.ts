@@ -10,4 +10,7 @@ export const notifications = {
 
   getNotificationAlerts: () =>
     client.get(`/admin/notifications/alerts`).then(({ data }) => data),
+
+  markAllAsRead: () =>
+    client.post(`/admin/notifications/mark-all-read`).then(({ data }) => data),
 };

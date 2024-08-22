@@ -16,12 +16,26 @@ const useNotifications = () => {
     () => {
       return notifications.getNotifications();
     },
-    { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
+    {
+      cacheTime: 30000,
+      staleTime: 30000,
+      select: (data) => data?.data,
+      refetchOnWindowFocus: true,
+    }
   );
 
-  console.log(data);
+  const { mutateAsync: MarkAllAsRead } = useMutation(
+    notifications.markAllAsRead
+  );
 
-  return { data, loadingNotifications };
+  // console.log(data);
+
+  return {
+    data,
+    loadingNotifications,
+    refetch,
+    MarkAllAsRead,
+  };
 };
 
 export default useNotifications;

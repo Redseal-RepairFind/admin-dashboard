@@ -17,7 +17,7 @@ const ShowMessage = ({
   type,
   message,
 }: {
-  type: "IMAGE" | "VIDEO" | "TEXT" | "ALERT" | "FILE";
+  type: "IMAGE" | "VIDEO" | "TEXT" | "ALERT" | "FILE" | "MEDIA";
   message: any;
 }) => {
   // console.log(message);
@@ -74,6 +74,17 @@ const ShowMessage = ({
         );
       case "TEXT":
         return message?.message;
+      case "MEDIA":
+        return (
+          <span>
+            {message?.message}
+            {message?.media?.map?.((item: any, index: number) => (
+              <video controls className="w-full my-1 h-[100px]" key={index}>
+                <source src={`${item?.url}`} />
+              </video>
+            ))}
+          </span>
+        );
       case "ALERT":
         return (
           <span className="flex items-center gap-1">
