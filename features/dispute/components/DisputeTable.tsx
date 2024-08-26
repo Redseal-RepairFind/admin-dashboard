@@ -17,21 +17,22 @@ import LoadingTemplate from "../../layout/loading";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import Pagination from "@/components/shared/pagination";
-import {
-  CompletedState,
-  PendingState,
-  RatingStar,
-  YellowStar,
-} from "@/public/svg";
+import { trimString } from "@/lib/utils/trim-string";
 import Search from "@/components/shared/search";
 
-const table_headings = ["ID", "Disputer", "Dispute date", "Status", "Action"];
+const table_headings = [
+  "ID",
+  "Disputer",
+  "Description",
+  "Dispute date",
+  "Action",
+];
 
 const types = [
   { id: 1, value: "Open", slug: "OPEN" },
   { id: 2, value: "In Progress", slug: "ONGOING" },
   { id: 3, value: "Resolved", slug: "RESOLVED" },
-  // { id: 4, value: "Closed", slug: "CLOSED" },
+  { id: 4, value: "Revisit", slug: "REVISIT" },
 ];
 
 const DisputeTable = () => {
@@ -110,14 +111,18 @@ const DisputeTable = () => {
                 <tr key={index} className="border-b border-gray-100">
                   <Td>{index + 1}</Td>
                   <Td>{item?.disputer?.name || "-"}</Td>
+                  <Td>
+                    <span className="max-w-[300px]">
+                      {trimString(item?.description, 25)}
+                    </span>
+                  </Td>
                   <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
-                  <Td>{item?.status}</Td>
                   <Td>
                     <button
-                      disabled={status === "RESOLVED"}
+                      disabled={status === "RESOLVED" || status === "REVISIT"}
                       onClick={() => handleAction(item?._id)}
                       className={`text-white px-5 py-3 rounded-md text-sm ${
-                        status === "RESOLVED"
+                        status === "RESOLVED" || status === "REVISIT"
                           ? "cursor-not-allowed bg-gray-500"
                           : "bg-black "
                       }`}
