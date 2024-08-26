@@ -38,11 +38,7 @@ const table_headings = [
   "Status",
 ];
 
-interface IProps {
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const OverviewTable: React.FC<IProps> = ({ setLoading }) => {
+const OverviewTable = () => {
   const [jobsList, SetJobsList] = useState<IJobsList>();
   const [currentJobsList, setCurrentJobsList] = useState<IJobsList>();
   const [queryedJobsList, setQueryedJobsList] = useState<IJobsList>();
@@ -53,7 +49,6 @@ const OverviewTable: React.FC<IProps> = ({ setLoading }) => {
     getJobs({ page: 1, limit: 50 }).then((response) => {
       SetJobsList(response?.response);
       console.log(response?.response);
-      setLoading(false);
     });
   }, []);
 
@@ -157,7 +152,6 @@ const OverviewTable: React.FC<IProps> = ({ setLoading }) => {
   const pathname = usePathname();
   const router = useRouter();
   const handleViewInvoice = (item: IJobs) => {
-    setLoading(true);
     dispatch(setsingleJobDetail(item));
     router.push(`${pathname}overview/${item.job._id}`);
   };

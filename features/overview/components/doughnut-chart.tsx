@@ -15,6 +15,7 @@ interface HalfDoughnutProps {
   color: string;
   name: string;
   percent: number;
+  totalJobs: number;
 }
 
 export const DoughnutChart: React.FC<IProps> = ({
@@ -82,13 +83,17 @@ export const HalfDoughnutChart: React.FC<HalfDoughnutProps> = ({
   color,
   name,
   percent,
+  totalJobs,
 }) => {
+  // console.log(percent, Math.floor(totalJobs));
+
   const data = {
     datasets: [
       {
         label: name,
         data: [percent, 100 - percent],
-        backgroundColor: [color, `${color}25`],
+        // backgroundColor: [color, `${color}25`],
+        backgroundColor: [`${color}25`, color],
         borderWidth: 0,
         cutout: "75%",
         circumference: 180,

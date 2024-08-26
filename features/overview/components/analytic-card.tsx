@@ -23,7 +23,7 @@ const AnalyticCard: React.FC<IProps> = ({
   const router = useRouter();
   return (
     <div
-      className="bg-white p-3 flex flex-col w-[260px] min-h-[120px] rounded-md cursor-pointer hover:opacity-80 transition-all"
+      className="bg-white p-3 flex flex-col min-h-[120px] rounded-md cursor-pointer hover:opacity-80 transition-all"
       onClick={() => router.push(route)}
     >
       <div

@@ -22,11 +22,16 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
   oldQuestion,
 }) => {
   const [question, setQuestion] = useState<string>("");
+  const [quiz, setQuiz] = useState<any>([]);
   const [options, setOptions] = useState<string[]>(["", "", ""]);
+  const [currentQuestionIDx, setCurrentQuestionIDx] = useState<number>(0);
+
+  console.log(oldQuestion);
 
   useEffect(() => {
-    setQuestion(oldQuestion.question);
-    setOptions(oldQuestion.options);
+    setQuestion(oldQuestion?.question);
+    setOptions(oldQuestion?.options);
+    setQuiz(oldQuestion);
   }, []);
 
   const handleOptionChange = (index: number, value: string) => {
@@ -44,6 +49,10 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
     onSubmit({ question, options });
   };
 
+  const handleQuestionIDx = (value: number) => {
+    setCurrentQuestionIDx(value);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="max-w-md min-w-md">
       <label className="block font-medium text-gray-700">Question:</label>
@@ -58,7 +67,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       />
 
       <label className="block font-medium text-gray-700 mt-2">Options:</label>
-      {options.map((option, index) => (
+      {options?.map((option, index) => (
         <input
           key={index}
           type="text"

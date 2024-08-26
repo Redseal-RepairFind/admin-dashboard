@@ -15,19 +15,20 @@ import {
   TotalJobs,
   TotalRevenue,
 } from "@/public/svg";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { RootState } from "@/lib/redux/store";
+
 import LoadingTemplate from "../layout/loading";
+import useAnalytics from "@/lib/hooks/useAnalytics";
 
 const Overview = () => {
-  const [loading, setLoading] = useState(true);
-  const { details } = useAppSelector((state: RootState) => state.overviewTotal);
+  const { data, isLoading } = useAnalytics();
+
+  // console.log(data);
 
   return (
     <>
       <Header />
-      {/* Page Body - Use for side padding on the top and sides */}
-      {/* {loading && <LoadingTemplate />} */}
+
+      {isLoading && <LoadingTemplate />}
       <PageBody>
         <div className="flex justify-between mb-6 items-center">
           <PageHeading page_title="Overview" />
@@ -36,12 +37,12 @@ const Overview = () => {
         {/* Analytic Cards */}
         {/* Negative value on percent props will be red */}
         <div className="overflow-x-auto mb-6">
-          <div className="flex gap-8 min-w-[1200px]">
+          <div className="grid grid-cols-4 gap-5 min-w-[1200px]">
             <AnalyticCard
               svg={<TotalCustomers />}
               svgColor="bg-[#C398C7]"
               name="Total Customers"
-              numbers={details.totalCustomer}
+              numbers={data?.totalCustomers}
               percent={3.6}
               route="/customers"
             />
@@ -49,7 +50,7 @@ const Overview = () => {
               svg={<TotalContractors />}
               svgColor="bg-[#AAB2D4]"
               name="Total Contractors"
-              numbers={details.totalContractor}
+              numbers={data?.totalContractors}
               percent={3.6}
               route="/contractors"
             />
@@ -57,7 +58,7 @@ const Overview = () => {
               svg={<TotalRevenue />}
               svgColor="bg-[#E3C87C]"
               name="Total Revenue"
-              numbers={details.totalRevenue}
+              numbers={data?.totalRevenue}
               percent={3.6}
               route="/transactions"
             />
@@ -65,7 +66,7 @@ const Overview = () => {
               svg={<TotalJobs />}
               svgColor="bg-[#BBBBBB]"
               name="Total Jobs"
-              numbers={details.totalJob}
+              numbers={data?.totalJob}
               percent={-3.6}
               route="/jobs"
             />
@@ -77,7 +78,7 @@ const Overview = () => {
           <Metrics />
           <JobStatus />
         </div>
-        <OverviewTable setLoading={setLoading} />
+        <OverviewTable />
       </PageBody>
     </>
   );

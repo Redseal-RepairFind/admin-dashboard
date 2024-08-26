@@ -19,10 +19,14 @@ interface IProps {
   setIsQuestionDeleted: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EditQuiz: React.FC<IProps> = ({
+const EditQuiz = ({
   question,
   index,
   setIsQuestionDeleted,
+}: {
+  question: any;
+  index: number;
+  setIsQuestionDeleted: any;
 }) => {
   const [preview, setPreview] = useState<PreviewData>({
     question: "",
@@ -44,10 +48,12 @@ const EditQuiz: React.FC<IProps> = ({
 
   useEffect(() => {
     setPreview({
-      question: question.question,
-      options: question.options,
+      question: question?.question,
+      options: question?.options,
     });
   }, []);
+
+  console.log(question);
 
   return (
     <>
@@ -71,15 +77,15 @@ const EditQuiz: React.FC<IProps> = ({
           <div className="mx-auto my-8 w-full overflow-x-auto border-b border-b-[#555]/20 pb-8">
             <div className="flex gap-8">
               <div>
-                <QuestionPreview
-                  oldCorrectOption={question.answer[0]}
+                {/* <QuestionPreview
+                  oldCorrectOption={question?.answer[0]}
                   question={preview.question}
                   options={preview.options}
                   isUpdating={isUpdating}
                   questionId={question._id || ""}
                   setIsQuestionDeleted={setIsQuestionDeleted}
                   setIsDropdown={setIsDropdown}
-                />
+                /> */}
               </div>
               <div>
                 <h1 className="text-2xl font-[500] mb-4 mt-3 text-[#333]">
@@ -88,7 +94,7 @@ const EditQuiz: React.FC<IProps> = ({
                 <QuestionForm
                   onSubmit={handleFormPreview}
                   setIsUpdating={setIsUpdating}
-                  oldQuestion={question}
+                  oldQuestion={question?.questions}
                 />
               </div>
             </div>
