@@ -9,6 +9,7 @@ import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import Notifications from "@/features/notifications/notifications";
 import useNotifications from "@/lib/hooks/useNotifications";
+import useSoundNotification from "@/lib/hooks/useSoundNotification";
 import toast from "react-hot-toast";
 import io, { Socket } from "socket.io-client";
 
@@ -17,11 +18,9 @@ interface IProps {
 }
 
 const Header: React.FC<IProps> = ({ children }) => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [image, setImage] = useState("");
-  const [isSuperAdmin, setIsSuperAdmin] = useState("");
-  const [totalUnseenNotification, setTotalUnseenNotification] = useState(2);
+
+  const playNotification = useSoundNotification("/sounds/notification.mp3");
 
   const { currentUser } = useContext(UserContext);
 
@@ -73,14 +72,14 @@ const Header: React.FC<IProps> = ({ children }) => {
         // transports: ["websocket"],
       });
 
-      console.log("Before connection");
-
       socket.on("connect", () => {
         console.log("connected from Socket.IO server");
       });
 
       socket.on("NEW_NOTIFICATION", (data: any) => {
         console.log("Received notification event:", data);
+        playNotification();
+        toast.success("You have a new notification");
         setTimeout(() => {
           refetch();
         }, 500);

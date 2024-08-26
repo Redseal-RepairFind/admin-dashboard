@@ -25,3 +25,5 @@ const useSoundNotification = (url: string): (() => void) => {
 
   return play;
 };
+
+export default useSoundNotification;
