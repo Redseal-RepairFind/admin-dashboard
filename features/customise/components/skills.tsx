@@ -1,27 +1,18 @@
-import { Fragment, useEffect, useState } from "react";
-import { Listbox, Transition } from "@headlessui/react";
-import { FiChevronDown } from "react-icons/fi";
-import { FaCheck } from "react-icons/fa";
-import { getSkills } from "@/lib/api/api";
-import { ISkills } from "@/lib/types";
+import useCustomise from "@/lib/hooks/useCustomise";
 
 export default function Skills() {
-  const [skills, setSkills] = useState<ISkills>();
-  useEffect(() => {
-    getSkills().then((response) => {
-      setSkills(response);
-      // console.log(response);
-    });
-  }, []);
+  const { skills } = useCustomise();
+
+  // console.log(skills);
 
   return (
     <>
       <div className="bg-white pr-6 w-fit">
         <select className="py-[10px] px-4 capitalize w-full outline-none bg-transparent min-w-[200px] max-w-[200px]">
           <option>Available Skills</option>
-          {skills?.skills.map((item, index) => (
+          {skills?.data?.map((item: any, index: number) => (
             <option key={index} className="capitalize">
-              {item.name}
+              {item?.name}
             </option>
           ))}
         </select>

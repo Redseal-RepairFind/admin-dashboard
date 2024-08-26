@@ -58,7 +58,7 @@ const EditQuiz: React.FC<IProps> = ({
         >
           <div className="flex">
             <p className="font-[500] pr-4">{index}</p>
-            <p className="capitalize">{trimString(question.question, 65)}</p>
+            <p className="capitalize">{question?.question}</p>
           </div>
           {
             <div>

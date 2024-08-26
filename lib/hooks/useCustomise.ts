@@ -6,6 +6,7 @@ import { useState } from "react";
 
 const useCustomise = () => {
   const { mutateAsync: AddQuestion } = useMutation(customise.addQuestion);
+  const { mutateAsync: AddSkill } = useMutation(customise.addSkill);
 
   const { data: quiz, isLoading } = useQuery(
     ["Customers"],
@@ -14,9 +15,20 @@ const useCustomise = () => {
     },
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
-  
 
-  return { AddQuestion, quiz };
+  const {
+    data: skills,
+    isLoading: loadingSkills,
+    refetch: refetchSkills,
+  } = useQuery(
+    ["Skills"],
+    () => {
+      return customise.getSkills();
+    },
+    { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
+  );
+
+  return { AddQuestion, quiz, skills, loadingSkills, refetchSkills, AddSkill };
 };
 
 export default useCustomise;

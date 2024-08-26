@@ -14,15 +14,15 @@ const EditQuizTab = () => {
 
   console.log(quiz);
 
-  useEffect(() => {
-    getAllQuestions().then((res) => {
-      setQuestions(res.questions);
-    });
-  }, [isQuestionDeleted]);
+  // useEffect(() => {
+  //   getAllQuestions().then((res) => {
+  //     setQuestions(res.questions);
+  //   });
+  // }, [isQuestionDeleted]);
   return (
     <>
       <div className="flex flex-col gap-3 mt-6 mb-8">
-        {questions?.map((item, index) => (
+        {quiz?.data?.map((item: any, index: number) => (
           <EditQuiz
             index={index + 1}
             key={index}

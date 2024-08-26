@@ -6,6 +6,9 @@ import Skills from "./skills";
 import Quiz from "./quiz";
 import { addNewSkill } from "@/lib/api/api";
 import EditQuizTab from "./edit-quiz/index";
+import useCustomise from "@/lib/hooks/useCustomise";
+import { useCustomerHistoryTable } from "@/features/customers/hooks/jobhistory";
+import toast from "react-hot-toast";
 
 const Tabs: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(1);
@@ -15,10 +18,25 @@ const Tabs: React.FC = () => {
     setActiveTab(tabNumber);
   };
 
-  const submitNewSkill = () => {
-    addNewSkill({ name: newSkill }).then((res) => {
-      console.log(res);
-    });
+  const { AddSkill, refetchSkills } = useCustomise();
+
+  const submitNewSkill = async () => {
+    if (!newSkill) return toast.error("Please enter a skill");
+    toast.loading("Processing new skill");
+
+    try {
+      const data = await AddSkill({ name: newSkill });
+      toast.remove();
+      toast.success(data?.message);
+      setTimeout(() => {
+        refetchSkills();
+      }, 1000);
+      // console.log(data);
+    } catch (e: any) {
+      toast.remove();
+      toast.error(e?.response?.data?.message);
+      console.log({ e });
+    }
   };
 
   return (
