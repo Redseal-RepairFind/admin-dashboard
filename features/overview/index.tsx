@@ -42,7 +42,7 @@ const Overview = () => {
               svg={<TotalCustomers />}
               svgColor="bg-[#C398C7]"
               name="Total Customers"
-              numbers={data?.totalCustomers}
+              numbers={data?.totalCustomers?.toLocaleString()}
               percent={3.6}
               route="/customers"
             />
@@ -50,7 +50,7 @@ const Overview = () => {
               svg={<TotalContractors />}
               svgColor="bg-[#AAB2D4]"
               name="Total Contractors"
-              numbers={data?.totalContractors}
+              numbers={data?.totalContractors?.toLocaleString()}
               percent={3.6}
               route="/contractors"
             />
@@ -58,7 +58,7 @@ const Overview = () => {
               svg={<TotalRevenue />}
               svgColor="bg-[#E3C87C]"
               name="Total Revenue"
-              numbers={data?.totalRevenue}
+              numbers={data?.totalRevenue?.toLocaleString()}
               percent={3.6}
               route="/transactions"
             />
@@ -66,7 +66,7 @@ const Overview = () => {
               svg={<TotalJobs />}
               svgColor="bg-[#BBBBBB]"
               name="Total Jobs"
-              numbers={data?.totalJob}
+              numbers={data?.totalJob?.toLocaleString()}
               percent={-3.6}
               route="/jobs"
             />

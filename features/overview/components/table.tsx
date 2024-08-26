@@ -24,143 +24,48 @@ import { generateRange } from "@/lib/utils/generate-range";
 import FilterBox from "@/features/customers/components/filter-box";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { setsingleJobDetail } from "@/lib/redux/slices/single-job-detail";
+import useAnalytics from "@/lib/hooks/useAnalytics";
+import Pagination from "@/components/shared/pagination";
 
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
 
 const table_headings = [
   "Customer’s Name",
-  "Job ID",
+  // "Job ID",
   "Contractors’s Name",
   "Job Address",
   "Date",
-  "Inspection",
+  // "Inspection",
   "Status",
 ];
 
 const OverviewTable = () => {
-  const [jobsList, SetJobsList] = useState<IJobsList>();
   const [currentJobsList, setCurrentJobsList] = useState<IJobsList>();
-  const [queryedJobsList, setQueryedJobsList] = useState<IJobsList>();
-  const [isQuerying, setIsQuerying] = useState(false);
-  const [notFound, setNotFound] = useState(false);
 
-  useEffect(() => {
-    getJobs({ page: 1, limit: 50 }).then((response) => {
-      SetJobsList(response?.response);
-      console.log(response?.response);
-    });
-  }, []);
+  const { jobs, currentPage, setCurrentPage, perPage, setPerPage } =
+    useAnalytics();
 
-  useEffect(() => {
-    if (!isQuerying) {
-      setCurrentJobsList(jobsList);
-    } else {
-      setCurrentJobsList(queryedJobsList);
-    }
-  }, [isQuerying, jobsList, queryedJobsList]);
+  // console.log(jobs);
 
-  const handleQuery = (value: string) => {
-    value === "" ? setIsQuerying(false) : setIsQuerying(true);
-    if (jobsList) {
-      const filterArray = jobsList.jobs.filter(
-        (item) =>
-          item.customer.fullName.toLowerCase().includes(value.toLowerCase()) ||
-          item.contractor.firstName
-            .toLowerCase()
-            .includes(value.toLowerCase()) ||
-          item.contractor.lastName
-            .toLowerCase()
-            .includes(value.toLowerCase()) ||
-          item.job._id.includes(value.toLowerCase())
-      );
+  function replaceUnderscoreWithSpace(str: string) {
+    if (!str || typeof str !== "string") return null;
+    return str.replace(/_/g, " ");
+  }
 
-      setQueryedJobsList({ jobs: filterArray });
-
-      filterArray.length === 0 ? setNotFound(true) : setNotFound(false);
-    }
-  };
-
-  const [showFilters, setShowFilters] = useState(false);
-  const [availableYears, setAvailableYears] = useState<number[]>([0]);
-
-  useEffect(() => {
-    if (jobsList) {
-      const smallestDate = findJobListSmallestYear(jobsList.jobs);
-      const largestDate = findJoblistLargestYear(jobsList.jobs);
-      setAvailableYears(generateRange(smallestDate, largestDate));
-    }
-  }, [currentJobsList]);
-
-  const handleRatingFiltering = (value: number) => {};
-
-  const [filterYear, setFilterYear] = useState(0);
-  const [filterMonth, setFilterMonth] = useState(0);
-
-  const handleYearFiltering = (value: number) => {
-    setFilterYear(value);
-    value === 0 ? setIsQuerying(false) : setIsQuerying(true);
-    if (filterMonth !== 0) {
-      if (jobsList) {
-        const jobsListMatchingYear = jobsList.jobs.filter((job) => {
-          const createdAtDate = new Date(job.job.createdAt);
-          const createdAtYear = createdAtDate.getFullYear();
-          const createdAtMonth = createdAtDate.getMonth() + 1;
-          return createdAtYear === value && createdAtMonth === filterMonth;
-        });
-        setQueryedJobsList({ jobs: jobsListMatchingYear });
-      }
-    } else {
-      if (jobsList) {
-        const jobsListMatchingYear = jobsList.jobs.filter((job) => {
-          const createdAtDate = new Date(job.job.createdAt);
-          const createdAtYear = createdAtDate.getFullYear();
-          return createdAtYear === value;
-        });
-        setQueryedJobsList({ jobs: jobsListMatchingYear });
-      }
-    }
-  };
-
-  const handleMonthFiltering = (value: number) => {
-    setFilterMonth(value);
-    value === 0 ? setIsQuerying(false) : setIsQuerying(true);
-    if (filterYear !== 0) {
-      if (jobsList) {
-        const jobsListMatchingMonth = jobsList.jobs.filter((job) => {
-          const createdAtDate = new Date(job.job.createdAt);
-          const createdAtYear = createdAtDate.getFullYear();
-          const createdAtMonth = createdAtDate.getMonth() + 1;
-          return createdAtMonth === value && createdAtYear === filterYear;
-        });
-        setQueryedJobsList({ jobs: jobsListMatchingMonth });
-      }
-    } else {
-      if (jobsList) {
-        const jobsListMatchingMonth = jobsList.jobs.filter((job) => {
-          const createdAtDate = new Date(job.job.createdAt);
-          const createdAtMonth = createdAtDate.getMonth() + 1;
-          console.log(createdAtMonth);
-          return createdAtMonth === value;
-        });
-        setQueryedJobsList({ jobs: jobsListMatchingMonth });
-      }
-    }
-  };
-
-  const dispatch = useAppDispatch();
-  const pathname = usePathname();
-  const router = useRouter();
-  const handleViewInvoice = (item: IJobs) => {
-    dispatch(setsingleJobDetail(item));
-    router.push(`${pathname}overview/${item.job._id}`);
+  const pageProps = {
+    data: jobs,
+    perPage,
+    setPerPage,
+    pageNo: currentPage,
+    setPageNo: setCurrentPage,
   };
 
   return (
     <TableCard>
       <div className="flex items-center justify-between w-full">
         <Heading name="Job List" />
-        <div className="flex gap-8">
+        {/* <div className="flex gap-8">
           <Searchbar
             placeholder="Search by name or job id"
             handleQuery={handleQuery}
@@ -175,7 +80,7 @@ const OverviewTable = () => {
               setShowFilters={setShowFilters}
             />
           </Filter>
-        </div>
+        </div> */}
       </div>
 
       <TableOverflow>
@@ -189,26 +94,27 @@ const OverviewTable = () => {
           </Thead>
 
           <tbody>
-            {currentJobsList?.jobs.slice(0, 5).map((item, index) => (
+            {jobs?.data?.map((item: any, index: number) => (
               <tr
-                className="cursor-pointer"
+                className="border-b border-gray-200"
                 key={index}
-                onClick={() => handleViewInvoice(item)}
+                // onClick={() => handleViewInvoice(item)}
               >
-                <Td>{item?.customer.fullName}</Td>
-                <Td>{trimString(item?.job._id, 8)}</Td>
-                <Td>
-                  {item.contractor.firstName} {item.contractor.lastName}
-                </Td>
-                <Td>{trimString(item.job.address, 22)}</Td>
-                <Td>{formatDateToDDMMYY(item.job.createdAt)}</Td>
-                <Td>{item.job.inspection.status ? "True" : "False"}</Td>
-                <Td>{trimString(item.job.status, 22)}</Td>
+                <Td>{item?.customer?.name}</Td>
+                {/* <Td>{trimString(item?.job._id, 8)}</Td> */}
+                <Td>{item.contractor?.name}</Td>
+                <Td>{trimString(item?.location?.address, 22)}</Td>
+                <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
+                {/* <Td>{item.job.inspection.status ? "True" : "False"}</Td> */}
+                <Td>{replaceUnderscoreWithSpace(item?.status)}</Td>
               </tr>
             ))}
           </tbody>
         </Table>
       </TableOverflow>
+      <div className="mt-4 w-full">
+        <Pagination {...pageProps} />
+      </div>
     </TableCard>
   );
 };

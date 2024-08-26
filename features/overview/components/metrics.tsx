@@ -10,8 +10,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import CalendarIcon from "./calender-icon";
-import { getRevenueAnalysis } from "@/lib/api/api";
+import useAnalytics from "@/lib/hooks/useAnalytics";
+
 type PageDataType = {
   day: string;
   revenue: number;
@@ -34,6 +34,8 @@ const months = [
 ];
 
 const Metrics = () => {
+  const { data: analytics } = useAnalytics();
+
   const defaultData: PageDataType[] = [
     {
       day: "1 Nov",
@@ -87,30 +89,44 @@ const Metrics = () => {
     },
   ];
 
+  const chartData = analytics?.monthlyRevenuePlot?.map(
+    (item: any, index: number) => {
+      return {
+        month: item?.month,
+        revenue: item?.revenue,
+        job: analytics?.monthlyJobPlot[index]?.jobs,
+      };
+    }
+  );
+
+  // console.log(analytics?.monthlyJobPlot);
+
+  // console.log(chartData);
+
   const [dropDateSelect, setDropDateSelect] = useState(false);
   const [year, setYear] = useState(2024);
   const [month, setMonth] = useState(2);
   const [data, setData] = useState<PageDataType[]>(defaultData);
 
-  const handleGetMetrics = () => {
-    getRevenueAnalysis({ month: month, year: year }).then((res) => {
-      if (res) {
-        console.log(res.response.revenueJob);
-        setData(res.response.revenueJob);
-      }
-    });
-  };
+  // const handleGetMetrics = () => {
+  //   getRevenueAnalysis({ month: month, year: year }).then((res) => {
+  //     if (res) {
+  //       console.log(res.response.revenueJob);
+  //       setData(res.response.revenueJob);
+  //     }
+  //   });
+  // };
 
-  useEffect(() => {
-    handleGetMetrics();
-  }, []);
+  // useEffect(() => {
+  //   handleGetMetrics();
+  // }, []);
 
   return (
     <div className="w-[60%] bg-white px-8 pt-6 pb-3 rounded-md min-w-[750px]">
       <div className="flex justify-between">
         <p className="font-[600] pb-4">Performance Metrics</p>
         <div className="flex flex-col relative">
-          <button
+          {/* <button
             className="self-end"
             onClick={() => setDropDateSelect(!dropDateSelect)}
           >
@@ -157,7 +173,7 @@ const Metrics = () => {
                 Generate
               </button>
             </div>
-          )}
+          )} */}
         </div>
       </div>
       <div className="flex items-center gap-10 pb-8">
@@ -173,7 +189,7 @@ const Metrics = () => {
       <div className="-ml-5">
         <ResponsiveContainer width="100%" height={300}>
           <LineChart
-            data={data}
+            data={chartData}
             margin={{
               top: 5,
               right: 30,
@@ -182,7 +198,7 @@ const Metrics = () => {
             }}
           >
             <CartesianGrid vertical={false} strokeDasharray="1 0" />
-            <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+            <XAxis dataKey="month" tick={{ fontSize: 12 }} />
             <YAxis tick={{ fontSize: 12 }} />
             <Tooltip />
             <Legend />

@@ -14,7 +14,13 @@ const JobStatus = () => {
 
   const { data } = useAnalytics();
 
-  // console.log(data, "d");
+  // console.log(data?.jobPieChartData?.datasets[0]?.data, "d");
+
+  const total = data?.jobPieChartData?.datasets[0]?.data?.reduce(
+    (acc: any, sum: any) => acc + sum
+  );
+
+  // console.log(total);
 
   return (
     <div className="w-[40%] bg-white px-8 pt-6 pb-3 rounded-md min-w-[450px]">
@@ -41,7 +47,9 @@ const JobStatus = () => {
             key={index}
             label={item}
             text={data?.jobPieChartData?.datasets[0]?.data[index]}
-            value={50}
+            value={
+              (data?.jobPieChartData?.datasets[0]?.data[index] / total) * 100
+            }
             pathColor={
               data?.jobPieChartData?.datasets[0]?.backgroundColor[index]
             }
