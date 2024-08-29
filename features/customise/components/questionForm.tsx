@@ -136,7 +136,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       questions: [...prevState.questions, newQuestion], // Add the new question to the existing array
     }));
     setCurrentQuestionIDx(preview.questions.length);
-    console.log(preview.questions.length);
+    // console.log(preview.questions.length);
   };
 
   const removeQuestion = () => {
