@@ -5,10 +5,12 @@ const VerticalMenu = ({
   children,
   isBackground,
   width,
+  className,
 }: {
   children: ReactNode;
   isBackground: boolean;
   width?: string;
+  className?: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,9 +35,8 @@ const VerticalMenu = ({
     };
   }, [isMenuOpen]);
 
-  const handleToggle = () => {};
   return (
-    <div className="relative" ref={menuRef}>
+    <div className={`relative ${className}`} ref={menuRef}>
       <FaEllipsisV
         className={`cursor-pointer ${isBackground ? "text-blue-500" : ""}`}
         onClick={() => setIsMenuOpen(!isMenuOpen)}

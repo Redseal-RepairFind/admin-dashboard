@@ -6,6 +6,9 @@ export const customise = {
   addQuestion: (payload: any) =>
     client.post(`/admin/admin_add_question`, payload).then(({ data }) => data),
 
+  addQuiz: (payload: any) =>
+    client.post(`/admin/quizzes`, payload).then(({ data }) => data),
+
   getQuizzes: () => client.get(`/admin/quizzes`).then(({ data }) => data),
 
   addSkill: (payload: any) =>

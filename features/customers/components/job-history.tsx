@@ -68,7 +68,7 @@ export const JobsHistory: React.FC<IProps> = ({ jobHistory }) => {
     }
   );
 
-  console.log(jobInfo);
+  // console.log(jobInfo);
 
   return (
     <BorderedTableCard>

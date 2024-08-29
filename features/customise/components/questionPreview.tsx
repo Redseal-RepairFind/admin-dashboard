@@ -1,59 +1,105 @@
 "use client";
 import { addQuestions, getAllQuestions } from "@/lib/api/api";
 import React, { useEffect, useState } from "react";
-import { PreviewData } from "./quiz";
 import { ClipLoader } from "react-spinners";
 import useCustomise from "@/lib/hooks/useCustomise";
 import toast from "react-hot-toast";
+import { PreviewData, OptionAnswer } from "./quiz";
+
 interface QuestionPreviewProps {
+  payload: PreviewData;
   question: string;
-  options: string[];
+  options: OptionAnswer[];
+  answers: OptionAnswer[];
   isUpdating: boolean;
+  questionsLength: number;
   setPreview: React.Dispatch<React.SetStateAction<PreviewData>>;
   setShowPreview: React.Dispatch<React.SetStateAction<boolean>>;
+  currentQuestionIDx: number;
+  setCurrentQuestionIDx: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const QuestionPreview: React.FC<QuestionPreviewProps> = ({
   question,
   options,
+  answers,
   setPreview,
   setShowPreview,
+  currentQuestionIDx,
+  setCurrentQuestionIDx,
+  questionsLength,
   isUpdating,
+  payload,
 }) => {
-  const { AddQuestion } = useCustomise();
+  const { AddQuiz } = useCustomise();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleFormSubmit = async () => {
     setIsLoading(true);
-    const payload = {
-      question: question,
-      options: options,
-      answer: [correctOption],
-    };
 
     // console.log(payload);
+
+    const values = {
+      ...payload,
+      questions: payload.questions.map((item) => {
+        return {
+          ...item,
+          options: item.options.map((option) => option.text),
+          answer: item.answer.map((option) => option.text),
+        };
+      }),
+    };
+
+    // console.log(values);
     try {
-      const response = await AddQuestion(payload);
+      const response = await AddQuiz(values);
+      console.log(response);
       toast.success(response?.message);
       setIsLoading(false);
       setTimeout(() => {
-        setPreview({ question: "", options: ["", "", "", ""] });
+        setPreview({
+          questions: [
+            {
+              question: "",
+              options: [
+                { id: 1, text: "" },
+                { id: 2, text: "" },
+                { id: 3, text: "" },
+                { id: 4, text: "" },
+              ],
+              answer: [],
+            },
+          ],
+          video_url: "",
+        });
         setShowPreview(false);
       }, 1000);
     } catch (e: any) {
-      toast.error(e?.data?.response?.message);
+      toast.error(e?.response?.data?.message);
       setIsLoading(false);
     }
   };
-  const [correctOption, setCorrectOption] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    if (isUpdating) {
-      setCorrectOption("");
-    }
-  }, [isUpdating]);
+
+  // console.log(currentQuestionIDx);
 
   return (
     <div className="max-w-md mx-auto mt-2 bg-white px-8 py-4 min-w-[500px] rounded-md">
+      <div className="border-2 overflow-x-scroll flex items-center justify-start gap-2 w-full rounded-md p-3 my-2">
+        {[...Array(questionsLength)].map((_, index) => (
+          <button
+            onClick={() => setCurrentQuestionIDx(index)}
+            className={`${
+              currentQuestionIDx === index
+                ? "bg-[#262626] text-white"
+                : "bg-gray-200 text-[#262626]"
+            } p-2 min-w-[40px] rounded-md`}
+            key={index + 1}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
       <h2 className="text-2xl font-[500] mb-4">Preview</h2>
       <div className="">
         <p className="text-sm text-[#999] font-[600] pb-2">Question</p>
@@ -65,49 +111,28 @@ const QuestionPreview: React.FC<QuestionPreviewProps> = ({
             <p className="text-sm text-[#999] font-[600] pb-2">
               Option {index + 1}
             </p>
-            <li>{option}</li>
+            <li>{option.text}</li>
           </div>
         ))}
       </ul>
-
-      {correctOption === "" && (
-        <p className="text-danger mt-2 text-xs">
-          Please Select the correct answer
-        </p>
-      )}
+      <p className="text-green-500 mt-4">Correct Answers:</p>
       <div className="flex gap-x-2">
-        {options.map((_, index) => (
-          <button
+        {answers.map((item, index) => (
+          <div
             key={index}
-            onClick={() =>
-              setCorrectOption(
-                index === 0 ? "A" : index === 1 ? "B" : index === 2 ? "C" : ""
-              )
-            }
-            type="button"
-            className={`border-2 font-[500] ${
-              correctOption ===
-              (index === 0 ? "A" : index === 1 ? "B" : index === 2 ? "C" : "")
-                ? "border-[#222]"
-                : "border-[#585858]/20"
-            } 
+            className={`border-2 font-[500]
           text px-6 py-1.5 rounded-[30px] mt-3 hover:scale-[0.99]
           text-xs hover:opacity-90 transition-all`}
           >
-            Option{index + 1}
-          </button>
+            {item.text}
+          </div>
         ))}
       </div>
 
       <button
         onClick={handleFormSubmit}
-        disabled={isUpdating}
-        className={`${
-          isUpdating || correctOption === ""
-            ? "bg-[#262626]/60"
-            : "bg-[#262626]"
-        }
-      text-[#fff] w-full px-6 py-2 rounded mt-5 border-0 
+        disabled={isLoading}
+        className={`bg-[#262626] text-[#fff] w-full px-6 py-2 rounded mt-5 border-0 
       text-sm hover:opacity-90 hover:scale-[0.99] transition-all`}
       >
         {isLoading ? (
