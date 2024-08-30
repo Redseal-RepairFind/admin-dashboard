@@ -64,7 +64,7 @@ const EditQuiz = ({
         >
           <div className="flex">
             <p className="font-[500] pr-4">{index}</p>
-            <p className="capitalize">{question?.question}</p>
+            <p className="capitalize text-sm w-full">{question?.video_url}</p>
           </div>
           {
             <div>

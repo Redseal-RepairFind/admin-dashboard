@@ -172,7 +172,11 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
         <button
           type="button"
           onClick={removeQuestion}
-          className="border border-red-500 py-2 px-4 rounded-md bg-red-500 text-white"
+          className={` ${
+            preview.questions.length !== 1
+              ? "border border-red-500 bg-red-500 "
+              : "border border-gray-400 bg-gray-400"
+          }  py-2 px-4 rounded-md text-white`}
         >
           <FaTrashAlt />
         </button>

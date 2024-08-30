@@ -8,7 +8,7 @@ import useCustomise from "@/lib/hooks/useCustomise";
 const EditQuizTab = () => {
   const [questions, setQuestions] = useState<IQuestion[]>();
   const [isQuestionDeleted, setIsQuestionDeleted] = useState(false);
-  console.log(isQuestionDeleted);
+  // console.log(isQuestionDeleted);
 
   const { quiz } = useCustomise();
 

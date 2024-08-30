@@ -5,6 +5,9 @@ import Img from "../../dispute/components/Img";
 
 const Notification = ({ data }: { data: any }) => {
   const router = useRouter();
+
+  console.log(data);
+
   return (
     <div className="border flex items-center justify-between border-gray-100 mb-2 shadow-sm rounded-md p-3">
       <div className="flex items-center justify-center flex-col">
@@ -23,16 +26,16 @@ const Notification = ({ data }: { data: any }) => {
         <button
           onClick={() => {
             if (data?.message?.includes("dispute"))
-              return router.push("/dispute");
+              return router.push(`/dispute/${data?.entity}`);
 
             if (data?.message?.includes("emerg"))
-              return router.push("/emergency");
+              return router.push(`/emergency/${data?.entity}`);
           }}
           className="bg-black text-sm text-white py-2 px-3 rounded-md"
         >
           {data?.message?.includes("dispute")
-            ? "Go to Disputes"
-            : "Go to Emergencies"}
+            ? "Go to Dispute"
+            : "Go to Emergency"}
         </button>
       )}
     </div>
