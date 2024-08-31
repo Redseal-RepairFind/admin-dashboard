@@ -58,6 +58,8 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
 
   // console.log(currentQuestionIDx);
 
+  const updateQuestion = async () => {};
+
   return (
     <div className="max-w-1/2 p-2 gap-2 flex items-start justify-start flex-col">
       <div className="bg-white rounded-md p-2 w-full flex items-start justify-start gap-2 overflow-x-scroll">
