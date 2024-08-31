@@ -3,11 +3,16 @@ import apiClient from "./apii";
 const client = apiClient();
 
 export const customise = {
-  addQuestion: (payload: any) =>
-    client.post(`/admin/admin_add_question`, payload).then(({ data }) => data),
+  addQuestion: ({ id, payload }: { id: string; payload: any }) =>
+    client
+      .post(`/admin/quizzes/${id}/add-question`, payload)
+      .then(({ data }) => data),
 
   updateQuestion: ({ id, payload }: { id: string; payload: any }) =>
     client.patch(`/admin/questions/${id}`, payload).then(({ data }) => data),
+
+  deleteQuestion: (id: string) =>
+    client.delete(`/admin/questions/${id}`).then(({ data }) => data),
 
   addQuiz: (payload: any) =>
     client.post(`/admin/quizzes`, payload).then(({ data }) => data),

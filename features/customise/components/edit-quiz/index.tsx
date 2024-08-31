@@ -12,7 +12,7 @@ const EditQuizTab = () => {
 
   const { quiz } = useCustomise();
 
-  console.log(quiz);
+  // console.log(quiz);
 
   // useEffect(() => {
   //   getAllQuestions().then((res) => {

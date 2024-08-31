@@ -7,6 +7,8 @@ import QuestionForm from "./questionForm";
 import { IQuestion } from "@/lib/types";
 import { trimString } from "@/lib/utils/trim-string";
 import { useOnClickOutside } from "@/lib/hooks/use-on-click-outside";
+import LoadingTemplate from "@/features/layout/loading";
+import useCustomise from "@/lib/hooks/useCustomise";
 
 export interface PreviewData {
   question: string;
@@ -39,6 +41,8 @@ const EditQuiz = ({
     setPreview(data);
   };
 
+  const { isLoading } = useCustomise();
+
   const ref = useRef<HTMLDivElement>(null);
 
   const handleSetIsDropdown = () => {
@@ -53,10 +57,11 @@ const EditQuiz = ({
     });
   }, []);
 
-  console.log(question);
+  // console.log(question);
 
   return (
     <>
+      {isLoading && <LoadingTemplate />}
       <div ref={ref}>
         <div
           className="bg-white px-6 py-2.5 flex rounded-md max-w-[700px] items-center justify-between"
@@ -92,6 +97,7 @@ const EditQuiz = ({
                   Edit Questions
                 </h1>
                 <QuestionForm
+                  quizId={question?._id}
                   onSubmit={handleFormPreview}
                   setIsUpdating={setIsUpdating}
                   oldQuestion={question?.questions}

@@ -1,15 +1,18 @@
 import { customise } from "../api/customise";
 import { useMutation, useQuery } from "react-query";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 const useCustomise = () => {
   const { mutateAsync: AddQuestion } = useMutation(customise.addQuestion);
+  const { mutateAsync: DeleteQuestion } = useMutation(customise.deleteQuestion);
+  const { mutateAsync: UpdateQuestion } = useMutation(customise.updateQuestion);
   const { mutateAsync: AddQuiz } = useMutation(customise.addQuiz);
   const { mutateAsync: AddSkill } = useMutation(customise.addSkill);
 
-  const { data: quiz, isLoading } = useQuery(
+  const {
+    data: quiz,
+    isLoading,
+    refetch: refetchQuizzes,
+  } = useQuery(
     ["Customers"],
     () => {
       return customise.getQuizzes();
@@ -37,6 +40,10 @@ const useCustomise = () => {
     loadingSkills,
     refetchSkills,
     AddSkill,
+    DeleteQuestion,
+    UpdateQuestion,
+    isLoading,
+    refetchQuizzes,
   };
 };
 

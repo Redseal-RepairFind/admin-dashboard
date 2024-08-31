@@ -11,10 +11,18 @@ import { useCustomerHistoryTable } from "@/features/customers/hooks/jobhistory";
 import toast from "react-hot-toast";
 
 const Tabs: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<number>(1);
+  const currentSessionTab =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("current_customise_tab")
+      : "1";
+
+  const sessionTab = currentSessionTab ? JSON.parse(currentSessionTab) : 1;
+
+  const [activeTab, setActiveTab] = useState<number>(sessionTab);
   const [newSkill, setNewSkill] = useState<string>("");
 
   const handleTabChange = (tabNumber: number) => {
+    sessionStorage.setItem("current_customise_tab", JSON.stringify(tabNumber));
     setActiveTab(tabNumber);
   };
 
