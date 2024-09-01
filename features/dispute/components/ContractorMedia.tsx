@@ -43,7 +43,7 @@ const ContractorMedia = ({ data }: { data: any }) => {
                 setOpen(true);
                 setCurrentImg(url);
               }}
-              className="cursor-pointer flex items-start justify-start"
+              className="cursor-zoom-in flex items-start justify-start"
               key={index}
             >
               <Img url={url} />

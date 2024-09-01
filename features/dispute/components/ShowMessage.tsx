@@ -43,7 +43,7 @@ const ShowMessage = ({
         return (
           <div
             onClick={() => setOpen(!open)}
-            className="w-full h-fit duration-200 hover:opacity-50 hover:blur-sm cursor-pointer relative"
+            className="w-full h-fit duration-200 cursor-zoom-in relative"
           >
             {message?.media?.map((item: any, index: number) =>
               validateUrl(item?.url) ? (
@@ -81,7 +81,7 @@ const ShowMessage = ({
         );
       case "VIDEO":
         return (
-          <div className="w-full min-h-[200px] duration-200 hover:opacity-50 hover:blur-sm cursor-pointer relative">
+          <div className="w-full max-h-[200px] duration-200 cursor-pointer relative">
             <p className="mb-3">{message?.message}</p>
             {message?.media?.map((item: any, index: number) => (
               <video

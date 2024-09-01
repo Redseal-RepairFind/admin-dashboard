@@ -244,7 +244,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
         );
       })}
       <p className="text-sm mt-3">
-        <b>NOTE:</b> Click the action bar to to set an option as correct.
+        <b>NOTE:</b> Click the action bar to set an option as correct.
       </p>
       <div className="flex items-center justify-start gap-4 mt-4">
         <button
