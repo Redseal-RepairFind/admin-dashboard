@@ -81,7 +81,7 @@ const ShowMessage = ({
         );
       case "VIDEO":
         return (
-          <div className="w-full max-h-[200px] duration-200 cursor-pointer relative overflow-hidden">
+          <div className="w-full h-[200px] duration-200 cursor-pointer relative overflow-hidden">
             <p className="mb-3">{message?.message}</p>
             {message?.media?.map((item: any, index: number) => (
               <div className="relative pb-[56.25%] h-0" key={index}>
