@@ -81,14 +81,14 @@ const ShowMessage = ({
         );
       case "VIDEO":
         return (
-          <div className="w-full h-[200px] duration-200 cursor-pointer relative overflow-hidden">
+          <div className="w-full max-h-[200px] duration-200 cursor-pointer relative">
             <p className="mb-3">{message?.message}</p>
             {message?.media?.map((item: any, index: number) => (
-              <div className="relative pb-[56.25%] h-0" key={index}>
-                <video
-                  className="absolute top-0 left-0 w-full h-full object-cover"
-                  controls
-                >
+              <div
+                className="w-full h-[200px] flex justify-center items-center overflow-hidden"
+                key={index}
+              >
+                <video className="h-full w-auto" controls>
                   <source src={`${validateUrl(item?.url)}`} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
