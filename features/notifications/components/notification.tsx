@@ -6,7 +6,7 @@ import Img from "../../dispute/components/Img";
 const Notification = ({ data }: { data: any }) => {
   const router = useRouter();
 
-  console.log(data);
+  // console.log(data);
 
   return (
     <div className="border flex items-center justify-between border-gray-100 mb-2 shadow-sm rounded-md p-3">
