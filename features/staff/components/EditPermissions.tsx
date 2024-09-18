@@ -90,7 +90,7 @@ const EditPermissions = ({
               className="flex justify-between mb-1 items-center"
             >
               <span className="border capitalize pl-3 border-gray-100 bg-gray-100 flex-1 py-1.5 rounded-md">
-                {permission.name}
+                {permission?.name}
               </span>
               <button
                 type="button"

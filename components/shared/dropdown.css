@@ -1,0 +1,8 @@
+.dropdown__control {
+  border: none !important;
+}
+
+.dropdown__menu-list {
+  overflow-y: scroll;
+  max-height: 200px;
+}

@@ -4,11 +4,19 @@ import useStaff from "@/lib/hooks/useStaff";
 import toast from "react-hot-toast";
 import PasswordField from "@/components/ui/password-input";
 import SubmitBtn from "@/components/ui/submit-btn";
+import CustomDropdown from "@/components/shared/custom-dropdown";
+
+interface Permission {
+  value: string;
+  label: string;
+}
 
 const AddStaff = ({ setOpen }: { setOpen: any }) => {
   const { permissionList, AddStaff: InviteUser, refetchStaffData } = useStaff();
 
-  const [selectedPermissions, setSelectedPermissions] = useState<any>([]);
+  const [defaultPermissions, setDefaultPermissions] = useState<Permission[]>(
+    []
+  );
 
   const {
     register,
@@ -16,13 +24,16 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
     formState: { isSubmitting },
   } = useForm();
 
-  // console.log(permissionList);
+  // console.log(defaultPermissions);
 
   const onSubmit = async (data: any) => {
-    if (!selectedPermissions.length)
+    if (!defaultPermissions.length)
       return toast.error("Kindly add permissions");
 
-    const payload = { ...data, permisions: selectedPermissions };
+    const payload = {
+      ...data,
+      permisions: defaultPermissions.map((permission) => permission.value),
+    };
 
     try {
       const data = await InviteUser(payload);
@@ -40,16 +51,28 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
     // console.log(payload);
   };
 
-  const addPermission = (permissionId: any) => {
-    if (!selectedPermissions.includes(permissionId)) {
-      setSelectedPermissions([...selectedPermissions, permissionId]);
-    }
-  };
+  const handleSelected = (selected: Permission[]) => {
+    // setIsFresh(false);
 
-  const removePermission = (permissionId: string) => {
-    setSelectedPermissions(
-      selectedPermissions.filter((id: string) => id !== permissionId)
-    );
+    if (selected.length < defaultPermissions.length) {
+      return setDefaultPermissions(selected);
+    }
+
+    // Create a new array by combining elements from defaultPermissions and selected
+    const updatedPermissions = [...defaultPermissions];
+
+    selected.forEach((item: Permission) => {
+      // Check if item is not already in updatedPermissions
+      if (
+        !updatedPermissions.some(
+          (perm: Permission) => perm.value === item?.value
+        )
+      ) {
+        updatedPermissions.push(item);
+      }
+    });
+
+    setDefaultPermissions(updatedPermissions);
   };
 
   return (
@@ -139,60 +162,21 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
           />
         </div>
 
-        <div className="mb-4">
+        <div className="mb-4 h-[200px]">
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Permissions
           </label>
-          <ul className="list-disc h-[200px] overflow-y-scroll p-5 border border-gray-200 rounded-md">
-            {permissionList?.map((permission: any) => (
-              <li
-                key={permission._id}
-                className="flex justify-between mb-1 items-center"
-              >
-                <span className="border capitalize pl-3 border-gray-100 bg-gray-100 flex-1 py-1.5 rounded-md">
-                  {permission.name}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => addPermission(permission._id)}
-                  className="ml-2 bg-black hover:bg-gray-700 text-sm text-white font-bold py-2 px-5 duration-200 rounded focus:outline-none focus:shadow-outline"
-                  disabled={selectedPermissions.includes(permission._id)}
-                >
-                  Add
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Selected Permissions
-          </label>
-          <ul className="list-disc">
-            {selectedPermissions.map((permissionId: string, index: number) => {
-              const permission = permissionList?.find(
-                (p: any) => p._id === permissionId
-              );
-              return (
-                <li
-                  key={permissionId}
-                  className="flex justify-between mb-1 items-center"
-                >
-                  <span className="capitalize">
-                    {index + 1}. {permission.name}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => removePermission(permissionId)}
-                    className="ml-2 text-red-500 hover:text-red-700"
-                  >
-                    Remove
-                  </button>
-                </li>
-              );
+          <CustomDropdown
+            isMulti={true}
+            width={"100%"}
+            onChange={(selected: Permission[]) => handleSelected(selected)}
+            value={defaultPermissions || []}
+            options={permissionList?.map((permission: any) => {
+              return { value: permission?._id, label: permission?.name };
             })}
-          </ul>
+            defaultValue={[]}
+            placeholder="Select permissions"
+          />
         </div>
 
         <div className="flex items-center justify-between">
