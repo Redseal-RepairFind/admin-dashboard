@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import useStaff from "@/lib/hooks/useStaff";
 import toast from "react-hot-toast";
+import CustomDropdown from "@/components/shared/custom-dropdown";
+
+interface Permission {
+  value: string;
+  label: string;
+}
 
 const EditPermissions = ({
   currentStaff,
@@ -22,17 +28,9 @@ const EditPermissions = ({
     currentStaff?.permissions || []
   );
 
-  const addPermission = (permissionId: any) => {
-    if (!selectedPermissions.includes(permissionId)) {
-      setSelectedPermissions([...selectedPermissions, permissionId]);
-    }
-  };
-
-  const removePermission = (permissionId: string) => {
-    setSelectedPermissions(
-      selectedPermissions.filter((id: string) => id !== permissionId)
-    );
-  };
+  const [defaultPermissions, setDefaultPermissions] = useState<Permission[]>(
+    []
+  );
 
   // console.log(currentStaff, "edit");
 
@@ -77,12 +75,47 @@ const EditPermissions = ({
     };
   };
 
+  const handleSelected = (selected: Permission[]) => {
+    // setIsFresh(false);
+
+    if (selected.length < defaultPermissions.length) {
+      return setDefaultPermissions(selected);
+    }
+
+    // Create a new array by combining elements from defaultPermissions and selected
+    const updatedPermissions = [...defaultPermissions];
+
+    selected.forEach((item: Permission) => {
+      // Check if item is not already in updatedPermissions
+      if (
+        !updatedPermissions.some(
+          (perm: Permission) => perm.value === item?.value
+        )
+      ) {
+        updatedPermissions.push(item);
+      }
+    });
+
+    setDefaultPermissions(updatedPermissions);
+  };
+
   return (
     <div className="w-full">
-      <div className="mb-4">
+      <div className="mb-4 h-[300px] shadow-inner p-4 border border-gray-100 overflow-y-scroll">
         <label className="block text-gray-700 text-sm font-bold mb-2">
-          All Permissions
+          Edit Permissions
         </label>
+        {/* <CustomDropdown
+            isMulti={true}
+            width={"100%"}
+            onChange={(selected: Permission[]) => handleSelected(selected)}
+            value={defaultPermissions || []}
+            options={permissionList?.map((permission: any) => {
+              return { value: permission?._id, label: permission?.name };
+            })}
+            defaultValue={[]}
+            placeholder="Select permissions"
+          /> */}
         <ul className="list-disc">
           {permissionList?.map((permission: any) => (
             <li
