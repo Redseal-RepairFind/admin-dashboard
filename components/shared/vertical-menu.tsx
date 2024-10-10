@@ -43,7 +43,7 @@ const VerticalMenu = ({
       />
       {isMenuOpen && (
         <div
-          style={{ right: "0", top: "23px", zIndex: "10" }}
+          style={{ right: "20px", top: "-50px", zIndex: "1000" }}
           className={`absolute ${
             width ? width : "min-w-[150px]"
           } mt-1 h-auto ease-in-out transition-all overflow-hidden origin-top-right bg-white rounded-md shadow`}
