@@ -6,11 +6,13 @@ const VerticalMenu = ({
   isBackground,
   width,
   className,
+  top,
 }: {
   children: ReactNode;
   isBackground: boolean;
   width?: string;
   className?: string;
+  top?: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,7 +45,7 @@ const VerticalMenu = ({
       />
       {isMenuOpen && (
         <div
-          style={{ right: "20px", top: "-50px", zIndex: "1000" }}
+          style={{ right: "20px", top: top || "-50px", zIndex: "1000" }}
           className={`absolute ${
             width ? width : "min-w-[150px]"
           } mt-1 h-auto ease-in-out transition-all overflow-hidden origin-top-right bg-white rounded-md shadow`}

@@ -135,13 +135,13 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
         <div className="flex items-center justify-end gap-4">
           <button
             onClick={() => setOpenPAdd(true)}
-            className="border border-black bg-black text-white py-2.5 px-5 rounded-md"
+            className="border border-[#262626] py-2.5 px-5 rounded-md"
           >
             Add Permission
           </button>
           <button
             onClick={() => setOpen(true)}
-            className="border border-black bg-black text-white py-2.5 px-5 rounded-md"
+            className="border border-[#262626] bg-[#262626] text-white py-2.5 px-5 rounded-md"
           >
             Create Employee
           </button>
