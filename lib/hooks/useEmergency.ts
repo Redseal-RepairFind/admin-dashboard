@@ -4,7 +4,8 @@ import { emergency } from "../api/emergency";
 import { useMutation, useQuery } from "react-query";
 import toast from "react-hot-toast";
 import { useRouter, useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSortedData } from "@/lib/hooks/useSortedData";
 
 const useEmergency = () => {
   const emergencyStatus =
@@ -13,8 +14,14 @@ const useEmergency = () => {
       : null;
 
   const [type, setType] = useState(emergencyStatus || "PENDING");
+  const [sortData, setSortData] = useState<any>({
+    sortedArr: [],
+    singleData: {},
+  });
 
   const { id } = useParams();
+
+  const { sortedData, loadingSortedData } = useSortedData("emergencies");
 
   const {
     data: emergencyData,
@@ -67,6 +74,29 @@ const useEmergency = () => {
     }
   };
 
+  useEffect(() => {
+    const filterData = sortedData?.data?.data?.filter(
+      (data: any) => data.status === type
+    );
+
+    setSortData((prevState: any) => ({
+      ...prevState,
+      sortedArr: filterData,
+    }));
+  }, [type, sortedData]);
+
+  useEffect(() => {
+    const singleData = sortedData?.data?.data?.filter(
+      (data: any) => data._id === id
+    );
+
+    setSortData((prevState: any) => ({
+      ...prevState,
+      singleData: singleData,
+    }));
+  }, [type, sortedData, id]);
+
+  console.log(sortedData);
   return {
     type,
     setType,
@@ -78,6 +108,7 @@ const useEmergency = () => {
     singleEmergency,
     loadingSingleEmergency,
     refetchSingleEmergency,
+    sortData,
   };
 };
 

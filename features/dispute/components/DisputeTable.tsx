@@ -19,6 +19,7 @@ import "react-responsive-modal/styles.css";
 import Pagination from "@/components/shared/pagination";
 import { trimString } from "@/lib/utils/trim-string";
 import Search from "@/components/shared/search";
+import { useSortedData } from "@/lib/hooks/useSortedData";
 
 const table_headings = [
   "ID",
@@ -42,21 +43,16 @@ const DisputeTable = () => {
     setStatus,
     loadingDisputes,
     handleAccept,
-    perPage,
-    setPerPage,
-    currentPage,
-    setCurrentPage,
     search,
     setSearch,
+    dataToRender,
   } = useDisputes();
 
-  // console.log(disputes);
-
-  // console.log(status);
+  const { sortedData, loadingSortedData } = useSortedData("disputes");
 
   const router = useRouter();
 
-  const handleAction = async (id: any) => {
+  const handleAction = async (id: any, status: string) => {
     // console.log(id);
     if (status === "OPEN") return handleAccept(id);
 
@@ -65,11 +61,7 @@ const DisputeTable = () => {
   };
 
   const pageProps = {
-    data: disputes?.data,
-    perPage,
-    setPerPage,
-    pageNo: currentPage,
-    setPageNo: setCurrentPage,
+    data: sortedData?.data?.data,
   };
 
   return (
@@ -107,7 +99,7 @@ const DisputeTable = () => {
             </Thead>
 
             <tbody>
-              {disputes?.data?.data?.map((item: any, index: number) => (
+              {dataToRender?.map((item: any, index: number) => (
                 <tr key={index} className="border-b border-gray-100">
                   <Td>{index + 1}</Td>
                   <Td>{item?.disputer?.name || "-"}</Td>
@@ -120,7 +112,7 @@ const DisputeTable = () => {
                   <Td>
                     <button
                       disabled={status === "RESOLVED" || status === "REVISIT"}
-                      onClick={() => handleAction(item?._id)}
+                      onClick={() => handleAction(item?._id, item?.status)}
                       className={`text-white px-5 py-3 rounded-md text-sm ${
                         status === "RESOLVED" || status === "REVISIT"
                           ? "cursor-not-allowed bg-gray-500"

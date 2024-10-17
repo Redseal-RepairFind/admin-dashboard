@@ -13,7 +13,10 @@ import Thead from "@/features/shared/table/components/thead";
 import Th from "@/features/shared/table/components/th";
 import Td from "@/features/shared/table/components/td";
 import { IJobHistory } from "@/lib/types";
-import { convertDate, formatDateToDDMMYY } from "@/lib/utils/format-date";
+import {
+  formatTimeDDMMYY as convertDate,
+  formatDateToDDMMYY,
+} from "@/lib/utils/format-date";
 import { trimString } from "@/lib/utils/trim-string";
 import { useCustomerHistoryTable } from "../hooks/jobhistory";
 import FilterBox from "@/features/shared/job-history-filter/filter-box";

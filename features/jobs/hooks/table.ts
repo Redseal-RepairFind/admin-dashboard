@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { getJobs } from "@/lib/api/api";
 import { IJobs, IJobsList } from "@/lib/types";
 import { generateRange } from "@/lib/utils/generate-range";
 import {
@@ -10,41 +9,49 @@ import {
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { setsingleJobDetail } from "@/lib/redux/slices/single-job-detail";
 import { RootState } from "@/lib/redux/store";
+import useAnalyticData from "@/lib/hooks/useCustomersData"; // Updated hook
 
 interface UseJobsTableProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const useJobTable = ({ setLoading }: UseJobsTableProps) => {
-  const [jobsList, SetJobsList] = useState<IJobsList>();
-  const [currentJobsList, setCurrentJobsList] = useState<IJobsList>();
-  const [queryedJobsList, setQueryedJobsList] = useState<IJobsList>();
+  const [currentJobsList, setCurrentJobsList] = useState<any>([]);
+  const [queryedJobsList, setQueryedJobsList] = useState<any>([]);
   const [isQuerying, setIsQuerying] = useState(false);
   const [notFound, setNotFound] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false);
+  const [availableYears, setAvailableYears] = useState<number[]>([0]);
+
+  // Using the useAnalyticData hook
+  const {
+    customerData: jobData,
+    loadingCustomers,
+    currentPage,
+    setCurrentPage,
+  } = useAnalyticData("jobs");
 
   useEffect(() => {
-    setLoading(true);
-    getJobs({ page: currentPage, limit: 10 }).then((response) => {
-      SetJobsList(response?.response);
-      setLoading(false);
-    });
-  }, [currentPage]);
+    setLoading(loadingCustomers);
+    if (jobData?.data?.data) {
+      setCurrentJobsList(jobData?.data?.data);
+    }
+  }, [jobData, loadingCustomers]);
 
   useEffect(() => {
     if (!isQuerying) {
-      setCurrentJobsList(jobsList);
+      setCurrentJobsList(jobData?.data?.data || undefined);
     } else {
       setCurrentJobsList(queryedJobsList);
     }
-  }, [isQuerying, jobsList, queryedJobsList]);
+  }, [isQuerying, jobData, queryedJobsList]);
 
   const handleQuery = (value: string) => {
     value === "" ? setIsQuerying(false) : setIsQuerying(true);
-    if (jobsList) {
-      const filterArray = jobsList.jobs.filter(
-        (item) =>
-          item.customer.fullName.toLowerCase().includes(value.toLowerCase()) ||
+    if (jobData?.data?.data) {
+      const filterArray = jobData?.data?.data?.filter(
+        (item: any) =>
+          item.customer.name.toLowerCase().includes(value.toLowerCase()) ||
           item.contractor.firstName
             .toLowerCase()
             .includes(value.toLowerCase()) ||
@@ -54,22 +61,19 @@ export const useJobTable = ({ setLoading }: UseJobsTableProps) => {
           item.job._id.includes(value.toLowerCase())
       );
 
-      setQueryedJobsList({ jobs: filterArray });
+      setQueryedJobsList([...filterArray]);
 
       filterArray.length === 0 ? setNotFound(true) : setNotFound(false);
     }
   };
 
-  const [showFilters, setShowFilters] = useState(false);
-  const [availableYears, setAvailableYears] = useState<number[]>([0]);
-
   useEffect(() => {
-    if (jobsList) {
-      const smallestDate = findJobListSmallestYear(jobsList.jobs);
-      const largestDate = findJoblistLargestYear(jobsList.jobs);
+    if (jobData?.data?.data) {
+      const smallestDate = findJobListSmallestYear(jobData.data?.data);
+      const largestDate = findJoblistLargestYear(jobData.data?.data);
       setAvailableYears(generateRange(smallestDate, largestDate));
     }
-  }, [currentJobsList]);
+  }, [currentJobsList, jobData]);
 
   const handleRatingFiltering = (value: number) => {};
 
@@ -80,23 +84,25 @@ export const useJobTable = ({ setLoading }: UseJobsTableProps) => {
     setFilterYear(value);
     value === 0 ? setIsQuerying(false) : setIsQuerying(true);
     if (filterMonth !== 0) {
-      if (jobsList) {
-        const jobsListMatchingYear = jobsList.jobs.filter((job) => {
-          const createdAtDate = new Date(job.job.createdAt);
+      if (jobData?.data?.data) {
+        const jobsListMatchingYear = jobData?.data?.data.filter((job: any) => {
+          const createdAtDate = new Date(job.createdAt);
           const createdAtYear = createdAtDate.getFullYear();
           const createdAtMonth = createdAtDate.getMonth() + 1;
           return createdAtYear === value && createdAtMonth === filterMonth;
         });
-        setQueryedJobsList({ jobs: jobsListMatchingYear });
+        setQueryedJobsList([...jobsListMatchingYear]);
       }
     } else {
-      if (jobsList) {
-        const jobsListMatchingYear = jobsList.jobs.filter((job) => {
-          const createdAtDate = new Date(job.job.createdAt);
-          const createdAtYear = createdAtDate.getFullYear();
-          return createdAtYear === value;
-        });
-        setQueryedJobsList({ jobs: jobsListMatchingYear });
+      if (jobData?.data?.data) {
+        const jobsListMatchingYear = jobData.response.jobs.filter(
+          (job: any) => {
+            const createdAtDate = new Date(job.createdAt);
+            const createdAtYear = createdAtDate.getFullYear();
+            return createdAtYear === value;
+          }
+        );
+        setQueryedJobsList([...jobsListMatchingYear]);
       }
     }
   };
@@ -105,24 +111,23 @@ export const useJobTable = ({ setLoading }: UseJobsTableProps) => {
     setFilterMonth(value);
     value === 0 ? setIsQuerying(false) : setIsQuerying(true);
     if (filterYear !== 0) {
-      if (jobsList) {
-        const jobsListMatchingMonth = jobsList.jobs.filter((job) => {
-          const createdAtDate = new Date(job.job.createdAt);
+      if (jobData?.data?.data) {
+        const jobsListMatchingMonth = jobData.data.data.filter((job: any) => {
+          const createdAtDate = new Date(job.createdAt);
           const createdAtYear = createdAtDate.getFullYear();
           const createdAtMonth = createdAtDate.getMonth() + 1;
           return createdAtMonth === value && createdAtYear === filterYear;
         });
-        setQueryedJobsList({ jobs: jobsListMatchingMonth });
+        setQueryedJobsList([...jobsListMatchingMonth]);
       }
     } else {
-      if (jobsList) {
-        const jobsListMatchingMonth = jobsList.jobs.filter((job) => {
-          const createdAtDate = new Date(job.job.createdAt);
+      if (jobData?.data?.data) {
+        const jobsListMatchingMonth = jobData.data.data.filter((job: any) => {
+          const createdAtDate = new Date(job.createdAt);
           const createdAtMonth = createdAtDate.getMonth() + 1;
-          // console.log(createdAtMonth);
           return createdAtMonth === value;
         });
-        setQueryedJobsList({ jobs: jobsListMatchingMonth });
+        setQueryedJobsList([...jobsListMatchingMonth]);
       }
     }
   };
@@ -130,14 +135,16 @@ export const useJobTable = ({ setLoading }: UseJobsTableProps) => {
   const dispatch = useAppDispatch();
   const pathname = usePathname();
   const router = useRouter();
-  const handleViewInvoice = (item: IJobs) => {
+  const handleViewInvoice = (item: any) => {
     setLoading(true);
     dispatch(setsingleJobDetail(item));
-    router.push(`${pathname}/${item.job._id}`);
+    router.push(`${pathname}/${item._id}`);
   };
   const { totalJob } = useAppSelector(
     (state: RootState) => state.overviewTotal.details
   );
+
+  const totalJobs = jobData?.data?.stats?.allJobs;
 
   return {
     handleQuery,
@@ -150,7 +157,7 @@ export const useJobTable = ({ setLoading }: UseJobsTableProps) => {
     availableYears,
     currentJobsList,
     handleViewInvoice,
-    totalJob,
+    totalJobs,
     currentPage,
     setCurrentPage,
   };

@@ -46,11 +46,11 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
   const router = useRouter();
 
   const {
-    emergencyData,
     type: currentType,
     setType,
     loadingEmergencies,
     handleAccept,
+    sortData,
   } = useEmergency();
 
   // console.log(emergencyData, "d");
@@ -114,7 +114,7 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
               </Thead>
 
               <tbody>
-                {emergencyData?.data?.data?.map((item: any, index: number) => (
+                {sortData?.sortedArr?.map((item: any, index: number) => (
                   <tr key={index} className="border-b border-gray-100">
                     <Td>{index + 1}</Td>
                     <Td>{item?.triggeredBy || "-"}</Td>

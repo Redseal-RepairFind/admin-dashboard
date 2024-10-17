@@ -25,6 +25,8 @@ import useContractors from "@/lib/hooks/useContractors";
 import Ratings from "@/components/shared/ratings";
 import Pagination from "@/components/shared/pagination";
 
+import { useSortedData } from "@/lib/hooks/useSortedData";
+
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
 
@@ -39,9 +41,10 @@ const table_headings = [
 
 interface IProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  contractorData: any;
 }
 
-const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
+const ContractorsTable: React.FC<IProps> = ({ setLoading, contractorData }) => {
   const {
     handleQuery,
     notFound,
@@ -56,7 +59,7 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
   } = useContractorTable({ setLoading });
 
   const {
-    contractorData,
+    // contractorData,
     setSearch,
     perPage,
     setPerPage,
@@ -64,14 +67,12 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
     setCurrentPage,
   } = useContractors();
 
+  const mainData = contractorData?.data;
+
   // console.log(contractorData);
 
   const pageProps = {
-    data: contractorData?.data,
-    perPage,
-    setPerPage,
-    pageNo: currentPage,
-    setPageNo: setCurrentPage,
+    data: mainData?.data,
   };
 
   return (
@@ -107,7 +108,7 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading }) => {
           </Thead>
 
           <tbody>
-            {contractorData?.data?.data?.map((item: any, index: number) => (
+            {mainData?.data?.map((item: any, index: number) => (
               <tr
                 key={index}
                 className="cursor-pointer border-b border-gray-200"

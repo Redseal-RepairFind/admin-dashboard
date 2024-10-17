@@ -11,6 +11,7 @@ interface IProps {
   percent: number;
   route: string;
 }
+// re useable-card
 
 const AnalyticCard: React.FC<IProps> = ({
   svg,

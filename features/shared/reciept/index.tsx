@@ -11,7 +11,7 @@ interface IProps {
   jobDetail: IJobs | IJobHistory;
 }
 
-const Reciept: React.FC<IProps> = ({ closeModal, jobDetail }) => {
+const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
   return (
     <>
       {/* Logo */}
@@ -47,13 +47,13 @@ const Reciept: React.FC<IProps> = ({ closeModal, jobDetail }) => {
             <p className="font-[600] text-xl uppercase">
               Invoice
               <span className="text-[#417AA1] pl-2">
-                {trimString(jobDetail?.job._id, 5)}
+                {trimString(jobDetail?._id, 5)}
               </span>
             </p>
 
-            <p className="text-xs font-[500]">{jobDetail.job.jobTitle}</p>
+            <p className="text-xs font-[500]">{jobDetail?.jobTitle}</p>
             <p className="text-suscess flex gap-1 items-center">
-              {jobDetail.job.inspection.confirmPayment ? (
+              {jobDetail?.inspection?.confirmPayment ? (
                 <>
                   <CompletedState /> <span>Paid</span>
                 </>
@@ -100,19 +100,19 @@ const Reciept: React.FC<IProps> = ({ closeModal, jobDetail }) => {
       <div className="flex justify-between mt-10">
         <div className="">
           <p className="text-xs font-[600] text-[#A7A7A7]">From</p>
-          <p className="font-[600]">{jobDetail.customer?.fullName}</p>
+          <p className="font-[600]">{jobDetail.customer?.name}</p>
           <p className="text-sm text-[#555]">
-            {trimString(jobDetail.customer?.email || "", 20)}
+            {trimString(jobDetail?.customer?.email || "", 20)}
           </p>
         </div>
 
         <div className="">
           <p className="text-xs font-[600] text-[#A7A7A7]">To</p>
           <p className="font-[600]">{`${
-            jobDetail.contractor?.firstName || ""
-          } ${jobDetail.contractor?.lastName || ""}`}</p>
+            jobDetail?.contractor?.firstName || ""
+          } ${jobDetail?.contractor?.lastName || ""}`}</p>
           <p className="text-sm text-[#555]">
-            {trimString(jobDetail.contractor?.email || "", 20)}
+            {trimString(jobDetail?.contractor?.email || "", 20)}
           </p>
         </div>
       </div>
@@ -120,11 +120,11 @@ const Reciept: React.FC<IProps> = ({ closeModal, jobDetail }) => {
       <div className="flex justify-between mt-8">
         <div>
           <p className="text-sm font-[500] text-[#7B7B7B]">Estimate</p>
-          <p>${jobDetail.job.totalAmountContractorWithdraw}</p>
+          <p>${jobDetail?.totalAmountContractorWithdraw}</p>
         </div>
         <div>
           <p className="text-sm font-[500] text-[#7B7B7B]">Due Date</p>
-          <p>{formatTimeDDMMYY(jobDetail.job.time)}</p>
+          <p>{formatTimeDDMMYY(jobDetail?.time)}</p>
         </div>
       </div>
 
@@ -144,7 +144,7 @@ const Reciept: React.FC<IProps> = ({ closeModal, jobDetail }) => {
           </thead>
 
           <tbody>
-            {jobDetail.job.quate.map((item, index) => (
+            {jobDetail?.quotations?.map((item: any, index: any) => (
               <tr key={item._id}>
                 <td className="text-sm py-3 px-4 capitalize">
                   {item.material}
@@ -159,9 +159,7 @@ const Reciept: React.FC<IProps> = ({ closeModal, jobDetail }) => {
               <td className="text-sm py-3 px-4"></td>
               <td className="text-sm py-3 px-4"></td>
               <td className="text-sm py-3 px-4">Subtotal</td>
-              <td className="text-sm py-3 px-4">
-                {jobDetail.job.totalQuatation}
-              </td>
+              <td className="text-sm py-3 px-4">{jobDetail?.totalQuatation}</td>
             </tr>
             <tr>
               {/* <td className="text-sm py-3 px-4"></td>
@@ -173,14 +171,14 @@ const Reciept: React.FC<IProps> = ({ closeModal, jobDetail }) => {
               <td className="text-sm py-3 px-4"></td>
               <td className="text-sm py-3 px-4"></td>
               <td className="text-sm py-3 px-4">GST</td>
-              <td className="text-sm py-3 px-4">{jobDetail.job.gst}</td>
+              <td className="text-sm py-3 px-4">{jobDetail?.gst}</td>
             </tr>
             <tr>
               <td className="text-sm py-3 px-4"></td>
               <td className="text-sm py-3 px-4"></td>
               <td className="text-sm py-3 px-4">Total</td>
               <td className="text-sm py-3 px-4">
-                {jobDetail.job.totalAmountCustomerToPaid}
+                {jobDetail?.totalAmountCustomerToPaid}
               </td>
             </tr>
           </tbody>

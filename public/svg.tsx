@@ -22,11 +22,11 @@ export const Gst = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_1634_173)">
+    <g clipPath="url(#clip0_1634_173)">
       <path
         d="M7 12.4854L10 15.4854L17 8.48535M20 15.4854C19 16.4854 21.25 19.2354 20 20.4854C18.75 21.7354 16 19.4854 15 20.4854C14 21.4854 13.5 23.4854 12 23.4854C10.5 23.4854 10 21.4854 9 20.4854C8 19.4854 5.25 21.7354 4 20.4854C2.75 19.2354 5 16.4854 4 15.4854C3 14.4854 1 13.9854 1 12.4854C1 10.9854 3 10.4854 4 9.48535C5 8.48535 2.75 5.73535 4 4.48535C5.25 3.23535 8 5.48535 9 4.48535C10 3.48535 10.5 1.48535 12 1.48535C13.5 1.48535 14 3.48535 15 4.48535C16 5.48535 18.75 3.23535 20 4.48535C21.25 5.73535 19 8.48535 20 9.48535C21 10.4854 23 10.9854 23 12.4854C23 13.9854 21 14.4854 20 15.4854Z"
         stroke="black"
-        stroke-width="2"
+        strokeWidth="2"
       />
     </g>
     <defs>
@@ -722,5 +722,170 @@ export const MandarinFlag = () => (
     />
   </svg>
 );
+export const SignUpMetrics = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="#A5D6A7"
+    fill="none"
+    strokeWidth="1.5"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+  </svg>
+);
 
-// export const  = () => ()
+export const AccountCreationMetrics = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="#FFCC80"
+    fill="none"
+    strokeWidth="1.5"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path d="M12 3l9 9h-3v9h-12v-9h-3l9-9zm2 9h-4v6h4v-6z" />
+  </svg>
+);
+
+export const AppDownloadMetrics = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="#90CAF9"
+    fill="none"
+    strokeWidth="1.5"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path d="M5 4v16h14v-16h-14zm8 14h-2v-4h-2l3-3 3 3h-2v4zm3-12h-8v2h8v-2z" />
+  </svg>
+);
+
+export const AppStorePageViewMetrics = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="#E1BEE7"
+    fill="none"
+    strokeWidth="1.5"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path d="M12 4.5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12.5c-2.48 0-4.5-2.02-4.5-4.5s2.02-4.5 4.5-4.5 4.5 2.02 4.5 4.5-2.02 4.5-4.5 4.5zm0-7c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5z" />
+  </svg>
+);
+
+export const JobsPostedMetrics = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="#81D4FA"
+    fill="none"
+    strokeWidth="1.5"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path d="M3 3v18h18v-18h-18zm16 16h-14v-14h14v14zm-2-10h-10v2h10v-2zm0 4h-10v2h10v-2zm0 4h-10v2h10v-2z" />
+  </svg>
+);
+
+export const QuotesGivenMetrics = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="#0D8012"
+    fill="none"
+    strokeWidth="1.5"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path d="M21 6h-18v12h4v3l3-3h11v-12zm-8 6h-6v-2h6v2zm6-2v2h-4v-2h4zm0-2h-10v2h10v-2zm-12 2v2h-2v-2h2zm0 2h-4v-2h4v2z" />
+  </svg>
+);
+
+export const JobsStartedMetrics = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="#C5E1A5"
+    fill="none"
+    strokeWidth="1.5"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path d="M14 11v-5.5l-6-1.5v11l6-1.5v-5.5zm5.07 9.88l-4.95-4.95c-.43-.43-.43-1.13 0-1.55.43-.43 1.13-.43 1.55 0l4.95 4.95c.43.43.43 1.13 0 1.55-.42.43-1.12.43-1.55 0z" />
+  </svg>
+);
+
+export const JobsClosedMetrics = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="#FFAB91"
+    fill="none"
+    strokeWidth="1.5"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path d="M12 17c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-5v-4c0-2.21-1.79-4-4-4s-4 1.79-4 4v4h-2v10h12v-10h-2zm-6-4c0-1.1.9-2 2-2s2 .9 2 2v4h-4v-4z" />
+  </svg>
+);
+
+export const EmergencyCallMetrics = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="#2e0815"
+    fill="none"
+    strokeWidth="1.5"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path d="M12 2c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm1 14h-2v-2h2v2zm0-4h-2v-6h2v6z" />
+  </svg>
+);
+
+export const DisputesInitiatedMetrics = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="#852a48"
+    fill="none"
+    strokeWidth="1.5"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path d="M12 3l-7 14h14l-7-14zm0 5.27l2.39 4.73h-4.78l2.39-4.73zm2.5 5.73h-5l2.5 4 2.5-4z" />
+  </svg>
+);
+
+export const DisputesResolvedMetrics = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="#305a00"
+    fill="none"
+    strokeWidth="1.5"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path d="M12 1.8c-5.62 0-10.2 4.58-10.2 10.2 0 5.62 4.58 10.2 10.2 10.2 5.62 0 10.2-4.58 10.2-10.2 0-5.62-4.58-10.2-10.2-10.2zm-2.95 14.4l-4.15-4.15 1.41-1.41 2.74 2.74 6.17-6.17 1.41 1.41-7.58 7.58z" />
+  </svg>
+);
+
+export const AverageDisputeResolutionTimeMetrics = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="#302401"
+    fill="none"
+    strokeWidth="1.5"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path d="M18 22h-12v-2h12v2zm0-2.5l-6-6 6-6v12zm0-10.5h-4.5v-3h-3v3h-3v3h3v3h3v-3h4.5v-3z" />
+  </svg>
+);

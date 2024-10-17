@@ -4,7 +4,8 @@ import { dispute } from "../api/dispute";
 import { useMutation, useQuery } from "react-query";
 import toast from "react-hot-toast";
 import { useRouter, useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSortedData } from "./useSortedData";
 
 const useDisputes = () => {
   const sessionStatus =
@@ -14,6 +15,7 @@ const useDisputes = () => {
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [dataToRender, setDataToRender] = useState<any>();
 
   const [status, setStatus] = useState(sessionStatus || "OPEN");
 
@@ -22,6 +24,20 @@ const useDisputes = () => {
   const { mutateAsync: SendMessage } = useMutation(dispute.sendMessage);
 
   const { id } = useParams();
+
+  const { sortedData, loadingSortedData } = useSortedData("disputes");
+
+  useEffect(() => {
+    if (sessionStatus === "OPEN") {
+      setDataToRender(sortedData?.data?.data);
+    } else if (sessionStatus && sortedData?.data?.data) {
+      const data = sortedData?.data?.data.filter(
+        (item: any) => item.status === sessionStatus
+      );
+
+      setDataToRender(data);
+    }
+  }, [sessionStatus, sortedData]);
 
   const {
     data: disputes,
@@ -126,6 +142,7 @@ const useDisputes = () => {
     setCurrentPage,
     search,
     setSearch,
+    dataToRender,
   };
 };
 

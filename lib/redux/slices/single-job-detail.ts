@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface IState {
-  value: IJobs;
+  value: any;
 }
 
 const initialState: IState = {
@@ -17,15 +17,15 @@ const initialState: IState = {
       address: "",
       status: "",
       description: "",
-      jobTitle: '',
-      postalCode: '',
-      totalAmountContractorWithdraw: '',
-      totalAmountCustomerToPaid:'',
-      totalQuatation:'',
-      time:'',
-      gst:'',
+      jobTitle: "",
+      postalCode: "",
+      totalAmountContractorWithdraw: "",
+      totalAmountCustomerToPaid: "",
+      totalQuatation: "",
+      time: "",
+      gst: "",
 
-      quate:[],
+      quate: [],
       createdAt: "",
     },
     contractor: {
@@ -33,13 +33,13 @@ const initialState: IState = {
       firstName: "",
       lastName: "",
       profileImage: "",
-      status:'',
-    email: ''
+      status: "",
+      email: "",
     },
     customer: {
       fullName: "",
-      email: '',
-      profileImg:'',
+      email: "",
+      profileImg: "",
       phoneNumber: "",
     },
   },
@@ -49,7 +49,7 @@ export const singleJobDetailsSlice = createSlice({
   name: "singleJob",
   initialState,
   reducers: {
-    setsingleJobDetail: (state, action: PayloadAction<IJobs>) => {
+    setsingleJobDetail: (state, action: PayloadAction<any>) => {
       console.log(action.payload);
       state.value = action.payload;
     },

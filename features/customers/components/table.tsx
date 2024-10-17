@@ -23,6 +23,8 @@ import {
   YellowStar,
 } from "@/public/svg";
 import Search from "@/components/shared/search";
+import { useRouter, useSearchParams } from "next/navigation";
+import { filterData } from "../hooks/filterByDate";
 
 const table_headings = [
   "Customer’s Name",
@@ -35,9 +37,10 @@ const table_headings = [
 
 interface IProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  filteredData: any;
 }
 
-const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
+const CustomersTable: React.FC<IProps> = ({ setLoading, filteredData }) => {
   const {
     handleQuery,
     notFound,
@@ -55,9 +58,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     customerData,
     loadingCustomers,
     perPage,
-    setPerPage,
     currentPage,
-    setCurrentPage,
     search,
     setSearch,
   } = useCustomers();
@@ -73,16 +74,15 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     },
   ];
 
-  // console.log(customerData);
-
   const pageProps = {
-    data: customerData,
-    perPage,
-    setPerPage,
-    pageNo: currentPage,
-    setPageNo: setCurrentPage,
+    data: filteredData,
+    // perPage,
+    // setPerPage,
+    // pageNo: currentPage,
+    // setPageNo: setCurrentPage,
   };
 
+  //
   return (
     <TableCard>
       <div className="flex items-center justify-between w-full">
@@ -121,7 +121,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
           </Thead>
 
           <tbody>
-            {customerData?.customers?.map((item: any, index: number) => (
+            {filteredData?.data?.data?.map((item: any, index: number) => (
               <tr
                 key={item?._id}
                 onClick={() => handleViewACustomer(item)}
