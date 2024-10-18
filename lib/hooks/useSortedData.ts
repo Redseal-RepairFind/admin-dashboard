@@ -80,14 +80,16 @@ export function useSortedData(
     if (sortedData?.data) {
       const filteredArray = sortedData.data.data.filter(
         (item: any) =>
-          item?.name.toLowerCase().includes(value.toLowerCase()) ||
+          item?.name?.toLowerCase()?.includes(value.toLowerCase()) ||
           item?.contractor?.firstName
-            .toLowerCase()
-            .includes(value.toLowerCase()) ||
+            ?.toLowerCase()
+            ?.includes(value.toLowerCase()) ||
           item?.contractor?.lastName
-            .toLowerCase()
-            .includes(value.toLowerCase()) ||
-          item._id.includes(value.toLowerCase())
+            ?.toLowerCase()
+            ?.includes(value.toLowerCase()) ||
+          item?._id?.includes(value.toLowerCase()) ||
+          item?.disputer?.firstName.includes(value.toLowerCase()) ||
+          item?.disputer?.lastName.includes(value.toLowerCase())
       );
 
       // Create a new object that retains the structure of sortedData
@@ -121,5 +123,6 @@ export function useSortedData(
     notFound,
     searchTerm, // Return the search term for further use if needed
     queryedList,
+    setIsQuerying,
   };
 }

@@ -26,6 +26,7 @@ import Ratings from "@/components/shared/ratings";
 import Pagination from "@/components/shared/pagination";
 
 import { useSortedData } from "@/lib/hooks/useSortedData";
+import Search from "@/components/shared/search";
 
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
@@ -42,9 +43,16 @@ const table_headings = [
 interface IProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   contractorData: any;
+  handleSearch: any;
+  setIsQuerying: any;
 }
 
-const ContractorsTable: React.FC<IProps> = ({ setLoading, contractorData }) => {
+const ContractorsTable: React.FC<IProps> = ({
+  setLoading,
+  contractorData,
+  handleSearch,
+  setIsQuerying,
+}) => {
   const {
     handleQuery,
     notFound,
@@ -80,10 +88,11 @@ const ContractorsTable: React.FC<IProps> = ({ setLoading, contractorData }) => {
       <div className="flex items-center justify-between w-full">
         <Heading name="Contractors’ list" />
         <div className="flex gap-8">
-          <Searchbar
+          <Search
             placeholder="Search by name or email"
-            handleQuery={setSearch}
-            notFound={notFound}
+            setSearch={handleSearch}
+            setIsQuerying={setIsQuerying}
+            search=""
           />
           {/* <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
             <FilterBox

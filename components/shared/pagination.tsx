@@ -4,20 +4,18 @@ import React, { useState, useEffect } from "react";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
+// Available options for items per page
 const perPageOptions = [5, 10, 15, 25, 35, 45];
 
-const Pagination = ({
-  data,
-}: {
-  // pageNo: number;
-  // setPageNo: any;
+type dData = {
   data: any;
-  // perPage: any;
-  // setPerPage: any;
-}) => {
-  const [currentPageNo, setCurrentPageNo] = useState(0);
-  const [pageNo, setPageNo] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+};
+
+const Pagination = ({
+  data, // Pass the full dataset here
+}: dData) => {
+  const [currentPageNo, setCurrentPageNo] = useState(1); // Active page
+  const [perPage, setPerPage] = useState(10); // Items per page
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -29,12 +27,12 @@ const Pagination = ({
     const perPageFromURL = searchParams.get("perPage");
 
     if (currentPageFromURL) {
-      setPageNo(parseInt(currentPageFromURL));
+      setCurrentPageNo(parseInt(currentPageFromURL));
     }
     if (perPageFromURL) {
       setPerPage(parseInt(perPageFromURL));
     }
-  }, [searchParams, setPageNo, setPerPage]);
+  }, [searchParams]);
 
   // Update URL with pagination information
   const updateUrlParams = (newPage: number, newPerPage: number) => {
@@ -47,26 +45,14 @@ const Pagination = ({
   };
 
   // Handle changing per page value
-  const handlePerPage = (e: any) => {
+  const handlePerPage = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newPerPage = parseInt(e.target.value);
-    setPageNo(1); // Reset to first page on per page change
+    setCurrentPageNo(1); // Reset to first page on per page change
     setPerPage(newPerPage);
     updateUrlParams(1, newPerPage);
   };
 
-  const length = data?.lastPage || 1;
-  const pages = Array.from({ length }, (_, index) => index + 1);
-  const chunkPages: any[] = [];
-
-  if (pages.length > 10) {
-    const pageSize = 10;
-    for (let i = 0; i < pages.length; i += pageSize) {
-      const chunk = pages.slice(i, i + pageSize);
-      chunkPages.push(chunk);
-    }
-  } else {
-    chunkPages.splice(0, chunkPages.length);
-  }
+  const totalPages = data?.data?.lastPage; // Total number of pages
 
   return (
     <div className="w-full flex items-center gap-4 justify-between">
@@ -74,15 +60,12 @@ const Pagination = ({
         {/* BACK BUTTON */}
         <button
           className={`text-xl flex items-center justify-center h-10 ${
-            chunkPages.length > 0 && currentPageNo !== 0
-              ? "text-primary"
-              : "text-gray-500"
+            currentPageNo > 1 ? "text-primary" : "text-gray-500"
           }`}
-          disabled={currentPageNo === 0}
+          disabled={currentPageNo === 1}
           onClick={() => {
-            const newPageNo = chunkPages[currentPageNo - 1][0];
-            setCurrentPageNo(currentPageNo - 1);
-            setPageNo(newPageNo);
+            const newPageNo = currentPageNo - 1;
+            setCurrentPageNo(newPageNo);
             updateUrlParams(newPageNo, perPage);
           }}
         >
@@ -90,57 +73,35 @@ const Pagination = ({
         </button>
 
         {/* PAGINATION BUTTONS */}
-        {chunkPages.length < 1 &&
-          pages?.map((page) => (
+        {Array.from({ length: totalPages }, (_, index) => index + 1)?.map(
+          (page) => (
             <button
               className={
-                page === pageNo
-                  ? "text-sm font-medium text-red-500"
+                page === currentPageNo
+                  ? "text-sm font-medium text-white bg-black p-1 rounded-sm"
                   : "text-sm font-medium text-primary"
               }
               key={page}
               onClick={() => {
-                setPageNo(page);
+                setCurrentPageNo(page);
                 updateUrlParams(page, perPage);
               }}
             >
               {page}
             </button>
-          ))}
-
-        {chunkPages.length > 0 &&
-          chunkPages[currentPageNo]?.map((page: any) => (
-            <button
-              className={
-                page === pageNo
-                  ? "text-sm font-medium text-red-500"
-                  : "text-sm font-medium text-primary"
-              }
-              key={page}
-              onClick={() => {
-                setPageNo(page);
-                updateUrlParams(page, perPage);
-              }}
-            >
-              {page}
-            </button>
-          ))}
+          )
+        )}
 
         {/* FORWARD BUTTON */}
         <button
           className={`text-xl flex items-center justify-center h-10 ${
-            chunkPages.length > 0 && currentPageNo !== chunkPages.length - 1
-              ? "text-primary"
-              : "text-gray-500"
+            currentPageNo < totalPages ? "text-primary" : "text-gray-500"
           }`}
-          disabled={currentPageNo === chunkPages.length - 1}
+          disabled={currentPageNo === totalPages}
           onClick={() => {
-            if (chunkPages[currentPageNo + 1]) {
-              const newPageNo = chunkPages[currentPageNo + 1][0];
-              setCurrentPageNo(currentPageNo + 1);
-              setPageNo(newPageNo);
-              updateUrlParams(newPageNo, perPage);
-            }
+            const newPageNo = currentPageNo + 1;
+            setCurrentPageNo(newPageNo);
+            updateUrlParams(newPageNo, perPage);
           }}
         >
           <FaCaretRight className="w-3" />
@@ -148,19 +109,17 @@ const Pagination = ({
       </div>
 
       {/* PER PAGE SELECTOR */}
-      {perPage && (
-        <select
-          value={perPage}
-          className="text-xs font-medium border border-gray-400 rounded-sm py-2 px-4 focus:ring-0 duration-200 outline-none"
-          onChange={handlePerPage}
-        >
-          {perPageOptions.map((perPageOption) => (
-            <option key={perPageOption} value={perPageOption}>
-              {perPageOption} Per Page
-            </option>
-          ))}
-        </select>
-      )}
+      <select
+        value={perPage}
+        className="text-xs font-medium border border-gray-400 rounded-sm py-2 px-4 focus:ring-0 duration-200 outline-none"
+        onChange={handlePerPage}
+      >
+        {perPageOptions.map((perPageOption) => (
+          <option key={perPageOption} value={perPageOption}>
+            {perPageOption} Per Page
+          </option>
+        ))}
+      </select>
     </div>
   );
 };
