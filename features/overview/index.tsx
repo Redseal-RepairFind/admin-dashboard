@@ -14,21 +14,65 @@ import {
   TotalCustomers,
   TotalJobs,
   TotalRevenue,
+  SignUpMetrics,
 } from "@/public/svg";
 
-import LoadingTemplate from "../layout/loading";
 import useAnalytics from "@/lib/hooks/useAnalytics";
+import LoadingTemplate from "../layout/loading";
+import { dynaMetrycs } from "@/features/overview/components/dummyMetrics";
 
 const Overview = () => {
-  const { data, isLoading } = useAnalytics();
+  const { data, isLoading, dummyMetrics, loadingMetrics, getMetric } =
+    useAnalytics();
 
-  // console.log(data);
+  const loading = isLoading || loadingMetrics;
+  const [metricText, setMetricText] = useState("");
+
+  const { metryc, metrycSTotal } = getMetric(metricText);
+
+  const combinedMetrics = [
+    {
+      svg: <TotalCustomers />,
+      svgColor: "bg-[#C398C7]",
+      name: "Total Customers",
+      numbers: data?.totalCustomers?.toLocaleString(),
+      percent: 3.6,
+      route: "/customers",
+    },
+
+    {
+      svg: <TotalContractors />,
+      svgColor: "bg-[#AAB2D4]",
+      name: "Total Contractors",
+      numbers: data?.totalContractors?.toLocaleString(),
+      percent: 3.6,
+      route: "/contractors",
+    },
+
+    {
+      svg: <TotalRevenue />,
+      svgColor: "bg-[#E3C87C]",
+      name: "Total Revenue",
+      numbers: data?.totalRevenue?.toLocaleString(),
+      percent: 3.6,
+      route: "/transactions",
+    },
+
+    {
+      svg: <TotalJobs />,
+      svgColor: "bg-[#bbbbbbbb]",
+      name: "Total Jobs",
+      numbers: data?.totalJob?.toLocaleString(),
+      percent: -3.6,
+      route: "/jobs",
+    },
+  ];
 
   return (
     <>
       <Header />
 
-      {isLoading && <LoadingTemplate />}
+      {loading && <LoadingTemplate />}
       <PageBody>
         <div className="flex justify-between mb-6 items-center">
           <PageHeading page_title="Overview" />
@@ -38,7 +82,7 @@ const Overview = () => {
         {/* Negative value on percent props will be red */}
         <div className="overflow-x-auto mb-6">
           <div className="grid grid-cols-4 gap-5 min-w-[1200px]">
-            <AnalyticCard
+            {/* <AnalyticCard
               svg={<TotalCustomers />}
               svgColor="bg-[#C398C7]"
               name="Total Customers"
@@ -69,7 +113,19 @@ const Overview = () => {
               numbers={data?.totalJob?.toLocaleString()}
               percent={-3.6}
               route="/jobs"
-            />
+            /> */}
+
+            {combinedMetrics.map((item) => (
+              <AnalyticCard
+                key={item.name}
+                svg={item.svg}
+                svgColor={item.svgColor}
+                name={item.name}
+                numbers={item.numbers}
+                percent={item.percent}
+                route={item.route}
+              />
+            ))}
           </div>
         </div>
 

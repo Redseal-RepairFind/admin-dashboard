@@ -2,8 +2,17 @@
 const nextConfig = {
   images: {
     domains: [
-      "saheedwale.s3.amazonaws.com",
       "ipalas3bucket.s3.us-east-2.amazonaws.com",
+      "repairfindbucket.s3.eu-west-3.amazonaws.com",
+    ], // Include other domains as needed
+
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "repairfindbucket.s3-eu-west-3.amazonaws.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };

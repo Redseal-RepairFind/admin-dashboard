@@ -4,7 +4,8 @@ import { dispute } from "../api/dispute";
 import { useMutation, useQuery } from "react-query";
 import toast from "react-hot-toast";
 import { useRouter, useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSortedData } from "./useSortedData";
 
 const useDisputes = () => {
   const sessionStatus =
@@ -14,6 +15,7 @@ const useDisputes = () => {
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [dataToRender, setDataToRender] = useState<any>();
 
   const [status, setStatus] = useState(sessionStatus || "OPEN");
 
@@ -22,6 +24,41 @@ const useDisputes = () => {
   const { mutateAsync: SendMessage } = useMutation(dispute.sendMessage);
 
   const { id } = useParams();
+
+  const {
+    sortedData,
+    loadingSortedData,
+    isQuerying,
+    queryedList,
+    handleQuery,
+    setIsQuerying,
+  } = useSortedData("disputes");
+
+  useEffect(() => {
+    isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
+  }, [isQuerying, queryedList, setDataToRender, sortedData]);
+  useEffect(() => {
+    if (sessionStatus === "OPEN") {
+      // If sessionStatus is "OPEN", render the full data array
+      setDataToRender(sortedData?.data);
+    } else if (sessionStatus && sortedData?.data?.data) {
+      // Filter the data based on sessionStatus
+      const filteredArray = sortedData.data.data.filter(
+        (item: any) => item.status === sessionStatus
+      );
+
+      // Clone the sortedData structure and replace only the data field
+      const updatedFilteredData = {
+        ...sortedData,
+        data: {
+          ...sortedData.data, // Retain other properties of sortedData
+          data: filteredArray, // Replace only the actual data array
+        },
+      };
+
+      setDataToRender(updatedFilteredData);
+    }
+  }, [sessionStatus, sortedData]);
 
   const {
     data: disputes,
@@ -126,6 +163,9 @@ const useDisputes = () => {
     setCurrentPage,
     search,
     setSearch,
+    dataToRender,
+    handleQuery,
+    setIsQuerying,
   };
 };
 

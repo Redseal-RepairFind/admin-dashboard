@@ -14,6 +14,7 @@ import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 import FilterBox from "@/features/customers/components/filter-box";
 import { useJobTable } from "../hooks/table";
 import Paginator from "@/features/shared/table/components/paginator";
+import useAnalyticData from "@/lib/hooks/useCustomersData";
 
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
@@ -44,7 +45,7 @@ const JobsTable: React.FC<IProps> = ({ setLoading }) => {
     availableYears,
     currentJobsList,
     handleViewInvoice,
-    totalJob,
+    totalJobs,
     currentPage,
     setCurrentPage,
   } = useJobTable({ setLoading });
@@ -82,28 +83,29 @@ const JobsTable: React.FC<IProps> = ({ setLoading }) => {
           </Thead>
 
           <tbody>
-            {currentJobsList?.jobs.map((item, index) => (
+            {currentJobsList?.map((item: any, index: any) => (
               <tr
                 className="cursor-pointer"
                 key={index}
                 onClick={() => handleViewInvoice(item)}
               >
-                <Td>{item?.customer.fullName}</Td>
-                <Td>{trimString(item?.job._id, 8)}</Td>
+                <Td>{item?.customer?.name}</Td>
+                <Td>{trimString(item?._id, 8)}</Td>
                 <Td>
-                  {item.contractor.firstName} {item.contractor.lastName}
+                  {item?.contractor?.firstName || "-"}{" "}
+                  {item?.contractor?.lastName || "-"}
                 </Td>
-                <Td>{trimString(item.job.address, 22)}</Td>
-                <Td>{formatDateToDDMMYY(item.job.createdAt)}</Td>
-                <Td>{item.job.inspection.status ? "True" : "False"}</Td>
-                <Td>{trimString(item.job.status, 22)}</Td>
+                <Td>{trimString(item?.location?.address, 22)}</Td>
+                <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
+                <Td>{item?.isAssigned}</Td>
+                <Td>{trimString(item?.status, 22)}</Td>
               </tr>
             ))}
           </tbody>
         </Table>
       </TableOverflow>
       <Paginator
-        max={totalJob}
+        max={totalJobs}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
       />
