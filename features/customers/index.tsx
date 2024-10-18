@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../layout/header/header";
 import PageBody from "../shared/page-body/page-body";
 import CustomersTable from "./components/table";
@@ -22,12 +22,17 @@ type FilterData = {
 const Customers = () => {
   // Fetching customers data
 
-  const { sortedData: data, loadingSortedData } = useSortedData("customers");
-
-  const { customerData: jobData, loadingCustomers } =
-    useAnalyticData("customers");
+  const {
+    sortedData: data,
+    loadingSortedData,
+    isQuerying,
+    queryedList,
+    handleQuery,
+    setIsQuerying,
+  } = useSortedData("customers");
 
   const [loading, setLoading] = useState(true);
+  const [dataToRender, setDataToRender] = useState<any>();
 
   // Getting filter params from URL
   const params = useSearchParams();
@@ -37,6 +42,10 @@ const Customers = () => {
 
   const totalCustumers = mainData?.totalItems;
   const customersWithBookings = mainData?.stats?.customersWithBooking;
+
+  useEffect(() => {
+    isQuerying ? setDataToRender(queryedList) : setDataToRender(data);
+  }, [isQuerying, queryedList, setDataToRender, data]);
 
   return (
     <>
@@ -69,7 +78,12 @@ const Customers = () => {
             </div>
           </div>
 
-          <CustomersTable filteredData={data} setLoading={setLoading} />
+          <CustomersTable
+            filteredData={dataToRender}
+            setLoading={setLoading}
+            handleSearch={handleQuery}
+            setIsQuerying={setIsQuerying}
+          />
         </PageBody>
       )}
     </>

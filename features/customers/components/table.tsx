@@ -38,9 +38,16 @@ const table_headings = [
 interface IProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   filteredData: any;
+  setIsQuerying: (value: boolean) => void;
+  handleSearch: (value: string) => void;
 }
 
-const CustomersTable: React.FC<IProps> = ({ setLoading, filteredData }) => {
+const CustomersTable: React.FC<IProps> = ({
+  setLoading,
+  filteredData,
+  handleSearch,
+  setIsQuerying,
+}) => {
   const {
     handleQuery,
     notFound,
@@ -95,8 +102,9 @@ const CustomersTable: React.FC<IProps> = ({ setLoading, filteredData }) => {
           /> */}
           <Search
             search={search}
-            setSearch={setSearch}
+            setSearch={handleSearch}
             placeholder="Search..."
+            setIsQuerying={setIsQuerying}
           />
           {/* <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
             <FilterBox

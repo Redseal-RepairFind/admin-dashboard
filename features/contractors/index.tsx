@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../layout/header/header";
 import PageBody from "../shared/page-body/page-body";
 import PageHeading from "../shared/page-body/page-heading";
@@ -20,15 +20,27 @@ import useAnalyticData from "@/lib/hooks/useCustomersData";
 import AnalyticCard from "../jobs/components/analytic-card";
 
 const Contractors = () => {
-  const [loading, setLoading] = useState(true);
+  const {
+    sortedData,
+    loadingSortedData,
+    isQuerying,
+    queryedList,
+    handleQuery,
+    setIsQuerying,
+  } = useSortedData("contractors");
 
-  const { sortedData, loadingSortedData } = useSortedData("contractors");
+  const [loading, setLoading] = useState(true);
+  const [dataToRender, setDataToRender] = useState<any>();
 
   const totalContractors = sortedData?.data.totalItems;
 
   // const { loadingContractors } = useContractors();
 
   const stats = sortedData?.data?.stats;
+
+  useEffect(() => {
+    isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
+  }, [isQuerying, queryedList, setDataToRender, sortedData]);
 
   return (
     <>
@@ -70,7 +82,9 @@ const Contractors = () => {
           </div>
           <ContractorsTable
             setLoading={setLoading}
-            contractorData={sortedData}
+            contractorData={dataToRender}
+            handleSearch={handleQuery}
+            setIsQuerying={setIsQuerying}
           />
         </PageBody>
       )}
