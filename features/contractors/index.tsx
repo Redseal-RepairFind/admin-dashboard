@@ -1,151 +1,95 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import TableCard from "@/features/shared/table/components/table-card";
-import Heading from "@/features/shared/table/components/table-heading";
-import Searchbar from "@/features/shared/table/components/searchbar";
-import Filter from "@/features/shared/table/components/filter";
-import Paginator from "@/features/shared/table/components/paginator";
-import TableOverflow from "@/features/shared/table/components/table-overflow";
-import Table from "@/features/shared/table/components/table";
-import Thead from "@/features/shared/table/components/thead";
-import Th from "@/features/shared/table/components/th";
-import Td from "@/features/shared/table/components/td";
-import { formatDateToDDMMYY } from "@/lib/utils/format-date";
-// import FilterBox from "./filter-box";
-// import { useCustomersTable } from "../hooks/table";
-import useCustomers from "@/lib/hooks/useCustomers";
-import VerticalMenu from "@/components/shared/vertical-menu";
-import Pagination from "@/components/shared/pagination";
+import React, { useState, useEffect } from "react";
+import Header from "../layout/header/header";
+import PageBody from "../shared/page-body/page-body";
+import PageHeading from "../shared/page-body/page-heading";
+import DownloadButton from "../shared/page-body/download-button";
+import LoadingTemplate from "../layout/loading";
+import ContractorsTable from "./components/table";
+import useContractors from "@/lib/hooks/useContractors";
+
+import Filter from "@/app/_components/Filter";
 import {
+  Contractors as CustomerIcon,
   CompletedState,
-  PendingState,
-  RatingStar,
-  YellowStar,
+  ComplaintsState,
 } from "@/public/svg";
-import Search from "@/components/shared/search";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCustomersTable } from "../customers/hooks/table";
+import { useSearchParams } from "next/navigation";
+import { useSortedData } from "@/lib/hooks/useSortedData";
+import useAnalyticData from "@/lib/hooks/useCustomersData";
+import AnalyticCard from "../jobs/components/analytic-card";
 
-const table_headings = [
-  "Customer’s Name",
-  "Date Joined",
-  "Email Address",
-  "Phone Number",
-  "Status",
-  "Action",
-];
+const Contractors = () => {
+  const [loading, setLoading] = useState(true);
 
-interface IProps {
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  filteredData: any;
-  setIsQuerying: (value: boolean) => void;
-  handleSearch: (value: string) => void;
-}
+  const {
+    sortedData,
+    loadingSortedData,
+    handleQuery,
+    setIsQuerying,
+    isQuerying,
+    queryedList,
+  } = useSortedData("contractors");
+  const [dataToRender, setDataToRender] = useState<any>();
 
-const CustomersTable: React.FC<IProps> = ({
-  setLoading,
-  filteredData,
-  handleSearch,
-  setIsQuerying,
-}) => {
-  const { handleViewACustomer } = useCustomersTable({ setLoading });
+  const totalContractors = sortedData?.data.totalItems;
 
-  const { search } = useCustomers();
+  // const { loadingContractors } = useContractors();
 
-  let rowOptions = [
-    {
-      name: "Suspend",
-      action: async (item: any) => {},
-    },
-  ];
+  const stats = sortedData?.data?.stats;
 
-  const pageProps = {
-    data: filteredData,
-  };
+  useEffect(() => {
+    isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
+  }, [isQuerying, queryedList, setDataToRender, sortedData]);
 
   return (
-    <TableCard>
-      <div className="flex items-center justify-between w-full">
-        <Heading name="Customers’ list" />
-        <div className="flex w-full items-center justify-end">
-          <Search
-            search={search}
-            setSearch={handleSearch}
-            placeholder="Search..."
+    <>
+      <Header />
+      {loadingSortedData ? (
+        <LoadingTemplate />
+      ) : (
+        <PageBody>
+          <div className="flex justify-between mb-6 items-center">
+            <PageHeading page_title="Contractors" />
+            <Filter />
+            <DownloadButton text="Download Contractor’S LIST" />
+          </div>
+          <div className="overflow-x-auto mb-6">
+            <div className="flex gap-8 min-w-[1200px]">
+              <AnalyticCard
+                icon={<CustomerIcon />}
+                iconColor="bg-[#C398C7]"
+                borderColor="border-l-[#721279]"
+                name="Total Contractors"
+                info={totalContractors?.toLocaleString()}
+              />
+
+              <AnalyticCard
+                icon={<CompletedState />}
+                iconColor="bg-[#dcffde]"
+                borderColor="border-l-[#0D8012]"
+                name="Verifed Contractors"
+                info={stats?.verifiedContractors?.toLocaleString()}
+              />
+              <AnalyticCard
+                icon={<ComplaintsState />}
+                iconColor="bg-[#f7a7a7]"
+                borderColor="border-l-[#9A0101]"
+                name="Unverified Contractors"
+                info={stats?.unVerifiedContractors?.toLocaleString()}
+              />
+            </div>
+          </div>
+          <ContractorsTable
+            setLoading={setLoading}
+            contractorData={dataToRender}
+            handleSearch={handleQuery}
             setIsQuerying={setIsQuerying}
           />
-        </div>
-      </div>
-
-      <TableOverflow>
-        <Table>
-          <Thead>
-            <tr>
-              {table_headings?.map((heading, index) => (
-                <Th key={index}>{heading}</Th>
-              ))}
-            </tr>
-          </Thead>
-
-          <tbody>
-            {filteredData?.data?.data?.map((item: any, index: number) => (
-              <tr
-                key={item?._id}
-                onClick={() => handleViewACustomer(item)}
-                className="cursor-pointer border-b border-gray-200"
-              >
-                <Td>{item?.name}</Td>
-                <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
-                <Td>{item?.email}</Td>
-                <Td>
-                  {item?.phoneNumber?.code}
-                  {item?.phoneNumber?.number}
-                </Td>
-                <Td>
-                  <div className="flex gap-[6px] items-center">
-                    {item?.status === "active" ? (
-                      <CompletedState />
-                    ) : (
-                      <PendingState />
-                    )}
-                    <span
-                      className={`capitalize font-medium ${
-                        item?.status === "active" ? "text-green-500" : ""
-                      }`}
-                    >
-                      {item?.status}
-                    </span>
-                  </div>
-                </Td>
-                <Td>
-                  <div onClick={(e) => e.stopPropagation()} className="w-fit">
-                    <VerticalMenu top="-20px" isBackground={true}>
-                      <div>
-                        {rowOptions?.map((option, index) => (
-                          <button
-                            key={index}
-                            onClick={() => {
-                              option?.action(item);
-                            }}
-                            className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-                          >
-                            {option?.name}
-                          </button>
-                        ))}
-                      </div>
-                    </VerticalMenu>
-                  </div>
-                </Td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </TableOverflow>
-      <div className="w-full mt-2">
-        <Pagination {...pageProps} />
-      </div>
-    </TableCard>
+        </PageBody>
+      )}
+    </>
   );
 };
 
-export default CustomersTable;
+export default Contractors;
