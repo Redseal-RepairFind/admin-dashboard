@@ -15,7 +15,7 @@ export const staff = {
   addStaff: (payload: any) =>
     client.post("/admin/staffs", payload).then(({ data }) => data),
 
-  addStaffPermission: (payload: any) =>
+  updatePermission: (payload: any) =>
     client.post("/admin/staffs/permission", payload).then(({ data }) => data),
 
   removeStaffPermission: (payload: any) =>

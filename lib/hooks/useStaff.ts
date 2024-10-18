@@ -13,10 +13,7 @@ const useStaff = () => {
   const [search, setSearch] = useState("");
 
   const { mutateAsync: AddStaff } = useMutation(staff.addStaff);
-  const { mutateAsync: AddPermission } = useMutation(staff.addStaffPermission);
-  const { mutateAsync: RemovePermission } = useMutation(
-    staff.removeStaffPermission
-  );
+  const { mutateAsync: UpdatePermission } = useMutation(staff.updatePermission);
   const { mutateAsync: SuspendStaff } = useMutation(staff.suspendStaff);
   const { mutateAsync: AddNewPermission } = useMutation(
     permissions.addPermission
@@ -64,9 +61,8 @@ const useStaff = () => {
     refetchPermissionList,
     permissionList: permissionList?.data,
     AddStaff,
-    AddPermission,
     AddNewPermission,
-    RemovePermission,
+    UpdatePermission,
     SuspendStaff,
     perPage,
     setPerPage,

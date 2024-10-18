@@ -50,7 +50,7 @@ const SingleContractor = () => {
 
   const id = params?.slug;
 
-  // console.log(contractorDetails);
+  console.log(contractorDetails);
 
   // const stringified_jobs =
   //   typeof window !== undefined
@@ -246,9 +246,9 @@ const SingleContractor = () => {
         </div>
 
         <div className="mt-24 mb-10 flex flex-col">
-          <div className="self-end mb-7">
+          {/* <div className="self-end mb-7">
             <DownloadButton text="Download JOB HISTORY" />
-          </div>
+          </div> */}
           {/* <JobsHistory jobHistory={current_contractor_jobs} /> */}
         </div>
       </Wrapper>

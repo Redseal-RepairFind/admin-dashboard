@@ -25,6 +25,18 @@ const useContractors = () => {
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
 
+  const { data: fullData, isLoading: loadingFullContractors } = useQuery(
+    ["Contractors Full", search, perPage, currentPage],
+    () => {
+      return contractors.getContractors({
+        search: "",
+        limit: "1000000",
+        page: "1",
+      });
+    },
+    { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
+  );
+
   const router = useRouter();
 
   return {
@@ -37,6 +49,9 @@ const useContractors = () => {
     setPerPage,
     currentPage,
     setCurrentPage,
+    downloadData: fullData?.data,
+    fullData,
+    loadingFullContractors,
   };
 };
 
