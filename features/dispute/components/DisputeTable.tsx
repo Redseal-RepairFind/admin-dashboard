@@ -46,8 +46,6 @@ const DisputeTable = () => {
     search,
     setSearch,
     dataToRender,
-    handleQuery,
-    setIsQuerying,
   } = useDisputes();
 
   const { sortedData, loadingSortedData } = useSortedData("disputes");
@@ -85,12 +83,7 @@ const DisputeTable = () => {
             </button>
           ))}
         </div>
-        <Search
-          search={search}
-          setSearch={handleQuery}
-          setIsQuerying={setIsQuerying}
-          placeholder="Search..."
-        />
+        <Search search={search} setSearch={setSearch} placeholder="Search..." />
       </div>
       {loadingDisputes ? (
         <LoadingTemplate />
@@ -106,7 +99,7 @@ const DisputeTable = () => {
             </Thead>
 
             <tbody>
-              {dataToRender?.data?.data?.map((item: any, index: number) => (
+              {dataToRender?.map((item: any, index: number) => (
                 <tr key={index} className="border-b border-gray-100">
                   <Td>{index + 1}</Td>
                   <Td>{item?.disputer?.name || "-"}</Td>
