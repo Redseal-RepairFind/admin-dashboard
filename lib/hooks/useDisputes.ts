@@ -25,38 +25,17 @@ const useDisputes = () => {
 
   const { id } = useParams();
 
-  const {
-    sortedData,
-    loadingSortedData,
-    isQuerying,
-    queryedList,
-    handleQuery,
-    setIsQuerying,
-  } = useSortedData("disputes");
+  const { sortedData, loadingSortedData } = useSortedData("disputes");
 
   useEffect(() => {
-    isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
-  }, [isQuerying, queryedList, setDataToRender, sortedData]);
-  useEffect(() => {
     if (sessionStatus === "OPEN") {
-      // If sessionStatus is "OPEN", render the full data array
-      setDataToRender(sortedData?.data);
+      setDataToRender(sortedData?.data?.data);
     } else if (sessionStatus && sortedData?.data?.data) {
-      // Filter the data based on sessionStatus
-      const filteredArray = sortedData.data.data.filter(
+      const data = sortedData?.data?.data.filter(
         (item: any) => item.status === sessionStatus
       );
 
-      // Clone the sortedData structure and replace only the data field
-      const updatedFilteredData = {
-        ...sortedData,
-        data: {
-          ...sortedData.data, // Retain other properties of sortedData
-          data: filteredArray, // Replace only the actual data array
-        },
-      };
-
-      setDataToRender(updatedFilteredData);
+      setDataToRender(data);
     }
   }, [sessionStatus, sortedData]);
 
@@ -164,8 +143,6 @@ const useDisputes = () => {
     search,
     setSearch,
     dataToRender,
-    handleQuery,
-    setIsQuerying,
   };
 };
 
