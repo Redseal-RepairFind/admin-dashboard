@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HeaderSearch } from "@/public/svg";
 import { FaSearch } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
@@ -9,12 +9,18 @@ const Search = ({
   placeholder,
   search,
   setSearch,
+  setIsQuerying,
 }: {
   placeholder?: any;
   search: any;
   setSearch: any;
+  setIsQuerying: any;
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    if (searchTerm === "") setIsQuerying(false);
+  }, [searchTerm, setIsQuerying]);
   return (
     <div className="border border-[#ddd] flex py-2 pl-3 pr-2 items-center min-w-[400px] rounded justify-between">
       <input

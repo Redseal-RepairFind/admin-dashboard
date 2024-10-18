@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Header from "../layout/header/header";
 import PageBody from "../shared/page-body/page-body";
 import CustomersTable from "./components/table";
@@ -22,12 +22,20 @@ type FilterData = {
 const Customers = () => {
   // Fetching customers data
 
-  const { sortedData: data, loadingSortedData } = useSortedData("customers");
+  const [dataToRender, setDataToRender] = useState<any>();
 
-  const { customerData: jobData, loadingCustomers } =
-    useAnalyticData("customers");
+  const {
+    sortedData,
+    loadingSortedData,
+    handleQuery,
+    setIsQuerying,
+    isQuerying,
+    queryedList,
+  } = useSortedData("customers");
 
-  console.log(jobData);
+  useEffect(() => {
+    isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
+  }, [isQuerying, queryedList, setDataToRender, sortedData]);
 
   const [loading, setLoading] = useState(true);
 
@@ -35,7 +43,7 @@ const Customers = () => {
   const params = useSearchParams();
   const filterString = params.get("sort");
 
-  const mainData = data?.data;
+  const mainData = sortedData?.data;
 
   const totalCustumers = mainData?.totalItems;
   const customersWithBookings = mainData?.stats?.customersWithBooking;
@@ -71,7 +79,12 @@ const Customers = () => {
             </div>
           </div>
 
-          <CustomersTable filteredData={data} setLoading={setLoading} />
+          <CustomersTable
+            filteredData={dataToRender}
+            setLoading={setLoading}
+            handleSearch={handleQuery}
+            setIsQuerying={setIsQuerying}
+          />
         </PageBody>
       )}
     </>
