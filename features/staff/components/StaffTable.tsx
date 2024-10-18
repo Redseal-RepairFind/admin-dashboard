@@ -130,6 +130,9 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
             search={search}
             setSearch={setSearch}
             placeholder="Search..."
+            setIsQuerying={() => {
+              false;
+            }}
           />
         </div>
         <div className="flex items-center justify-end gap-4">
