@@ -2,6 +2,7 @@
 import React from "react";
 import TableCard from "@/features/shared/table/components/table-card";
 import Heading from "@/features/shared/table/components/table-heading";
+import Searchbar from "@/features/shared/table/components/searchbar";
 import Filter from "@/features/shared/table/components/filter";
 import Paginator from "@/features/shared/table/components/paginator";
 import TableOverflow from "@/features/shared/table/components/table-overflow";
@@ -25,7 +26,6 @@ import Ratings from "@/components/shared/ratings";
 import Pagination from "@/components/shared/pagination";
 
 import { useSortedData } from "@/lib/hooks/useSortedData";
-import Search from "@/components/shared/search";
 
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
@@ -42,16 +42,9 @@ const table_headings = [
 interface IProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   contractorData: any;
-  handleSearch: (value: string) => void;
-  setIsQuerying: (value: boolean) => void;
 }
 
-const ContractorsTable: React.FC<IProps> = ({
-  setLoading,
-  contractorData,
-  handleSearch,
-  setIsQuerying,
-}) => {
+const ContractorsTable: React.FC<IProps> = ({ setLoading, contractorData }) => {
   const {
     handleQuery,
     notFound,
@@ -87,11 +80,10 @@ const ContractorsTable: React.FC<IProps> = ({
       <div className="flex items-center justify-between w-full">
         <Heading name="Contractors’ list" />
         <div className="flex gap-8">
-          <Search
+          <Searchbar
             placeholder="Search by name or email"
-            setSearch={handleSearch}
-            setIsQuerying={setIsQuerying}
-            search={""}
+            handleQuery={setSearch}
+            notFound={notFound}
           />
           {/* <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
             <FilterBox

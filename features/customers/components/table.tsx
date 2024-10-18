@@ -38,16 +38,9 @@ const table_headings = [
 interface IProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   filteredData: any;
-  setIsQuerying: (value: boolean) => void;
-  handleSearch: (value: string) => void;
 }
 
-const CustomersTable: React.FC<IProps> = ({
-  setLoading,
-  filteredData,
-  handleSearch,
-  setIsQuerying,
-}) => {
+const CustomersTable: React.FC<IProps> = ({ setLoading, filteredData }) => {
   const {
     handleQuery,
     notFound,
@@ -95,9 +88,8 @@ const CustomersTable: React.FC<IProps> = ({
         <div className="flex w-full items-center justify-end">
           <Search
             search={search}
-            setSearch={handleSearch}
+            setSearch={setSearch}
             placeholder="Search..."
-            setIsQuerying={setIsQuerying}
           />
         </div>
       </div>
