@@ -27,8 +27,6 @@ const Customers = () => {
   const { customerData: jobData, loadingCustomers } =
     useAnalyticData("customers");
 
-  console.log(jobData);
-
   const [loading, setLoading] = useState(true);
 
   // Getting filter params from URL

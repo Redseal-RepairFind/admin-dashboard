@@ -29,7 +29,6 @@ const Contractors = () => {
   // const { loadingContractors } = useContractors();
 
   const stats = sortedData?.data?.stats;
-  console.log(sortedData);
 
   return (
     <>
