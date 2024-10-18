@@ -32,10 +32,10 @@ const Invoice = () => {
     (state: RootState) => state.jobDetail
   );
   useLayoutEffect(() => {
-    if (jobDetail.job._id === "") {
+    if (jobDetail._id === "") {
       router.push("/jobs");
     }
-  }, [jobDetail.job._id]);
+  }, [jobDetail._id]);
   // const [isLoading, setIsLoading] = useState(false);
   return (
     <>
@@ -90,35 +90,30 @@ const Invoice = () => {
                 <tbody>
                   <ProfileColumn
                     position="Customer’s profile"
-                    name={jobDetail.customer.fullName}
-                    phoneNumber={jobDetail.customer.phoneNumber}
+                    name={jobDetail?.customer?.name || "-"}
+                    phoneNumber={
+                      jobDetail?.customer?.phoneNumber?.number || "-"
+                    }
                     stars={1}
-                    imageSrc={jobDetail.customer.profileImg}
+                    imageSrc={jobDetail.customer.profilePhoto?.url}
                   />
-                  <ProfileColumn
-                    position="Contractor’s profile"
-                    name={`${jobDetail.contractor.firstName} ${jobDetail.contractor.lastName}`}
-                    phoneNumber={jobDetail.contractor.email}
-                    stars={4}
-                    imageSrc={jobDetail.contractor.profileImage}
-                  />
-                  <SingleLineColumn name="Job ID" value={jobDetail.job._id} />
+                  <SingleLineColumn name="Job ID" value={jobDetail._id} />
                   <SingleLineColumn
                     name="Job Address"
-                    value={jobDetail.job.address}
+                    value={jobDetail?.location?.address}
                   />
 
                   <DescriptionColumn
                     name="Job Description"
-                    text={jobDetail.job.description}
+                    text={jobDetail?.description}
                   />
                   <SingleLineColumn
                     name="Job Status"
-                    value={jobDetail.job.status}
+                    value={jobDetail?.status}
                   />
                   <SingleLineColumn
                     name="Job Inspection"
-                    value={jobDetail.job.inspection.status ? "True" : "False"}
+                    value={jobDetail?.isAssigned?.status ? "True" : "False"}
                   />
                 </tbody>
               </table>

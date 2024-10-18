@@ -174,11 +174,11 @@ export function findJobListSmallestYear(arrayOfObjects: IJobs[]) {
     return null; // Return null if the array is empty
   }
 
-  let smallestDate = new Date(arrayOfObjects[0].job.createdAt);
+  let smallestDate = new Date(arrayOfObjects[0].job?.createdAt);
   let smallestYear = smallestDate.getFullYear();
 
   for (let i = 1; i < arrayOfObjects.length; i++) {
-    const currentDate = new Date(arrayOfObjects[i].job.createdAt);
+    const currentDate = new Date(arrayOfObjects[i]?.job?.createdAt);
     if (currentDate < smallestDate) {
       smallestDate = currentDate;
       smallestYear = currentDate.getFullYear();
@@ -193,11 +193,11 @@ export function findJoblistLargestYear(arrayOfObjects: IJobs[]) {
     return null; // Return null if the array is empty
   }
 
-  let largestDate = new Date(arrayOfObjects[0].job.createdAt);
+  let largestDate = new Date(arrayOfObjects[0].job?.createdAt);
   let largestYear = largestDate.getFullYear();
 
   for (let i = 1; i < arrayOfObjects.length; i++) {
-    const currentDate = new Date(arrayOfObjects[i].job.createdAt);
+    const currentDate = new Date(arrayOfObjects[i]?.job?.createdAt);
     if (currentDate > largestDate) {
       largestDate = currentDate;
       largestYear = currentDate.getFullYear();

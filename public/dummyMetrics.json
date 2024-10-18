@@ -1,0 +1,160 @@
+[
+  {
+    "metric": "signUps",
+    "data": [
+      {
+        "date": "2024-10-01",
+        "count": 15
+      },
+      {
+        "date": "2024-10-02",
+        "count": 22
+      }
+    ]
+  },
+  {
+    "metric": "accountCreations",
+    "data": [
+      {
+        "date": "2024-10-01",
+        "customers": 10,
+        "contractors": 5
+      },
+      {
+        "date": "2024-10-02",
+        "customers": 18,
+        "contractors": 4
+      }
+    ]
+  },
+  {
+    "metric": "appDownloads",
+    "data": [
+      {
+        "date": "2024-10-01",
+        "count": 100
+      },
+      {
+        "date": "2024-10-02",
+        "count": 120
+      }
+    ]
+  },
+  {
+    "metric": "appStorePageViews",
+    "data": [
+      {
+        "date": "2024-10-01",
+        "count": 150
+      },
+      {
+        "date": "2024-10-02",
+        "count": 175
+      }
+    ]
+  },
+  {
+    "metric": "jobsPosted",
+    "data": [
+      {
+        "date": "2024-10-01",
+        "count": 8
+      },
+      {
+        "date": "2024-10-02",
+        "count": 12
+      }
+    ]
+  },
+  {
+    "metric": "quotesGiven",
+    "data": [
+      {
+        "date": "2024-10-01",
+        "count": 25
+      },
+      {
+        "date": "2024-10-02",
+        "count": 30
+      }
+    ]
+  },
+  {
+    "metric": "jobsStarted",
+    "data": [
+      {
+        "date": "2024-10-01",
+        "count": 4
+      },
+      {
+        "date": "2024-10-02",
+        "count": 5
+      }
+    ]
+  },
+  {
+    "metric": "jobsClosed",
+    "data": [
+      {
+        "date": "2024-10-01",
+        "count": 3
+      },
+      {
+        "date": "2024-10-02",
+        "count": 6
+      }
+    ]
+  },
+  {
+    "metric": "emergencyCalls",
+    "data": [
+      {
+        "date": "2024-10-01",
+        "count": 5
+      },
+      {
+        "date": "2024-10-02",
+        "count": 3
+      }
+    ]
+  },
+  {
+    "metric": "disputesInitiated",
+    "data": [
+      {
+        "date": "2024-10-01",
+        "count": 2
+      },
+      {
+        "date": "2024-10-02",
+        "count": 1
+      }
+    ]
+  },
+  {
+    "metric": "disputesResolved",
+    "data": [
+      {
+        "date": "2024-10-01",
+        "count": 1
+      },
+      {
+        "date": "2024-10-02",
+        "count": 2
+      }
+    ]
+  },
+  {
+    "metric": "averageDisputeResolutionTime",
+    "data": [
+      {
+        "date": "2024-10-01",
+        "count": 3
+      },
+      {
+        "date": "2024-10-02",
+        "count": 4
+      }
+    ]
+  }
+]

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import LineColumn from "./LineColumn";
-import { convertDate } from "@/lib/utils/format-date";
+import { formatTimeDDMMYY } from "@/lib/utils/format-date";
 import GoogleMapsEmbed from "@/components/ui/google-maps";
 import SectionContainer from "./SectionContainer";
 
@@ -21,7 +21,7 @@ const JobDayData = ({ info }: { info: any }) => {
       <div className="w-full pb-5 mt-4 border-t border-t-[#e7e6e6]">
         <LineColumn
           name="Date & Time Contractor Initiated Job"
-          value={convertDate(info?.createdAt)}
+          value={formatTimeDDMMYY(info?.createdAt)}
         />
         <LineColumn
           name="Job Location"
@@ -43,7 +43,7 @@ const JobDayData = ({ info }: { info: any }) => {
         />
         <LineColumn
           name="Date & Time Contractor Updated Job"
-          value={convertDate(info?.updatedAt)}
+          value={formatTimeDDMMYY(info?.updatedAt)}
         />
       </div>
     </SectionContainer>

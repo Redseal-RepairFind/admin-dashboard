@@ -23,6 +23,8 @@ import {
   YellowStar,
 } from "@/public/svg";
 import Search from "@/components/shared/search";
+import { useRouter, useSearchParams } from "next/navigation";
+import { filterData } from "../hooks/filterByDate";
 
 const table_headings = [
   "Customer’s Name",
@@ -35,9 +37,17 @@ const table_headings = [
 
 interface IProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  filteredData: any;
+  setIsQuerying: (value: boolean) => void;
+  handleSearch: (value: string) => void;
 }
 
-const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
+const CustomersTable: React.FC<IProps> = ({
+  setLoading,
+  filteredData,
+  handleSearch,
+  setIsQuerying,
+}) => {
   const {
     handleQuery,
     notFound,
@@ -55,18 +65,12 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     customerData,
     loadingCustomers,
     perPage,
-    setPerPage,
     currentPage,
-    setCurrentPage,
     search,
     setSearch,
   } = useCustomers();
 
   let rowOptions = [
-    // {
-    //   name: "Restrict",
-    //   action: (item: any) => {},
-    // },
     {
       name: "Suspend",
       action: async (item: any) => {},
@@ -74,24 +78,14 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
   ];
 
   let rowPendingOptions = [
-    // {
-    //   name: "Restrict",
-    //   action: (item: any) => {},
-    // },
     {
       name: "Cancel Invite",
       action: async (item: any) => {},
     },
   ];
 
-  // console.log(customerData);
-
   const pageProps = {
-    data: customerData,
-    perPage,
-    setPerPage,
-    pageNo: currentPage,
-    setPageNo: setCurrentPage,
+    data: filteredData,
   };
 
   return (
@@ -99,25 +93,12 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
       <div className="flex items-center justify-between w-full">
         <Heading name="Customers’ list" />
         <div className="flex w-full items-center justify-end">
-          {/* <Searchbar
-            placeholder="Search by name or email"
-            handleQuery={handleQuery}
-            notFound={notFound}
-          /> */}
           <Search
             search={search}
-            setSearch={setSearch}
+            setSearch={handleSearch}
             placeholder="Search..."
+            setIsQuerying={setIsQuerying}
           />
-          {/* <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
-            <FilterBox
-              handleRatingFiltering={handleRatingFiltering}
-              handleMonthFiltering={handleMonthFiltering}
-              handleYearFiltering={handleYearFiltering}
-              availableYears={availableYears}
-              setShowFilters={setShowFilters}
-            />
-          </Filter> */}
         </div>
       </div>
 
@@ -132,7 +113,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
           </Thead>
 
           <tbody>
-            {customerData?.customers?.map((item: any, index: number) => (
+            {filteredData?.data?.data?.map((item: any, index: number) => (
               <tr
                 key={item?._id}
                 onClick={() => handleViewACustomer(item)}
@@ -145,7 +126,6 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
                   {item?.phoneNumber?.code}
                   {item?.phoneNumber?.number}
                 </Td>
-                {/* Rating */}
                 <Td>
                   <div className="flex gap-[6px] items-center">
                     {item?.status === "active" ? (
@@ -202,7 +182,6 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
           </tbody>
         </Table>
       </TableOverflow>
-      {/* <Paginator /> */}
       <div className="w-full mt-2">
         <Pagination {...pageProps} />
       </div>

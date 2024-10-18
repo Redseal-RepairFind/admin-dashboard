@@ -2,7 +2,7 @@
 import React from "react";
 import { FaLocationArrow, FaCalendar } from "react-icons/fa";
 import LineColumn from "./LineColumn";
-import { convertDate } from "@/lib/utils/format-date";
+import { formatTimeDDMMYY } from "@/lib/utils/format-date";
 import GoogleMapsEmbed from "@/components/ui/google-maps";
 import SectionContainer from "./SectionContainer";
 
@@ -22,7 +22,7 @@ const JobDetail = ({ info }: { info: any }) => {
                   <FaLocationArrow /> {info?.location?.address}
                 </span>
                 <span className="flex items-center justify-center gap-2">
-                  <FaCalendar /> {convertDate(info?.date)}
+                  {/* <FaCalendar /> {formatTimeDDMMYY(info?.date)} */}
                 </span>
                 <span className="flex items-center justify-center gap-2">
                   No. of Applicants: {info?.totalQuotations}

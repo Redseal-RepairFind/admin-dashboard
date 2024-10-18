@@ -86,8 +86,6 @@ export const useCustomersTable = ({ setLoading }: UseJobsTableProps) => {
     }
   };
 
-  console.log(queryedCustomers);
-
   const [filterYear, setFilterYear] = useState(0);
   const [filterMonth, setFilterMonth] = useState(0);
 

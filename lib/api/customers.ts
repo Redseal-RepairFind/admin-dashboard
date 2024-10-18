@@ -2,6 +2,10 @@ import apiClient from "./apii";
 
 const client = apiClient();
 
+type RouteType = {
+  route: "customers" | "contractors" | "disputes" | "jobs" | "job-emegercy";
+};
+
 export const customers = {
   getCustomers: ({
     page,
@@ -31,5 +35,28 @@ export const customers = {
   getCustomerHistory: ({ id }: { id: any }) =>
     client
       .get(`/admin/customer/job/detail/${id}?page=1&limit=50`)
+      .then(({ data }) => data),
+
+  getAnalytics: (
+    route: "customers" | "contractors" | "disputes" | "jobs" | "emergencies"
+  ) => client.get(`/admin/${route}`).then(({ data }) => data),
+
+  getSortingAnalytics: ({
+    page,
+    limit,
+    startDate,
+    endDate,
+    route,
+  }: {
+    page: number;
+    limit: number;
+    startDate: string;
+    endDate: string;
+    route: "customers" | "contractors" | "disputes" | "jobs" | "emergencies";
+  }) =>
+    client
+      .get(
+        `/admin/${route}?limit=${limit}&page=${page}&startDate=${startDate}&endDate=${endDate}`
+      )
       .then(({ data }) => data),
 };

@@ -28,6 +28,7 @@ const JobInformation = () => {
   const [resolveType, setResolveType] = useState<string>("");
 
   const { currentUser } = useContext(UserContext);
+
   // console.log(singleDispute);
 
   // console.log(currentUser);

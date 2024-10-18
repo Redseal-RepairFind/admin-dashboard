@@ -1,84 +1,151 @@
 "use client";
-import React, { useState } from "react";
-import Header from "../layout/header/header";
-import PageBody from "../shared/page-body/page-body";
-import PageHeading from "../shared/page-body/page-heading";
-import DownloadButton from "../shared/page-body/download-button";
-import LoadingTemplate from "../layout/loading";
-import ContractorsTable from "./components/table";
-import useContractors from "@/lib/hooks/useContractors";
-import toast from "react-hot-toast";
+import React, { useEffect, useState } from "react";
+import TableCard from "@/features/shared/table/components/table-card";
+import Heading from "@/features/shared/table/components/table-heading";
+import Searchbar from "@/features/shared/table/components/searchbar";
+import Filter from "@/features/shared/table/components/filter";
+import Paginator from "@/features/shared/table/components/paginator";
+import TableOverflow from "@/features/shared/table/components/table-overflow";
+import Table from "@/features/shared/table/components/table";
+import Thead from "@/features/shared/table/components/thead";
+import Th from "@/features/shared/table/components/th";
+import Td from "@/features/shared/table/components/td";
+import { formatDateToDDMMYY } from "@/lib/utils/format-date";
+// import FilterBox from "./filter-box";
+// import { useCustomersTable } from "../hooks/table";
+import useCustomers from "@/lib/hooks/useCustomers";
+import VerticalMenu from "@/components/shared/vertical-menu";
+import Pagination from "@/components/shared/pagination";
+import {
+  CompletedState,
+  PendingState,
+  RatingStar,
+  YellowStar,
+} from "@/public/svg";
+import Search from "@/components/shared/search";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCustomersTable } from "../customers/hooks/table";
 
-const Contractors = () => {
-  const [loading, setLoading] = useState(true);
+const table_headings = [
+  "Customer’s Name",
+  "Date Joined",
+  "Email Address",
+  "Phone Number",
+  "Status",
+  "Action",
+];
 
-  const { loadingContractors, downloadData } = useContractors();
+interface IProps {
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  filteredData: any;
+  setIsQuerying: (value: boolean) => void;
+  handleSearch: (value: string) => void;
+}
 
-  function convertToCSV(contractors: any) {
-    const headers = [
-      "Contractor Name",
-      "Contractor Email",
-      "Phone Number",
-      "Account Type",
-      "Skill",
-      "GST Status",
-      "Ratings",
-    ];
+const CustomersTable: React.FC<IProps> = ({
+  setLoading,
+  filteredData,
+  handleSearch,
+  setIsQuerying,
+}) => {
+  const { handleViewACustomer } = useCustomersTable({ setLoading });
 
-    const rows = contractors.map((contractor: any) => [
-      contractor?.name,
-      contractor?.email,
-      `${contractor?.phoneNumber?.code}${contractor?.phoneNumber?.number}`,
-      contractor?.accountType,
-      contractor?.profile?.skill,
-      contractor?.status,
-      contractor?.rating,
-    ]);
+  const { search } = useCustomers();
 
-    // Combine headers and rows
-    const csvContent = [headers, ...rows]
-      .map((row) => row.join(","))
-      .join("\n");
+  let rowOptions = [
+    {
+      name: "Suspend",
+      action: async (item: any) => {},
+    },
+  ];
 
-    // Create a blob and trigger a download
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "contractors.csv";
-    link.style.display = "none";
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    toast.success("Contractor list saved successfully...");
-  }
+  const pageProps = {
+    data: filteredData,
+  };
 
   return (
-    <>
-      <Header />
-      {loadingContractors && <LoadingTemplate />}
-      {/* Page Body - Use for side padding on the top and sides */}
-      <PageBody>
-        <div className="flex justify-between mb-6 items-center">
-          <PageHeading page_title="Contractors" />
-          <DownloadButton
-            onClick={() => {
-              if (downloadData?.data) {
-                convertToCSV(downloadData.data);
-              } else {
-                toast.error("No data available to download");
-              }
-            }}
-            text="Download Contractor’S LIST"
+    <TableCard>
+      <div className="flex items-center justify-between w-full">
+        <Heading name="Customers’ list" />
+        <div className="flex w-full items-center justify-end">
+          <Search
+            search={search}
+            setSearch={handleSearch}
+            placeholder="Search..."
+            setIsQuerying={setIsQuerying}
           />
         </div>
-        <ContractorsTable setLoading={setLoading} />
-      </PageBody>
-    </>
+      </div>
+
+      <TableOverflow>
+        <Table>
+          <Thead>
+            <tr>
+              {table_headings?.map((heading, index) => (
+                <Th key={index}>{heading}</Th>
+              ))}
+            </tr>
+          </Thead>
+
+          <tbody>
+            {filteredData?.data?.data?.map((item: any, index: number) => (
+              <tr
+                key={item?._id}
+                onClick={() => handleViewACustomer(item)}
+                className="cursor-pointer border-b border-gray-200"
+              >
+                <Td>{item?.name}</Td>
+                <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
+                <Td>{item?.email}</Td>
+                <Td>
+                  {item?.phoneNumber?.code}
+                  {item?.phoneNumber?.number}
+                </Td>
+                <Td>
+                  <div className="flex gap-[6px] items-center">
+                    {item?.status === "active" ? (
+                      <CompletedState />
+                    ) : (
+                      <PendingState />
+                    )}
+                    <span
+                      className={`capitalize font-medium ${
+                        item?.status === "active" ? "text-green-500" : ""
+                      }`}
+                    >
+                      {item?.status}
+                    </span>
+                  </div>
+                </Td>
+                <Td>
+                  <div onClick={(e) => e.stopPropagation()} className="w-fit">
+                    <VerticalMenu top="-20px" isBackground={true}>
+                      <div>
+                        {rowOptions?.map((option, index) => (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              option?.action(item);
+                            }}
+                            className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                          >
+                            {option?.name}
+                          </button>
+                        ))}
+                      </div>
+                    </VerticalMenu>
+                  </div>
+                </Td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </TableOverflow>
+      <div className="w-full mt-2">
+        <Pagination {...pageProps} />
+      </div>
+    </TableCard>
   );
 };
 
-export default Contractors;
+export default CustomersTable;

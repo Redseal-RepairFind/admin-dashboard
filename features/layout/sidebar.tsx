@@ -14,6 +14,7 @@ import {
   RFReps,
   Transactions,
   Gst,
+  JobIcon,
 } from "@/public/svg";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -41,6 +42,8 @@ const Sidebar = () => {
     // { name: "Analytics", svg: <Analytics />, route: "/analytics" },
     { name: "Customers", svg: <Customers />, route: "/customers" },
     { name: "Contractors", svg: <Contractors />, route: "/contractors" },
+    { name: "Jobs", svg: <JobIcon />, route: "/jobs" },
+
     { name: "Emergency", svg: <MdEmergency />, route: "/emergency" },
     { name: "Dispute", svg: <Transactions />, route: "/dispute" },
     // { name: "Transactions", svg: <Transactions />, route: "/transactions" },
