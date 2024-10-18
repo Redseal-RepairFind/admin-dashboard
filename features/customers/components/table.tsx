@@ -73,6 +73,17 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     },
   ];
 
+  let rowPendingOptions = [
+    // {
+    //   name: "Restrict",
+    //   action: (item: any) => {},
+    // },
+    {
+      name: "Cancel Invite",
+      action: async (item: any) => {},
+    },
+  ];
+
   // console.log(customerData);
 
   const pageProps = {
@@ -153,20 +164,36 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
                 </Td>
                 <Td>
                   <div onClick={(e) => e.stopPropagation()} className="w-fit">
-                    <VerticalMenu isBackground={true}>
-                      <div>
-                        {rowOptions?.map((option, index) => (
-                          <button
-                            key={index}
-                            onClick={() => {
-                              option?.action(item);
-                            }}
-                            className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-                          >
-                            {option?.name}
-                          </button>
-                        ))}
-                      </div>
+                    <VerticalMenu top="-20px" isBackground={true}>
+                      {item?.status === "in-review" ? (
+                        <div>
+                          {rowPendingOptions?.map((option, index) => (
+                            <button
+                              key={index}
+                              onClick={() => {
+                                option?.action(item);
+                              }}
+                              className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                            >
+                              {option?.name}
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div>
+                          {rowOptions?.map((option, index) => (
+                            <button
+                              key={index}
+                              onClick={() => {
+                                option?.action(item);
+                              }}
+                              className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                            >
+                              {option?.name}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </VerticalMenu>
                   </div>
                 </Td>
