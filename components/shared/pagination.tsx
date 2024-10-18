@@ -48,7 +48,7 @@ const Pagination = ({
     updateUrlParams(1, newPerPage);
   };
 
-  const totalPages = Math.ceil(data?.data?.lastPage); // Total number of pages
+  const totalPages = Math.ceil(data.data?.lastPage); // Total number of pages
 
   return (
     <div className="w-full flex items-center gap-4 justify-between">
