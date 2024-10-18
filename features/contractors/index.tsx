@@ -48,27 +48,9 @@ const CustomersTable: React.FC<IProps> = ({
   handleSearch,
   setIsQuerying,
 }) => {
-  const {
-    handleQuery,
-    notFound,
-    showFilters,
-    setShowFilters,
-    handleRatingFiltering,
-    handleMonthFiltering,
-    handleYearFiltering,
-    availableYears,
-    currentCustomers,
-    handleViewACustomer,
-  } = useCustomersTable({ setLoading });
+  const { handleViewACustomer } = useCustomersTable({ setLoading });
 
-  const {
-    customerData,
-    loadingCustomers,
-    perPage,
-    currentPage,
-    search,
-    setSearch,
-  } = useCustomers();
+  const { search } = useCustomers();
 
   let rowOptions = [
     {
