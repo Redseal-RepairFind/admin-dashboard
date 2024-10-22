@@ -9,7 +9,6 @@ import {
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { setsingleJobDetail } from "@/lib/redux/slices/single-job-detail";
 import { RootState } from "@/lib/redux/store";
-import useAnalyticData from "@/lib/hooks/useCustomersData"; // Updated hook
 import { useSortedData } from "@/lib/hooks/useSortedData";
 
 interface UseJobsTableProps {

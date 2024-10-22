@@ -18,7 +18,6 @@ import {
 } from "@/public/svg";
 import { useSearchParams } from "next/navigation";
 import { useSortedData } from "@/lib/hooks/useSortedData";
-import useAnalyticData from "@/lib/hooks/useCustomersData";
 import AnalyticCard from "../jobs/components/analytic-card";
 import { downloadPDF } from "@/lib/utils/downloadPdf";
 
@@ -41,21 +40,27 @@ const Contractors = () => {
 
   const stats = sortedData?.data?.stats;
 
-  // console.log(sortedData);
+  console.log(sortedData);
 
   useEffect(() => {
     isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
   }, [isQuerying, queryedList, setDataToRender, sortedData]);
 
-  const columns = ["Contractor's Name", "Skill", "Status", "Email", "Ratings"];
+  const columns = [
+    "Contractor's Name",
+    "Skill",
+    "Status",
+    "Email",
+    "Stage",
+    "Ratings",
+  ];
 
   const rows = sortedData?.data?.data?.map((item: any) => [
     item?.name,
-    !item?.profile?.skill ? "Not Submitted" : item?.profile?.skill,
-    item?.gstDetails?.status?.toLowerCase() === "approved"
-      ? "Verified"
-      : "Pending",
+    item?.profile?.skill === undefined ? "Not Submitted" : item?.profile?.skill,
+    item?.accountStatus,
     item?.email,
+    item?.onboarding?.stage?.label,
     item?.rating,
   ]);
 
@@ -85,7 +90,7 @@ const Contractors = () => {
                 iconColor="bg-[#C398C7]"
                 borderColor="border-l-[#721279]"
                 name="Total Contractors"
-                info={totalContractors?.toLocaleString()}
+                info={stats?.total?.toLocaleString()}
               />
 
               <AnalyticCard

@@ -19,7 +19,6 @@ import LoadingTemplate from "../layout/loading";
 import Filter from "@/app/_components/Filter";
 import { useSearchParams } from "next/navigation";
 import { useSortedData } from "@/lib/hooks/useSortedData";
-import useAnalyticData from "@/lib/hooks/useCustomersData";
 import { downloadPDF } from "@/lib/utils/downloadPdf";
 import { trimString } from "@/lib/utils/trim-string";
 import { formatDateToDDMMYY } from "@/lib/utils/format-date";

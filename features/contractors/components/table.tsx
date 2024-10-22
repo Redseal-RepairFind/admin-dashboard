@@ -32,6 +32,7 @@ const table_headings = [
   "Status",
   "Email Address",
   // "No of Jobs",
+  "Sign-up Stage",
   "Ratings",
 ];
 
@@ -127,23 +128,11 @@ const ContractorsTable: React.FC<IProps> = ({
                       : item?.profile?.skill}
                   </span>
                 </Td>
-                <Td>
-                  {item?.gstDetails?.status?.toLowerCase() === "approved" ? (
-                    <div className="flex gap-[6px] items-center">
-                      <CompletedState />
-                      <span className="capitalize">Verified</span>
-                    </div>
-                  ) : (
-                    <div className="flex gap-[6px] items-center">
-                      <PendingState />
-                      <span className="capitalize">Pending</span>
-                    </div>
-                  )}
-                </Td>
+                <Td>{item?.accountStatus}</Td>
 
                 <Td>{item?.email}</Td>
 
-                {/* <Td>{item?.job?.length}</Td> */}
+                <Td>{item?.onboarding?.stage?.label}</Td>
 
                 <Td>
                   <Ratings rating={item?.rating} />
