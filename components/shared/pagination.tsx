@@ -8,14 +8,12 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 const perPageOptions = [5, 10, 15, 25, 35, 45];
 
 type dData = {
-  data: any;
+  data: { lastPage: number }; // Ensure lastPage is of type number
 };
 
-const Pagination = ({
-  data, // Pass the full dataset here
-}: dData) => {
-  const [currentPageNo, setCurrentPageNo] = useState(1); // Active page
-  const [perPage, setPerPage] = useState(10); // Items per page
+const Pagination = ({ data }: dData) => {
+  const [currentPageNo, setCurrentPageNo] = useState<number>(1); // Active page
+  const [perPage, setPerPage] = useState<number>(10); // Items per page
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -27,10 +25,10 @@ const Pagination = ({
     const perPageFromURL = searchParams.get("perPage");
 
     if (currentPageFromURL) {
-      setCurrentPageNo(parseInt(currentPageFromURL));
+      setCurrentPageNo(parseInt(currentPageFromURL) || 1); // Default to 1 if NaN
     }
     if (perPageFromURL) {
-      setPerPage(parseInt(perPageFromURL));
+      setPerPage(parseInt(perPageFromURL) || 10); // Default to 10 if NaN
     }
   }, [searchParams]);
 
@@ -52,7 +50,37 @@ const Pagination = ({
     updateUrlParams(1, newPerPage);
   };
 
-  const totalPages = data?.lastPage || data?.length / perPage; // Total number of pages
+  const totalPages = data?.lastPage || 1; // Default to 1 if lastPage is undefined or NaN
+
+  // Determine visible pages with ellipses and handling
+  const getVisiblePages = () => {
+    let pages: (number | string)[] = [];
+
+    if (totalPages <= 15) {
+      pages = Array.from({ length: totalPages }, (_, index) => index + 1);
+    } else {
+      if (currentPageNo <= 2) {
+        pages = Array.from({ length: 15 }, (_, index) => index + 1);
+        pages.push("...");
+        pages.push(totalPages);
+      } else if (currentPageNo > 15 && currentPageNo < totalPages - 3) {
+        pages.push(1);
+        pages.push("...");
+        pages.push(currentPageNo - 1, currentPageNo, currentPageNo + 1);
+        pages.push("...");
+        pages.push(totalPages);
+      } else {
+        pages.push(1);
+        pages.push("...");
+        pages = pages.concat(
+          Array.from({ length: 15 }, (_, index) => totalPages - 14 + index)
+        );
+      }
+    }
+    return pages;
+  };
+
+  const visiblePages = getVisiblePages();
 
   return (
     <div className="w-full flex items-center gap-4 justify-between">
@@ -73,18 +101,25 @@ const Pagination = ({
         </button>
 
         {/* PAGINATION BUTTONS */}
-        {Array.from({ length: totalPages }, (_, index) => index + 1)?.map(
-          (page) => (
+        {visiblePages?.map((page, index) =>
+          page === "..." ? (
+            <span
+              key={`ellipsis-${index}`}
+              className="text-sm font-medium text-gray-400"
+            >
+              ...
+            </span>
+          ) : (
             <button
               className={
                 page === currentPageNo
                   ? "text-sm font-medium text-white bg-black p-1 rounded-sm"
                   : "text-sm font-medium text-primary"
               }
-              key={page}
+              key={`page-${page}`} // Ensure keys are unique
               onClick={() => {
-                setCurrentPageNo(page);
-                updateUrlParams(page, perPage);
+                setCurrentPageNo(page as number); // Type assertion since page can be string
+                updateUrlParams(page as number, perPage);
               }}
             >
               {page}
@@ -115,7 +150,7 @@ const Pagination = ({
         onChange={handlePerPage}
       >
         {perPageOptions.map((perPageOption) => (
-          <option key={perPageOption} value={perPageOption}>
+          <option key={`perPage-${perPageOption}`} value={perPageOption}>
             {perPageOption} Per Page
           </option>
         ))}
