@@ -3,8 +3,15 @@ import { useSearchParams } from "next/navigation";
 import { customers } from "../api/customers";
 import { useQuery } from "react-query";
 import { formatDate } from "@/lib/utils/format-date";
+
 export function useSortedData(
-  route: "customers" | "contractors" | "disputes" | "jobs" | "emergencies"
+  route:
+    | "customers"
+    | "contractors"
+    | "disputes"
+    | "jobs"
+    | "emergencies"
+    | "jobdays"
 ) {
   const searchParams = useSearchParams();
 
@@ -15,6 +22,7 @@ export function useSortedData(
   const [queryedList, setQueryedList] = useState<any[]>([]); // Store the filtered list
   const [isQuerying, setIsQuerying] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [criteria, setCriteria] = useState("fullName");
 
   const params = searchParams.get("sort") || "All";
   const currentPage = searchParams.get("page") || 1;
@@ -24,6 +32,7 @@ export function useSortedData(
   useEffect(() => {
     const sortParam = params.toLowerCase().replaceAll("_", " ");
     const now = new Date();
+    const critria = searchParams.get("sortList") || "firstName";
 
     if (sortParam === "last 24h") {
       setStartDate(new Date(now.getTime() - 24 * 60 * 60 * 1000));
@@ -38,7 +47,9 @@ export function useSortedData(
       setStartDate(initialState);
       setEndDate(now);
     }
-  }, [params, initialState]);
+
+    setCriteria(critria);
+  }, [params, initialState, searchParams]);
 
   // Fetch sorted data
   const {
@@ -61,6 +72,7 @@ export function useSortedData(
         startDate: formatDate(startDate),
         endDate: formatDate(endDate),
         route,
+        criteria: criteria,
       }),
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );

@@ -20,21 +20,16 @@ import Action from "./action";
 import { filledArrayFromNumber } from "@/lib/utils/array-from-number";
 import { trimString } from "@/lib/utils/trim-string";
 import { useContractorTable } from "../hooks/table";
-import FilterBox from "@/features/customers/components/filter-box";
-import useContractors from "@/lib/hooks/useContractors";
 import Ratings from "@/components/shared/ratings";
 import Pagination from "@/components/shared/pagination";
+import SortLists from "@/app/_components/Sort";
 
-import { useSortedData } from "@/lib/hooks/useSortedData";
 import Search from "@/components/shared/search";
-
-// Since the table data is dynamic a table component will replace by this template
-// This Template defines how you can implement any table on your page
 
 const table_headings = [
   "Contractor’s Name",
   "Skill",
-  "GST Status",
+  "Status",
   "Email Address",
   // "No of Jobs",
   "Ratings",
@@ -53,40 +48,42 @@ const ContractorsTable: React.FC<IProps> = ({
   handleSearch,
   setIsQuerying,
 }) => {
-  const {
-    handleQuery,
-    notFound,
-    showFilters,
-    setShowFilters,
-    handleRatingFiltering,
-    handleMonthFiltering,
-    handleYearFiltering,
-    availableYears,
-    currentContractors,
-    handleViewAContractors,
-  } = useContractorTable({ setLoading });
-
-  const {
-    // contractorData,
-    setSearch,
-    perPage,
-    setPerPage,
-    currentPage,
-    setCurrentPage,
-  } = useContractors();
+  const { handleViewAContractors } = useContractorTable({ setLoading });
 
   const mainData = contractorData?.data;
 
   // console.log(contractorData);
 
   const pageProps = {
-    data: mainData?.data,
+    data: mainData,
   };
+  const sortProps = [
+    {
+      url: "firstName",
+      render: "Name (A-Z)",
+    },
+    {
+      url: "-firstName",
+      render: "Name (Z-A)",
+    },
+    {
+      url: "-createdAt",
+      render: "Date Joined (latest)",
+    },
+    {
+      url: "createdAt",
+      render: "Date Joined (oldest)",
+    },
+  ];
 
   return (
     <TableCard>
       <div className="flex items-center justify-between w-full">
         <Heading name="Contractors’ list" />
+        <div className="flex items-center gap-2">
+          <h1 className="text-lg font-semibold ">Sort List</h1>
+          <SortLists sortProps={sortProps} initialState="Name (A-Z)" />
+        </div>
         <div className="flex gap-8">
           <Search
             placeholder="Search by name or email"
@@ -94,15 +91,6 @@ const ContractorsTable: React.FC<IProps> = ({
             setIsQuerying={setIsQuerying}
             search=""
           />
-          {/* <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
-            <FilterBox
-              handleRatingFiltering={handleRatingFiltering}
-              availableYears={availableYears}
-              setShowFilters={setShowFilters}
-              handleMonthFiltering={handleMonthFiltering}
-              handleYearFiltering={handleYearFiltering}
-            />
-          </Filter> */}
         </div>
       </div>
 

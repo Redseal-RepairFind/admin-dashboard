@@ -15,6 +15,7 @@ import {
   Transactions,
   Gst,
   JobIcon,
+  TotalJobs,
 } from "@/public/svg";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -43,6 +44,7 @@ const Sidebar = () => {
     { name: "Customers", svg: <Customers />, route: "/customers" },
     { name: "Contractors", svg: <Contractors />, route: "/contractors" },
     { name: "Jobs", svg: <JobIcon />, route: "/jobs" },
+    { name: "Job Days", svg: <TotalJobs />, route: "/job_days" },
 
     { name: "Emergency", svg: <MdEmergency />, route: "/emergency" },
     { name: "Dispute", svg: <Transactions />, route: "/dispute" },

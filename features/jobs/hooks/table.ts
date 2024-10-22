@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { setsingleJobDetail } from "@/lib/redux/slices/single-job-detail";
 import { RootState } from "@/lib/redux/store";
 import useAnalyticData from "@/lib/hooks/useCustomersData"; // Updated hook
+import { useSortedData } from "@/lib/hooks/useSortedData";
 
 interface UseJobsTableProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,12 +25,8 @@ export const useJobTable = ({ setLoading }: UseJobsTableProps) => {
   const [availableYears, setAvailableYears] = useState<number[]>([0]);
 
   // Using the useAnalyticData hook
-  const {
-    customerData: jobData,
-    loadingCustomers,
-    currentPage,
-    setCurrentPage,
-  } = useAnalyticData("jobs");
+  const { sortedData: jobData, loadingSortedData: loadingCustomers } =
+    useSortedData("jobs");
 
   useEffect(() => {
     setLoading(loadingCustomers);
@@ -158,7 +155,5 @@ export const useJobTable = ({ setLoading }: UseJobsTableProps) => {
     currentJobsList,
     handleViewInvoice,
     totalJobs,
-    currentPage,
-    setCurrentPage,
   };
 };

@@ -48,6 +48,8 @@ const Customers = () => {
   const totalCustumers = mainData?.totalItems;
   const customersWithBookings = mainData?.stats?.customersWithBooking;
 
+  // console.log(sortedData);
+
   return (
     <>
       <Header />
