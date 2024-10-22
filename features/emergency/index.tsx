@@ -28,14 +28,12 @@ const Index = () => {
   const totalDisputes = sortedData?.data.totalItems;
   const stats = sortedData?.data?.stats;
 
-  console.log(stats);
-
   return (
     <>
       <Header />
       <PageBody>
         <div className="flex justify-between mb-6 items-center">
-          <PageHeading page_title="Disputes" />
+          <PageHeading page_title="Emergencies" />
           <Filter />
         </div>
         <div className="overflow-x-auto mb-6">

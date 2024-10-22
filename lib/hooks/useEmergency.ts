@@ -96,7 +96,6 @@ const useEmergency = () => {
     }));
   }, [type, sortedData, id]);
 
-  console.log(sortedData);
   return {
     type,
     setType,

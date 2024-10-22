@@ -47,16 +47,39 @@ export const customers = {
     startDate,
     endDate,
     route,
+    criteria,
   }: {
     page: number;
     limit: number;
     startDate: string;
     endDate: string;
-    route: "customers" | "contractors" | "disputes" | "jobs" | "emergencies";
+    route:
+      | "customers"
+      | "contractors"
+      | "disputes"
+      | "jobs"
+      | "emergencies"
+      | "jobdays";
+    criteria: string;
   }) =>
     client
       .get(
-        `/admin/${route}?limit=${limit}&page=${page}&startDate=${startDate}&endDate=${endDate}`
+        `/admin/${route}?limit=${limit}&page=${page}&startDate=${startDate}&endDate=${endDate}&sort=${criteria}`
       )
+      .then(({ data }) => data),
+
+  getSotring: ({
+    page,
+    limit,
+    criteria,
+    route,
+  }: {
+    page: number;
+    limit: number;
+    criteria: string;
+    route: "customers" | "contractors" | "disputes" | "jobs" | "emergencies";
+  }) =>
+    client
+      .get(`/admin/${route}?limit=${limit}&page=${page}&sort=${criteria}`)
       .then(({ data }) => data),
 };

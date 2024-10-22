@@ -12,12 +12,13 @@ import Td from "@/features/shared/table/components/td";
 import { trimString } from "@/lib/utils/trim-string";
 import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 import FilterBox from "@/features/customers/components/filter-box";
-import { useJobTable } from "../hooks/table";
+// import { useJobTable } from "../hooks/table";
 import Paginator from "@/features/shared/table/components/paginator";
 import useAnalyticData from "@/lib/hooks/useCustomersData";
 import Pagination from "@/components/shared/pagination";
 import Search from "@/components/shared/search";
 import SortLists from "@/app/_components/Sort";
+import { useJobTable } from "@/features/jobs/hooks/table";
 
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
@@ -26,9 +27,11 @@ const table_headings = [
   "Customer’s Name",
   "Job ID",
   "Contractors’s Name",
+  "Job Category",
+
   "Job Address",
   "Date",
-  "Status",
+  "Job Status",
 ];
 
 interface IProps {
@@ -127,7 +130,9 @@ const JobsTable: React.FC<IProps> = ({
                   {item?.contractor?.firstName || "-"}{" "}
                   {item?.contractor?.lastName || "-"}
                 </Td>
-                <Td>{trimString(item?.location?.address, 22)}</Td>
+                <Td>{trimString(item?.job?.category, 22)}</Td>
+                <Td>{trimString(item?.jobLocation?.address, 22)}</Td>
+
                 <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
                 <Td>{trimString(item?.status, 22)}</Td>
               </tr>
