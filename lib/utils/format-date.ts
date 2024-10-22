@@ -26,7 +26,7 @@ export function formatTimeDDMMYY(
 
   const date = new Date(dateString);
 
-  if (isNaN(date.getTime())) {
+  if (isNaN(date?.getTime())) {
     return "Invalid Date"; // Handle invalid date values
   }
 
@@ -38,13 +38,13 @@ export function formatTimeDDMMYY(
 
   const formattedDate = new Intl.DateTimeFormat("en-GB", options)?.format(date);
 
-  return itsDate ? date.getDate() : formattedDate;
+  return itsDate ? date?.getDate() : formattedDate;
 }
 
 export function formatDate(date: any) {
   const year = date?.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
-  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date?.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const day = String(date?.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
 }

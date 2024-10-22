@@ -15,7 +15,7 @@ export function useSortedData(
 ) {
   const searchParams = useSearchParams();
 
-  const initialState = useMemo(() => new Date(2023, 9, 14), []);
+  const initialState = useMemo(() => new Date(1999, 9, 14), []);
   const [startDate, setStartDate] = useState(initialState);
   const [endDate, setEndDate] = useState(new Date());
   const [searchTerm, setSearchTerm] = useState(""); // Track the search term

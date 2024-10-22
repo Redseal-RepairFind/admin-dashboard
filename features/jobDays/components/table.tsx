@@ -14,7 +14,6 @@ import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 import FilterBox from "@/features/customers/components/filter-box";
 // import { useJobTable } from "../hooks/table";
 import Paginator from "@/features/shared/table/components/paginator";
-import useAnalyticData from "@/lib/hooks/useCustomersData";
 import Pagination from "@/components/shared/pagination";
 import Search from "@/components/shared/search";
 import SortLists from "@/app/_components/Sort";

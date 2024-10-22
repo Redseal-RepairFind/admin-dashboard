@@ -17,7 +17,6 @@ import {
 } from "@/public/svg";
 import { useSearchParams } from "next/navigation";
 import { useSortedData } from "@/lib/hooks/useSortedData";
-import useAnalyticData from "@/lib/hooks/useCustomersData";
 import AnalyticCard from "../jobs/components/analytic-card";
 
 const Index = () => {

@@ -37,9 +37,24 @@ export const customers = {
       .get(`/admin/customer/job/detail/${id}?page=1&limit=50`)
       .then(({ data }) => data),
 
-  getAnalytics: (
-    route: "customers" | "contractors" | "disputes" | "jobs" | "emergencies"
-  ) => client.get(`/admin/${route}`).then(({ data }) => data),
+  getAnalytics: ({
+    route,
+    limit,
+    page,
+  }: {
+    route:
+      | "customers"
+      | "contractors"
+      | "disputes"
+      | "jobs"
+      | "emergencies"
+      | "jobdays";
+    limit: number;
+    page: number;
+  }) =>
+    client
+      .get(`/admin/${route}?limit=${limit}&page=${page}`)
+      .then(({ data }) => data),
 
   getSortingAnalytics: ({
     page,
