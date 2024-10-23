@@ -170,24 +170,24 @@ const Jobs = () => {
       info: stats?.totalOngoing?.total?.toLocaleString(),
       tip: "Total jobs currently in progress",
     },
-    {
-      icon: <EmergencyCallMetrics />,
-      iconColor: "bg-[#d48bc4]",
-      borderColor: "border-l-[#e72c99]",
-      name: "Total Jobs Not Started",
-      percentage: stats?.totalNotStarted?.percentage,
-      info: stats?.totalNotStarted?.total?.toLocaleString(),
-      tip: "Total Jobs not started yet",
-    },
-    {
-      icon: <QuotesGivenMetrics />, // Placeholder icon for submitted jobs
-      iconColor: "bg-[#bdecc6]",
-      borderColor: "border-l-[#32a8a8]",
-      name: "Total Submitted Jobs",
-      info: stats?.totalSubmitted?.total?.toLocaleString(),
-      percentage: stats?.totalSubmitted?.percentage,
-      tip: "Total Job requests with quotations",
-    },
+    // {
+    //   icon: <EmergencyCallMetrics />,
+    //   iconColor: "bg-[#d48bc4]",
+    //   borderColor: "border-l-[#e72c99]",
+    //   name: "Total Jobs Not Started",
+    //   percentage: stats?.totalNotStarted?.percentage,
+    //   info: stats?.totalNotStarted?.total?.toLocaleString(),
+    //   tip: "Total Jobs not started yet",
+    // },
+    // {
+    //   icon: <QuotesGivenMetrics />, // Placeholder icon for submitted jobs
+    //   iconColor: "bg-[#bdecc6]",
+    //   borderColor: "border-l-[#32a8a8]",
+    //   name: "Total Submitted Jobs",
+    //   info: stats?.totalSubmitted?.total?.toLocaleString(),
+    //   percentage: stats?.totalSubmitted?.percentage,
+    //   tip: "Total Job requests with quotations",
+    // },
     {
       icon: <DisputesResolvedMetrics />, // Placeholder icon for accepted jobs
       iconColor: "bg-[#b3d9e2]",
