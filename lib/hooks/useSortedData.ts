@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { customers } from "../api/customers";
 import { useQuery } from "react-query";
 import { formatDate } from "@/lib/utils/format-date";
@@ -14,7 +14,7 @@ export function useSortedData(
     | "jobdays"
 ) {
   const searchParams = useSearchParams();
-
+  const param = new URLSearchParams(window.location.search);
   const initialState = useMemo(() => new Date(1999, 9, 14), []);
   const [startDate, setStartDate] = useState(initialState);
   const [endDate, setEndDate] = useState(new Date());
@@ -27,6 +27,9 @@ export function useSortedData(
   const params = searchParams.get("sort") || "All";
   const currentPage = searchParams.get("page") || 1;
   const perPage = searchParams.get("perPage") || 10;
+
+  const pathname = usePathname();
+  const router = useRouter();
 
   // Use effect to handle sorting by date
 
@@ -66,6 +69,7 @@ export function useSortedData(
       endDate,
       Number(perPage),
       Number(currentPage),
+      // searchTerm,
     ],
     () =>
       params === "All"
@@ -74,6 +78,7 @@ export function useSortedData(
             limit: Number(perPage) || 10,
             page: Number(currentPage) || 1,
             criteria: criteria,
+            // search: searchTerm,
           })
         : customers.getSortingAnalytics({
             page: Number(currentPage),
@@ -82,6 +87,7 @@ export function useSortedData(
             endDate: formatDate(endDate),
             route,
             criteria: criteria,
+            // search: searchTerm,
           }),
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
@@ -93,10 +99,12 @@ export function useSortedData(
       setIsQuerying(false);
       setQueryedList([]);
       setNotFound(false);
-      return;
     }
+    // Clear the search parameter from the URL when the search term is empty
 
     setIsQuerying(true);
+    param.set("sort", "All");
+    param.set("page", "1");
 
     if (sortedData?.data) {
       const filteredArray = sortedData.data.data.filter(
@@ -129,8 +137,24 @@ export function useSortedData(
       } else {
         setNotFound(false);
       }
+
+      // Update the URL with the new query parameters
+      router.replace(`${pathname}?${param.toString()}`, {
+        scroll: false,
+      });
     }
   };
+
+  // function handleQuery(value: string) {
+  // if (value === "") {
+  //   setIsQuerying(false);
+  //   setSearchTerm("");
+  //   return;
+  // }
+
+  // setSearchTerm(value);
+  // setIsQuerying(true);
+  // }
 
   if (error) {
     console.error("Error fetching sorted data:", error);
@@ -142,7 +166,8 @@ export function useSortedData(
     handleQuery,
     isQuerying,
     notFound,
-    searchTerm, // Return the search term for further use if needed
+    searchTerm,
+    // Return the search term for further use if needed
     queryedList,
     setIsQuerying,
   };

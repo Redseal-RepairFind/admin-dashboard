@@ -40,6 +40,7 @@ const Index = () => {
               borderColor="border-l-[#2e0505]"
               name="Total Disputes"
               info={totalDisputes?.toLocaleString()}
+              tip="Total disputes"
             />
             <AnalyticCard
               icon={<DisputesResolvedMetrics />}
@@ -47,6 +48,7 @@ const Index = () => {
               borderColor="border-l-[#0D8012]"
               name="Total Resolved Disputes"
               info={stats?.totalResolved}
+              tip="Total resolved disputes"
             />
             <AnalyticCard
               icon={<AverageDisputeResolutionTimeMetrics />}
@@ -54,6 +56,7 @@ const Index = () => {
               borderColor="border-l-[#f1d900]"
               name="Total Ongoing Disputes"
               info={stats?.totalOngoing}
+              tip="Total disputes still ongoing"
             />
 
             <AnalyticCard
@@ -62,6 +65,7 @@ const Index = () => {
               borderColor="border-l-[#9A0101]"
               name="Total Unresolved Disputes"
               info={stats?.totalOpen}
+              tip="Total disputes not resolved"
             />
           </div>
         </div>
