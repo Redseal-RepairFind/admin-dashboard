@@ -73,6 +73,7 @@ export function useSortedData(
             route,
             limit: Number(perPage) || 10,
             page: Number(currentPage) || 1,
+            criteria: criteria,
           })
         : customers.getSortingAnalytics({
             page: Number(currentPage),

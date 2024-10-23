@@ -41,6 +41,7 @@ export const customers = {
     route,
     limit,
     page,
+    criteria,
   }: {
     route:
       | "customers"
@@ -51,9 +52,10 @@ export const customers = {
       | "jobdays";
     limit: number;
     page: number;
+    criteria: string;
   }) =>
     client
-      .get(`/admin/${route}?limit=${limit}&page=${page}`)
+      .get(`/admin/${route}?limit=${limit}&page=${page}&sort=${criteria}`)
       .then(({ data }) => data),
 
   getSortingAnalytics: ({
