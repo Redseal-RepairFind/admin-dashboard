@@ -40,7 +40,7 @@ const Contractors = () => {
 
   const stats = sortedData?.data?.stats;
 
-  console.log(sortedData);
+  // console.log(sortedData);
 
   useEffect(() => {
     isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);

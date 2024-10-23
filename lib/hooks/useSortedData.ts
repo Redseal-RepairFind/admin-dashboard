@@ -29,6 +29,8 @@ export function useSortedData(
   const perPage = searchParams.get("perPage") || 10;
 
   // Use effect to handle sorting by date
+
+  // console.log(params);
   useEffect(() => {
     const sortParam = params.toLowerCase().replaceAll("_", " ");
     const now = new Date();
