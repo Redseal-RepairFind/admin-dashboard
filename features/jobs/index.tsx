@@ -32,20 +32,14 @@ import { trimString } from "@/lib/utils/trim-string";
 import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 const Jobs = () => {
   const [loading, setLoading] = useState(true);
-  const [dataToRender, setDataToRender] = useState<any>();
+  // const [dataToRender, setDataToRender] = useState<any>();
 
-  const {
-    sortedData,
-    loadingSortedData,
-    handleQuery,
-    setIsQuerying,
-    isQuerying,
-    queryedList,
-  } = useSortedData("jobs");
+  const { sortedData, loadingSortedData, handleQuery, setIsQuerying } =
+    useSortedData("jobs");
 
-  useEffect(() => {
-    isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
-  }, [isQuerying, queryedList, setDataToRender, sortedData]);
+  // useEffect(() => {
+  //   isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
+  // }, [isQuerying, queryedList, setDataToRender, sortedData]);
 
   const totalJobs = sortedData?.data?.totalItems;
   const stats = sortedData?.data?.stats;
@@ -91,6 +85,7 @@ const Jobs = () => {
       borderColor: "border-l-[#721279]",
       name: "Total Jobs",
       info: stats?.allJobs,
+      tip: "Total jobs",
     },
     {
       icon: <QuotesGivenMetrics />, // Placeholder icon for submitted jobs
@@ -100,6 +95,7 @@ const Jobs = () => {
       info: stats?.totalJobListing.toLocaleString(),
       mostReq: stats?.totalQuotationsForListings,
       quotes: "Total Quotes",
+      tip: "Total job listings and estimate submitted",
     },
     {
       icon: <AverageDisputeResolutionTimeMetrics />,
@@ -109,6 +105,7 @@ const Jobs = () => {
       info: stats?.totalJobRequest?.toLocaleString(),
       mostReq: stats?.totalQuotationsForRequests,
       quotes: "Total Quotes",
+      tip: "Total job requests and estimate submitted",
     },
     {
       icon: <CompletedState />,
@@ -117,6 +114,7 @@ const Jobs = () => {
       info: stats?.totalCompleted?.total?.toLocaleString(),
       iconColor: "bg-[#bdecc6]",
       percentage: stats?.totalCompleted?.percentage,
+      tip: "Completed jobs",
     },
     {
       icon: <QuotesGivenMetrics />,
@@ -125,6 +123,7 @@ const Jobs = () => {
       info: stats?.totalBooked?.total?.toLocaleString(),
       iconColor: "bg-[#ebf375]",
       percentage: stats?.totalBooked?.percentage,
+      tip: "Total number of successfully booked jobs",
     },
     {
       icon: <CancelIconBlue />,
@@ -133,6 +132,7 @@ const Jobs = () => {
       name: "Total Disputed Jobs",
       percentage: stats?.totalDisputed?.percentage,
       info: stats?.totalDisputed?.total?.toLocaleString(),
+      tip: "Total Booked Jobs in dispute",
     },
     {
       icon: <CancelIconRed />,
@@ -141,6 +141,7 @@ const Jobs = () => {
       name: "Total Cancelled Jobs",
       percentage: stats?.totalCanceled?.percentage,
       info: stats?.totalCanceled?.total?.toLocaleString(),
+      tip: "Total Booked jobs that got cancelled",
     },
     {
       icon: <DisputesInitiatedMetrics />,
@@ -149,14 +150,16 @@ const Jobs = () => {
       name: "Total Pending Jobs",
       percentage: stats?.totalPending?.percentage,
       info: stats?.totalPending?.total?.toLocaleString(),
+      tip: "New Job listings and requests",
     },
     {
       icon: <ComplaintsState />,
       iconColor: "bg-[#d6e2e6]",
-      borderColor: "border-l-[#015043]",
+      borderColor: "border-l-[#200414]",
       name: "Total Expired Jobs",
       percentage: stats?.totalExpired?.percentage,
       info: stats?.totalExpired?.total?.toLocaleString(),
+      tip: "Total Expired Jobs",
     },
     {
       icon: <AverageDisputeResolutionTimeMetrics />,
@@ -165,6 +168,7 @@ const Jobs = () => {
       name: "Total Jobs in Progress",
       percentage: stats?.totalOngoing?.percentage,
       info: stats?.totalOngoing?.total?.toLocaleString(),
+      tip: "Total jobs currently in progress",
     },
     {
       icon: <EmergencyCallMetrics />,
@@ -173,6 +177,7 @@ const Jobs = () => {
       name: "Total Jobs Not Started",
       percentage: stats?.totalNotStarted?.percentage,
       info: stats?.totalNotStarted?.total?.toLocaleString(),
+      tip: "Total Jobs not started yet",
     },
     {
       icon: <QuotesGivenMetrics />, // Placeholder icon for submitted jobs
@@ -181,6 +186,7 @@ const Jobs = () => {
       name: "Total Submitted Jobs",
       info: stats?.totalSubmitted?.total?.toLocaleString(),
       percentage: stats?.totalSubmitted?.percentage,
+      tip: "Total Job requests with quotations",
     },
     {
       icon: <DisputesResolvedMetrics />, // Placeholder icon for accepted jobs
@@ -189,6 +195,7 @@ const Jobs = () => {
       name: "Total Accepted Jobs",
       info: stats?.totalAccepted?.total?.toLocaleString(),
       percentage: stats?.totalAccepted?.percentage,
+      tip: "Total Job requests accepted ",
     },
     {
       icon: <JobsStartedMetrics />, // Placeholder icon for most requested category
@@ -198,6 +205,7 @@ const Jobs = () => {
       info: stats?.mostRequestedCategory?._id,
       mostReq: stats?.mostRequestedCategory?.count,
       // percentage: stats?.totalAccepted?.percentage,
+      tip: "Most reqested job category",
     },
     // {
     //   icon:  <div>
@@ -240,6 +248,7 @@ const Jobs = () => {
                 percentage={card?.percentage}
                 mostReq={card?.mostReq}
                 quotes={card?.quotes}
+                tip={card?.tip}
               />
             ))}
           </div>
@@ -255,7 +264,7 @@ const Jobs = () => {
 
           <JobsTable
             setLoading={setLoading}
-            filteredData={dataToRender}
+            filteredData={sortedData}
             handleSearch={handleQuery}
             setIsQuerying={setIsQuerying}
           />

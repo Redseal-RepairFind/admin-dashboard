@@ -91,6 +91,7 @@ const Customers = () => {
                 borderColor="border-l-[#721279]"
                 name="Total Customers"
                 info={totalCustumers?.toLocaleString()}
+                tip="The Total Customers "
               />
               <AnalyticCard
                 icon={<QuotesGivenMetrics />}
@@ -98,6 +99,7 @@ const Customers = () => {
                 borderColor="border-l-[#0D8012]"
                 name="Total Customers with bookings"
                 info={customersWithBookings?.toLocaleString()}
+                tip="Total Customers that has bookings"
               />
             </div>
           </div>

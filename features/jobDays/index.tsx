@@ -6,7 +6,6 @@ import PageBody from "../shared/page-body/page-body";
 // import JobsTable from "./components/table";
 import PageHeading from "../shared/page-body/page-heading";
 import DownloadButton from "../shared/page-body/download-button";
-import AnalyticCard from "./components/analytic-card";
 import {
   JobIcon,
   CompletedState,
@@ -23,6 +22,7 @@ import { downloadPDF } from "@/lib/utils/downloadPdf";
 import { trimString } from "@/lib/utils/trim-string";
 import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 import JobsTable from "./components/table";
+import AnalyticCard from "../jobs/components/analytic-card";
 const Jobs = () => {
   const [loading, setLoading] = useState(true);
   const [dataToRender, setDataToRender] = useState<any>();
@@ -88,16 +88,18 @@ const Jobs = () => {
       icon: <JobIcon />,
       iconColor: "bg-[#C398C7]",
       borderColor: "border-l-[#721279]",
-      name: "Total Job Days",
+      name: "Total Booked Jobs",
       info: stats?.allJobdays,
+      tip: "The total contractor trips started",
     },
     {
       icon: <QuotesGivenMetrics />, // Placeholder icon for submitted jobs
       iconColor: "bg-[#bdecc6]",
       borderColor: "border-l-[#04ddae]",
-      name: "Total Job Arrivals",
+      name: "Total Arrivals",
       info: stats?.totalArrived?.toLocaleString(),
       quotes: "Total Quotes",
+      tip: "The total contractor trips waiting confirmation",
     },
     {
       icon: <AverageDisputeResolutionTimeMetrics />,
@@ -105,13 +107,15 @@ const Jobs = () => {
       borderColor: "border-l-[#e7cb2c]",
       name: "Total Jobs Started",
       info: stats?.totalStarted?.toLocaleString(),
+      tip: "The total number of jobs started",
     },
     {
       icon: <CompletedState />,
       borderColor: "border-l-[#326602]",
-      name: "Total Job Days confirmed",
+      name: "Total confirmed Arrivals",
       info: stats?.totalConfirmed?.toLocaleString(),
       iconColor: "bg-[#bdecc6]",
+      tip: "The total contractor trips confirmed by Customer",
     },
   ];
 
@@ -136,6 +140,7 @@ const Jobs = () => {
                 name={card?.name}
                 info={card?.info}
                 key={index}
+                tip={card?.tip}
               />
             ))}
           </div>

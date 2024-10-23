@@ -91,6 +91,7 @@ const Contractors = () => {
                 borderColor="border-l-[#721279]"
                 name="Total Contractors"
                 info={stats?.total?.toLocaleString()}
+                tip="Total Contractors "
               />
 
               <AnalyticCard
@@ -99,6 +100,7 @@ const Contractors = () => {
                 borderColor="border-l-[#0D8012]"
                 name="Approved Contractors"
                 info={stats?.approved?.toLocaleString()}
+                tip="Contractors that completed signup"
               />
               <AnalyticCard
                 icon={<CancelIconRed />}
@@ -106,6 +108,7 @@ const Contractors = () => {
                 borderColor="border-l-[#9A0101]"
                 name="Suspended Contractors"
                 info={stats?.suspended?.toLocaleString()}
+                tip="Contractors suspended by an admin"
               />
 
               <AnalyticCard
@@ -114,6 +117,7 @@ const Contractors = () => {
                 borderColor="border-l-[#d1be12]"
                 name="Contractors under Review"
                 info={stats?.reviewing?.toLocaleString()}
+                tip="Contractors with incomplete signup"
               />
 
               <AnalyticCard
@@ -122,6 +126,7 @@ const Contractors = () => {
                 borderColor="border-l-[#5a5555]"
                 name="Blacklisted Contractors"
                 info={stats?.blacklisted?.toLocaleString()}
+                tip="Contractors blacklisted by an admin"
               />
             </div>
           </div>

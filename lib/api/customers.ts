@@ -42,6 +42,7 @@ export const customers = {
     limit,
     page,
     criteria,
+    search,
   }: {
     route:
       | "customers"
@@ -53,9 +54,14 @@ export const customers = {
     limit: number;
     page: number;
     criteria: string;
+    search?: string;
   }) =>
     client
-      .get(`/admin/${route}?limit=${limit}&page=${page}&sort=${criteria}`)
+      .get(
+        `/admin/${route}?limit=${limit}&page=${page}&sort=${criteria}${
+          search ? `&searchFields=firstName,lastName&search=${search}` : ""
+        }`
+      )
       .then(({ data }) => data),
 
   getSortingAnalytics: ({
@@ -65,6 +71,7 @@ export const customers = {
     endDate,
     route,
     criteria,
+    search,
   }: {
     page: number;
     limit: number;
@@ -78,14 +85,17 @@ export const customers = {
       | "emergencies"
       | "jobdays";
     criteria: string;
+    search?: string;
   }) =>
     client
       .get(
-        `/admin/${route}?limit=${limit}&page=${page}&startDate=${startDate}&endDate=${endDate}&sort=${criteria}`
+        `/admin/${route}?limit=${limit}&page=${page}&startDate=${startDate}&endDate=${endDate}&sort=${criteria}${
+          search ? `&searchFields=firstName,lastName&search=${search}` : ""
+        }`
       )
       .then(({ data }) => data),
 
-  getSotring: ({
+  getSearchSort: ({
     page,
     limit,
     criteria,
@@ -97,6 +107,6 @@ export const customers = {
     route: "customers" | "contractors" | "disputes" | "jobs" | "emergencies";
   }) =>
     client
-      .get(`/admin/${route}?limit=${limit}&page=${page}&sort=${criteria}`)
+      .get(`/admin/${route}?limit=${limit}&page=${page}`)
       .then(({ data }) => data),
 };
