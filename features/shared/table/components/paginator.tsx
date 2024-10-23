@@ -7,22 +7,19 @@ interface PaginatorProps {
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const roundUpToTen = (max: number) => {
-  const maxPage = Math.ceil(max / 10);
-  return maxPage;
-};
+const roundUpToTen = (max: number) => Math.ceil(max / 10);
 
 const Paginator: React.FC<PaginatorProps> = ({
   max,
   currentPage,
   setCurrentPage,
 }) => {
-  const handleNextPage = (value: number) => {
-    if (value <= roundUpToTen(max)) setCurrentPage(value);
-  };
+  const totalPages = roundUpToTen(max);
 
-  const handlePreviousPage = (value: number) => {
-    if (value >= 1) setCurrentPage(value);
+  const handleChangePage = (value: number) => {
+    if (value >= 1 && value <= totalPages) {
+      setCurrentPage(value);
+    }
   };
 
   return (
@@ -34,7 +31,7 @@ const Paginator: React.FC<PaginatorProps> = ({
           height="16"
           viewBox="0 0 16 16"
           fill="none"
-          onClick={() => handlePreviousPage(currentPage - 1)}
+          onClick={() => handleChangePage(currentPage - 1)}
         >
           <path
             d="M10 2.66669L4.66669 8.00002L10 13.3334"
@@ -48,7 +45,7 @@ const Paginator: React.FC<PaginatorProps> = ({
 
         <p className="text-sm">
           <span className="font-[600]">{currentPage} </span>
-          of {roundUpToTen(max)}
+          of {totalPages}
         </p>
 
         <svg
@@ -57,11 +54,11 @@ const Paginator: React.FC<PaginatorProps> = ({
           height="16"
           viewBox="0 0 16 16"
           fill="none"
-          onClick={() => handleNextPage(currentPage + 1)}
+          onClick={() => handleChangePage(currentPage + 1)}
         >
           <path
             d="M5.99998 2.66669L11.3333 8.00002L5.99998 13.3334"
-            stroke={currentPage < roundUpToTen(max) ? "#333333" : "#999999"}
+            stroke={currentPage < totalPages ? "#333333" : "#999999"}
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"

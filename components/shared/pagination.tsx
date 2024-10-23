@@ -52,29 +52,32 @@ const Pagination = ({ data }: dData) => {
 
   const totalPages = data?.lastPage || 1; // Default to 1 if lastPage is undefined or NaN
 
-  // Determine visible pages with ellipses and handling
+  // Generate visible pages with ellipses
   const getVisiblePages = () => {
     let pages: (number | string)[] = [];
 
+    // Case 1: If total pages are 15 or less, display all pages
     if (totalPages <= 15) {
       pages = Array.from({ length: totalPages }, (_, index) => index + 1);
     } else {
-      if (currentPageNo <= 2) {
+      // Case 2: More than 15 pages, dynamic page range
+      if (currentPageNo <= 7) {
+        // Display the first 15 pages
         pages = Array.from({ length: 15 }, (_, index) => index + 1);
-        pages.push("...");
-        pages.push(totalPages);
-      } else if (currentPageNo > 15 && currentPageNo < totalPages - 3) {
-        pages.push(1);
-        pages.push("...");
-        pages.push(currentPageNo - 1, currentPageNo, currentPageNo + 1);
-        pages.push("...");
-        pages.push(totalPages);
-      } else {
-        pages.push(1);
-        pages.push("...");
+        pages.push("...", totalPages); // Add ellipsis and last page
+      } else if (currentPageNo >= totalPages - 7) {
+        // Near the end: show last 15 pages
+        pages.push(1, "..."); // Include first page and ellipsis
         pages = pages.concat(
           Array.from({ length: 15 }, (_, index) => totalPages - 14 + index)
         );
+      } else {
+        // Middle range: show current page and 7 pages before/after it
+        pages.push(1, "..."); // Include first page and ellipsis
+        pages = pages.concat(
+          Array.from({ length: 15 }, (_, index) => currentPageNo - 7 + index)
+        );
+        pages.push("...", totalPages); // Include ellipsis and last page
       }
     }
     return pages;
@@ -96,6 +99,7 @@ const Pagination = ({ data }: dData) => {
             setCurrentPageNo(newPageNo);
             updateUrlParams(newPageNo, perPage);
           }}
+          aria-label="Previous Page"
         >
           <FaCaretLeft className="w-3" />
         </button>
@@ -121,6 +125,8 @@ const Pagination = ({ data }: dData) => {
                 setCurrentPageNo(page as number); // Type assertion since page can be string
                 updateUrlParams(page as number, perPage);
               }}
+              aria-current={page === currentPageNo ? "page" : undefined}
+              aria-label={`Go to page ${page}`}
             >
               {page}
             </button>
@@ -138,6 +144,7 @@ const Pagination = ({ data }: dData) => {
             setCurrentPageNo(newPageNo);
             updateUrlParams(newPageNo, perPage);
           }}
+          aria-label="Next Page"
         >
           <FaCaretRight className="w-3" />
         </button>
@@ -148,6 +155,7 @@ const Pagination = ({ data }: dData) => {
         value={perPage}
         className="text-xs font-medium border border-gray-400 rounded-sm py-2 px-4 focus:ring-0 duration-200 outline-none"
         onChange={handlePerPage}
+        aria-label="Items per page"
       >
         {perPageOptions.map((perPageOption) => (
           <option key={`perPage-${perPageOption}`} value={perPageOption}>
