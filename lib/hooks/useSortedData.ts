@@ -66,14 +66,20 @@ export function useSortedData(
       Number(currentPage),
     ],
     () =>
-      customers.getSortingAnalytics({
-        page: Number(currentPage),
-        limit: Number(perPage),
-        startDate: formatDate(startDate),
-        endDate: formatDate(endDate),
-        route,
-        criteria: criteria,
-      }),
+      params === "All"
+        ? customers.getAnalytics({
+            route,
+            limit: Number(perPage) || 10,
+            page: Number(currentPage) || 1,
+          })
+        : customers.getSortingAnalytics({
+            page: Number(currentPage),
+            limit: Number(perPage),
+            startDate: formatDate(startDate),
+            endDate: formatDate(endDate),
+            route,
+            criteria: criteria,
+          }),
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
 

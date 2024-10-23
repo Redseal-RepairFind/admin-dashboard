@@ -61,7 +61,7 @@ const Jobs = () => {
     "status",
   ];
 
-  console.log(sortedData);
+  // console.log(sortedData);
 
   function contName(item: any) {
     const contractorName = `${item?.contractor?.firstName || "--"}  ${
