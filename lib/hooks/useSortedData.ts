@@ -125,9 +125,11 @@ export function useSortedData(
           item?.contractor?.lastName
             ?.toLowerCase()
             ?.includes(value.toLowerCase()) ||
-          item?._id?.includes(value.toLowerCase()) ||
-          item?.disputer?.firstName.includes(value.toLowerCase()) ||
-          item?.disputer?.lastName.includes(value.toLowerCase())
+          item?._id?.includes(value?.toLowerCase()) ||
+          item?.disputer?.firstName?.includes(value.toLowerCase()) ||
+          item?.disputer?.lastName?.includes(value.toLowerCase()) ||
+          item?.fromUser?.name?.includes(value.toLowerCase()) ||
+          item?.toUser?.name?.includes(value.toLowerCase())
       );
 
       // Create a new object that retains the structure of sortedData

@@ -110,7 +110,12 @@ const Transactions = () => {
             />
           </div>
         </div>
-        <CustomersTable setLoading={setLoading} data={dataToRender} />
+        <CustomersTable
+          setLoading={setLoading}
+          data={dataToRender}
+          handleSearch={handleQuery}
+          setIsQuerying={setIsQuerying}
+        />
       </PageBody>
     </>
   );
