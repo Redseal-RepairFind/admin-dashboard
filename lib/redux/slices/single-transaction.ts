@@ -6,7 +6,7 @@ export interface IState {
   value: ITransactionsDetail;
 }
 
-const initialState: IState = {
+const initialState: any = {
   value: {
     contractor: {
       _id: "",
@@ -78,10 +78,7 @@ export const singleTranactionSlice = createSlice({
   name: "singleTranaction",
   initialState,
   reducers: {
-    setSingleTranactionsDetail: (
-      state,
-      action: PayloadAction<ITransactionsDetail>
-    ) => {
+    setSingleTranactionsDetail: (state, action: PayloadAction<any>) => {
       console.log(action.payload);
       state.value = action.payload;
     },
