@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import TableCard from "@/features/shared/table/components/table-card";
 import Td from "@/features/shared/table/components/td";
 import Heading from "@/features/shared/table/components/table-heading";
-import Searchbar from "@/features/shared/table/components/searchbar";
+// import Searchbar from "@/features/shared/table/components/searchbar";
 import Filter from "@/features/shared/table/components/filter";
 import TableOverflow from "@/features/shared/table/components/table-overflow";
 import Table from "@/features/shared/table/components/table";
@@ -15,6 +15,7 @@ import FilterBox from "@/features/customers/components/filter-box";
 import { useTransaction } from "../hooks/table";
 import Pagination from "@/components/shared/pagination";
 import { usePathname, useRouter } from "next/navigation";
+import Search from "@/components/shared/search";
 
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
@@ -32,9 +33,16 @@ const table_headings = [
 interface IProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   data: any;
+  handleSearch: any;
+  setIsQuerying: any;
 }
 
-const TransactionsDetailsTable: React.FC<IProps> = ({ setLoading, data }) => {
+const TransactionsDetailsTable: React.FC<IProps> = ({
+  setLoading,
+  data,
+  handleSearch,
+  setIsQuerying,
+}) => {
   const {
     handleQuery,
     notFound,
@@ -65,10 +73,10 @@ const TransactionsDetailsTable: React.FC<IProps> = ({ setLoading, data }) => {
       <div className="flex items-center justify-between w-full">
         <Heading name="Transactions List" />
         <div className="flex gap-8">
-          <Searchbar
-            placeholder="Search for a name"
-            handleQuery={handleQuery}
-            notFound={notFound}
+          <Search
+            search={""}
+            setIsQuerying={setIsQuerying}
+            setSearch={handleSearch}
           />
           <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
             <FilterBox
