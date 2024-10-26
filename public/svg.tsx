@@ -889,3 +889,40 @@ export const AverageDisputeResolutionTimeMetrics = () => (
     <path d="M18 22h-12v-2h12v2zm0-2.5l-6-6 6-6v12zm0-10.5h-4.5v-3h-3v3h-3v3h3v3h3v-3h4.5v-3z" />
   </svg>
 );
+
+export const OpenedEye = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="feather feather-eye"
+  >
+    <path d="M1 12S5 5 12 5s11 7 11 7-4 7-11 7S1 12 1 12z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+
+export const ClosedEye = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="feather feather-eye-off"
+  >
+    <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a14.41 14.41 0 0 1 5-5" />
+    <path d="M1 1l22 22" />
+    <path d="M9.88 9.88A3 3 0 0 0 12 15a3 3 0 0 0 2.12-.88M21 21l-4.35-4.35M9.17 9.17l-7.1-7.1" />
+  </svg>
+);

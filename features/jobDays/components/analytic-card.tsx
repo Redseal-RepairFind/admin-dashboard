@@ -1,9 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-
-import { OpenedEye, ClosedEye } from "@/public/svg";
+import React from "react";
 
 interface IProps {
   iconColor?: string;
@@ -15,7 +13,6 @@ interface IProps {
   percentage?: any;
   mostReq?: any;
   quotes?: any;
-  tip?: string;
 }
 
 const AnalyticCard: React.FC<IProps> = ({
@@ -28,46 +25,30 @@ const AnalyticCard: React.FC<IProps> = ({
   percentage,
   mostReq,
   quotes,
-  tip = "This is a tooltip",
 }) => {
   // const router = useRouter();
-
-  const [showTip, setShowTip] = useState(false);
-  const [] = useState();
-
   return (
     <div
       className={`bg-white py-3 px-6 flex flex-col w-[300px]  min-h-[120px] rounded-md 
-    cursor-pointer hover:opacity-80 transition-all border-l-[3px] ${borderColor} text-[#333] relative`}
+    cursor-pointer hover:opacity-80 transition-all border-l-[3px] ${borderColor} text-[#333]`}
     >
-      <div className="flex items-center justify-between">
-        {typeof icon !== "string" && (
-          <div
-            className={`rounded-md ${iconColor} w-[30px] h-[30px] flex items-center justify-center`}
-          >
-            {icon}
-          </div>
-        )}
-
-        {typeof icon === "string" && (
-          <Image
-            src={"/admin-pic.png"}
-            width={40}
-            height={40}
-            alt=""
-            className="rounded-[50%]"
-          />
-        )}
-        <button
-          onMouseEnter={() => setShowTip(true)}
-          onMouseLeave={() => setShowTip(false)}
-          className="transition-all duration-500"
+      {typeof icon !== "string" && (
+        <div
+          className={`rounded-md ${iconColor} w-[30px] h-[30px] flex items-center justify-center`}
         >
-          {showTip ? <OpenedEye /> : <ClosedEye />}
-        </button>
+          {icon}
+        </div>
+      )}
 
-        {showTip ? <ToolTipCard tip={tip} /> : null}
-      </div>
+      {typeof icon === "string" && (
+        <Image
+          src={"/admin-pic.png"}
+          width={40}
+          height={40}
+          alt=""
+          className="rounded-[50%]"
+        />
+      )}
       <div className="flex items-center justify-between">
         <p className="py-3 text-sm">{name}</p>
 
@@ -95,15 +76,3 @@ const AnalyticCard: React.FC<IProps> = ({
 };
 
 export default AnalyticCard;
-
-type TIP = {
-  tip: string;
-};
-
-function ToolTipCard({ tip }: TIP) {
-  return (
-    <div className="absolute right-[10px] top-[40px] bg-[white] px-4 py-2 rounded-md shadow-lg">
-      <p className="text-sm font-bold text-gray-800">{tip}</p>
-    </div>
-  );
-}

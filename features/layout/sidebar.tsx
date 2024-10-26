@@ -15,6 +15,8 @@ import {
   Transactions,
   Gst,
   JobIcon,
+  TotalJobs,
+  TotalRevenue,
 } from "@/public/svg";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -43,6 +45,9 @@ const Sidebar = () => {
     { name: "Customers", svg: <Customers />, route: "/customers" },
     { name: "Contractors", svg: <Contractors />, route: "/contractors" },
     { name: "Jobs", svg: <JobIcon />, route: "/jobs" },
+    { name: "Booking Analysis", svg: <TotalJobs />, route: "/job_days" },
+
+    { name: "Transactions", svg: <TotalRevenue />, route: "/transactions" },
 
     { name: "Emergency", svg: <MdEmergency />, route: "/emergency" },
     { name: "Dispute", svg: <Transactions />, route: "/dispute" },
@@ -55,6 +60,8 @@ const Sidebar = () => {
     //   route: "/account-settings",
     // },
   ];
+
+  // ;
 
   return (
     <div className="max-w-[280px] w-[21%] min-w-[250px] bg-white overflow-y-auto scrollbar-thin z-30 max-h-screen">

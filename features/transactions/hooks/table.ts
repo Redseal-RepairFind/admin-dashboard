@@ -19,10 +19,9 @@ export const useTransaction = ({ setLoading }: IProps) => {
   const pathname = usePathname();
 
   const [totalTransaction, setTotalTransaction] = useState(0);
-  const [transactionsDetails, setTransactionsDetails] =
-    useState<ITransactionsDetails>();
+  const [transactionsDetails, setTransactionsDetails] = useState<any>();
   const [currentTransactionsDetails, setCurrentTransactionsDetails] =
-    useState<ITransactionsDetails>();
+    useState<any>();
   const [queryedTransactionsDetails, setQueryedTransactionsDetails] =
     useState<ITransactionsDetails>();
   const [isQuerying, setIsQuerying] = useState(false);
@@ -54,8 +53,9 @@ export const useTransaction = ({ setLoading }: IProps) => {
     value === "" ? setIsQuerying(false) : setIsQuerying(true);
 
     if (transactionsDetails) {
-      const filterArray = transactionsDetails.transactionDetail.filter((item) =>
-        item.from.fullName.toLowerCase().includes(value.toLowerCase())
+      const filterArray = transactionsDetails.transactionDetail.filter(
+        (item: any) =>
+          item.from.fullName.toLowerCase().includes(value.toLowerCase())
       );
 
       setQueryedTransactionsDetails({ transactionDetail: filterArray });
@@ -89,7 +89,7 @@ export const useTransaction = ({ setLoading }: IProps) => {
     if (filterMonth !== 0) {
       if (transactionsDetails) {
         const transactionsDetailsMatchingYear =
-          transactionsDetails.transactionDetail.filter((detail) => {
+          transactionsDetails.transactionDetail.filter((detail: any) => {
             const createdAtDate = new Date(detail.transaction.createdAt);
             const createdAtYear = createdAtDate.getFullYear();
             const createdAtMonth = createdAtDate.getMonth() + 1;
@@ -102,7 +102,7 @@ export const useTransaction = ({ setLoading }: IProps) => {
     } else {
       if (transactionsDetails) {
         const transactionsDetailsMatchingYear =
-          transactionsDetails.transactionDetail.filter((detail) => {
+          transactionsDetails.transactionDetail.filter((detail: any) => {
             const createdAtDate = new Date(detail.transaction.createdAt);
             const createdAtYear = createdAtDate.getFullYear();
             return createdAtYear === value;
@@ -120,7 +120,7 @@ export const useTransaction = ({ setLoading }: IProps) => {
     if (filterYear !== 0) {
       if (transactionsDetails) {
         const transactionsDetailsMatchingMonth =
-          transactionsDetails.transactionDetail.filter((detail) => {
+          transactionsDetails.transactionDetail.filter((detail: any) => {
             const createdAtDate = new Date(detail.transaction.createdAt);
             const createdAtYear = createdAtDate.getFullYear();
             const createdAtMonth = createdAtDate.getMonth() + 1;
@@ -133,7 +133,7 @@ export const useTransaction = ({ setLoading }: IProps) => {
     } else {
       if (transactionsDetails) {
         const transactionsDetailsMatchingMonth =
-          transactionsDetails.transactionDetail.filter((detail) => {
+          transactionsDetails.transactionDetail.filter((detail: any) => {
             const createdAtDate = new Date(detail.transaction.createdAt);
             const createdAtMonth = createdAtDate.getMonth() + 1;
             console.log(createdAtMonth);
@@ -150,10 +150,10 @@ export const useTransaction = ({ setLoading }: IProps) => {
     console.log(value);
   };
 
-  const handleViewATransaction = (item: ITransactionsDetail) => {
+  const handleViewATransaction = (item: any) => {
     setLoading(true);
     dispatch(setSingleTranactionsDetail(item));
-    router.push(`${pathname}/${item.transaction._id}`);
+    router.push(`${pathname}/${item?._id}`);
   };
 
   return {

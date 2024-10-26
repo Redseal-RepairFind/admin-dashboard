@@ -6,7 +6,6 @@ import CustomersTable from "./components/table";
 import PageHeading from "../shared/page-body/page-heading";
 import LoadingTemplate from "../layout/loading";
 import useCustomers from "@/lib/hooks/useCustomers";
-import useAnalyticData from "@/lib/hooks/useCustomersData";
 
 import Filter from "@/app/_components/Filter";
 import AnalyticCard from "../jobs/components/analytic-card";
@@ -14,6 +13,9 @@ import { Customers as CustomerIcon, QuotesGivenMetrics } from "@/public/svg";
 import { useSearchParams } from "next/navigation";
 import { filterData } from "./hooks/filterByDate";
 import { useSortedData } from "@/lib/hooks/useSortedData";
+import DownloadButton from "../shared/page-body/download-button";
+import { downloadPDF } from "@/lib/utils/downloadPdf";
+import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 
 type FilterData = {
   customers: any[];
@@ -48,6 +50,23 @@ const Customers = () => {
   const totalCustumers = mainData?.totalItems;
   const customersWithBookings = mainData?.stats?.customersWithBooking;
 
+  // console.log(sortedData);
+
+  const columns = ["Customer's Name", "Date Joined", "Email", "Phone Number"];
+
+  const rows = sortedData?.data?.data?.map((item: any) => [
+    item?.name,
+    formatDateToDDMMYY(item.createdAt),
+    item?.email,
+    `${item?.phoneNumber?.code} ${item?.phoneNumber?.number}`,
+  ]);
+
+  function handleDownloadPdf() {
+    downloadPDF(columns, rows, "customers.pdf", "Customer's List");
+  }
+
+  // console.log()
+
   return (
     <>
       <Header />
@@ -58,6 +77,10 @@ const Customers = () => {
           <div className="flex justify-between mb-6 items-center">
             <PageHeading page_title="Customers" />
             <Filter />
+            <DownloadButton
+              text="Download Customer's LIST"
+              onClick={handleDownloadPdf}
+            />
           </div>
 
           <div className="overflow-x-auto mb-6">
@@ -68,6 +91,7 @@ const Customers = () => {
                 borderColor="border-l-[#721279]"
                 name="Total Customers"
                 info={totalCustumers?.toLocaleString()}
+                tip="The Total Customers "
               />
               <AnalyticCard
                 icon={<QuotesGivenMetrics />}
@@ -75,6 +99,7 @@ const Customers = () => {
                 borderColor="border-l-[#0D8012]"
                 name="Total Customers with bookings"
                 info={customersWithBookings?.toLocaleString()}
+                tip="Total Customers that has bookings"
               />
             </div>
           </div>

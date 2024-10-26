@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import TableCard from "@/features/shared/table/components/table-card";
 import Heading from "@/features/shared/table/components/table-heading";
 import Searchbar from "@/features/shared/table/components/searchbar";
@@ -25,14 +25,22 @@ import {
 import Search from "@/components/shared/search";
 import { useRouter, useSearchParams } from "next/navigation";
 import { filterData } from "../hooks/filterByDate";
+import SortLists from "@/app/_components/Sort";
+import { sortContractors } from "@/lib/utils/sortData";
 
 const table_headings = [
   "Customer’s Name",
   "Date Joined",
   "Email Address",
   "Phone Number",
-  "Status",
   "Action",
+];
+
+const headings = [
+  {
+    header: "",
+    options: "",
+  },
 ];
 
 interface IProps {
@@ -49,7 +57,8 @@ const CustomersTable: React.FC<IProps> = ({
   setIsQuerying,
 }) => {
   const { handleViewACustomer } = useCustomersTable({ setLoading });
-
+  // const [dataToRender, setDataToRender] = useState<any[]>();
+  // filteredData?.data?.data
   const {
     customerData,
     loadingCustomers,
@@ -73,22 +82,52 @@ const CustomersTable: React.FC<IProps> = ({
     },
   ];
 
+  const searchParams = useSearchParams();
+
   const pageProps = {
-    data: filteredData,
+    data: filteredData?.data,
   };
+
+  // useEffect(() => {
+  //   const rightFullString = params?.replaceAll("_", " ");
+  //   const array = sortContractors(filteredData?.data?.data, rightFullString);
+
+  //   setDataToRender(array);
+  // }, [filteredData?.data?.data, params]);
+
+  const sortProps = [
+    {
+      url: "firstName",
+      render: "Name (A-Z)",
+    },
+    {
+      url: "-firstName",
+      render: "Name (Z-A)",
+    },
+    {
+      url: "-createdAt",
+      render: "Date Joined (latest)",
+    },
+    {
+      url: "createdAt",
+      render: "Date Joined (oldest)",
+    },
+  ];
 
   return (
     <TableCard>
-      <div className="flex items-center justify-between w-full">
+      <div className="flex items-center justify-between w-full  ">
         <Heading name="Customers’ list" />
-        <div className="flex w-full items-center justify-end">
-          <Search
-            search={search}
-            setSearch={handleSearch}
-            placeholder="Search..."
-            setIsQuerying={setIsQuerying}
-          />
+        <div className="flex items-center gap-2">
+          <h1 className="text-lg font-semibold ">Sort List</h1>
+          <SortLists sortProps={sortProps} initialState="Name (A-Z)" />
         </div>
+        <Search
+          search={search}
+          setSearch={handleSearch}
+          placeholder="Search..."
+          setIsQuerying={setIsQuerying}
+        />
       </div>
 
       <TableOverflow>
@@ -115,7 +154,7 @@ const CustomersTable: React.FC<IProps> = ({
                   {item?.phoneNumber?.code}
                   {item?.phoneNumber?.number}
                 </Td>
-                <Td>
+                {/* <Td>
                   <div className="flex gap-[6px] items-center">
                     {item?.status === "active" ? (
                       <CompletedState />
@@ -130,7 +169,7 @@ const CustomersTable: React.FC<IProps> = ({
                       {item?.status}
                     </span>
                   </div>
-                </Td>
+                </Td> */}
                 <Td>
                   <div onClick={(e) => e.stopPropagation()} className="w-fit">
                     <VerticalMenu top="-20px" isBackground={true}>

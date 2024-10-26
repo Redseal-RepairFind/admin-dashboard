@@ -16,6 +16,7 @@ import SettleEmergency from "./SettleEmergency";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import { useRouter } from "next/navigation";
+import Pagination from "@/components/shared/pagination";
 
 const table_headings = [
   "ID",
@@ -67,6 +68,10 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
         router.push(`/emergency/${id}`);
       }, 100);
     };
+  };
+
+  const pageProps = {
+    data: sortData?.data,
   };
 
   return (
@@ -149,7 +154,7 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
             </Table>
           </TableOverflow>
         )}
-        {/* <Paginator /> */}
+        {/* <Pagination {...pageProps} /> */}
       </TableCard>
     </>
   );

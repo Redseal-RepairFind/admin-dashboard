@@ -8,16 +8,18 @@ import LoadingTemplate from "../layout/loading";
 import ContractorsTable from "./components/table";
 import useContractors from "@/lib/hooks/useContractors";
 
+import { useSearchParams } from "next/navigation";
 import Filter from "@/app/_components/Filter";
 import {
   Contractors as CustomerIcon,
   CompletedState,
   ComplaintsState,
+  JobIcon,
+  CancelIconRed,
 } from "@/public/svg";
-import { useSearchParams } from "next/navigation";
 import { useSortedData } from "@/lib/hooks/useSortedData";
-import useAnalyticData from "@/lib/hooks/useCustomersData";
 import AnalyticCard from "../jobs/components/analytic-card";
+import { downloadPDF } from "@/lib/utils/downloadPdf";
 
 const Contractors = () => {
   const [loading, setLoading] = useState(true);
@@ -38,9 +40,33 @@ const Contractors = () => {
 
   const stats = sortedData?.data?.stats;
 
+  // console.log(sortedData);
+
   useEffect(() => {
     isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
   }, [isQuerying, queryedList, setDataToRender, sortedData]);
+
+  const columns = [
+    "Contractor's Name",
+    "Skill",
+    "Status",
+    "Email",
+    "Stage",
+    "Ratings",
+  ];
+
+  const rows = sortedData?.data?.data?.map((item: any) => [
+    item?.name,
+    item?.profile?.skill === undefined ? "Not Submitted" : item?.profile?.skill,
+    item?.accountStatus,
+    item?.email,
+    item?.onboarding?.stage?.label,
+    item?.rating,
+  ]);
+
+  function handleDownloadPdf() {
+    downloadPDF(columns, rows, "Contractors.pdf", "Contractor's List");
+  }
 
   return (
     <>
@@ -52,7 +78,10 @@ const Contractors = () => {
           <div className="flex justify-between mb-6 items-center">
             <PageHeading page_title="Contractors" />
             <Filter />
-            <DownloadButton text="Download Contractor’S LIST" />
+            <DownloadButton
+              text="Download Contractor’S LIST"
+              onClick={handleDownloadPdf}
+            />
           </div>
           <div className="overflow-x-auto mb-6">
             <div className="flex gap-8 min-w-[1200px]">
@@ -61,22 +90,43 @@ const Contractors = () => {
                 iconColor="bg-[#C398C7]"
                 borderColor="border-l-[#721279]"
                 name="Total Contractors"
-                info={totalContractors?.toLocaleString()}
+                info={stats?.total?.toLocaleString()}
+                tip="Total Contractors "
               />
 
               <AnalyticCard
                 icon={<CompletedState />}
                 iconColor="bg-[#dcffde]"
                 borderColor="border-l-[#0D8012]"
-                name="Verifed Contractors"
-                info={stats?.verifiedContractors?.toLocaleString()}
+                name="Approved Contractors"
+                info={stats?.approved?.toLocaleString()}
+                tip="Contractors that completed signup"
               />
               <AnalyticCard
-                icon={<ComplaintsState />}
+                icon={<CancelIconRed />}
                 iconColor="bg-[#f7a7a7]"
                 borderColor="border-l-[#9A0101]"
-                name="Unverified Contractors"
-                info={stats?.unVerifiedContractors?.toLocaleString()}
+                name="Suspended Contractors"
+                info={stats?.suspended?.toLocaleString()}
+                tip="Contractors suspended by an admin"
+              />
+
+              <AnalyticCard
+                icon={<JobIcon />}
+                iconColor="bg-[#edf793]"
+                borderColor="border-l-[#d1be12]"
+                name="Contractors under Review"
+                info={stats?.reviewing?.toLocaleString()}
+                tip="Contractors with incomplete signup"
+              />
+
+              <AnalyticCard
+                icon={<ComplaintsState />}
+                iconColor="bg-[#493b3b]"
+                borderColor="border-l-[#5a5555]"
+                name="Blacklisted Contractors"
+                info={stats?.blacklisted?.toLocaleString()}
+                tip="Contractors blacklisted by an admin"
               />
             </div>
           </div>

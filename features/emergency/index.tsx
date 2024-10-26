@@ -17,7 +17,6 @@ import {
 } from "@/public/svg";
 import { useSearchParams } from "next/navigation";
 import { useSortedData } from "@/lib/hooks/useSortedData";
-import useAnalyticData from "@/lib/hooks/useCustomersData";
 import AnalyticCard from "../jobs/components/analytic-card";
 
 const Index = () => {
@@ -28,14 +27,12 @@ const Index = () => {
   const totalDisputes = sortedData?.data.totalItems;
   const stats = sortedData?.data?.stats;
 
-  console.log(stats);
-
   return (
     <>
       <Header />
       <PageBody>
         <div className="flex justify-between mb-6 items-center">
-          <PageHeading page_title="Disputes" />
+          <PageHeading page_title="Emergencies" />
           <Filter />
         </div>
         <div className="overflow-x-auto mb-6">
@@ -46,28 +43,32 @@ const Index = () => {
               borderColor="border-l-[#b42b08]"
               name="Total Emergencies"
               info={totalDisputes?.toLocaleString()}
+              tip="Total emergencies"
             />
             <AnalyticCard
               icon={<DisputesResolvedMetrics />}
               iconColor="bg-[#dcffde]"
               borderColor="border-l-[#0D8012]"
-              name="Total Resolved Disputes"
+              name="Total Resolved Emergencies"
               info={stats?.totalResolved}
+              tip="Total Emergencies resolved"
             />
             <AnalyticCard
               icon={<AverageDisputeResolutionTimeMetrics />}
               iconColor="bg-[#f8fa99]"
               borderColor="border-l-[#f1d900]"
-              name="Total Ongoing Disputes"
+              name="Total Ongoing Emergencies"
               info={stats?.totalInProgress}
+              tip="Total emergencies still in progress"
             />
 
             <AnalyticCard
               icon={<ComplaintsState />}
               iconColor="bg-[#f7a7a7]"
               borderColor="border-l-[#9A0101]"
-              name="Total Pending Disputes"
+              name="Total Pending Emergencies"
               info={stats?.totalPending}
+              tip="Total emergencies not accepted by an admin"
             />
           </div>
         </div>

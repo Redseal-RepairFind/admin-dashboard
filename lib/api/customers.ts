@@ -37,9 +37,37 @@ export const customers = {
       .get(`/admin/customer/job/detail/${id}?page=1&limit=50`)
       .then(({ data }) => data),
 
-  getAnalytics: (
-    route: "customers" | "contractors" | "disputes" | "jobs" | "emergencies"
-  ) => client.get(`/admin/${route}`).then(({ data }) => data),
+  getAnalytics: ({
+    route,
+    limit,
+    page,
+    criteria,
+    search,
+    status,
+    type,
+  }: {
+    route:
+      | "customers"
+      | "contractors"
+      | "disputes"
+      | "jobs"
+      | "emergencies"
+      | "jobdays"
+      | "transactions";
+    limit: number;
+    page: number;
+    criteria: string;
+    search?: string;
+    status?: string;
+    type?: string;
+  }) =>
+    client
+      .get(
+        `/admin/${route}?limit=${limit}&page=${page}&sort=${criteria}${
+          search ? `&searchFields=firstName,lastName&search=${search}` : ""
+        }${type ? `&type=${type}` : ""}${status ? `&status=${status}` : ""}`
+      )
+      .then(({ data }) => data),
 
   getSortingAnalytics: ({
     page,
@@ -47,16 +75,54 @@ export const customers = {
     startDate,
     endDate,
     route,
+    criteria,
+    search,
+    status,
+    type,
   }: {
     page: number;
     limit: number;
     startDate: string;
     endDate: string;
-    route: "customers" | "contractors" | "disputes" | "jobs" | "emergencies";
+    route:
+      | "customers"
+      | "contractors"
+      | "disputes"
+      | "jobs"
+      | "emergencies"
+      | "jobdays"
+      | "transactions";
+
+    criteria: string;
+    search?: string;
+    status?: string;
+    type?: string;
   }) =>
     client
       .get(
-        `/admin/${route}?limit=${limit}&page=${page}&startDate=${startDate}&endDate=${endDate}`
+        `/admin/${route}?limit=${limit}&page=${page}&startDate=${startDate}&endDate=${endDate}&sort=${criteria}${
+          search ? `&searchFields=firstName,lastName&search=${search}` : ""
+        }${type ? `&type=${type}` : ""}${status ? `&status=${status}` : ""}`
       )
+      .then(({ data }) => data),
+
+  // getTrx: ({}) =>
+  //   client
+  //     .get(`/admin/transactions?limit=${20}&page=${1`)
+  //     .then(({ data }) => data),
+
+  getSearchSort: ({
+    page,
+    limit,
+    criteria,
+    route,
+  }: {
+    page: number;
+    limit: number;
+    criteria: string;
+    route: "customers" | "contractors" | "disputes" | "jobs" | "emergencies";
+  }) =>
+    client
+      .get(`/admin/${route}?limit=${limit}&page=${page}`)
       .then(({ data }) => data),
 };

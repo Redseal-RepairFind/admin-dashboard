@@ -18,7 +18,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useContractorHistoryTable } from "../hooks/jobhistory";
 import FilterBox from "@/features/shared/job-history-filter/filter-box";
 import { trimString } from "@/lib/utils/trim-string";
-import { formatDateToDDMMYY, convertDate } from "@/lib/utils/format-date";
+import { formatDateToDDMMYY as convertDate } from "@/lib/utils/format-date";
 import { IJobHistory } from "@/lib/types";
 
 // Since the table data is dynamic a table component will replace by this template

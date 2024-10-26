@@ -1,5 +1,5 @@
 "use client";
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState, useEffect } from "react";
 import Header from "../../shared/inner-pages/header";
 import Wrapper from "@/features/shared/inner-pages/wrapper";
 import BorderRectangle from "@/features/shared/inner-pages/bordered-rect";
@@ -24,7 +24,7 @@ import {
 import { IContractorsDetails, ICustomerData } from "@/lib/types";
 import Reciept from "./reciept";
 
-const Invoice = () => {
+const Invoice: any = () => {
   const text = `Lorem ipsum dolor sit amet consectetur. At leo felis etiam massa maecenas eget fermentum lacus. Lorem ipsum dolor sit amet consectetur. At leo felis etiam massa maecenas eget fermentum lacus. Lorem ipsum dolor sit amet consectetur. At leo felis etiam massa maecenas eget fermentum lacus.`;
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,11 +39,15 @@ const Invoice = () => {
     (state: RootState) => state.singleTransaction
   );
   useLayoutEffect(() => {
-    if (transaction.transaction._id === "") {
+    if (transaction?._id === "") {
       router.push("/transactions");
       return;
     }
   }, []);
+
+  // useEffect(()=>{
+
+  // },[])
 
   return (
     <>
@@ -58,10 +62,10 @@ const Invoice = () => {
             className="w-[600px] bg-white max-w-auto relative p-7 overflow-y-auto h-screen"
             ref={ref}
           >
-            <Reciept
+            {/* <Reciept
               transactionDetail={transaction}
               closeModal={setShowModal}
-            />
+            /> */}
           </div>
         </div>
       </div>
@@ -100,35 +104,35 @@ const Invoice = () => {
               <table className="w-full">
                 <tbody>
                   <ProfileColumn
-                    position="Customer’s profile"
-                    name={transaction.customer.fullName}
-                    phoneNumber={transaction.customer.phoneNumber}
+                    position="Initiator’s profile"
+                    name={transaction?.fromUser?.name}
+                    phoneNumber={transaction?.fromUser?.phoneNumber}
                     stars={1}
-                    imageSrc={transaction.customer.profileImg}
+                    imageSrc={transaction?.fromUser?.profileImg}
                   />
                   <ProfileColumn
-                    position="Contractor’s profile"
-                    name={`${transaction.contractor.firstName} ${transaction.contractor.lastName}`}
-                    phoneNumber={transaction.contractor.email}
+                    position="Receiver's profile"
+                    name={`${transaction?.toUser?.firstName} ${transaction?.toUser?.lastName}`}
+                    phoneNumber={transaction?.toUser?.email}
                     stars={4}
-                    imageSrc={transaction.contractor.profileImage}
+                    imageSrc={transaction?.toUser?.profileImage}
                   />
                   <SingleLineColumn
                     name="Invoice ID"
-                    value={transaction.transaction.invoiceId}
+                    value={transaction?.transaction?.invoiceId}
                   />
                   <SingleLineColumn
-                    name="Job Address"
-                    value={transaction.job.address}
+                    name="Job Description"
+                    value={transaction?.description}
                   />
                   <SingleLineColumn
                     name="Job Status"
-                    value={transaction.job.status}
+                    value={transaction?.status}
                   />
-                  <SingleLineColumn
+                  {/* <SingleLineColumn
                     name="Job Inspection"
                     value={transaction.job.inspection.status ? "True" : "False"}
-                  />
+                  /> */}
                   {/* <SingleLineColumn
                     name=""
                     value={}

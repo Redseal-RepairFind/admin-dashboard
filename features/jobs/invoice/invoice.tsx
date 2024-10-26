@@ -97,7 +97,7 @@ const Invoice = () => {
                     stars={1}
                     imageSrc={jobDetail.customer.profilePhoto?.url}
                   />
-                  <SingleLineColumn name="Job ID" value={jobDetail._id} />
+                  <SingleLineColumn name="Job ID" value={jobDetail?._id} />
                   <SingleLineColumn
                     name="Job Address"
                     value={jobDetail?.location?.address}
