@@ -8,6 +8,7 @@ import LoadingTemplate from "../layout/loading";
 import ContractorsTable from "./components/table";
 import useContractors from "@/lib/hooks/useContractors";
 
+import { useSearchParams } from "next/navigation";
 import Filter from "@/app/_components/Filter";
 import {
   Contractors as CustomerIcon,
@@ -16,7 +17,6 @@ import {
   JobIcon,
   CancelIconRed,
 } from "@/public/svg";
-import { useSearchParams } from "next/navigation";
 import { useSortedData } from "@/lib/hooks/useSortedData";
 import AnalyticCard from "../jobs/components/analytic-card";
 import { downloadPDF } from "@/lib/utils/downloadPdf";

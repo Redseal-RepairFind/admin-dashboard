@@ -159,8 +159,8 @@ const SubAdminTable: React.FC<IProps> = ({ setLoading }) => {
 
           <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
             <FilterBox
-              handleMonthFiltering={handleMonthFiltering}
-              handleYearFiltering={handleYearFiltering}
+              // handleMonthFiltering={handleMonthFiltering}
+              // handleYearFiltering={handleYearFiltering}
               availableYears={availableYears}
               setShowFilters={setShowFilters}
             />

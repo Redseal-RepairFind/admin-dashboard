@@ -12,7 +12,7 @@ export function formatDateToDDMMYY(
     day: "numeric",
   };
 
-  const formattedDate = new Intl.DateTimeFormat("en-GB", options).format(date);
+  const formattedDate = new Intl.DateTimeFormat("en-GB", options)?.format(date);
 
   return itsDate ? date.getDate() : formattedDate;
 }

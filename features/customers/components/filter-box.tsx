@@ -1,99 +1,100 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 interface IProps {
   setShowFilters: React.Dispatch<React.SetStateAction<boolean>>;
-  handleRatingFiltering?: (value: number) => void;
-  handleYearFiltering: (value: number) => void;
-  handleMonthFiltering: (value: number) => void;
   availableYears: number[];
 }
 
-const FilterBox: React.FC<IProps> = ({
-  setShowFilters,
-  handleRatingFiltering,
-  handleYearFiltering,
-  handleMonthFiltering,
-  availableYears,
-}) => {
+const FilterBox: React.FC<IProps> = ({ setShowFilters, availableYears }) => {
   const [dropDateSelect, setDropDateSelect] = useState(false);
   const [dropRatingSelect, setDropRatingSelect] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const handleRatingChange = (value: number) => {
-    if (handleRatingFiltering) handleRatingFiltering(value);
+  // Set initial filter values from the URL
+  const initialStatus = searchParams.get("status") || "All";
+  const initialType = searchParams.get("type") || "All";
+  const [status, setStatus] = useState(initialStatus);
+  const [type, setType] = useState(initialType);
+
+  // Update URL and state when status filter is changed
+  const handleStatusChange = (value: string) => {
+    updateUrlParams("status", value);
+    setStatus(value);
   };
 
-  const handleYearChange = (value: number) => {
-    handleYearFiltering(value);
+  // Update URL and state when type filter is changed
+  const handleTypeChange = (value: string) => {
+    updateUrlParams("type", value);
+    setType(value);
   };
 
-  const handleMonthChange = (value: number) => {
-    handleMonthFiltering(value);
-  };
-
+  // Clear all filters
   const clearFilter = () => {
-    handleYearFiltering(0);
-    handleMonthFiltering(0);
+    router.replace(`${pathname}`);
+    setStatus("All");
+    setType("All");
     setShowFilters(false);
   };
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+  // Helper function to update URL parameters
+  function updateUrlParams(key: string, value: string) {
+    const params = new URLSearchParams(window.location.search);
+    if (value === "All") {
+      params.delete(key); // Remove the param if the default option is selected
+    } else {
+      params.set(key, value); // Set the selected filter in query params
+    }
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }
+
+  const statusOptions = [
+    "PENDING",
+    "APPROVED",
+    "SUCCESSFUL",
+    "FAILED",
+    "REFUNDED",
+    "CANCELLED",
+  ];
+
+  const typeOptions = [
+    { label: "TRANSFER", param: "TRANSFER" },
+    { label: "REFUND", param: "REFUND" },
+    { label: "ESCROW", param: "ESCROW" },
+    { label: "SITE VISIT PAYMENT", param: "SITE_VISIT_PAYMENT" },
+    { label: "JOB DAY PAYMENT", param: "JOB_DAY_PAYMENT" },
+    { label: "CHANGE ORDER PAYMENT", param: "CHANGE_ORDER_PAYMENT" },
+    { label: "REFERRAL BONUS", param: "REFERAL_BONUS_PAYMENT" },
   ];
 
   return (
     <>
-      <div className="">
+      <div>
         <button
           type="button"
-          className="font-[500] text-[#555] border border-[#555]
-           py-1 w-full rounded-md text-center outline-none"
+          className="font-[500] text-[#555] border border-[#555] py-1 w-full rounded-md text-center outline-none"
           onClick={() => setDropDateSelect(!dropDateSelect)}
         >
-          Date Joined
+          Transaction Status
         </button>
 
         {dropDateSelect && (
-          <div className={`flex flex-col gap-4 mt-4`}>
-            <div className="">
-              <label className="mb-1 block">Select Year:</label>
+          <div className="flex flex-col gap-4 mt-4">
+            <div>
+              <label className="mb-1 block">Select Status:</label>
               <div className="bg-[#f0f0f0] pl-2 pr-2 py-1 rounded-md">
                 <select
+                  value={status}
                   className="bg-transparent pr-2 outline-none w-full"
-                  onChange={(e) => handleYearChange(+e.target.value)}
+                  onChange={(e) => handleStatusChange(e.target.value)}
                 >
-                  <option value="">All Years</option>
-                  {availableYears?.map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="">
-              <label className="mb-1 block">Select Month:</label>
-              <div className="bg-[#f0f0f0] pl-2 pr-2 py-1 rounded-md">
-                <select
-                  className="bg-transparent pr-2 outline-none w-full"
-                  onChange={(e) => handleMonthChange(+e.target.value)}
-                >
-                  <option value="">All Months</option>
-                  {months.map((month, index) => (
-                    <option key={month} value={index + 1}>
-                      {month}
+                  <option value="All">All</option>
+                  {statusOptions.map((statusItem) => (
+                    <option key={statusItem} value={statusItem}>
+                      {statusItem}
                     </option>
                   ))}
                 </select>
@@ -103,44 +104,41 @@ const FilterBox: React.FC<IProps> = ({
         )}
       </div>
 
-      {handleRatingFiltering && (
-        <div className="">
-          <button
-            type="button"
-            className="font-[500] text-[#555] border border-[#555]
-           py-1 w-full rounded-md text-center outline-none mt-4 mb-1"
-            onClick={() => setDropRatingSelect(!dropRatingSelect)}
-          >
-            Rating
-          </button>
+      <div>
+        <button
+          type="button"
+          className="font-[500] text-[#555] border border-[#555] py-1 w-full rounded-md text-center outline-none mt-4 mb-1"
+          onClick={() => setDropRatingSelect(!dropRatingSelect)}
+        >
+          Transaction Types
+        </button>
 
-          {dropRatingSelect && (
-            <div className={`flex flex-col gap-4 mt-3`}>
-              <div className="">
-                <label className="mb-1 block">Select Rating:</label>
-                <div className="bg-[#f0f0f0] pl-2 pr-2 py-1 rounded-md">
-                  <select
-                    onChange={(e) => handleRatingChange(+e.target.value)}
-                    className="bg-transparent pr-2 outline-none w-full"
-                  >
-                    <option value={0}>No Stars</option>
-                    <option value={5}>5 Stars</option>
-                    <option value={4}>4 Stars</option>
-                    <option value={3}>3 Stars</option>
-                    <option value={2}>2 Stars</option>
-                    <option value={1}>1 Star</option>
-                  </select>
-                </div>
+        {dropRatingSelect && (
+          <div className="flex flex-col gap-4 mt-3">
+            <div>
+              <label className="mb-1 block">Select Type:</label>
+              <div className="bg-[#f0f0f0] pl-2 pr-2 py-1 rounded-md">
+                <select
+                  value={type}
+                  onChange={(e) => handleTypeChange(e.target.value)}
+                  className="bg-transparent pr-2 outline-none w-full"
+                >
+                  <option value="All">All</option>
+                  {typeOptions.map((typeOption) => (
+                    <option key={typeOption.label} value={typeOption.param}>
+                      {typeOption.label}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
 
       <button
         type="button"
-        className="font-[500] text-[#fff] border border-[#555]
-           py-1 w-full rounded-md text-center outline-none mt-4 bg-[#555]/70"
+        className="font-[500] text-[#fff] border border-[#555] py-1 w-full rounded-md text-center outline-none mt-4 bg-[#555]/70"
         onClick={clearFilter}
       >
         Clear

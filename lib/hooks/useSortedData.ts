@@ -12,6 +12,7 @@ export function useSortedData(
     | "jobs"
     | "emergencies"
     | "jobdays"
+    | "transactions"
 ) {
   const searchParams = useSearchParams();
   const param = new URLSearchParams(window.location.search);
@@ -27,6 +28,8 @@ export function useSortedData(
   const params = searchParams.get("sort") || "All";
   const currentPage = searchParams.get("page") || 1;
   const perPage = searchParams.get("perPage") || 10;
+  const status = searchParams.get("status") || "";
+  const type = searchParams.get("type") || "";
 
   const pathname = usePathname();
   const router = useRouter();
@@ -69,6 +72,8 @@ export function useSortedData(
       endDate,
       Number(perPage),
       Number(currentPage),
+      status,
+      type,
       // searchTerm,
     ],
     () =>
@@ -78,6 +83,8 @@ export function useSortedData(
             limit: Number(perPage) || 10,
             page: Number(currentPage) || 1,
             criteria: criteria,
+            status,
+            type,
             // search: searchTerm,
           })
         : customers.getSortingAnalytics({
@@ -87,6 +94,8 @@ export function useSortedData(
             endDate: formatDate(endDate),
             route,
             criteria: criteria,
+            status,
+            type,
             // search: searchTerm,
           }),
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }

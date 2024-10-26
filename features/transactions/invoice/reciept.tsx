@@ -67,15 +67,15 @@ const Reciept: React.FC<IProps> = ({ closeModal, transactionDetail }) => {
             <p className="font-[600] text-xl uppercase">
               Invoice
               <span className="text-[#417AA1] pl-2">
-                {trimString(transactionDetail?.transaction._id, 5)}
+                {trimString(transactionDetail?.transaction?._id, 5)}
               </span>
             </p>
 
             <p className="text-xs font-[500]">
-              {transactionDetail.job.jobTitle}
+              {transactionDetail?.job?.jobTitle}
             </p>
             <p className="text-suscess flex gap-1 items-center">
-              {transactionDetail.job.inspection.confirmPayment ? (
+              {transactionDetail?.job?.inspection?.confirmPayment ? (
                 <>
                   <CompletedState /> <span>Paid</span>
                 </>
@@ -134,10 +134,10 @@ const Reciept: React.FC<IProps> = ({ closeModal, transactionDetail }) => {
         <div className="">
           <p className="text-xs font-[600] text-[#A7A7A7]">To</p>
           <p className="font-[600]">{`${
-            transactionDetail.contractor?.firstName || ""
-          } ${transactionDetail.contractor?.lastName || ""}`}</p>
+            transactionDetail?.contractor?.firstName || ""
+          } ${transactionDetail?.contractor?.lastName || ""}`}</p>
           <p className="text-sm text-[#555]">
-            {trimString(transactionDetail.contractor?.email || "", 20)}
+            {trimString(transactionDetail?.contractor?.email || "", 20)}
           </p>
         </div>
       </div>
@@ -145,11 +145,11 @@ const Reciept: React.FC<IProps> = ({ closeModal, transactionDetail }) => {
       <div className="flex justify-between mt-8">
         <div>
           <p className="text-sm font-[500] text-[#7B7B7B]">Estimate</p>
-          <p>${transactionDetail.job.totalAmountContractorWithdraw}</p>
+          <p>${transactionDetail?.job?.totalAmountContractorWithdraw}</p>
         </div>
         <div>
           <p className="text-sm font-[500] text-[#7B7B7B]">Due Date</p>
-          <p>{formatTimeDDMMYY(transactionDetail.job.time)}</p>
+          <p>{formatTimeDDMMYY(transactionDetail?.job?.time)}</p>
         </div>
       </div>
 
@@ -169,14 +169,14 @@ const Reciept: React.FC<IProps> = ({ closeModal, transactionDetail }) => {
           </thead>
 
           <tbody>
-            {transactionDetail.job.quate.map((item, index) => (
+            {transactionDetail?.job?.quate?.map((item, index) => (
               <tr key={item._id}>
                 <td className="text-sm py-3 px-4 capitalize">
                   {item.material}
                 </td>
-                <td className="text-sm py-3 px-4">{item.rate}</td>
-                <td className="text-sm py-3 px-4">{item.qty}</td>
-                <td className="text-sm py-3 px-4">{item.amount}</td>
+                <td className="text-sm py-3 px-4">{item?.rate}</td>
+                <td className="text-sm py-3 px-4">{item?.qty}</td>
+                <td className="text-sm py-3 px-4">{item?.amount}</td>
               </tr>
             ))}
 

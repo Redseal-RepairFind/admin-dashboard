@@ -43,6 +43,8 @@ export const customers = {
     page,
     criteria,
     search,
+    status,
+    type,
   }: {
     route:
       | "customers"
@@ -50,17 +52,20 @@ export const customers = {
       | "disputes"
       | "jobs"
       | "emergencies"
-      | "jobdays";
+      | "jobdays"
+      | "transactions";
     limit: number;
     page: number;
     criteria: string;
     search?: string;
+    status?: string;
+    type?: string;
   }) =>
     client
       .get(
         `/admin/${route}?limit=${limit}&page=${page}&sort=${criteria}${
           search ? `&searchFields=firstName,lastName&search=${search}` : ""
-        }`
+        }${type ? `&type=${type}` : ""}${status ? `&status=${status}` : ""}`
       )
       .then(({ data }) => data),
 
@@ -72,6 +77,8 @@ export const customers = {
     route,
     criteria,
     search,
+    status,
+    type,
   }: {
     page: number;
     limit: number;
@@ -83,17 +90,26 @@ export const customers = {
       | "disputes"
       | "jobs"
       | "emergencies"
-      | "jobdays";
+      | "jobdays"
+      | "transactions";
+
     criteria: string;
     search?: string;
+    status?: string;
+    type?: string;
   }) =>
     client
       .get(
         `/admin/${route}?limit=${limit}&page=${page}&startDate=${startDate}&endDate=${endDate}&sort=${criteria}${
           search ? `&searchFields=firstName,lastName&search=${search}` : ""
-        }`
+        }${type ? `&type=${type}` : ""}${status ? `&status=${status}` : ""}`
       )
       .then(({ data }) => data),
+
+  // getTrx: ({}) =>
+  //   client
+  //     .get(`/admin/transactions?limit=${20}&page=${1`)
+  //     .then(({ data }) => data),
 
   getSearchSort: ({
     page,
