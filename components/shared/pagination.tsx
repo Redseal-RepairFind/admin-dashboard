@@ -50,7 +50,7 @@ const Pagination = ({ data }: dData) => {
     updateUrlParams(1, newPerPage);
   };
 
-  const totalPages = data?.lastPage; // Default to 1 if lastPage is undefined or NaN
+  const totalPages = data?.lastPage || 1; // Default to 1 if lastPage is undefined or NaN
 
   // Generate visible pages with ellipses
   const getVisiblePages = () => {
