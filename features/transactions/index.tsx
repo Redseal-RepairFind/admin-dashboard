@@ -14,11 +14,14 @@ import {
   ComplaintsState,
   JobIcon,
   CancelIconRed,
+  TotalRevenue,
 } from "@/public/svg";
 import { useSortedData } from "@/lib/hooks/useSortedData";
 import AnalyticCard from "../jobs/components/analytic-card";
 import { downloadPDF } from "@/lib/utils/downloadPdf";
 import { formatCurrency } from "@/lib/utils/curencyConverter";
+import { trimString } from "@/lib/utils/trim-string";
+import { formatTimeDDMMYY } from "@/lib/utils/format-date";
 
 const Transactions = () => {
   const [loading, setLoading] = useState(true);
@@ -41,11 +44,42 @@ const Transactions = () => {
 
   const stats = sortedData?.data?.stats;
 
-  //  jobPaymentsAmount, paypalCharges{amount, percentage, fixedFee, total}
-  // pendingEscrowAmount { total, count , percentage}
-  // pendingPayoutAmount{ total, count , percentage}
-  // refundEscrowAmount{ total, count , percentage}
-  //  successfulPayoutAmount{ total, count , percentage}
+  // console.log(stats);
+
+  const columns = [
+    "Initiator's Name",
+    "Receiver",
+    "Payment ID",
+    "Description",
+    "Date",
+    "Amount",
+    "Status",
+  ];
+
+  const rows = sortedData?.data?.data?.map((item: any) => [
+    item?.fromUser?.name || "User not found ",
+    item?.toUser?.name || "User not found ",
+    trimString(item?.payment?._id, 15),
+    trimString(item?.description, 22),
+    formatTimeDDMMYY(item?.createdAt),
+    item?.amount,
+    trimString(item?.status, 15),
+    // "item?.fromUser?.name || "User not found "
+
+    //   {/* {item.contractor.lastName} */}
+    // </Td>
+    // <Td>{item?.toUser?.name || "User Not found"}</Td>
+    // <Td>{trimString(item?.payment?._id, 15)}</Td>
+    // <Td>{trimString(item?.description, 22)}</Td>
+    // <Td>{formatTimeDDMMYY(item?.createdAt)}</Td>
+    // <Td>${item?.amount}</Td>
+    // <Td>{trimString(item?.status, 15)}</Td>
+  ]);
+
+  function handleDownloadPdf() {
+    downloadPDF(columns, rows, "Transaction.pdf", "Transaction's List");
+  }
+
   return (
     <>
       <Header />
@@ -56,10 +90,13 @@ const Transactions = () => {
           <PageHeading page_title="Transactions" />
           <Filter />
 
-          <DownloadButton text="Download Transaction’s LIST" />
+          <DownloadButton
+            text="Download Transaction’s LIST"
+            onClick={handleDownloadPdf}
+          />
         </div>
         <div className="overflow-x-auto mb-6">
-          <div className="flex gap-8 min-w-[1200px]">
+          <div className="flex gap-8 min-w-[1200px] flex-wrap">
             <AnalyticCard
               icon={<CustomerIcon />}
               iconColor="bg-[#C398C7]"
@@ -71,6 +108,24 @@ const Transactions = () => {
               // mostReq={0}
               // quotes={0}
             />
+
+            <AnalyticCard
+              icon={<TotalRevenue />}
+              iconColor="bg-[#c7c498]"
+              borderColor="border-l-[#e0ba10]"
+              name="Jobs Payments Paypal charges"
+              info={formatCurrency(
+                stats?.jobPaymentsAmount?.paypalCharges?.amount
+              )}
+              tip="Total Payments charges by PayPal"
+              percentage={stats?.jobPaymentsAmount?.paypalCharges?.percentage}
+              charge={formatCurrency(
+                stats?.jobPaymentsAmount?.paypalCharges?.fixedFee
+              )}
+              quotes="Fixed Fee"
+            />
+
+            {/* TotalRevenue */}
             <AnalyticCard
               icon={<CompletedState />}
               iconColor="bg-[#dcffde]"
@@ -79,6 +134,24 @@ const Transactions = () => {
               info={formatCurrency(stats?.successfulPayoutAmount?.total)}
               tip="Total Successful Payouts Amount"
               percentage={stats?.successfulPayoutAmount?.percentage}
+            />
+
+            <AnalyticCard
+              icon={<TotalRevenue />}
+              iconColor="bg-[#c7c498]"
+              borderColor="border-l-[#e0ba10]"
+              name="Payouts Paypal charges"
+              info={formatCurrency(
+                stats?.successfulPayoutAmount?.paypalCharges?.amount
+              )}
+              tip="Total Successful Payout charges by PayPal"
+              percentage={
+                stats?.successfulPayoutAmount?.paypalCharges?.percentage
+              }
+              // charge={formatCurrency(
+              // stats?.successfulPayoutAmount?.paypalCharges?.fixedFee
+              // )}
+              // quotes="Fixed Fee"
             />
             <AnalyticCard
               icon={<JobIcon />}
