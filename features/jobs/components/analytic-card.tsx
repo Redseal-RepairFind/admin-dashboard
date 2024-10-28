@@ -16,6 +16,7 @@ interface IProps {
   mostReq?: any;
   quotes?: any;
   tip?: string;
+  charge?: any;
 }
 
 const AnalyticCard: React.FC<IProps> = ({
@@ -29,6 +30,7 @@ const AnalyticCard: React.FC<IProps> = ({
   mostReq,
   quotes,
   tip = "This is a tooltip",
+  charge,
 }) => {
   // const router = useRouter();
 
@@ -80,6 +82,10 @@ const AnalyticCard: React.FC<IProps> = ({
           <p className="font-semibold  text-gray-700">
             {percentage ? `${percentage}%` : mostReq}
           </p>
+        ) : null}
+
+        {charge ? (
+          <p className="font-semibold  text-gray-700">{charge}</p>
         ) : null}
       </div>
 
