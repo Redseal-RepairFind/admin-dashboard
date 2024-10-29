@@ -21,6 +21,8 @@ export const customise = {
 
   addSkill: (payload: any) =>
     client.post(`/admin/skills`, payload).then(({ data }) => data),
+  addSkills: (payload: any) =>
+    client.post(`/admin/skills/bulk`, payload).then(({ data }) => data),
 
   getSkills: () => client.get(`/admin/skills`).then(({ data }) => data),
 };
