@@ -18,6 +18,7 @@ import { usePromotion } from "@/lib/hooks/usePromotion";
 import { ScaleLoader } from "react-spinners";
 import { formatCurrency } from "@/lib/utils/curencyConverter";
 import toast from "react-hot-toast";
+import { promotions } from "@/lib/api/promotions";
 
 const table_headings = [
   "Name",
@@ -45,10 +46,10 @@ function Promotion() {
 
   const [promoOpen, setPromoOpen] = useState(false);
 
-  const { Promotions, loadingPromo, refetchPromo, UpdatePromo, deletePromo } =
+  const { Promotions, loadingPromo, refetchPromo, deletePromo } =
     usePromotion();
 
-  console.log(Promotions);
+  // console.log(Promotions);
 
   // Update isOpen.item whenever modal.data changes or a different modal is opened
   useEffect(() => {
@@ -100,26 +101,40 @@ function Promotion() {
     console.log("submit");
   }
 
-  function onSubmit(window: "edit" | "delete") {
+  // console.log(Promotions);
+
+  async function onSubmit(window: "edit" | "delete") {
     toast.loading(window === "edit" ? "Updating..." : "Deleting...");
 
     let mainData;
 
-    // console.log(isOpen.item);
+    console.log(isOpen?.item);
 
-    // try {
-    //   // const data: any = await UpdatePromo(mainData);
-    //   toast.remove();
-    //   // toast.success(data?.message);
-    //   handleCloseModal?.(window);
-    //   setTimeout(() => {
-    //     refetchPromo();
-    //   }, 1000);
-    // } catch (error: any) {
-    //   console.error(error);
-    //   toast.remove();
-    //   toast.error(error?.response?.data?.errors[0]?.msg);
-    // }
+    if (!isOpen?.item || !modal?.data) {
+      toast.error("You have not selected a new Status");
+      return;
+    }
+
+    try {
+      if (window === "edit") {
+        const data = { status: isOpen?.item };
+        // console.log(data);
+        mainData = await promotions.updatePromo(modal?.data?._id, data);
+      } else if (window === "delete") {
+        // console.log(data);
+        mainData = await deletePromo(modal?.data?._id);
+      }
+      toast.remove();
+      toast.success(mainData?.message);
+      handleCloseModal?.(window);
+      setTimeout(() => {
+        refetchPromo();
+      }, 1000);
+    } catch (error: any) {
+      console.error(error);
+      toast.remove();
+      toast.error(error?.response?.message);
+    }
   }
 
   return (
@@ -194,7 +209,7 @@ function Promotion() {
           </button>
           <button
             className="bg-black text-gray-100 h-12 w-full items-center justify-center flex hover:bg-gray-700 transition-all duration-500 hover:text-gray-100 font-semibold rounded-md"
-            onClick={() => submit()}
+            onClick={() => onSubmit("edit")}
           >
             Update
           </button>
@@ -225,7 +240,7 @@ function Promotion() {
             >
               Cancel
             </button>
-            <button className="bg-red-600 h-12 w-full flex items-center rounded-md justify-center text-gray-100">
+            <button className="bg-red-600 h-12 w-full flex items-center rounded-md justify-center text-gray-100" onClick={()=>onSubmit("delete")}>
               Proceed
             </button>
           </div>

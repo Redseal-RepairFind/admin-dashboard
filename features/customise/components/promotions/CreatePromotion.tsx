@@ -84,7 +84,7 @@ function PromotionForm({ close }: { close: () => void }) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-4 min-w-[600px] overflow-y-auto"
+      className="flex flex-col gap-4 min-w-[600px] overflow-y-auto mt-6"
     >
       <Column>
         <Row>
