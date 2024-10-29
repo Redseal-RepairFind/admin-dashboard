@@ -48,7 +48,7 @@ function Promotion() {
   const { Promotions, loadingPromo, refetchPromo, UpdatePromo, deletePromo } =
     usePromotion();
 
-  // console.log(Promotions);
+  console.log(Promotions);
 
   // Update isOpen.item whenever modal.data changes or a different modal is opened
   useEffect(() => {
@@ -96,26 +96,30 @@ function Promotion() {
     }));
   }
 
-  async function onSubmit(window: "edit" | "delete") {
+  function submit() {
+    console.log("submit");
+  }
+
+  function onSubmit(window: "edit" | "delete") {
     toast.loading(window === "edit" ? "Updating..." : "Deleting...");
 
     let mainData;
 
-    console.log(isOpen.item);
+    // console.log(isOpen.item);
 
-    try {
-      // const data: any = await UpdatePromo(mainData);
-      toast.remove();
-      // toast.success(data?.message);
-      handleCloseModal?.(window);
-      setTimeout(() => {
-        refetchPromo();
-      }, 1000);
-    } catch (error: any) {
-      console.error(error);
-      toast.remove();
-      toast.error(error?.response?.data?.errors[0]?.msg);
-    }
+    // try {
+    //   // const data: any = await UpdatePromo(mainData);
+    //   toast.remove();
+    //   // toast.success(data?.message);
+    //   handleCloseModal?.(window);
+    //   setTimeout(() => {
+    //     refetchPromo();
+    //   }, 1000);
+    // } catch (error: any) {
+    //   console.error(error);
+    //   toast.remove();
+    //   toast.error(error?.response?.data?.errors[0]?.msg);
+    // }
   }
 
   return (
@@ -137,6 +141,8 @@ function Promotion() {
         }}
         container={promoRef.current}
       >
+        <Heading name="Create New Promotion" />
+
         <PromotionForm close={closePromo} />
       </Modal>
 
@@ -186,7 +192,10 @@ function Promotion() {
               </div>
             )}
           </button>
-          <button className="bg-black text-gray-100 h-12 w-full items-center justify-center flex hover:bg-gray-700 transition-all duration-500 hover:text-gray-100 font-semibold rounded-md" onClick={()=> onSubmit('edit')}>
+          <button
+            className="bg-black text-gray-100 h-12 w-full items-center justify-center flex hover:bg-gray-700 transition-all duration-500 hover:text-gray-100 font-semibold rounded-md"
+            onClick={() => submit()}
+          >
             Update
           </button>
         </div>
