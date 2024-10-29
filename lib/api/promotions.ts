@@ -11,7 +11,7 @@ export const promotions = {
   async createPromo(payload: any) {
     return client.post(URL, payload).then(({ data }) => data);
   },
-  async updatePromo(payload: any, id?: string) {
+  async updatePromo(id: string, payload: any) {
     return client.patch(`${URL}/${id}`, payload).then(({ data }) => data);
   },
   async deletePromo(id: any) {
