@@ -46,19 +46,7 @@ const JobsTable: React.FC<IProps> = ({
   handleSearch,
   setIsQuerying,
 }) => {
-  const {
-    handleQuery,
-    notFound,
-    showFilters,
-    setShowFilters,
-    handleRatingFiltering,
-    handleMonthFiltering,
-    handleYearFiltering,
-    availableYears,
-    currentJobsList,
-    handleViewInvoice,
-    totalJobs,
-  } = useJobTable({ setLoading });
+  const { handleViewInvoice } = useJobTable({ setLoading });
 
   const pageProps = {
     data: filteredData?.data,

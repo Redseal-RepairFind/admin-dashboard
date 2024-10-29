@@ -7,6 +7,7 @@ const useCustomise = () => {
   const { mutateAsync: UpdateQuestion } = useMutation(customise.updateQuestion);
   const { mutateAsync: AddQuiz } = useMutation(customise.addQuiz);
   const { mutateAsync: AddSkill } = useMutation(customise.addSkill);
+  const { mutateAsync: AddSkills } = useMutation(customise.addSkills);
 
   const {
     data: quiz,
@@ -44,6 +45,7 @@ const useCustomise = () => {
     UpdateQuestion,
     isLoading,
     refetchQuizzes,
+    AddSkills,
   };
 };
 
