@@ -6,7 +6,7 @@ import { formatDate } from "@/lib/utils/format-date";
 
 export function usePromotion() {
   const { mutateAsync: CreatePromo } = useMutation(promotions.createPromo);
-  const { mutateAsync: UpdatePromo } = useMutation(promotions.updatePromo);
+  // const { mutateAsync: UpdatePromo } = useMutation(promotions.updatePromo);
 
   const { mutateAsync: deletePromo } = useMutation(promotions.deletePromo);
 
@@ -27,7 +27,7 @@ export function usePromotion() {
     loadingPromo,
     refetchPromo,
     CreatePromo,
-    UpdatePromo,
+    // UpdatePromo,
     deletePromo,
   };
 }
