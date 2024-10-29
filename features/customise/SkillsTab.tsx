@@ -1,22 +1,17 @@
 "use client";
+
 import React, { useState } from "react";
-import Skills from "./skills";
-import Quiz from "./quiz";
-import EditQuizTab from "./edit-quiz/index";
+// import Skills from "./skills";
+// import Quiz from "./quiz";
+// import EditQuizTab from "./edit-quiz/index";
 import useCustomise from "@/lib/hooks/useCustomise";
 import toast from "react-hot-toast";
 import Modal from "@/components/ui/Modal";
-import Promotion from "./promotions/Promotion";
+import Skills from "./components/skills";
+// import Promotion from "./promotions/Promotion";
 
-const Tabs: React.FC = () => {
-  const currentSessionTab =
-    typeof window !== "undefined"
-      ? sessionStorage.getItem("current_customise_tab")
-      : "1";
-
-  const sessionTab = currentSessionTab ? JSON.parse(currentSessionTab) : 1;
-
-  const [activeTab, setActiveTab] = useState<number>(sessionTab);
+function SkillsTab() {
+  const [activeTab, setActiveTab] = useState<number>();
   const [skillInputs, setSkillInputs] = useState<
     { id: number; value: string }[]
   >([{ id: 0, value: "" }]);
@@ -24,31 +19,7 @@ const Tabs: React.FC = () => {
   const [openMenu, setOpenMenu] = useState<number | null>(null); // Track which menu is open
   const [modalOpen, setModalOpen] = useState(false);
 
-  const handleTabChange = (tabNumber: number) => {
-    sessionStorage.setItem("current_customise_tab", JSON.stringify(tabNumber));
-    setActiveTab(tabNumber);
-  };
-
   const { AddSkill, refetchSkills, AddSkills, skills } = useCustomise();
-
-  // const tabs = [
-  //   {
-  //     name: "Set Quiz",
-  //     path: "/customise/quiz",
-  //   },
-  //   {
-  //     name: "Edit Quiz",
-  //     path: "/customise/quiz/edit_quiz",
-  //   },
-  //   {
-  //     name: "Add new Skill",
-  //     path: "/customise/new_skill",
-  //   },
-  //   {
-  //     name: "Promotion",
-  //     path: "/customise/promotion",
-  //   },
-  // ];
 
   const submitNewSkill = async () => {
     const newSkills = skillInputs.map((skill) => skill.value);
@@ -98,109 +69,54 @@ const Tabs: React.FC = () => {
     setSkillInputs((prevInputs) => prevInputs.filter((_, i) => i !== index));
   };
 
-  // const skillsToRender = isFulSkill ? skills?.data : skills?.data?.slice(0, 10);
-
-  // const closeModal = () => setModalOpen(false);
-  // const openModal = () => setModalOpen(true);
-
   return (
-    <div className="flex flex-col">
-      <div className="flex justify-start gap-5">
-        <button
-          className={`px-6 py-2 text-sm rounded transition-all duration-300 ${
-            activeTab === 1
-              ? "bg-white border border-[#262626] text-[#262626]"
-              : "bg-white"
-          }`}
-          onClick={() => handleTabChange(1)}
+    <div className="w-[50%] pt-10">
+      <Skills />
+      <div className="mt-4">
+        <label
+          htmlFor="username"
+          className="block font-medium leading-6 text-gray-900 mb-4"
         >
-          Set Quiz
-        </button>
+          New skill
+        </label>
 
-        <button
-          className={`px-6 py-2 text-sm rounded transition-all duration-300 ${
-            activeTab === 2
-              ? "bg-white border border-[#262626] text-[#262626]"
-              : "bg-white"
-          }`}
-          onClick={() => handleTabChange(2)}
-        >
-          Edit Quiz
-        </button>
-
-        <button
-          className={`px-6 py-2 text-sm rounded transition-all duration-300 ${
-            activeTab === 3
-              ? "bg-white border border-[#262626] text-[#262626]"
-              : "bg-white"
-          }`}
-          onClick={() => handleTabChange(3)}
-        >
-          Add new skill
-        </button>
-
-        {/* <button
-          className={`px-6 py-2 text-sm rounded transition-all duration-300 ${
-            activeTab === 4
-              ? "bg-white border border-[#262626] text-[#262626]"
-              : "bg-white"
-          }`}
-          onClick={() => handleTabChange(4)}
-        >
-          Promotion
-        </button> */}
-      </div>
-      <div className="mt-2">
-        {activeTab === 1 && <Quiz />}
-        {activeTab === 2 && <EditQuizTab />}
-        {activeTab === 3 && (
-          <div className="w-[50%] pt-10">
-            <Skills />
-            <div className="mt-4">
-              <label
-                htmlFor="username"
-                className="block font-medium leading-6 text-gray-900 mb-4"
+        {skillInputs.map((input, i) => (
+          <div className="flex items-center gap-4" key={i}>
+            <input
+              type="text"
+              name="skill"
+              id={`skill-${i}`}
+              autoComplete="skill"
+              className="w-[100%] border-0 py-2 px-3 mt-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 capitalize"
+              placeholder="Add new skill"
+              value={input.value}
+              onChange={(e) => handleSkillChange(i, e.target.value)}
+            />
+            {i !== 0 ? (
+              <button
+                onClick={() => removeSkillInput(i)}
+                className="font-bold text-3xl"
               >
-                New skill
-              </label>
+                &times;
+              </button>
+            ) : null}
+          </div>
+        ))}
+      </div>
+      <button
+        onClick={addSkillInput}
+        className="text-gray-600 mr-6 capitalize border border-[#262626] py-1.5 px-6 rounded-md"
+      >
+        + new skill
+      </button>
+      <button
+        className="border-0 bg-[#262626] text-[#fff] px-6 py-2 rounded mt-10 text-sm hover:opacity-90 hover:scale-[0.99] transition-all"
+        onClick={submitNewSkill}
+      >
+        Publish Skills
+      </button>
 
-              {skillInputs.map((input, i) => (
-                <div className="flex items-center gap-4" key={i}>
-                  <input
-                    type="text"
-                    name="skill"
-                    id={`skill-${i}`}
-                    autoComplete="skill"
-                    className="w-[100%] border-0 py-2 px-3 mt-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 capitalize"
-                    placeholder="Add new skill"
-                    value={input.value}
-                    onChange={(e) => handleSkillChange(i, e.target.value)}
-                  />
-                  {i !== 0 ? (
-                    <button
-                      onClick={() => removeSkillInput(i)}
-                      className="font-bold text-3xl"
-                    >
-                      &times;
-                    </button>
-                  ) : null}
-                </div>
-              ))}
-            </div>
-            <button
-              onClick={addSkillInput}
-              className="text-gray-600 mr-6 capitalize border border-[#262626] py-1.5 px-6 rounded-md"
-            >
-              + new skill
-            </button>
-            <button
-              className="border-0 bg-[#262626] text-[#fff] px-6 py-2 rounded mt-10 text-sm hover:opacity-90 hover:scale-[0.99] transition-all"
-              onClick={submitNewSkill}
-            >
-              Publish Skills
-            </button>
-
-            {/* <div className="mt-6">
+      {/* <div className="mt-6">
           <h1 className="font-bold text-2xl mb-4">All Skills</h1>
           {skillsToRender?.map((skill: any, i: number) => (
             <div className="flex items-center gap-2 mb-4" key={i}>
@@ -261,12 +177,8 @@ const Tabs: React.FC = () => {
             {isFulSkill ? "Show less" : "Show all"}
           </button>
         </div> */}
-          </div>
-        )}
-        {/* {activeTab === 4 && <Promotion />} */}
-      </div>
     </div>
   );
-};
+}
 
-export default Tabs;
+export default SkillsTab;
