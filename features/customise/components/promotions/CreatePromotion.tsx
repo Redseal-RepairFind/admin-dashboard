@@ -64,7 +64,7 @@ function PromotionForm({ close }: { close: () => void }) {
       contractorLimit: +formData.contractorLimit,
       customerLimit: +formData.customerLimit,
     };
-    console.log(mainData);
+    // console.log(mainData);
 
     try {
       const data: any = await CreatePromo(mainData);
