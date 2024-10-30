@@ -113,7 +113,7 @@ const Transactions = () => {
               icon={<TotalRevenue />}
               iconColor="bg-[#c7c498]"
               borderColor="border-l-[#e0ba10]"
-              name="Jobs Payments Paypal charges"
+              name="Checkout Charges"
               info={formatCurrency(
                 stats?.jobPaymentsAmount?.paypalCharges?.amount
               )}
@@ -140,7 +140,7 @@ const Transactions = () => {
               icon={<TotalRevenue />}
               iconColor="bg-[#c7c498]"
               borderColor="border-l-[#e0ba10]"
-              name="Payouts Paypal charges"
+              name="Payout Charges"
               info={formatCurrency(
                 stats?.successfulPayoutAmount?.paypalCharges?.amount
               )}
