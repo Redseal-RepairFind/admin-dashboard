@@ -10,7 +10,7 @@ export default function Skills() {
   const skillsToRender = isFulSkill ? skills?.data : skills?.data?.slice(0, 10);
   return (
     <>
-      <div className="bg-white p-4 w-fit rounded-md">
+      <div className="bg-white p-4 w-fit h-[600px] overflow-y-auto-auto rounded-md z-50">
         {/* <select className="py-[10px] px-4 capitalize w-full outline-none bg-transparent min-w-[200px] max-w-[200px]"> */}
         {/* <option>Available Skills</option>
           {skills?.data?.map((item: any, index: number) => (
@@ -20,11 +20,11 @@ export default function Skills() {
           ))}
         </select> */}
 
-        <div className="mt-6">
+        <div className="mt-6 h-full w-full overflow-y-auto">
           <h1 className="font-bold text-2xl mb-4">All Skills</h1>
           {skillsToRender?.map((skill: any, i: number) => (
             <div className="flex items-center gap-2 mb-4" key={i}>
-              <span className="flex justify-center rounded-full items-center h-6 w-6 bg-white text-black text-sm">
+              <span className="flex justify-center rounded-full items-center h-6 w-6 bg-white text-black text-sm z-10">
                 {i + 1}
               </span>
 
