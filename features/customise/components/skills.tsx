@@ -6,7 +6,6 @@ export default function Skills() {
   const { skills } = useCustomise();
   const [isFulSkill, setIsFulSkill] = useState<boolean>(false);
 
-  console.log(skills);
   const skillsToRender = isFulSkill ? skills?.data : skills?.data?.slice(0, 10);
 
   if (!skillsToRender) return <h1>NO SKILLS TO RENDER</h1>;
