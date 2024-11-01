@@ -8,6 +8,8 @@ export default function Skills() {
 
   console.log(skills);
   const skillsToRender = isFulSkill ? skills?.data : skills?.data?.slice(0, 10);
+
+  if (!skillsToRender) return <h1>NO SKILLS TO RENDER</h1>;
   return (
     <>
       <div className="bg-white p-4 w-fit h-[600px] overflow-y-auto-auto rounded-md z-50">
