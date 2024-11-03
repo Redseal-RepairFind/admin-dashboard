@@ -52,7 +52,7 @@ const DisputeTable = () => {
     queryedList,
   } = useDisputes();
 
-  const { sortedData, loadingSortedData } = useSortedData("disputes");
+  // const { sortedData, loadingSortedData } = useSortedData("disputes");
 
   const router = useRouter();
 
@@ -65,7 +65,7 @@ const DisputeTable = () => {
   };
 
   const pageProps = {
-    data: sortedData?.data,
+    data: dataToRender?.data,
   };
 
   return (
