@@ -16,6 +16,8 @@ const SingleDispute = () => {
 
   const { singleDispute } = useDisputes();
 
+  console.log(singleDispute);
+
   const handleBack = () => {
     router.back();
   };
