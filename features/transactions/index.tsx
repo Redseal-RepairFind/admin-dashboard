@@ -148,6 +148,7 @@ const Transactions = () => {
               percentage={
                 stats?.successfulPayoutAmount?.paypalCharges?.percentage
               }
+              quotes={"Percentage"}
               // charge={formatCurrency(
               // stats?.successfulPayoutAmount?.paypalCharges?.fixedFee
               // )}

@@ -158,35 +158,37 @@ const JobInformation = () => {
         <JobDetail info={singleDispute?.data?.job} />
         <JobMedia info={singleDispute?.data?.jobDay} />
         <DisputeForm info={singleDispute?.data?.description} />
-        <div className="w-full flex items-center justify-start gap-5">
-          <button
-            onClick={() => {
-              setResolveType("contractor");
-              setOpen(true);
-            }}
-            className={`text-white px-8 py-3 rounded-md text-sm bg-black`}
-          >
-            Pay Contractor
-          </button>
-          <button
-            onClick={() => {
-              setResolveType("customer");
-              setOpen(true);
-            }}
-            className={`px-8 py-3 rounded-md text-sm border border-black`}
-          >
-            Refund Customer
-          </button>
-          <button
-            onClick={() => {
-              setResolveType("revisit");
-              setOpen(true);
-            }}
-            className={`px-8 py-3 rounded-md text-sm border border-black`}
-          >
-            Enable Revisit
-          </button>
-        </div>
+        {singleDispute?.data?.status === "RESOLVED" ? null : (
+          <div className="w-full flex items-center justify-start gap-5">
+            <button
+              onClick={() => {
+                setResolveType("contractor");
+                setOpen(true);
+              }}
+              className={`text-white px-8 py-3 rounded-md text-sm bg-black`}
+            >
+              Pay Contractor
+            </button>
+            <button
+              onClick={() => {
+                setResolveType("customer");
+                setOpen(true);
+              }}
+              className={`px-8 py-3 rounded-md text-sm border border-black`}
+            >
+              Refund Customer
+            </button>
+            <button
+              onClick={() => {
+                setResolveType("revisit");
+                setOpen(true);
+              }}
+              className={`px-8 py-3 rounded-md text-sm border border-black`}
+            >
+              Enable Revisit
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
