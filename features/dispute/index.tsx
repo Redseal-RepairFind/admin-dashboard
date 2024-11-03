@@ -14,12 +14,16 @@ import {
   ComplaintsState,
   AverageDisputeResolutionTimeMetrics,
 } from "@/public/svg";
-import { useSearchParams } from "next/navigation";
-import { useSortedData } from "@/lib/hooks/useSortedData";
+// import { useSearchParams } from "next/navigation";
+// import { useSortedData } from "@/lib/hooks/useSortedData";
 import AnalyticCard from "../jobs/components/analytic-card";
+import useDisputes from "@/lib/hooks/useDisputes";
 
 const Index = () => {
-  const { sortedData, loadingSortedData } = useSortedData("disputes");
+  // const { sortedData, loadingSortedData } = useSortedData("disputes");
+
+  const { dataToRender: sortedData } = useDisputes();
+  // console.log(sortedData);
 
   const totalDisputes = sortedData?.data.totalItems;
   const stats = sortedData?.data?.stats;
