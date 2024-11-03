@@ -65,7 +65,7 @@ const DisputeTable = () => {
   };
 
   const pageProps = {
-    data: sortedData?.data,
+    data: dataToRender?.data,
   };
 
   return (
