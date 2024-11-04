@@ -97,8 +97,6 @@ const Tabs: React.FC = () => {
 
   // const skillsToRender = isFulSkill ? skills?.data : skills?.data?.slice(0, 10);
 
- 
-
   return (
     <div className="flex flex-col">
       <div className="flex justify-start gap-5">
@@ -132,7 +130,7 @@ const Tabs: React.FC = () => {
           }`}
           onClick={() => handleTabChange(3)}
         >
-          Add new skill
+          Manage skills
         </button>
 
         {/* <button
