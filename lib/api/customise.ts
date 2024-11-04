@@ -25,4 +25,11 @@ export const customise = {
     client.post(`/admin/skills/bulk`, payload).then(({ data }) => data),
 
   getSkills: () => client.get(`/admin/skills`).then(({ data }) => data),
+  deleteSkills: (skillId: string) =>
+    client.delete(`/admin/skills/${skillId}`).then(({ data }) => data),
+  async editSkills(skillId: string, payload: any) {
+    return client
+      .patch(`/admin/skills/${skillId}`, payload)
+      .then(({ data }) => data);
+  },
 };

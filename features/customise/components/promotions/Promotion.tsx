@@ -19,6 +19,7 @@ import { ScaleLoader } from "react-spinners";
 import { formatCurrency } from "@/lib/utils/curencyConverter";
 import toast from "react-hot-toast";
 import { promotions } from "@/lib/api/promotions";
+import DeleteModal from "./DeleteModal";
 
 const table_headings = [
   "Name",
@@ -108,7 +109,7 @@ function Promotion() {
 
     let mainData;
 
-    console.log(isOpen?.item);
+    // console.log(isOpen?.item);
 
     if (!isOpen?.item || !modal?.data) {
       toast.error("You have not selected a new Status");
@@ -225,26 +226,13 @@ function Promotion() {
           modal: "customModal",
         }}
       >
-        <div className="flex flex-col  gap-4 min-w-[400px] max-w-screen-md mx-auto">
-          <Heading name="Delete Promotion" />
-          {/* Confirmation for delete */}
-          <p className="text-center">
-            Are you sure you want to delete {modal?.data?.name} promotion? This
-            action cannot be undone.
-          </p>
-
-          <div className="grid grid-cols-2 gap-2 items-center gap">
-            <button
-              className="bg-gray-200 h-12 w-full flex items-center rounded-md justify-center text-gray-800"
-              onClick={() => handleCloseModal("delete")}
-            >
-              Cancel
-            </button>
-            <button className="bg-red-600 h-12 w-full flex items-center rounded-md justify-center text-gray-100" onClick={()=>onSubmit("delete")}>
-              Proceed
-            </button>
-          </div>
-        </div>
+        <DeleteModal
+          name={modal?.data?.name}
+          closeModal={handleCloseModal}
+          onSubmit={onSubmit}
+          type="Promotion"
+          title={`Delete ${modal?.data?.name} Promotion`}
+        />
       </Modal>
       {loadingPromo ? (
         <div className="flex items-center justify-center py-10">
