@@ -21,8 +21,6 @@ const Tabs: React.FC = () => {
     { id: number; value: string }[]
   >([{ id: 0, value: "" }]);
   const [isFulSkill, setIsFulSkill] = useState(false);
-  const [openMenu, setOpenMenu] = useState<number | null>(null); // Track which menu is open
-  const [modalOpen, setModalOpen] = useState(false);
 
   const handleTabChange = (tabNumber: number) => {
     sessionStorage.setItem("current_customise_tab", JSON.stringify(tabNumber));
@@ -99,8 +97,7 @@ const Tabs: React.FC = () => {
 
   // const skillsToRender = isFulSkill ? skills?.data : skills?.data?.slice(0, 10);
 
-  // const closeModal = () => setModalOpen(false);
-  // const openModal = () => setModalOpen(true);
+ 
 
   return (
     <div className="flex flex-col">
@@ -200,68 +197,6 @@ const Tabs: React.FC = () => {
                   Publish Skills
                 </button>
               </div>
-
-              {/* <div className="mt-6">
-          <h1 className="font-bold text-2xl mb-4">All Skills</h1>
-          {skillsToRender?.map((skill: any, i: number) => (
-            <div className="flex items-center gap-2 mb-4" key={i}>
-            <span className="flex justify-center rounded-full items-center h-6 w-6 bg-white text-black text-sm">
-            {i + 1}
-            </span>
-            
-            <div className="grid grid-cols-[600px,100px] relative">
-            <Modal isOpen={modalOpen} onClose={closeModal}>
-            <div className="w-24">
-            <input
-                      type="text"
-                      name="skill"
-                      autoComplete="skill"
-                      className="w-full border-0 py-2 px-3 mt-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 capitalize"
-                      placeholder="Edit skill"
-                      // value={}
-                    />
-                    <button>Edit </button>
-                  </div>
-                </Modal>
-                <p className="text-sm ">{skill?.name}</p>
-                <span>
-                  <button
-                  onClick={() => setOpenMenu(openMenu === i ? null : i)} // Toggle only the current skill's menu
-                  >
-                  <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      height="24"
-                      fill="currentColor"
-                      >
-                      <circle cx="12" cy="5" r="2" />
-                      <circle cx="12" cy="12" r="2" />
-                      <circle cx="12" cy="19" r="2" />
-                      </svg>
-                      </button>
-                  {openMenu === i ? ( // Show menu only if openMenu matches the current index
-                    <div className="absolute right-0 top-0 bg-gray-100 h-14 w-20 shadow-md">
-                      <button
-                        className="text-gray-500 w-full"
-                        onClick={openModal}
-                      >
-                        Edit
-                      </button>
-                      <button className="text-gray-500 w-full">Delete</button>
-                    </div>
-                  ) : null}
-                </span>
-              </div>
-            </div>
-          ))}
-          <button
-          className="border-0 bg-[#262626] text-[#fff] px-6 py-2 rounded mt-10 text-sm hover:opacity-90 hover:scale-[0.99] transition-all mb-6"
-          onClick={() => setIsFulSkill((is) => !is)}
-          >
-          {isFulSkill ? "Show less" : "Show all"}
-          </button>
-          </div> */}
             </div>
             <Skills />
           </div>
