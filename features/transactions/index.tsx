@@ -49,7 +49,7 @@ const Transactions = () => {
   const columns = [
     "Initiator's Name",
     "Receiver",
-    "Payment ID",
+    "Type",
     "Description",
     "Date",
     "Amount",
@@ -75,6 +75,8 @@ const Transactions = () => {
     // <Td>${item?.amount}</Td>
     // <Td>{trimString(item?.status, 15)}</Td>
   ]);
+
+  // console.log(sortedData);
 
   function handleDownloadPdf() {
     downloadPDF(columns, rows, "Transaction.pdf", "Transaction's List");
@@ -134,6 +136,8 @@ const Transactions = () => {
               info={formatCurrency(stats?.successfulPayoutAmount?.total)}
               tip="Total Successful Payouts Amount"
               percentage={stats?.successfulPayoutAmount?.percentage}
+              charge={stats?.successfulPayoutAmount?.count}
+              quotes={"Count"}
             />
 
             <AnalyticCard
@@ -148,11 +152,13 @@ const Transactions = () => {
               percentage={
                 stats?.successfulPayoutAmount?.paypalCharges?.percentage
               }
-              quotes={"Percentage"}
+              // quotes={"Percentage"}
               // charge={formatCurrency(
               // stats?.successfulPayoutAmount?.paypalCharges?.fixedFee
               // )}
               // quotes="Fixed Fee"
+              charge={stats?.successfulPayoutAmount?.count}
+              quotes={"Count"}
             />
             <AnalyticCard
               icon={<JobIcon />}
@@ -162,6 +168,8 @@ const Transactions = () => {
               info={formatCurrency(stats?.pendingEscrowAmount?.total)}
               tip="Total pending escrow payments"
               percentage={stats?.pendingEscrowAmount?.percentage}
+              charge={stats?.pendingEscrowAmount?.count}
+              quotes={"Count"}
             />
             {/* pendingPayoutAmount */}
             <AnalyticCard
@@ -172,6 +180,8 @@ const Transactions = () => {
               info={formatCurrency(stats?.pendingPayoutAmount?.total)}
               tip="Total pending Payouts payment"
               percentage={stats?.pendingPayoutAmount?.percentage}
+              charge={stats?.pendingPayoutAmount?.count}
+              quotes={"Count"}
             />
             <AnalyticCard
               icon={<ComplaintsState />}
@@ -181,6 +191,8 @@ const Transactions = () => {
               info={formatCurrency(stats?.refundEscrowAmount?.total)}
               tip="Total Escrow Refund  payment"
               percentage={stats?.refundEscrowAmount?.percentage}
+              charge={stats?.refundEscrowAmount?.count}
+              quotes={"Count"}
             />
           </div>
         </div>

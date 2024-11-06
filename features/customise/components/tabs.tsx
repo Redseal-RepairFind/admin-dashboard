@@ -65,6 +65,7 @@ const Tabs: React.FC = () => {
       }
       toast.remove();
       toast.success(data?.message);
+      // console.log(data);
       setSkillInputs([{ id: 0, value: "" }]);
       setTimeout(() => {
         refetchSkills();

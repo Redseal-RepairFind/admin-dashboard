@@ -23,7 +23,7 @@ import Search from "@/components/shared/search";
 const table_headings = [
   "Payment Initiator",
   "Receiver",
-  "Payment ID",
+  "Type",
   "Description",
   "Payment date",
   "Amount",
@@ -110,7 +110,7 @@ const TransactionsDetailsTable: React.FC<IProps> = ({
                   {/* {item.contractor.lastName} */}
                 </Td>
                 <Td>{item?.toUser?.name || "User Not found"}</Td>
-                <Td>{trimString(item?.payment?._id, 15)}</Td>
+                <Td>{trimString(item?.type, 15)}</Td>
                 <Td>{trimString(item?.description, 22)}</Td>
                 <Td>{formatTimeDDMMYY(item?.createdAt)}</Td>
                 <Td>${item?.amount}</Td>
