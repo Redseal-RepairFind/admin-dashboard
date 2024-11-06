@@ -84,7 +84,7 @@ const AnalyticCard: React.FC<IProps> = ({
           </p>
         ) : null}
 
-        {charge ? (
+        {charge !== "" ? (
           <p className="font-semibold  text-gray-700">{charge}</p>
         ) : null}
       </div>
