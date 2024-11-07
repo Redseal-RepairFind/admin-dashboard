@@ -7,26 +7,26 @@ const user = JSON.parse(
 );
 
 export const dispute = {
-  getDisputes: ({
-    page,
-    limit,
-    search,
-    status,
-  }: {
-    page: any;
-    limit: any;
-    search: any;
-    status: string;
-  }) =>
-    client
-      .get(
-        `/admin/disputes?page=${page}&limit=${limit}${
-          search ? `&search=${search}` : ""
-        }&status=${status}${
-          status === "ONGOING" ? `&arbitrator=${user?._id} ` : ""
-        }`
-      )
-      .then(({ data }) => data),
+  // getDisputes: ({
+  //   page,
+  //   limit,
+  //   search,
+  //   status,
+  // }: {
+  //   page: any;
+  //   limit: any;
+  //   search: any;
+  //   status: string;
+  // }) =>
+  //   client
+  //     .get(
+  //       `/admin/disputes?page=${page}&limit=${limit}${
+  //         search ? `&search=${search}` : ""
+  //       }&status=${status}${
+  //         status === "ONGOING" ? `&arbitrator=${user?._id} ` : ""
+  //       }`
+  //     )
+  //     .then(({ data }) => data),
 
   getSingleDispute: (id?: any) =>
     client.get(`/admin/disputes/${id}`).then(({ data }) => data),

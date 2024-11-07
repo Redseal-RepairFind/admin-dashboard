@@ -27,11 +27,12 @@ const useDisputes = () => {
 
   const {
     sortedData,
-    loadingSortedData,
+    loadingSortedData: loadingDisputes,
     handleQuery,
     setIsQuerying,
     isQuerying,
     queryedList,
+    refetch,
   } = useSortedData("disputes");
 
   useEffect(() => {
@@ -39,14 +40,18 @@ const useDisputes = () => {
   }, [isQuerying, queryedList, setDataToRender, sortedData]);
 
   useEffect(() => {
-    if (sessionStatus === "OPEN") {
-      // If sessionStatus is "OPEN", render the full data array
-      setDataToRender(sortedData?.data);
-    } else if (sessionStatus && sortedData?.data?.data) {
+    // if (sessionStatus === "OPEN") {
+    //   // If sessionStatus is "OPEN", render the full data array
+    //   setDataToRender(sortedData?.data);
+    // } else
+
+    if (sortedData?.data?.data) {
       // Filter the data based on sessionStatus
       const filteredArray = sortedData.data.data.filter(
         (item: any) => item.status === sessionStatus
       );
+
+      console.log(filteredArray, sessionStatus);
 
       // Clone the sortedData structure and replace only the data field
       const updatedFilteredData = {
@@ -61,22 +66,22 @@ const useDisputes = () => {
     }
   }, [sessionStatus, sortedData]);
 
-  const {
-    data: disputes,
-    isLoading: loadingDisputes,
-    refetch,
-  } = useQuery(
-    ["Dispute List", status, currentPage, perPage, search],
-    () => {
-      return dispute.getDisputes({
-        page: currentPage,
-        limit: perPage,
-        search,
-        status,
-      });
-    },
-    { cacheTime: 10000, staleTime: 10000, refetchOnWindowFocus: true }
-  );
+  // const {
+  //   data: disputes,
+  //   isLoading: loadingDisputes,
+  //   refetch,
+  // } = useQuery(
+  //   ["Dispute List", status, currentPage, perPage, search],
+  //   () => {
+  //     return dispute.getDisputes({
+  //       page: currentPage,
+  //       limit: perPage,
+  //       search,
+  //       status,
+  //     });
+  //   },
+  //   { cacheTime: 10000, staleTime: 10000, refetchOnWindowFocus: true }
+  // );
 
   const {
     data: singleDispute,
@@ -146,7 +151,7 @@ const useDisputes = () => {
   return {
     status,
     setStatus,
-    disputes,
+    // disputes,
     loadingDisputes,
     handleAccept,
     singleDispute,
