@@ -38,7 +38,6 @@ const types = [
 
 const DisputeTable = () => {
   const {
-    disputes,
     status,
     setStatus,
     loadingDisputes,
@@ -128,7 +127,11 @@ const DisputeTable = () => {
                           : "bg-black "
                       }`}
                     >
-                      {status === "OPEN" ? "Accept" : "Resolve"}
+                      {status === "OPEN"
+                        ? "Accept"
+                        : status === "RESOLVED"
+                        ? "Resolved"
+                        : "Resolve"}
                     </button>
                   </Td>
                 </tr>

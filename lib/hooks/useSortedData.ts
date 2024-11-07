@@ -63,6 +63,7 @@ export function useSortedData(
   const {
     data: sortedData,
     isLoading: loadingSortedData,
+    refetch,
     error,
   } = useQuery(
     [
@@ -181,5 +182,6 @@ export function useSortedData(
     // Return the search term for further use if needed
     queryedList,
     setIsQuerying,
+    refetch,
   };
 }
