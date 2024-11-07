@@ -3,28 +3,30 @@
 import { dispute } from "../api/dispute";
 import { useMutation, useQuery } from "react-query";
 import toast from "react-hot-toast";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSortedData } from "./useSortedData";
 
 const useDisputes = () => {
-  const sessionStatus =
-    typeof window !== "undefined"
-      ? sessionStorage.getItem("session_dispute_status")
-      : null;
+  // const sessionStatus =
+  //   typeof window !== "undefined"
+  //     ? sessionStorage.getItem("session_dispute_status")
+  //     : null;
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [dataToRender, setDataToRender] = useState<any>();
 
-  const [status, setStatus] = useState(sessionStatus || "OPEN");
+  const [status, setStatus] = useState("OPEN");
 
   const { mutateAsync: AcceptDispute } = useMutation(dispute.acceptDispute);
   const { mutateAsync: SettleDispute } = useMutation(dispute.settleDispute);
   const { mutateAsync: SendMessage } = useMutation(dispute.sendMessage);
 
   const { id } = useParams();
+  const params = useSearchParams();
 
+  const sessionStatus = params.get("disputeStatus")?.toUpperCase() || "OPEN";
   const {
     sortedData,
     loadingSortedData: loadingDisputes,
@@ -86,6 +88,7 @@ const useDisputes = () => {
   const {
     data: singleDispute,
     isLoading: loadingSingleDispute,
+
     refetch: refetchDispute,
   } = useQuery(
     ["Current Dispute", id],

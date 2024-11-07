@@ -8,7 +8,7 @@ import Thead from "@/features/shared/table/components/thead";
 import Th from "@/features/shared/table/components/th";
 import Td from "@/features/shared/table/components/td";
 import { formatDateToDDMMYY } from "@/lib/utils/format-date";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useGst from "@/lib/hooks/useGst";
 import useEmergency from "@/lib/hooks/useEmergency";
 import useDisputes from "@/lib/hooks/useDisputes";
@@ -54,6 +54,8 @@ const DisputeTable = () => {
   // const { sortedData, loadingSortedData } = useSortedData("disputes");
 
   const router = useRouter();
+  const pathname = usePathname();
+  const param = useSearchParams();
 
   const handleAction = async (id: any, status: string) => {
     // console.log(id);
@@ -67,6 +69,47 @@ const DisputeTable = () => {
     data: dataToRender?.data,
   };
 
+  // Fetch the initial 'sort' parameter from the URL (query)
+  const initialString = param.get("disputeStatus");
+  const initialSortValue = initialString
+    ? initialString.replace(/_/g, " ")
+    : "OPEN";
+
+  // Set the selected sort value state, initialize with the value from URL
+  const [sortValue, setSortValue] = useState(initialSortValue);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  // On page load, ensure the sort value in the state is in sync with URL
+  useEffect(() => {
+    const sortFromParam = param.get("disputeStatus");
+    if (sortFromParam) {
+      const updatedSortValue = sortFromParam.replace(/_/g, " ");
+      setSortValue(updatedSortValue); // Update state based on URL query params
+    }
+  }, [param]);
+
+  // Function to update the URL params and the state
+  function updateUrlParams(value: string) {
+    const formattedValue = value.replace(/ /g, "_").toLowerCase(); // Replace spaces with underscores
+
+    // Update the URL query parameters
+    if (value === "OPEN") {
+      router.replace(`${pathname}`, {
+        scroll: false,
+      }); // Remove query params if 'All' is selected (default)
+    } else {
+      const params = new URLSearchParams(window.location.search);
+      params.set("disputeStatus", formattedValue); // Set the selected filter in query params
+      router.replace(`${pathname}?${params.toString()}`, {
+        scroll: false,
+      });
+    }
+
+    // Set the selected value in the state
+    setSortValue(value);
+  }
+
   return (
     <TableCard>
       <div className="flex items-center justify-between">
@@ -79,6 +122,7 @@ const DisputeTable = () => {
               onClick={() => {
                 sessionStorage.setItem("session_dispute_status", type.slug);
                 setStatus(type.slug);
+                updateUrlParams(type.slug);
               }}
               key={index}
             >
@@ -119,10 +163,10 @@ const DisputeTable = () => {
                   <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
                   <Td>
                     <button
-                      disabled={status === "RESOLVED" || status === "REVISIT"}
+                      disabled={status === "RESOLVED"}
                       onClick={() => handleAction(item?._id, item?.status)}
                       className={`text-white px-5 py-3 rounded-md text-sm ${
-                        status === "RESOLVED" || status === "REVISIT"
+                        status === "RESOLVED"
                           ? "cursor-not-allowed bg-gray-500"
                           : "bg-black "
                       }`}
@@ -131,6 +175,8 @@ const DisputeTable = () => {
                         ? "Accept"
                         : status === "RESOLVED"
                         ? "Resolved"
+                        : status === "REVISIT"
+                        ? "Revisit"
                         : "Resolve"}
                     </button>
                   </Td>
