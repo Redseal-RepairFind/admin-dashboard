@@ -51,7 +51,7 @@ const useDisputes = () => {
         (item: any) => item.status === sessionStatus
       );
 
-      console.log(filteredArray, sessionStatus);
+      // console.log(filteredArray, sessionStatus);
 
       // Clone the sortedData structure and replace only the data field
       const updatedFilteredData = {
