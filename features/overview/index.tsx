@@ -25,6 +25,12 @@ const Overview = () => {
   const { data, isLoading, dummyMetrics, loadingMetrics, getMetric } =
     useAnalytics();
 
+  useEffect(() => {
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+  }, []);
+
   const loading = isLoading || loadingMetrics;
   const [metricText, setMetricText] = useState("");
 
