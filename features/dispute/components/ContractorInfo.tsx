@@ -24,6 +24,8 @@ const ContractorInfo = ({
   const [openContractor, setOpenContractor] = useState<boolean>(false);
   const contractorModalRef = useRef(null);
 
+  // console.log(info);
+
   return (
     <>
       <Modal

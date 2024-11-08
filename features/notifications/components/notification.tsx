@@ -26,10 +26,10 @@ const Notification = ({ data }: { data: any }) => {
         <button
           onClick={() => {
             if (data?.message?.includes("dispute"))
-              return router.push(`/dispute/${data?.entity}`);
+              return router.push(`/dispute/${data?.data?.disputeId}`);
 
             if (data?.message?.includes("emerg"))
-              return router.push(`/emergency/${data?.data?.disputeId}`);
+              return router.push(`/emergency/${data?.data?.entity}`);
           }}
           className="bg-black text-sm text-white py-2 px-3 rounded-md"
         >

@@ -34,11 +34,28 @@ export function formatTimeDDMMYY(
     year: "2-digit",
     month: "2-digit",
     day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    // second: "2-digit",
+    hour12: true, // Display 24-hour format
   };
 
-  const formattedDate = new Intl.DateTimeFormat("en-GB", options)?.format(date);
+  const onlyDateOptions: Intl.DateTimeFormatOptions = {
+    year: "2-digit",
+    month: "2-digit",
+    day: "numeric",
+    // hour: "2-digit",
+    // minute: "2-digit",
+    // second: "2-digit",
+    // hour12: false, // Display 24-hour format
+  };
 
-  return itsDate ? date?.getDate() : formattedDate;
+  const formattedDate = new Intl.DateTimeFormat(
+    "en-GB",
+    itsDate ? options : onlyDateOptions
+  )?.format(date);
+
+  return formattedDate;
 }
 
 export function formatDate(date: any) {
