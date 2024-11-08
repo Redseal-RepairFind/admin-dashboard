@@ -174,14 +174,14 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
       });
 
       socket.on("NEW_UNREAD_MESSAGE", (data: any) => {
-        console.log("Received conversation event:", data);
+        // console.log("Received conversation event:", data);
         setTimeout(() => {
           refetch();
         }, 800);
       });
 
       socket.on("Conversation", (data) => {
-        console.log("Conversation read event received:", data);
+        // console.log("Conversation read event received:", data);
         setTimeout(() => {
           triggerConversationRead();
           refetch();
@@ -189,7 +189,7 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
       });
 
       socket.on("CONVERSATION_READ", (data) => {
-        console.log("Conversation read event received:", data);
+        // console.log("Conversation read event received:", data);
       });
 
       socket.on("disconnect", () => {

@@ -6,6 +6,7 @@ import GoogleMapsEmbed from "@/components/ui/google-maps";
 import SectionContainer from "./SectionContainer";
 
 const JobDayData = ({ info }: { info: any }) => {
+  // console.log(info);
   const defaultCenter = {
     longitude: info?.jobLocation?.longitude,
     latitude: info?.jobLocation?.latitude,
@@ -21,7 +22,7 @@ const JobDayData = ({ info }: { info: any }) => {
       <div className="w-full pb-5 mt-4 border-t border-t-[#e7e6e6]">
         <LineColumn
           name="Date & Time Contractor Initiated Job"
-          value={formatTimeDDMMYY(info?.createdAt)}
+          value={formatTimeDDMMYY(info?.createdAt, true)}
         />
         <LineColumn
           name="Job Location"
@@ -36,14 +37,16 @@ const JobDayData = ({ info }: { info: any }) => {
           name="Contractor's Location"
           value={
             <div className="">
-              <p className="font-semibold mb-2">{info?.jobLocation?.address}</p>
+              <p className="font-semibold mb-2">
+                {info?.contractorLocation?.address}
+              </p>
               <GoogleMapsEmbed coords={defaultContractorCenter} />
             </div>
           }
         />
         <LineColumn
           name="Date & Time Contractor Updated Job"
-          value={formatTimeDDMMYY(info?.updatedAt)}
+          value={formatTimeDDMMYY(info?.updatedAt, true)}
         />
       </div>
     </SectionContainer>

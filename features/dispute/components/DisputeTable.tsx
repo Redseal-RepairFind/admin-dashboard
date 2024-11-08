@@ -163,20 +163,19 @@ const DisputeTable = () => {
                   <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
                   <Td>
                     <button
-                      disabled={status === "RESOLVED"}
+                      // disabled={status === "RESOLVED"}
                       onClick={() => handleAction(item?._id, item?.status)}
                       className={`text-white px-5 py-3 rounded-md text-sm ${
-                        status === "RESOLVED"
-                          ? "cursor-not-allowed bg-gray-500"
-                          : "bg-black "
-                      }`}
+                        status === "RESOLVED" ? " bg-gray-500" : "bg-black "
+                      }
+                      `}
                     >
                       {status === "OPEN"
                         ? "Accept"
                         : status === "RESOLVED"
-                        ? "Resolved"
+                        ? "View Dispute"
                         : status === "REVISIT"
-                        ? "Revisit"
+                        ? "View Dispute"
                         : "Resolve"}
                     </button>
                   </Td>
