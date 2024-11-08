@@ -35,7 +35,7 @@ const Header: React.FC<IProps> = ({ children }) => {
     }, 0);
   }, [data]);
 
-  // console.log(unreadCount);
+  // console.log(data);
 
   const markNotifications = async () => {
     if (!unreadCount) return setOpen(true);
@@ -60,6 +60,18 @@ const Header: React.FC<IProps> = ({ children }) => {
 
   const url = process.env.NEXT_PUBLIC_SOCKET_URL;
 
+  // Request permission for Notifications on initial load
+  useEffect(() => {
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission().then((permission) => {
+        if (permission !== "granted") {
+          console.warn("Notification permission not granted");
+          // alert("Notification permission not granted");
+        }
+      });
+    }
+  }, []);
+
   useEffect(() => {
     let socket: Socket;
 
@@ -68,18 +80,36 @@ const Header: React.FC<IProps> = ({ children }) => {
         extraHeaders: {
           token,
         },
-
-        // transports: ["websocket"],
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
       });
 
       socket.on("connect", () => {
-        console.log("connected from Socket.IO server");
+        console.log("Connected to Socket.IO server");
       });
 
       socket.on("NEW_NOTIFICATION", (data: any) => {
         console.log("Received notification event:", data);
-        playNotification();
+
+        // Display browser notification
+        if (Notification.permission === "granted") {
+          new Notification(data?.heading?.name || "New Notification", {
+            body: data?.message || "You have a new notification.",
+            icon: data?.heading?.image || "/default-icon.png",
+          });
+        }
+
+        // Play notification sound
+        const audio = new Audio("/sounds/notification.mp3");
+        audio
+          .play()
+          .catch((error) => console.error("Error playing sound:", error));
+
+        // Display a toast notification for additional user feedback
         toast.success("You have a new notification");
+
+        // Optionally refetch data after a delay
         setTimeout(() => {
           refetch();
         }, 500);
@@ -99,7 +129,7 @@ const Header: React.FC<IProps> = ({ children }) => {
         socket.disconnect();
       }
     };
-  }, [token]);
+  }, [token, url, playNotification, refetch]);
 
   return (
     <>
