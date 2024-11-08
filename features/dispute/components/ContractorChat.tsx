@@ -25,6 +25,8 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
   const [message, setMessage] = useState<any>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isRead, setIsRead] = useState<boolean>(false);
+  const [isText, setIsText] = useState(true);
+  const [fileName, setFileName] = useState("");
 
   const id = singleDispute?.data?.conversations?.arbitratorContractor?._id;
 
@@ -59,6 +61,11 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
       return null;
     }
   }
+
+  const clearInput = () => {
+    setMessage("");
+    setFileName("");
+  };
 
   const uploadMultimedia = async () => {
     AWS.config.update({
@@ -98,6 +105,8 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
           setTimeout(() => {
             refetch();
           }, 100);
+
+          clearInput();
         } catch (e: any) {
           setIsSubmitting(false);
           toast.error(e?.response?.data?.message);
@@ -122,6 +131,9 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
       setTimeout(() => {
         refetch();
       }, 100);
+
+      setIsText(true);
+      clearInput();
     } catch (e: any) {
       //   console.log({ e });
       setIsSubmitting(false);
@@ -148,7 +160,7 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
       const triggerConversationRead = () => {
         const data = { conversationId: id }; // Replace with relevant data
         socket.emit("send_mark_conversation_as_read", data);
-        console.log("send_mark_conversation_as_read event triggered:", data);
+        // console.log("send_mark_conversation_as_read event triggered:", data);
       };
 
       socket.on("connect", () => {
@@ -246,7 +258,14 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
           className="py-3 rounded-md px-4 outline-none focus:ring-0 focus:border-black duration-200 w-full border border-gray-200"
           placeholder="Send a message..."
         /> */}
-        <ChatBox message={message} setMessage={setMessage} />
+        <ChatBox
+          message={message}
+          setMessage={setMessage}
+          isText={isText}
+          setIsText={setIsText}
+          fileName={fileName}
+          setFileName={setFileName}
+        />
         <button
           disabled={isSubmitting}
           onClick={handleMessage}
