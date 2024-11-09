@@ -26,8 +26,12 @@ const Overview = () => {
     useAnalytics();
 
   useEffect(() => {
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission();
+    if (typeof Notification !== "undefined") {
+      if (Notification?.permission !== "granted") {
+        Notification?.requestPermission();
+      }
+    } else {
+      console.warn("Browser does not support notifications.");
     }
   }, []);
 
