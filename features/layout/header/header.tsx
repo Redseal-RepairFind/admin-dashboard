@@ -62,13 +62,17 @@ const Header: React.FC<IProps> = ({ children }) => {
 
   // Request permission for Notifications on initial load
   useEffect(() => {
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission().then((permission) => {
-        if (permission !== "granted") {
-          console.warn("Notification permission not granted");
-          // alert("Notification permission not granted");
-        }
-      });
+    if (typeof Notification !== "undefined") {
+      if (Notification.permission !== "granted") {
+        Notification.requestPermission().then((permission) => {
+          if (permission !== "granted") {
+            console.warn("Notification permission not granted");
+            // alert("Notification permission not granted");
+          }
+        });
+      }
+    } else {
+      console.warn("Browser does not support notifications");
     }
   }, []);
 
