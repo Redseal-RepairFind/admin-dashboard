@@ -2,7 +2,7 @@ import React from "react";
 
 interface IProps {
   name: string;
-  value: string;
+  value: any;
 }
 
 const SingleLineColumn: React.FC<IProps> = ({ name, value }) => {

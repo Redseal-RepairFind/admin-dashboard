@@ -23,7 +23,7 @@ function SortLists({ sortProps, initialState }: any) {
   const initialString = param.get("sortList");
   const initialSortValue =
     sortProps?.find(
-      (prop: any) => prop.url.toLowerCase() === initialString?.toLowerCase()
+      (prop: any) => prop?.url?.toLowerCase() === initialString?.toLowerCase()
     )?.render || initialState;
 
   // Set the selected sort value state, initialize with the value from URL
@@ -35,7 +35,7 @@ function SortLists({ sortProps, initialState }: any) {
   useEffect(() => {
     const sortFromParam = param.get("sortList");
     const updatedSortValue = sortProps?.find(
-      (prop: any) => prop.url.toLowerCase() === sortFromParam?.toLowerCase()
+      (prop: any) => prop?.url?.toLowerCase() === sortFromParam?.toLowerCase()
     );
     if (updatedSortValue) {
       setSortValue(updatedSortValue.render); // Update state based on URL query params

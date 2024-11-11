@@ -19,8 +19,8 @@ export function useSortedData(
   const initialState = useMemo(() => new Date(1999, 9, 14), []);
   const [startDate, setStartDate] = useState(initialState);
   const [endDate, setEndDate] = useState(new Date());
-  const [searchTerm, setSearchTerm] = useState(""); // Track the search term
-  const [queryedList, setQueryedList] = useState<any[]>([]); // Store the filtered list
+  const [searchTerm, setSearchTerm] = useState("");
+  const [queryedList, setQueryedList] = useState<any[]>([]);
   const [isQuerying, setIsQuerying] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [criteria, setCriteria] = useState("fullName");

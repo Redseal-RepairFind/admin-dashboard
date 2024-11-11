@@ -926,3 +926,29 @@ export const ClosedEye = () => (
     <path d="M9.88 9.88A3 3 0 0 0 12 15a3 3 0 0 0 2.12-.88M21 21l-4.35-4.35M9.17 9.17l-7.1-7.1" />
   </svg>
 );
+
+export const AppVersion = ({ bg = "#f5f5f5" }: { bg?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <g fill="#000">
+      <rect
+        x="2"
+        y="2"
+        width="20"
+        height="20"
+        rx="3"
+        fill={bg}
+        stroke="#000"
+        strokeWidth="1.5"
+      />
+
+      <circle cx="12" cy="8" r="2" fill="#000" />
+      <rect x="11" y="11" width="2" height="7" rx="1" fill="#000" />
+    </g>
+  </svg>
+);
