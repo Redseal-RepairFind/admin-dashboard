@@ -102,6 +102,13 @@ export function useSortedData(
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
 
+  // all data for search
+
+  const { isLoading: loadingAllData, data: allData } = useQuery(
+    ["allData", route],
+    () => customers.getAllData({ route })
+  );
+
   const handleQuery = (value: string) => {
     setSearchTerm(value);
 
@@ -113,11 +120,12 @@ export function useSortedData(
     // Clear the search parameter from the URL when the search term is empty
 
     setIsQuerying(true);
-    param.set("sort", "All");
-    param.set("page", "1");
+    // param.set("sort", "All");
+    // param.set("page", "1");
 
-    if (sortedData?.data) {
-      const filteredArray = sortedData.data.data.filter(
+    if (allData?.data) {
+      // console.log(allData);
+      const filteredArray = allData.data.data.filter(
         (item: any) =>
           item?.name?.toLowerCase()?.includes(value.toLowerCase()) ||
           item?.contractor?.firstName
@@ -130,7 +138,13 @@ export function useSortedData(
           item?.disputer?.firstName?.includes(value.toLowerCase()) ||
           item?.disputer?.lastName?.includes(value.toLowerCase()) ||
           item?.fromUser?.name?.includes(value.toLowerCase()) ||
-          item?.toUser?.name?.includes(value.toLowerCase())
+          item?.toUser?.name?.includes(value.toLowerCase()) ||
+          item?.customer?.name?.toLowerCase()?.includes(value.toLowerCase()) ||
+          item?.contractor?.name
+            ?.toLowerCase()
+            ?.includes(value.toLowerCase()) ||
+          item?.fromUser?.name?.toLowerCase()?.includes(value.toLowerCase()) ||
+          item?.toUser?.name?.toLowerCase()?.includes(value.toLowerCase())
       );
 
       // Create a new object that retains the structure of sortedData

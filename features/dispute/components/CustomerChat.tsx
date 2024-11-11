@@ -220,11 +220,11 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
             key={message?._id}
           >
             {message?.senderType === "admins" ? (
-              <div className="bg-black text-white font-medium text-sm rounded-tl-lg rounded-bl-lg rounded-br-lg w-fit px-5 py-2">
+              <div className="bg-black text-white font-medium text-sm rounded-tl-lg rounded-bl-lg rounded-br-lg  max-w-[400px] px-5 py-2">
                 <ShowMessage message={message} type={message?.messageType} />
               </div>
             ) : (
-              <div className="bg-gray-300 text-black font-medium text-sm rounded-tr-lg rounded-bl-lg rounded-br-lg w-fit px-5 py-2">
+              <div className="bg-gray-300 text-black font-medium text-sm rounded-tr-lg rounded-bl-lg rounded-br-lg max-w-[400px] px-5 py-2">
                 <ShowMessage message={message} type={message?.messageType} />
               </div>
             )}

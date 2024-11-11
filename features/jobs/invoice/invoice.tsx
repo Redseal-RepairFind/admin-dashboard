@@ -95,7 +95,7 @@ const Invoice = () => {
                       jobDetail?.customer?.phoneNumber?.number || "-"
                     }
                     stars={1}
-                    imageSrc={jobDetail.customer.profilePhoto?.url}
+                    imageSrc={jobDetail?.customer?.profilePhoto?.url}
                   />
                   <SingleLineColumn name="Job ID" value={jobDetail?._id} />
                   <SingleLineColumn

@@ -45,7 +45,7 @@ const SingleCustomer = () => {
     },
     {
       refetchOnWindowFocus: true,
-      select: (response) => response?.customer,
+      select: (response) => response?.data,
     }
   );
 
@@ -61,11 +61,15 @@ const SingleCustomer = () => {
 
   const handleChangeStatus = async (status: string) => {
     if (confirm("Kindly confirm this action")) {
+      // console.log({
+      //   status,
+      //   customerId: customerInfo?._id,
+      // });
       toast.loading("Processing...");
       try {
         const data = await SuspendCustomer({
-          customerId: customerInfo?._id,
           status,
+          customerId: customerInfo?._id,
         });
         toast.remove();
         toast.success(data?.message);
@@ -86,16 +90,16 @@ const SingleCustomer = () => {
         <Wrapper>
           <div className="flex gap-x-6 items-center">
             <div className="w-[86px] h-[86px] flex item-center justify-center">
-              {customerDetails?.customer.profileImg && (
+              {customerInfo?.profilePhoto?.url && (
                 <Image
-                  src={customerDetails?.customer.profileImg}
+                  src={customerInfo?.profilePhoto?.url}
                   alt=""
                   width={87}
                   height={87}
                   className="rounded-[50%]"
                 />
               )}
-              {!customerDetails?.customer.profileImg && (
+              {!customerInfo?.profilePhoto?.url && (
                 <div className="w-[86px] h-[86px] rounded-[50%] bg-[#D9D9D9] flex items-center justify-center">
                   <p className="text-[30px] font-[600] text-white">
                     <span className="capitalize">
@@ -139,7 +143,7 @@ const SingleCustomer = () => {
                   name="Contact"
                   value={
                     customerInfo?.phoneNumber
-                      ? `${customerInfo?.phoneNumber?.code}${customerInfo?.phoneNumber?.number}`
+                      ? `${customerInfo?.phoneNumber?.code}  ${customerInfo?.phoneNumber?.number}`
                       : "-"
                   }
                 />
@@ -159,7 +163,7 @@ const SingleCustomer = () => {
                     {customerInfo?.status !== "active" && (
                       <ActionButton
                         actionName="Activate"
-                        onClick={() => handleChangeStatus("active")}
+                        onClick={() => handleChangeStatus("ACTIVE")}
                         color="border-green-600 text-green-600"
                       />
                     )}

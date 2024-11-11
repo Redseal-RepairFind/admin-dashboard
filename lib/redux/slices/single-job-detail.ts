@@ -50,7 +50,7 @@ export const singleJobDetailsSlice = createSlice({
   initialState,
   reducers: {
     setsingleJobDetail: (state, action: PayloadAction<any>) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       state.value = action.payload;
     },
   },

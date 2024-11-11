@@ -42,7 +42,7 @@ const Header: React.FC<IProps> = ({ children }) => {
     toast.loading("Loading notifications");
     try {
       const data = await MarkAllAsRead();
-      console.log(data);
+      // console.log(data);
       toast.remove();
       toast.success("Loaded successfully...");
       setTimeout(() => {
