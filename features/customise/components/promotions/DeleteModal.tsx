@@ -27,13 +27,18 @@ function DeleteModal({
       <div className="grid grid-cols-2 gap-2 items-center gap">
         <button
           className="bg-gray-200 h-12 w-full flex items-center rounded-md justify-center text-gray-800"
-          onClick={() => closeModal("delete")}
+          onClick={() => {
+            closeModal("delete");
+          }}
         >
           Cancel
         </button>
         <button
           className="bg-red-600 h-12 w-full flex items-center rounded-md justify-center text-gray-100"
-          onClick={() => onSubmit("delete")}
+          onClick={() => {
+            onSubmit("delete");
+            // closeModal("delete");
+          }}
         >
           Proceed
         </button>
