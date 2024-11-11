@@ -30,7 +30,7 @@ export const customers = {
       .then(({ data }) => data),
 
   getCustomerDetails: ({ id }: { id: any }) =>
-    client.get(`/admin/customer/detail/${id}`).then(({ data }) => data),
+    client.get(`/admin/customers/${id}`).then(({ data }) => data),
 
   getCustomerHistory: ({ id }: { id: any }) =>
     client
@@ -106,10 +106,8 @@ export const customers = {
       )
       .then(({ data }) => data),
 
-  // getTrx: ({}) =>
-  //   client
-  //     .get(`/admin/transactions?limit=${20}&page=${1`)
-  //     .then(({ data }) => data),
+  getAllData: ({ route }: { route: string }) =>
+    client.get(`/admin/${route}?limit=1000000000`).then(({ data }) => data),
 
   getSearchSort: ({
     page,

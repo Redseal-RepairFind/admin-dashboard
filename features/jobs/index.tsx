@@ -33,13 +33,20 @@ import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 const Jobs = () => {
   const [loading, setLoading] = useState(true);
   // const [dataToRender, setDataToRender] = useState<any>();
+  const [dataToRender, setDataToRender] = useState<any>();
 
-  const { sortedData, loadingSortedData, handleQuery, setIsQuerying } =
-    useSortedData("jobs");
+  const {
+    sortedData,
+    loadingSortedData,
+    handleQuery,
+    setIsQuerying,
+    isQuerying,
+    queryedList,
+  } = useSortedData("jobs");
 
-  // useEffect(() => {
-  //   isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
-  // }, [isQuerying, queryedList, setDataToRender, sortedData]);
+  useEffect(() => {
+    isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
+  }, [isQuerying, queryedList, setDataToRender, sortedData]);
 
   const totalJobs = sortedData?.data?.totalItems;
   const stats = sortedData?.data?.stats;
@@ -264,7 +271,7 @@ const Jobs = () => {
 
           <JobsTable
             setLoading={setLoading}
-            filteredData={sortedData}
+            filteredData={dataToRender}
             handleSearch={handleQuery}
             setIsQuerying={setIsQuerying}
           />

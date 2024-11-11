@@ -50,7 +50,7 @@ const Customers = () => {
   const totalCustumers = mainData?.totalItems;
   const customersWithBookings = mainData?.stats?.customersWithBooking;
 
-  // console.log(sortedData);
+  // console.log(mainData?.data?.map((data) => data?.status));
 
   const columns = ["Customer's Name", "Date Joined", "Email", "Phone Number"];
 
