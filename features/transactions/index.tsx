@@ -106,9 +106,11 @@ const Transactions = () => {
               name="Jobs Payment Amount"
               info={formatCurrency(stats?.jobPaymentsAmount?.total)}
               tip="Total Payments Amount"
-              // percentage={stats?.jobPaymentsAmount?.paypalCharges?.percentage}
-              // mostReq={0}
-              // quotes={0}
+              charge={stats?.jobPaymentsAmount?.count}
+              quotes={"Count"}
+            // percentage={stats?.jobPaymentsAmount?.paypalCharges?.percentage}
+            // mostReq={0}
+            // quotes={0}
             />
 
             <AnalyticCard
@@ -120,12 +122,37 @@ const Transactions = () => {
                 stats?.jobPaymentsAmount?.paypalCharges?.amount
               )}
               tip="Total Payments charges by PayPal"
-              percentage={stats?.jobPaymentsAmount?.paypalCharges?.percentage}
-              charge={formatCurrency(
-                stats?.jobPaymentsAmount?.paypalCharges?.fixedFee
-              )}
-              quotes="Fixed Fee"
+            // percentage={stats?.jobPaymentsAmount?.paypalCharges?.percentage}
+            // charge={formatCurrency(
+            //   stats?.jobPaymentsAmount?.paypalCharges?.fixedFee
+            // )}
+            // quotes="Fixed Fee"
             />
+
+            <AnalyticCard
+              icon={<JobIcon />}
+              iconColor="bg-[#edf793]"
+              borderColor="border-l-[#d1be12]"
+              name="Pending Escrow Amounts"
+              info={formatCurrency(stats?.pendingEscrowAmount?.total)}
+              tip="Total pending escrow payments"
+              // percentage={stats?.pendingEscrowAmount?.percentage}
+              charge={stats?.pendingEscrowAmount?.count}
+              quotes={"Count"}
+            />
+            {/* pendingPayoutAmount */}
+            <AnalyticCard
+              icon={<CancelIconRed />}
+              iconColor="bg-[#f7a7a7]"
+              borderColor="border-l-[#9A0101]"
+              name="Pending Payout Amounts"
+              info={formatCurrency(stats?.pendingPayoutAmount?.total)}
+              tip="Total pending Payouts payment"
+              // percentage={stats?.pendingPayoutAmount?.percentage}
+              charge={stats?.pendingPayoutAmount?.count}
+              quotes={"Count"}
+            />
+
 
             {/* TotalRevenue */}
             <AnalyticCard
@@ -135,7 +162,7 @@ const Transactions = () => {
               name="Successful Payouts Amount"
               info={formatCurrency(stats?.successfulPayoutAmount?.total)}
               tip="Total Successful Payouts Amount"
-              percentage={stats?.successfulPayoutAmount?.percentage}
+              // percentage={stats?.successfulPayoutAmount?.percentage}
               charge={stats?.successfulPayoutAmount?.count}
               quotes={"Count"}
             />
@@ -149,49 +176,27 @@ const Transactions = () => {
                 stats?.successfulPayoutAmount?.paypalCharges?.amount
               )}
               tip="Total Successful Payout charges by PayPal"
-              percentage={
-                stats?.successfulPayoutAmount?.paypalCharges?.percentage
-              }
+              // percentage={
+              //   stats?.successfulPayoutAmount?.paypalCharges?.percentage
+              // }
               // quotes={"Percentage"}
               // charge={formatCurrency(
               // stats?.successfulPayoutAmount?.paypalCharges?.fixedFee
               // )}
               // quotes="Fixed Fee"
-              charge={stats?.successfulPayoutAmount?.count}
-              quotes={"Count"}
+              // charge={stats?.successfulPayoutAmount?.count}
+              // quotes={"Count"}
             />
-            <AnalyticCard
-              icon={<JobIcon />}
-              iconColor="bg-[#edf793]"
-              borderColor="border-l-[#d1be12]"
-              name="Pending Escrow Amounts"
-              info={formatCurrency(stats?.pendingEscrowAmount?.total)}
-              tip="Total pending escrow payments"
-              percentage={stats?.pendingEscrowAmount?.percentage}
-              charge={stats?.pendingEscrowAmount?.count}
-              quotes={"Count"}
-            />
-            {/* pendingPayoutAmount */}
-            <AnalyticCard
-              icon={<CancelIconRed />}
-              iconColor="bg-[#f7a7a7]"
-              borderColor="border-l-[#9A0101]"
-              name="Pending Payout Amounts"
-              info={formatCurrency(stats?.pendingPayoutAmount?.total)}
-              tip="Total pending Payouts payment"
-              percentage={stats?.pendingPayoutAmount?.percentage}
-              charge={stats?.pendingPayoutAmount?.count}
-              quotes={"Count"}
-            />
+
             <AnalyticCard
               icon={<ComplaintsState />}
               iconColor="bg-[#493b3b]"
               borderColor="border-l-[#5a5555]"
-              name="Refunded Escrow Amounts"
-              info={formatCurrency(stats?.refundEscrowAmount?.total)}
-              tip="Total Escrow Refund  payment"
-              percentage={stats?.refundEscrowAmount?.percentage}
-              charge={stats?.refundEscrowAmount?.count}
+              name="Refunded Payment Amounts"
+              info={formatCurrency(stats?.refundedPaymentAmount?.total)}
+              tip="Total Refunded  Payment"
+              // percentage={stats?.refundedPaymentAmount?.percentage}
+              charge={stats?.refundedPaymentAmount?.count}
               quotes={"Count"}
             />
           </div>
