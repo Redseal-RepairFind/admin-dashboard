@@ -157,8 +157,8 @@ const SingleCustomer = () => {
                   }
                 />
                 <SingleLineColumn name="Payment account" value="" />
-                <SingleLineColumn name="Address" value="" />
-                <ActionColumn>
+                {/* <SingleLineColumn name="Address" value="" /> */}
+                {/* <ActionColumn>
                   <div className="flex gap-x-4">
                     {customerInfo?.status !== "active" && (
                       <ActionButton
@@ -175,7 +175,7 @@ const SingleCustomer = () => {
                       />
                     )}
                   </div>
-                </ActionColumn>
+                </ActionColumn> */}
               </tbody>
             </table>
           </BorderRectangle>

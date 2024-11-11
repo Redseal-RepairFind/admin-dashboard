@@ -12,7 +12,7 @@ interface IProps {
 }
 
 function findCustomerHistorySmallestYear(arrayOfObjects: IJobHistory[]) {
-  console.log(arrayOfObjects);
+  // console.log(arrayOfObjects);
   if (arrayOfObjects.length === 0) {
     return null; // Return null if the array is empty
   }
