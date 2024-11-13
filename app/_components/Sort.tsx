@@ -54,6 +54,8 @@ function SortLists({ sortProps, initialState }: any) {
         scroll: false,
       });
       setSortValue(renderValue); // Set the selected value in the state
+      // Close the modal after all changes are set
+      setIsOpen(false);
     }
   }
 
