@@ -23,7 +23,7 @@ const table_headings = [
   "Platform",
   "Version",
   "Release Date",
-  "Latest Version",
+  "Currrent",
   "Status",
 ];
 

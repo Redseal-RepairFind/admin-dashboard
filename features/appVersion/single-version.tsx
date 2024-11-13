@@ -117,6 +117,11 @@ function SingleVersion() {
 
                   <SingleLineColumn name="Status" value={version?.status} />
                   <SingleLineColumn
+                    name="Current"
+                    value={version?.isCurrent ? "True" : "False"}
+                    // value=""
+                  />
+                  <SingleLineColumn
                     name="Release Date"
                     value={formatDateToDDMMYY(version?.createdAt)}
                     // value=""

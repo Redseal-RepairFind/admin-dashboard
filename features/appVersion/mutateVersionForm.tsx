@@ -58,23 +58,24 @@ function Form({
           <Errors>{errors?.version?.message}</Errors>
         ) : null}{" "}
       </Column>
-
       <Column>
         <Label htmlFor="Status">Status</Label>
-        <input
-          type="text"
+        <select
           className="border border-gray-700  rounded-md w-full h-12 px-2"
-          placeholder="Status"
           {...register("status", {
             required: "Status Field is required",
           })}
           defaultValue={type === "edit" ? data?.status : ""}
-        />
+        >
+          <option value="">-- Select Status --</option>
+          <option value="alpha">Alpha</option>
+          <option value="beta">Beta</option>
+          <option value="stable">Stable</option>
+        </select>
         {errors?.status?.message ? (
           <Errors>{errors?.status?.message}</Errors>
         ) : null}{" "}
       </Column>
-
       <Column>
         <Label htmlFor="Platform">Platform</Label>
         <select
@@ -109,32 +110,31 @@ function Form({
         </select>
         {errors?.app?.message ? <Errors>{errors?.app?.message}</Errors> : null}{" "}
       </Column>
-      {type === "edit" ? (
-        <Column>
-          <Label htmlFor="isCurrent">Latest Version</Label>
-          <select
-            id="isCurrent"
-            className="h-12 px-2 border-gray-700 border rounded-md"
-            {...register("isCurrent", {
-              required: "Please choose the current status",
-            })}
-            defaultValue={type === "edit" ? data?.isCurrent : ""}
-          >
-            <option value="">-- --</option>
-            <option value="true">True </option>
-            <option value="false">False</option>
-          </select>
-          {errors?.isCurrent?.message ? (
-            <Errors>{errors?.isCurrent?.message}</Errors>
-          ) : null}
-        </Column>
-      ) : null}
+
+      <Column>
+        <Label htmlFor="isCurrent">Is Current?</Label>
+        <select
+          id="isCurrent"
+          className="h-12 px-2 border-gray-700 border rounded-md"
+          {...register("isCurrent", {
+            required: "Please choose the current status",
+          })}
+          defaultValue={type === "edit" ? data?.isCurrent : ""}
+        >
+          <option value="">-- Select Current --</option>
+          <option value="true">True </option>
+          <option value="false">False</option>
+        </select>
+        {errors?.isCurrent?.message ? (
+          <Errors>{errors?.isCurrent?.message}</Errors>
+        ) : null}
+      </Column>
+
       <button
         className={`w-full h-12 border border-black rounded-md px-2 bg-black text-white`}
       >
         {type === "edit" ? "Update Version" : "Create Version"}
       </button>
-
       {/* Cancel button */}
     </form>
   );
