@@ -154,7 +154,10 @@ const DisputeTable = () => {
               {dataToRender?.data?.data?.map((item: any, index: number) => (
                 <tr key={index} className="border-b border-gray-100">
                   <Td>{index + 1}</Td>
-                  <Td>{item?.disputer?.name || "-"}</Td>
+                  <Td>
+                    {item?.disputer?.name ||
+                      `${item?.disputer?.firstName} ${item?.disputer?.lastName}`}
+                  </Td>
                   <Td>
                     <span className="max-w-[300px]">
                       {trimString(item?.description, 25)}
