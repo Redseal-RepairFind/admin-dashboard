@@ -27,14 +27,26 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { filterData } from "../hooks/filterByDate";
 import SortLists from "@/app/_components/Sort";
 import { sortContractors } from "@/lib/utils/sortData";
+import CheckBox from "@/app/_components/Check-box";
+import { useCheckedList } from "@/context/checked-context";
 
 const table_headings = [
+  "Select All",
   "Customer’s Name",
   "Date Joined",
   "Email Address",
   "Phone Number",
   "Action",
 ];
+
+type Checked = {
+  isChecked: boolean;
+  items: any;
+};
+
+type CheckedObj = {
+  [key: string]: Checked;
+};
 
 const headings = [
   {
@@ -70,8 +82,8 @@ const CustomersTable: React.FC<IProps> = ({
 
   let rowOptions = [
     {
-      name: "Suspend",
-      action: async (item: any) => {},
+      name: "View Customer",
+      action: async (item: any) => handleViewACustomer(item),
     },
   ];
 
@@ -114,6 +126,9 @@ const CustomersTable: React.FC<IProps> = ({
     },
   ];
 
+  const { checkedList, setCheckedList, handleCheck, handleSelectAll } =
+    useCheckedList();
+
   return (
     <TableCard>
       <div className="flex items-center justify-between w-full  ">
@@ -134,9 +149,24 @@ const CustomersTable: React.FC<IProps> = ({
         <Table>
           <Thead>
             <tr>
-              {table_headings?.map((heading, index) => (
-                <Th key={index}>{heading}</Th>
-              ))}
+              {table_headings?.map((heading, index) =>
+                heading === "Select All" ? (
+                  <th
+                    key={"Select"}
+                    className="flex items-center gap-2 py-4 px-2"
+                  >
+                    {/* <span className=" font-[500] px-5 py-3">{heading}</span> */}
+                    <CheckBox
+                      onClick={(event: any) => handleSelectAll(filteredData)}
+                      isChecked={
+                        checkedList.length === filteredData?.data?.data?.length
+                      }
+                    />
+                  </th>
+                ) : (
+                  <Th key={index}>{heading}</Th>
+                )
+              )}
             </tr>
           </Thead>
 
@@ -144,9 +174,15 @@ const CustomersTable: React.FC<IProps> = ({
             {filteredData?.data?.data?.map((item: any, index: number) => (
               <tr
                 key={item?._id}
-                onClick={() => handleViewACustomer(item)}
+                // onClick={() => handleViewACustomer(item)}
                 className="cursor-pointer border-b border-gray-200"
               >
+                <td className="flex items-center px-2 py-4 h-full">
+                  <CheckBox
+                    onClick={(event: any) => handleCheck(item)}
+                    isChecked={checkedList.some((data: any) => data === item)}
+                  />
+                </td>
                 <Td>{item?.name}</Td>
                 <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
                 <Td>{item?.email}</Td>

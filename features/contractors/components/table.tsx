@@ -25,8 +25,11 @@ import Pagination from "@/components/shared/pagination";
 import SortLists from "@/app/_components/Sort";
 
 import Search from "@/components/shared/search";
+import CheckBox from "@/app/_components/Check-box";
+import { useCheckedList } from "@/context/checked-context";
 
 const table_headings = [
+  "Select All",
   "Contractor’s Name",
   "Skill",
   "Status",
@@ -77,6 +80,8 @@ const ContractorsTable: React.FC<IProps> = ({
     },
   ];
 
+  const { checkedList, handleCheck, handleSelectAll } = useCheckedList();
+
   return (
     <TableCard>
       <div className="flex items-center justify-between w-full">
@@ -99,9 +104,27 @@ const ContractorsTable: React.FC<IProps> = ({
         <Table>
           <Thead>
             <tr>
-              {table_headings?.map((heading, index) => (
-                <Th key={index}>{heading}</Th>
-              ))}
+              {table_headings?.map((heading, index) =>
+                heading === "Select All" ? (
+                  <th
+                    key={"Select"}
+                    className="flex items-center justify-center gap-2 h-12 pl-2 w-8"
+                  >
+                    <CheckBox
+                      onClick={(event: any) => {
+                        event.stopPropagation(); // Prevents event from bubbling to parent elements
+                        handleSelectAll(contractorData);
+                      }}
+                      isChecked={
+                        checkedList?.length ===
+                        contractorData?.data?.data?.length
+                      }
+                    />
+                  </th>
+                ) : (
+                  <Th key={index}>{heading}</Th>
+                )
+              )}
             </tr>
           </Thead>
 
@@ -118,6 +141,15 @@ const ContractorsTable: React.FC<IProps> = ({
                   handleViewAContractors(item);
                 }}
               >
+                <td className="flex items-center justify-center gap-2 h-12 pl-2 w-8">
+                  <CheckBox
+                    onClick={(event: any) => {
+                      event.stopPropagation(); // Prevents event from bubbling to parent elements
+                      handleCheck(item);
+                    }}
+                    isChecked={checkedList?.some((data: any) => data === item)}
+                  />
+                </td>
                 <Td>
                   <span className="capitalize">{item?.name}</span>
                 </Td>

@@ -16,11 +16,15 @@ import { useTransaction } from "../hooks/table";
 import Pagination from "@/components/shared/pagination";
 import { usePathname, useRouter } from "next/navigation";
 import Search from "@/components/shared/search";
+import CheckBox from "@/app/_components/Check-box";
+
+import { useCheckedList } from "@/context/checked-context";
 
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
 
 const table_headings = [
+  "Select All",
   "Payment Initiator",
   "Receiver",
   "Type",
@@ -66,6 +70,8 @@ const TransactionsDetailsTable: React.FC<IProps> = ({
   const router = useRouter();
   const pathname = usePathname();
 
+  const { checkedList, handleCheck, handleSelectAll } = useCheckedList();
+
   // console.log(data);
 
   return (
@@ -91,9 +97,26 @@ const TransactionsDetailsTable: React.FC<IProps> = ({
         <Table>
           <Thead>
             <tr>
-              {table_headings?.map((heading, index) => (
-                <Th key={index}>{heading}</Th>
-              ))}
+              {table_headings?.map((heading, index) =>
+                heading === "Select All" ? (
+                  <th
+                    key={"Select"}
+                    className="flex items-center justify-center gap-2 h-12 pl-2 w-8"
+                  >
+                    <CheckBox
+                      onClick={(event: any) => {
+                        event.stopPropagation(); // Prevents event from bubbling to parent elements
+                        handleSelectAll(data);
+                      }}
+                      isChecked={
+                        checkedList?.length === data?.data?.data?.length
+                      }
+                    />
+                  </th>
+                ) : (
+                  <Th key={index}>{heading}</Th>
+                )
+              )}
             </tr>
           </Thead>
 
@@ -104,6 +127,15 @@ const TransactionsDetailsTable: React.FC<IProps> = ({
                 // onClick={() => router.push(`${pathname}/${item?._id}`)}
                 className="cursor-pointer"
               >
+                <td className="flex items-center justify-center gap-2 h-12 pl-2 w-8">
+                  <CheckBox
+                    onClick={(event: any) => {
+                      event.stopPropagation(); // Prevents event from bubbling to parent elements
+                      handleCheck(item);
+                    }}
+                    isChecked={checkedList?.some((data: any) => data === item)}
+                  />
+                </td>
                 <Td>
                   {item?.fromUser?.name || "User not found "}
 
