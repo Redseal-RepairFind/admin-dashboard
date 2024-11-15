@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Header from "../layout/header/header";
 import PageBody from "../shared/page-body/page-body";
 import PageHeading from "../shared/page-body/page-heading";
@@ -7,6 +7,11 @@ import DownloadButton from "../shared/page-body/download-button";
 import LoadingTemplate from "../layout/loading";
 import ContractorsTable from "./components/table";
 import useContractors from "@/lib/hooks/useContractors";
+
+import { useCheckedList } from "@/context/checked-context";
+import * as XLSX from "xlsx";
+import Modal from "react-responsive-modal";
+import ExportModal from "@/app/_components/ExportModal";
 
 import { useSearchParams } from "next/navigation";
 import Filter from "@/app/_components/Filter";
@@ -24,6 +29,12 @@ import { downloadPDF } from "@/lib/utils/downloadPdf";
 const Contractors = () => {
   const [loading, setLoading] = useState(true);
 
+  const [openModal, setOpenModal] = useState(false);
+  const { checkedList } = useCheckedList();
+  const ref = useRef();
+
+  const handleModalOpen = () => setOpenModal(true);
+  const handleModalClose = () => setOpenModal(false);
   const {
     sortedData,
     loadingSortedData,
@@ -55,7 +66,9 @@ const Contractors = () => {
     "Ratings",
   ];
 
-  const rows = sortedData?.data?.data?.map((item: any) => [
+  const rowsData =
+    checkedList?.length > 0 ? checkedList : sortedData?.data?.data;
+  const rows = rowsData?.map((item: any) => [
     item?.name,
     item?.profile?.skill === undefined ? "Not Submitted" : item?.profile?.skill,
     item?.accountStatus,
@@ -64,8 +77,58 @@ const Contractors = () => {
     item?.rating,
   ]);
 
-  function handleDownloadPdf() {
-    downloadPDF(columns, rows, "Contractors.pdf", "Contractor's List");
+  const exportToExcel = (data: any, fileName: string) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    // Apply column widths
+    worksheet["!cols"] = [
+      { wch: 20 }, // CustomerName column width
+      { wch: 15 }, // ID column width
+      { wch: 25 }, // ContractorName column width
+      { wch: 50 }, // Address column width
+      { wch: 15 }, // Date column width
+      { wch: 20 }, // Status column width
+    ];
+
+    // Apply header styling (assuming headers start at A1)
+    const headerCells = ["A1", "B1", "C1", "D1", "E1", "F1"];
+    headerCells.forEach((cell) => {
+      if (worksheet[cell]) {
+        worksheet[cell].s = {
+          font: { bold: true, color: { rgb: "FFFFFF" } },
+          fill: { fgColor: { rgb: "4F81BD" } },
+          alignment: { horizontal: "center", vertical: "center" },
+        };
+      }
+    });
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
+  };
+
+  function handleDownloadPdf(type: "excel" | "pdf") {
+    const dataToExport = rowsData.map((item: any) => {
+      return {
+        ContractorName: item?.name,
+        // Date_Joined: formatDateToDDMMYY(item.createdAt),
+        Skill:
+          item?.profile?.skill === undefined
+            ? "Not Submitted"
+            : item?.profile?.skill,
+        Status: item?.accountStatus,
+        Email: item?.email,
+        Stage: item?.onboarding?.stage?.label,
+        Ratings: item?.rating,
+      };
+    });
+    if (!dataToExport) return;
+
+    type === "excel"
+      ? exportToExcel(dataToExport, "ContractorList")
+      : downloadPDF(columns, rows, "ContractorList", "Contractor List");
+
+    handleModalClose();
   }
 
   return (
@@ -80,7 +143,7 @@ const Contractors = () => {
             <Filter />
             <DownloadButton
               text="Download Contractor’S LIST"
-              onClick={handleDownloadPdf}
+              onClick={handleModalOpen}
             />
           </div>
           <div className="overflow-x-auto mb-6">
@@ -130,6 +193,20 @@ const Contractors = () => {
               />
             </div>
           </div>
+          <Modal
+            open={openModal}
+            onClose={handleModalClose}
+            classNames={{
+              modal: "customModal",
+            }}
+            container={ref.current}
+          >
+            <ExportModal
+              title="Contractor's List"
+              exportExcel={() => handleDownloadPdf("excel")}
+              exportPDF={() => handleDownloadPdf("pdf")}
+            />
+          </Modal>
           <ContractorsTable
             setLoading={setLoading}
             contractorData={dataToRender}

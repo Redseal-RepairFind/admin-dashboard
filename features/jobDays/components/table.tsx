@@ -19,15 +19,19 @@ import Search from "@/components/shared/search";
 import SortLists from "@/app/_components/Sort";
 import { useJobTable } from "@/features/jobs/hooks/table";
 
+import CheckBox from "@/app/_components/Check-box";
+
+import { useCheckedList } from "@/context/checked-context";
+
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
 
 const table_headings = [
+  "Select All",
   "Customer’s Name",
   "Job ID",
   "Contractors’s Name",
   "Job Category",
-
   "Job Address",
   "Date",
   "Job Status",
@@ -70,6 +74,7 @@ const JobsTable: React.FC<IProps> = ({
       render: "Date Joined (oldest)",
     },
   ];
+  const { checkedList, handleCheck, handleSelectAll } = useCheckedList();
 
   return (
     <TableCard>
@@ -98,9 +103,26 @@ const JobsTable: React.FC<IProps> = ({
         <Table>
           <Thead>
             <tr>
-              {table_headings?.map((heading, index) => (
-                <Th key={index}>{heading}</Th>
-              ))}
+              {table_headings?.map((heading, index) =>
+                heading === "Select All" ? (
+                  <th
+                    key={"Select"}
+                    className="flex items-center justify-center gap-2 h-12 pl-2 w-8"
+                  >
+                    <CheckBox
+                      onClick={(event: any) => {
+                        event.stopPropagation(); // Prevents event from bubbling to parent elements
+                        handleSelectAll(filteredData);
+                      }}
+                      isChecked={
+                        checkedList?.length === filteredData?.data?.data?.length
+                      }
+                    />
+                  </th>
+                ) : (
+                  <Th key={index}>{heading}</Th>
+                )
+              )}
             </tr>
           </Thead>
 
@@ -111,6 +133,15 @@ const JobsTable: React.FC<IProps> = ({
                 key={index}
                 onClick={() => handleViewInvoice(item)}
               >
+                <td className="flex items-center justify-center gap-2 h-12 pl-2 w-8">
+                  <CheckBox
+                    onClick={(event: any) => {
+                      event.stopPropagation(); // Prevents event from bubbling to parent elements
+                      handleCheck(item);
+                    }}
+                    isChecked={checkedList?.some((data: any) => data === item)}
+                  />
+                </td>
                 <Td>{item?.customer?.name}</Td>
                 <Td>{trimString(item?._id, 8)}</Td>
                 <Td>

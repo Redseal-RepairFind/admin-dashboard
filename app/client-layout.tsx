@@ -5,13 +5,16 @@ import { QueryClientProvider, QueryClient } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 
 import { UserProvider } from "context/user-context";
+import { CheckedProvider } from "context/checked-context";
 
 const queryClient = new QueryClient();
 
 function ClientLayout({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <UserProvider>{children}</UserProvider>
+      <UserProvider>
+        <CheckedProvider>{children}</CheckedProvider>
+      </UserProvider>
       <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
     </QueryClientProvider>
   );

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Header from "../layout/header/header";
 import Searchbar from "../layout/header/components/searchbar";
 import PageBody from "../shared/page-body/page-body";
@@ -21,11 +21,22 @@ import AnalyticCard from "../jobs/components/analytic-card";
 import { downloadPDF } from "@/lib/utils/downloadPdf";
 import { formatCurrency } from "@/lib/utils/curencyConverter";
 import { trimString } from "@/lib/utils/trim-string";
-import { formatTimeDDMMYY } from "@/lib/utils/format-date";
+import { formatDateToDDMMYY, formatTimeDDMMYY } from "@/lib/utils/format-date";
+
+import { useCheckedList } from "@/context/checked-context";
+import * as XLSX from "xlsx";
+import Modal from "react-responsive-modal";
+import ExportModal from "@/app/_components/ExportModal";
 
 const Transactions = () => {
   const [loading, setLoading] = useState(true);
   const [dataToRender, setDataToRender] = useState<any>();
+  const [openModal, setOpenModal] = useState(false);
+  const { checkedList } = useCheckedList();
+  const ref = useRef();
+
+  const handleModalOpen = () => setOpenModal(true);
+  const handleModalClose = () => setOpenModal(false);
 
   const {
     sortedData,
@@ -56,30 +67,68 @@ const Transactions = () => {
     "Status",
   ];
 
-  const rows = sortedData?.data?.data?.map((item: any) => [
+  const rowsData =
+    checkedList?.length > 0 ? checkedList : sortedData?.data?.data;
+  const rows = rowsData?.map((item: any) => [
     item?.fromUser?.name || "User not found ",
     item?.toUser?.name || "User not found ",
-    trimString(item?.payment?._id, 15),
+    trimString(item?.type, 28),
     trimString(item?.description, 22),
     formatTimeDDMMYY(item?.createdAt),
     item?.amount,
     trimString(item?.status, 15),
-    // "item?.fromUser?.name || "User not found "
-
-    //   {/* {item.contractor.lastName} */}
-    // </Td>
-    // <Td>{item?.toUser?.name || "User Not found"}</Td>
-    // <Td>{trimString(item?.payment?._id, 15)}</Td>
-    // <Td>{trimString(item?.description, 22)}</Td>
-    // <Td>{formatTimeDDMMYY(item?.createdAt)}</Td>
-    // <Td>${item?.amount}</Td>
-    // <Td>{trimString(item?.status, 15)}</Td>
   ]);
 
-  // console.log(sortedData);
+  const exportToExcel = (data: any, fileName: string) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
 
-  function handleDownloadPdf() {
-    downloadPDF(columns, rows, "Transaction.pdf", "Transaction's List");
+    // Apply column widths
+    worksheet["!cols"] = [
+      { wch: 20 }, // CustomerName column width
+      { wch: 15 }, // ID column width
+      { wch: 25 }, // ContractorName column width
+      { wch: 50 }, // Address column width
+      { wch: 15 }, // Date column width
+      { wch: 20 }, // Status column width
+      { wch: 20 }, // Status column width
+    ];
+
+    // Apply header styling (assuming headers start at A1)
+    const headerCells = ["A1", "B1", "C1", "D1", "E1", "F1", "G1"];
+    headerCells.forEach((cell) => {
+      if (worksheet[cell]) {
+        worksheet[cell].s = {
+          font: { bold: true, color: { rgb: "FFFFFF" } },
+          fill: { fgColor: { rgb: "4F81BD" } },
+          alignment: { horizontal: "center", vertical: "center" },
+        };
+      }
+    });
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
+  };
+
+  function handleDownloadPdf(type: "excel" | "pdf") {
+    const dataToExport = rowsData.map((item: any) => {
+      return {
+        Initiator: item?.fromUser?.name || "User not found ",
+        Receiver: item?.toUser?.name || "User not found ",
+        Type: trimString(item?.type, 28),
+        Date: formatDateToDDMMYY(item.createdAt),
+        Description: trimString(item?.description, 22),
+        Amount: formatCurrency(item?.amount),
+        Status: item?.status,
+      };
+    });
+    if (!dataToExport) return;
+
+    type === "excel"
+      ? exportToExcel(dataToExport, "TransactionsList")
+      : downloadPDF(columns, rows, "TransactionsList", "Transactions List");
+
+    handleModalClose();
   }
 
   return (
@@ -94,7 +143,7 @@ const Transactions = () => {
 
           <DownloadButton
             text="Download Transaction’s LIST"
-            onClick={handleDownloadPdf}
+            onClick={handleModalOpen}
           />
         </div>
         <div className="overflow-x-auto mb-6">
@@ -108,9 +157,9 @@ const Transactions = () => {
               tip="Total Payments Amount"
               charge={stats?.jobPaymentsAmount?.count}
               quotes={"Count"}
-            // percentage={stats?.jobPaymentsAmount?.paypalCharges?.percentage}
-            // mostReq={0}
-            // quotes={0}
+              // percentage={stats?.jobPaymentsAmount?.paypalCharges?.percentage}
+              // mostReq={0}
+              // quotes={0}
             />
 
             <AnalyticCard
@@ -122,11 +171,11 @@ const Transactions = () => {
                 stats?.jobPaymentsAmount?.paypalCharges?.amount
               )}
               tip="Total Payments charges by PayPal"
-            // percentage={stats?.jobPaymentsAmount?.paypalCharges?.percentage}
-            // charge={formatCurrency(
-            //   stats?.jobPaymentsAmount?.paypalCharges?.fixedFee
-            // )}
-            // quotes="Fixed Fee"
+              // percentage={stats?.jobPaymentsAmount?.paypalCharges?.percentage}
+              // charge={formatCurrency(
+              //   stats?.jobPaymentsAmount?.paypalCharges?.fixedFee
+              // )}
+              // quotes="Fixed Fee"
             />
 
             <AnalyticCard
@@ -153,7 +202,6 @@ const Transactions = () => {
               quotes={"Count"}
             />
 
-
             {/* TotalRevenue */}
             <AnalyticCard
               icon={<CompletedState />}
@@ -175,17 +223,7 @@ const Transactions = () => {
               info={formatCurrency(
                 stats?.successfulPayoutAmount?.paypalCharges?.amount
               )}
-              tip="Total Successful Payout charges by PayPal"
-              // percentage={
-              //   stats?.successfulPayoutAmount?.paypalCharges?.percentage
-              // }
-              // quotes={"Percentage"}
-              // charge={formatCurrency(
-              // stats?.successfulPayoutAmount?.paypalCharges?.fixedFee
-              // )}
-              // quotes="Fixed Fee"
-              // charge={stats?.successfulPayoutAmount?.count}
-              // quotes={"Count"}
+              tip="Total Successful Payout charges by PayPal"             
             />
 
             <AnalyticCard
@@ -200,6 +238,20 @@ const Transactions = () => {
               quotes={"Count"}
             />
           </div>
+          <Modal
+            open={openModal}
+            onClose={handleModalClose}
+            classNames={{
+              modal: "customModal",
+            }}
+            container={ref.current}
+          >
+            <ExportModal
+              title="Transaction's List"
+              exportExcel={() => handleDownloadPdf("excel")}
+              exportPDF={() => handleDownloadPdf("pdf")}
+            />
+          </Modal>
         </div>
         <CustomersTable
           setLoading={setLoading}
