@@ -47,8 +47,8 @@ const Jobs = () => {
   const [dataToRender, setDataToRender] = useState<any>();
   const [openModal, setOpenModal] = useState(false);
   const { checkedList } = useCheckedList();
-
-  console.log(checkedList);
+  const searchParams = useSearchParams();
+  const listStatus = searchParams.get("listStatus") || "All";
 
   const ref = useRef();
   const {
@@ -58,11 +58,15 @@ const Jobs = () => {
     setIsQuerying,
     isQuerying,
     queryedList,
+    statusDataToRender,
   } = useSortedData("jobs");
 
+  // console.log(listStatus, statusDataToRender);
   useEffect(() => {
-    isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
-  }, [isQuerying, queryedList, setDataToRender, sortedData]);
+    isQuerying
+      ? setDataToRender(queryedList)
+      : setDataToRender(statusDataToRender);
+  }, [isQuerying, queryedList, setDataToRender, statusDataToRender]);
 
   // const totalJobs = sortedData?.data?.totalItems;
   const stats = sortedData?.data?.stats;
@@ -157,6 +161,7 @@ const Jobs = () => {
       name: "Total Jobs",
       info: stats?.allJobs,
       tip: "Total jobs",
+      status: "All",
     },
     {
       icon: <QuotesGivenMetrics />, // Placeholder icon for submitted jobs
@@ -167,6 +172,7 @@ const Jobs = () => {
       mostReq: stats?.totalQuotationsForListings,
       quotes: "Total Quotes",
       tip: "Total job listings and estimate submitted",
+      status: "listing",
     },
     {
       icon: <AverageDisputeResolutionTimeMetrics />,
@@ -177,6 +183,7 @@ const Jobs = () => {
       mostReq: stats?.totalQuotationsForRequests,
       quotes: "Total Quotes",
       tip: "Total job requests and estimate submitted",
+      status: "request",
     },
     {
       icon: <CompletedState />,
@@ -186,6 +193,7 @@ const Jobs = () => {
       iconColor: "bg-[#bdecc6]",
       percentage: stats?.totalCompleted?.percentage,
       tip: "Completed jobs",
+      status: "completed",
     },
     {
       icon: <QuotesGivenMetrics />,
@@ -195,6 +203,7 @@ const Jobs = () => {
       iconColor: "bg-[#ebf375]",
       percentage: stats?.totalBooked?.percentage,
       tip: "Total number of successfully booked jobs",
+      status: "booked",
     },
     {
       icon: <CancelIconBlue />,
@@ -204,6 +213,7 @@ const Jobs = () => {
       percentage: stats?.totalDisputed?.percentage,
       info: stats?.totalDisputed?.total?.toLocaleString(),
       tip: "Total Booked Jobs in dispute",
+      status: "disputed",
     },
     {
       icon: <CancelIconRed />,
@@ -213,6 +223,7 @@ const Jobs = () => {
       percentage: stats?.totalCanceled?.percentage,
       info: stats?.totalCanceled?.total?.toLocaleString(),
       tip: "Total Booked jobs that got cancelled",
+      status: "canceled",
     },
     {
       icon: <DisputesInitiatedMetrics />,
@@ -222,6 +233,7 @@ const Jobs = () => {
       percentage: stats?.totalPending?.percentage,
       info: stats?.totalPending?.total?.toLocaleString(),
       tip: "New Job listings and requests",
+      status: "pending",
     },
     {
       icon: <ComplaintsState />,
@@ -231,6 +243,7 @@ const Jobs = () => {
       percentage: stats?.totalExpired?.percentage,
       info: stats?.totalExpired?.total?.toLocaleString(),
       tip: "Total Expired Jobs",
+      status: "expired",
     },
     {
       icon: <AverageDisputeResolutionTimeMetrics />,
@@ -240,6 +253,7 @@ const Jobs = () => {
       percentage: stats?.totalOngoing?.percentage,
       info: stats?.totalOngoing?.total?.toLocaleString(),
       tip: "Total jobs currently in progress",
+      status: "ongoing",
     },
     // {
     //   icon: <EmergencyCallMetrics />,
@@ -267,6 +281,7 @@ const Jobs = () => {
       info: stats?.totalAccepted?.total?.toLocaleString(),
       percentage: stats?.totalAccepted?.percentage,
       tip: "Total Job requests accepted ",
+      status: "accepted",
     },
     {
       icon: <JobsStartedMetrics />, // Placeholder icon for most requested category
@@ -336,6 +351,7 @@ const Jobs = () => {
                 mostReq={card?.mostReq}
                 quotes={card?.quotes}
                 tip={card?.tip}
+                status={card?.status}
               />
             ))}
           </div>

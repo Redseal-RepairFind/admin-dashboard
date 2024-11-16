@@ -42,21 +42,18 @@ const Contractors = () => {
     setIsQuerying,
     isQuerying,
     queryedList,
+    statusDataToRender,
   } = useSortedData("contractors");
   const [dataToRender, setDataToRender] = useState<any>();
-
-  const totalContractors = sortedData?.data.totalItems;
-
-  // const { loadingContractors } = useContractors();
-
   const stats = sortedData?.data?.stats;
-
-  // console.log(sortedData);
-
+  
   useEffect(() => {
-    isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
-  }, [isQuerying, queryedList, setDataToRender, sortedData]);
+    isQuerying
+      ? setDataToRender(queryedList)
+      : setDataToRender(statusDataToRender);
+  }, [isQuerying, queryedList, setDataToRender, statusDataToRender]);
 
+  // console.log(listStatus, dataToRender);
   const columns = [
     "Contractor's Name",
     "Skill",
@@ -155,6 +152,7 @@ const Contractors = () => {
                 name="Total Contractors"
                 info={stats?.total?.toLocaleString()}
                 tip="Total Contractors "
+                status="All"
               />
 
               <AnalyticCard
@@ -164,6 +162,7 @@ const Contractors = () => {
                 name="Approved Contractors"
                 info={stats?.approved?.toLocaleString()}
                 tip="Contractors that completed signup"
+                status="approved"
               />
               <AnalyticCard
                 icon={<CancelIconRed />}
@@ -172,6 +171,7 @@ const Contractors = () => {
                 name="Suspended Contractors"
                 info={stats?.suspended?.toLocaleString()}
                 tip="Contractors suspended by an admin"
+                status="suspended"
               />
 
               <AnalyticCard
@@ -181,6 +181,7 @@ const Contractors = () => {
                 name="Contractors under Review"
                 info={stats?.reviewing?.toLocaleString()}
                 tip="Contractors with incomplete signup"
+                status="reviewing"
               />
 
               <AnalyticCard
@@ -190,6 +191,7 @@ const Contractors = () => {
                 name="Blacklisted Contractors"
                 info={stats?.blacklisted?.toLocaleString()}
                 tip="Contractors blacklisted by an admin"
+                status="blaclisted"
               />
             </div>
           </div>

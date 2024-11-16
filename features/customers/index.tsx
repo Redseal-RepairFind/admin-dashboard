@@ -58,8 +58,8 @@ const Customers = () => {
   const [loading, setLoading] = useState(true);
 
   // Getting filter params from URL
-  const params = useSearchParams();
-  const filterString = params.get("sort");
+  // const params = useSearchParams();
+  // const filterString = params.get("sort");
 
   const mainData = sortedData?.data;
 
@@ -125,7 +125,7 @@ const Customers = () => {
     handleModalClose();
   }
 
-  // console.log()
+  // console.log(sortedData);
 
   return (
     <>
@@ -152,6 +152,7 @@ const Customers = () => {
                 name="Total Customers"
                 info={totalCustumers?.toLocaleString()}
                 tip="The Total Customers "
+                status="All"
               />
               <AnalyticCard
                 icon={<QuotesGivenMetrics />}
@@ -160,6 +161,7 @@ const Customers = () => {
                 name="Total Customers with bookings"
                 info={customersWithBookings?.toLocaleString()}
                 tip="Total Customers that has bookings"
+                status="booked"
               />
             </div>
           </div>
