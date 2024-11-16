@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 import { OpenedEye, ClosedEye } from "@/public/svg";
 
@@ -17,6 +17,7 @@ interface IProps {
   quotes?: any;
   tip?: string;
   charge?: any;
+  status?: string;
 }
 
 const AnalyticCard: React.FC<IProps> = ({
@@ -31,16 +32,64 @@ const AnalyticCard: React.FC<IProps> = ({
   quotes,
   tip = "This is a tooltip",
   charge,
+  status,
 }) => {
   // const router = useRouter();
 
   const [showTip, setShowTip] = useState(false);
   const [] = useState();
 
+  const pathname = usePathname();
+  const router = useRouter();
+  const param = useSearchParams();
+
+  // Fetch the initial 'sort' parameter from the URL (query)
+  const initialString = param.get("listStatus");
+  const initialSortValue = initialString
+    ? initialString.replace(/_/g, " ")
+    : "All";
+
+  // Set the selected sort value state, initialize with the value from URL
+  const [sortValue, setSortValue] = useState(initialSortValue);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  // On page load, ensure the sort value in the state is in sync with URL
+  useEffect(() => {
+    const sortFromParam = param.get("listStatus");
+    if (sortFromParam) {
+      const updatedSortValue = sortFromParam.replace(/_/g, " ");
+      setSortValue(updatedSortValue); // Update state based on URL query params
+    }
+  }, [param]);
+
+  // Function to update the URL params and the state
+  function updateUrlParams(value: string) {
+    const formattedValue = value.replace(/ /g, "_").toLowerCase(); // Replace spaces with underscores
+
+    // Update the URL query parameters
+    if (value === "All") {
+      router.replace(`${pathname}`, {
+        scroll: false,
+      }); // Remove query params if 'All' is selected (default)
+    } else {
+      const params = new URLSearchParams(window.location.search);
+      params.set("listStatus", formattedValue); // Set the selected filter in query params
+      router.replace(`${pathname}?${params.toString()}`, {
+        scroll: false,
+      });
+    }
+
+    // Set the selected value in the state
+    setSortValue(value);
+  }
   return (
     <div
       className={`bg-white py-3 px-6 flex flex-col w-[300px]  min-h-[120px] rounded-md 
     cursor-pointer hover:opacity-80 transition-all border-l-[3px] ${borderColor} text-[#333] relative`}
+      onClick={() =>
+        typeof status !== "undefined" ? updateUrlParams(status) : {}
+      }
     >
       <div className="flex items-center justify-between">
         {typeof icon !== "string" && (

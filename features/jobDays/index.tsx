@@ -47,7 +47,7 @@ const Jobs = () => {
     queryedList,
   } = useSortedData("jobdays");
 
-  // console.log(sortedData);
+  console.log(sortedData);
 
   useEffect(() => {
     isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);

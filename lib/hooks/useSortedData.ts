@@ -24,12 +24,14 @@ export function useSortedData(
   const [isQuerying, setIsQuerying] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [criteria, setCriteria] = useState("fullName");
+  const [statusDataToRender, setStatusDataToRender] = useState();
 
   const params = searchParams.get("sort") || "All";
   const currentPage = searchParams.get("page") || 1;
   const perPage = searchParams.get("perPage") || 10;
   const status = searchParams.get("status") || "";
   const type = searchParams.get("type") || "";
+  const listStatus = searchParams.get("listStatus") || "All";
 
   const pathname = usePathname();
   const router = useRouter();
@@ -170,17 +172,67 @@ export function useSortedData(
       });
     }
   };
+  // const itemh = allData?.data?.data?.filter((item) => item.status);
+  // console.log(itemh);
 
-  // function handleQuery(value: string) {
-  // if (value === "") {
-  //   setIsQuerying(false);
-  //   setSearchTerm("");
-  //   return;
-  // }
+  useEffect(() => {
+    if (listStatus === "All") setStatusDataToRender(sortedData);
+    else {
+      let data;
+      if (route === "contractors") {
+        data = allData?.data?.data.filter(
+          (item: any) =>
+            item?.accountStatus?.toLowerCase() === listStatus?.toLowerCase()
+        );
+      }
 
-  // setSearchTerm(value);
-  // setIsQuerying(true);
-  // }
+      if (route === "jobs") {
+        data = allData?.data?.data.filter((item: any) => {
+          if (
+            listStatus.toLowerCase() === "listing" ||
+            listStatus === "request"
+          ) {
+            return item?.type?.toLowerCase().includes(listStatus);
+          } else if (listStatus.toLowerCase() === "expired") {
+            return (
+              item?.status?.toLowerCase().includes(listStatus.toLowerCase()) ||
+              item?.status?.toLowerCase().includes("decline")
+            );
+          } else if (listStatus.toLowerCase() === "booked") {
+            return (
+              item?.status?.toLowerCase().includes(listStatus.toLowerCase()) ||
+              item?.status?.toLowerCase().includes("dispute") ||
+              item?.status?.toLowerCase().includes("completed") ||
+              item?.status?.toLowerCase().includes("canceled") ||
+              item?.status?.toLowerCase().includes("ongoing")
+            );
+          } else if (listStatus.toLowerCase() === "completed") {
+            return item?.status
+              ?.toLowerCase()
+              .includes(listStatus.toLowerCase());
+          } else if (listStatus.toLowerCase() === "pending") {
+            return item?.status
+              ?.toLowerCase()
+              .includes(listStatus.toLowerCase());
+          } else if (listStatus.toLowerCase() === "accepted") {
+            return item?.status
+              ?.toLowerCase()
+              .includes(listStatus.toLowerCase());
+          }
+          item?.status?.toLowerCase().includes(listStatus?.toLowerCase());
+        });
+      }
+
+      const updatedFilteredData = {
+        ...allData,
+        data: {
+          ...allData?.data, // Keep the metadata such as pagination, totalItems, etc.
+          data: data, // Replace only the actual data array with the filtered results
+        },
+      };
+      setStatusDataToRender(updatedFilteredData);
+    }
+  }, [listStatus, sortedData, perPage, allData, route]);
 
   if (error) {
     console.error("Error fetching sorted data:", error);
@@ -197,5 +249,6 @@ export function useSortedData(
     queryedList,
     setIsQuerying,
     refetch,
+    statusDataToRender,
   };
 }
