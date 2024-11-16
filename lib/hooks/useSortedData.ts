@@ -172,7 +172,7 @@ export function useSortedData(
       });
     }
   };
-  // const itemh = allData?.data?.data?.filter((item) => item.status);
+  // const itemh = allData?.data?.data?.filter((item: any) => [item?.type]);
   // console.log(itemh);
 
   useEffect(() => {
@@ -215,11 +215,21 @@ export function useSortedData(
               ?.toLowerCase()
               .includes(listStatus.toLowerCase());
           } else if (listStatus.toLowerCase() === "accepted") {
-            return item?.status
-              ?.toLowerCase()
-              .includes(listStatus.toLowerCase());
+            return (
+              item?.status?.toLowerCase().includes("accepted") ||
+              item?.status?.toLowerCase().includes("submitted")
+            );
           }
-          item?.status?.toLowerCase().includes(listStatus?.toLowerCase());
+          return item?.status
+            ?.toLowerCase()
+            .includes(listStatus?.toLowerCase());
+        });
+      }
+      if (route === "jobdays") {
+        data = allData?.data?.data.filter((item: any) => {
+          return item?.status
+            ?.toLowerCase()
+            .includes(listStatus?.toLowerCase());
         });
       }
 

@@ -45,13 +45,16 @@ const Jobs = () => {
     setIsQuerying,
     isQuerying,
     queryedList,
+    statusDataToRender,
   } = useSortedData("jobdays");
 
-  console.log(sortedData);
+  // console.log(statusDataToRender?.data?.data[1]?.status?.toLowerCase().trim());
 
   useEffect(() => {
-    isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
-  }, [isQuerying, queryedList, setDataToRender, sortedData]);
+    isQuerying
+      ? setDataToRender(queryedList)
+      : setDataToRender(statusDataToRender);
+  }, [isQuerying, queryedList, setDataToRender, statusDataToRender]);
 
   const totalJobs = sortedData?.data?.totalItems;
   const stats = sortedData?.data?.stats;
@@ -153,6 +156,7 @@ const Jobs = () => {
       name: "Total Booked Jobs",
       info: stats?.allJobdays,
       tip: "The total contractor trips started",
+      status: "All",
     },
     {
       icon: <QuotesGivenMetrics />, // Placeholder icon for submitted jobs
@@ -162,6 +166,7 @@ const Jobs = () => {
       info: stats?.totalArrived?.toLocaleString(),
       quotes: "Total Quotes",
       tip: "The total contractor trips waiting confirmation",
+      // status: "",
     },
     {
       icon: <AverageDisputeResolutionTimeMetrics />,
@@ -170,6 +175,7 @@ const Jobs = () => {
       name: "Total Jobs Started",
       info: stats?.totalStarted?.toLocaleString(),
       tip: "The total number of jobs started",
+      // status: "",
     },
     {
       icon: <CompletedState />,
@@ -178,6 +184,7 @@ const Jobs = () => {
       info: stats?.totalConfirmed?.toLocaleString(),
       iconColor: "bg-[#bdecc6]",
       tip: "The total contractor trips confirmed by Customer",
+      status: "confirmed",
     },
   ];
 
@@ -217,6 +224,7 @@ const Jobs = () => {
                 info={card?.info}
                 key={index}
                 tip={card?.tip}
+                status={card?.status}
               />
             ))}
           </div>

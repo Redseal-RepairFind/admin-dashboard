@@ -223,7 +223,7 @@ const Transactions = () => {
               info={formatCurrency(
                 stats?.successfulPayoutAmount?.paypalCharges?.amount
               )}
-              tip="Total Successful Payout charges by PayPal"             
+              tip="Total Successful Payout charges by PayPal"
             />
 
             <AnalyticCard
