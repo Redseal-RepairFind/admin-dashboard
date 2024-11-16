@@ -52,15 +52,16 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
     loadingEmergencies,
     handleAccept,
     sortData,
+    refetch,
   } = useEmergency();
 
   // console.log(emergencyData, "d");
 
-  const handleAction = (id: string) => {
+  const handleAction = async (id: string) => {
     return () => {
       // console.log(id);
       if (currentType === "PENDING") return handleAccept(id);
-
+      // refetch();
       // console.log("e");
       setEmergencyID(id);
       setTimeout(() => {
@@ -138,7 +139,7 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
                     <Td>
                       <button
                         disabled={currentType === "RESOLVED"}
-                        onClick={handleAction(item?._id)}
+                        onClick={() => handleAction(item?._id)}
                         className={`text-white px-5 py-3 rounded-md text-sm ${
                           currentType === "RESOLVED"
                             ? "cursor-not-allowed bg-gray-500"
