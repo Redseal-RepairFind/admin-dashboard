@@ -26,6 +26,7 @@ const Index = () => {
 
   const totalDisputes = sortedData?.data.totalItems;
   const stats = sortedData?.data?.stats;
+  console.log(sortedData);
 
   return (
     <>

@@ -32,13 +32,15 @@ export function useSortedData(
   const status = searchParams.get("status") || "";
   const type = searchParams.get("type") || "";
   const listStatus = searchParams.get("listStatus") || "All";
+  const customersWithBooking = searchParams.get("customersWithBooking") || "";
+  const accountStatus = searchParams.get("accountStatus") || "";
 
   const pathname = usePathname();
   const router = useRouter();
 
   // Use effect to handle sorting by date
 
-  // console.log(params);
+  // console.log(!!customersWithBooking);
   useEffect(() => {
     const sortParam = params.toLowerCase().replaceAll("_", " ");
     const now = new Date();
@@ -77,6 +79,8 @@ export function useSortedData(
       Number(currentPage),
       status,
       type,
+      customersWithBooking,
+      accountStatus,
       // searchTerm,
     ],
     () =>
@@ -88,6 +92,8 @@ export function useSortedData(
             criteria: criteria,
             status,
             type,
+            customersWithBooking: !!customersWithBooking,
+            accountStatus,
             // search: searchTerm,
           })
         : customers.getSortingAnalytics({
@@ -99,6 +105,8 @@ export function useSortedData(
             criteria: criteria,
             status,
             type,
+            customersWithBooking: !!customersWithBooking,
+            accountStatus,
             // search: searchTerm,
           }),
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
@@ -179,12 +187,12 @@ export function useSortedData(
     if (listStatus === "All") setStatusDataToRender(sortedData);
     else {
       let data;
-      if (route === "contractors") {
-        data = allData?.data?.data.filter(
-          (item: any) =>
-            item?.accountStatus?.toLowerCase() === listStatus?.toLowerCase()
-        );
-      }
+      // if (route === "contractors") {
+      //   data = allData?.data?.data.filter(
+      //     (item: any) =>
+      //       item?.accountStatus?.toLowerCase() === listStatus?.toLowerCase()
+      //   );
+      // }
 
       if (route === "jobs") {
         data = allData?.data?.data.filter((item: any) => {

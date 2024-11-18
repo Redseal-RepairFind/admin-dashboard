@@ -18,6 +18,7 @@ interface IProps {
   tip?: string;
   charge?: any;
   status?: string;
+  statusName?: string;
 }
 
 const AnalyticCard: React.FC<IProps> = ({
@@ -33,6 +34,7 @@ const AnalyticCard: React.FC<IProps> = ({
   tip = "This is a tooltip",
   charge,
   status,
+  statusName = "listStatus",
 }) => {
   // const router = useRouter();
 
@@ -44,7 +46,7 @@ const AnalyticCard: React.FC<IProps> = ({
   const param = useSearchParams();
 
   // Fetch the initial 'sort' parameter from the URL (query)
-  const initialString = param.get("listStatus");
+  const initialString = param.get(statusName);
   const initialSortValue = initialString
     ? initialString.replace(/_/g, " ")
     : "All";
@@ -56,7 +58,7 @@ const AnalyticCard: React.FC<IProps> = ({
 
   // On page load, ensure the sort value in the state is in sync with URL
   useEffect(() => {
-    const sortFromParam = param.get("listStatus");
+    const sortFromParam = param.get(statusName);
     if (sortFromParam) {
       const updatedSortValue = sortFromParam.replace(/_/g, " ");
       setSortValue(updatedSortValue); // Update state based on URL query params
@@ -74,7 +76,7 @@ const AnalyticCard: React.FC<IProps> = ({
       }); // Remove query params if 'All' is selected (default)
     } else {
       const params = new URLSearchParams(window.location.search);
-      params.set("listStatus", formattedValue); // Set the selected filter in query params
+      params.set(statusName, formattedValue); // Set the selected filter in query params
       router.replace(`${pathname}?${params.toString()}`, {
         scroll: false,
       });

@@ -50,7 +50,7 @@ const SingleContractor = () => {
 
   const id = params?.slug;
 
-  console.log(contractorDetails);
+  // console.log(contractorDetails);
 
   // const stringified_jobs =
   //   typeof window !== undefined
@@ -224,7 +224,7 @@ const SingleContractor = () => {
                       onClick={() => handleChangeStatus("closed")}
                       color="border-red-600 text-red-600"
                     /> */}
-                    {contractorInfo?.status !== "active" && (
+                    {/* {contractorInfo?.status !== "active" && (
                       <ActionButton
                         actionName="Activate"
                         onClick={() => handleChangeStatus("active")}
@@ -237,7 +237,7 @@ const SingleContractor = () => {
                         onClick={() => handleChangeStatus("suspend")}
                         color="border-red-600 text-red-600"
                       />
-                    )}
+                    )} */}
                   </div>
                 </ActionColumn>
               </tbody>

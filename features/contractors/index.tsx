@@ -46,7 +46,7 @@ const Contractors = () => {
   } = useSortedData("contractors");
   const [dataToRender, setDataToRender] = useState<any>();
   const stats = sortedData?.data?.stats;
-  
+
   useEffect(() => {
     isQuerying
       ? setDataToRender(queryedList)
@@ -163,6 +163,7 @@ const Contractors = () => {
                 info={stats?.approved?.toLocaleString()}
                 tip="Contractors that completed signup"
                 status="approved"
+                statusName="accountStatus"
               />
               <AnalyticCard
                 icon={<CancelIconRed />}
@@ -172,6 +173,7 @@ const Contractors = () => {
                 info={stats?.suspended?.toLocaleString()}
                 tip="Contractors suspended by an admin"
                 status="suspended"
+                statusName="accountStatus"
               />
 
               <AnalyticCard
@@ -182,6 +184,7 @@ const Contractors = () => {
                 info={stats?.reviewing?.toLocaleString()}
                 tip="Contractors with incomplete signup"
                 status="reviewing"
+                statusName="accountStatus"
               />
 
               <AnalyticCard
@@ -191,7 +194,8 @@ const Contractors = () => {
                 name="Blacklisted Contractors"
                 info={stats?.blacklisted?.toLocaleString()}
                 tip="Contractors blacklisted by an admin"
-                status="blaclisted"
+                status="blacklisted"
+                statusName="accountStatus"
               />
             </div>
           </div>
