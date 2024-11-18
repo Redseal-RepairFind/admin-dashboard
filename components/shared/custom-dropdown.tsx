@@ -33,6 +33,7 @@ const CustomDropdown = ({
   defaultValue: any;
   placeholder: any;
 }) => {
+  // console.log(defaultValue);
   return (
     <div className={width ? width : "w-[200px]"}>
       <Select
@@ -45,7 +46,7 @@ const CustomDropdown = ({
         value={value}
         onChange={onChange}
         isMulti={isMulti}
-        isClearable={false}
+        isClearable={true}
         closeMenuOnSelect={false}
       />
     </div>

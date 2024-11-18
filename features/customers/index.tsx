@@ -161,7 +161,8 @@ const Customers = () => {
                 name="Total Customers with bookings"
                 info={customersWithBookings?.toLocaleString()}
                 tip="Total Customers that has bookings"
-                status="booked"
+                status="true"
+                statusName="customersWithBooking"
               />
             </div>
           </div>

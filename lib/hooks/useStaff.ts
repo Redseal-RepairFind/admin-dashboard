@@ -11,6 +11,8 @@ const useStaff = () => {
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [isQuerying, setIsQuerying] = useState(false);
+  const [queryedList, setQueryedList] = useState<any[]>([]);
 
   const { mutateAsync: AddStaff } = useMutation(staff.addStaff);
   const { mutateAsync: UpdatePermission } = useMutation(staff.updatePermission);
@@ -54,6 +56,29 @@ const useStaff = () => {
 
   const router = useRouter();
 
+  function handleSearch(query: string) {
+    if (!query) return;
+
+    setIsQuerying(true);
+    setSearch(query);
+
+    const filteredData = staffData?.data?.filter((value: any) => {
+      return (
+        value?.email.toLowerCase().includes(query.toLowerCase()) ||
+        value?.firstName?.toLowerCase().includes(query.toLowerCase()) ||
+        value?.lastName?.toLowerCase().includes(query)
+      );
+    });
+
+    const updatedFilteredData = {
+      ...staffData,
+      data: filteredData,
+    };
+
+    setQueryedList(updatedFilteredData);
+  }
+
+  console.log();
   return {
     staffData,
     loadingStaff,
@@ -70,6 +95,10 @@ const useStaff = () => {
     setCurrentPage,
     search,
     setSearch,
+    queryedList,
+    isQuerying,
+    handleSearch,
+    setIsQuerying,
   };
 };
 

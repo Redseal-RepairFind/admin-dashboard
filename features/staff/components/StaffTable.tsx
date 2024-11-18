@@ -57,16 +57,25 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     search,
     setSearch,
     loadingStaff,
+    isQuerying,
+    queryedList,
+    setIsQuerying,
+    handleSearch,
   } = useStaff();
 
   const [open, setOpen] = useState(false);
   const [openPAdd, setOpenPAdd] = useState(false);
   const [openPermissions, setOpenPermissions] = useState(false);
+  const [dataToRender, setDataToRender] = useState<any>([]);
 
   const [currentStaff, setCurrentStaff] = useState();
 
-  // console.log(staffData);
+  // console.log(search);
   // console.log(permissionList);
+
+  useEffect(() => {
+    isQuerying ? setDataToRender(queryedList) : setDataToRender(staffData);
+  }, [isQuerying, queryedList, setDataToRender, staffData]);
 
   const modalRef = useRef(null);
   const permissionRef = useRef(null);
@@ -128,11 +137,9 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
         <div className="flex gap-8">
           <Search
             search={search}
-            setSearch={setSearch}
+            setSearch={handleSearch}
             placeholder="Search..."
-            setIsQuerying={() => {
-              false;
-            }}
+            setIsQuerying={setIsQuerying}
           />
         </div>
         <div className="flex items-center justify-end gap-4">
@@ -210,7 +217,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
             </Thead>
 
             <tbody>
-              {staffData?.data?.map((item: any, index: number) => (
+              {dataToRender?.data?.map((item: any, index: number) => (
                 <tr className="border-b border-gray-200" key={item?._id}>
                   <Td>
                     {item?.firstName} {item?.lastName}

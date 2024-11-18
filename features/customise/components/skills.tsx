@@ -94,7 +94,7 @@ export default function Skills() {
 
   // console.log(skillsToRender);
   return (
-    <div className="bg-white p-4 w-fit h-[600px] overflow-y-auto rounded-md z-50">
+    <div className="bg-white p-4 w-fit h-[600px] overflow-y-auto rounded-md z-10">
       <div className="mt-6 h-full w-full overflow-y-auto">
         <h1 className="font-bold text-2xl mb-4">All Skills</h1>
         {skillsToRender?.map((skill: Skill, i: number) => (

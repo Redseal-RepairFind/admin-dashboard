@@ -31,7 +31,7 @@ const EditPermissions = ({
     selectedPermissions || []
   );
 
-  // console.log(currentStaff, "edit");
+  // console.log(currentStaff, selectedPermissions);
 
   const {
     handleSubmit,
@@ -44,7 +44,7 @@ const EditPermissions = ({
       permissions: defaultPermissions.map((permission) => permission.value),
     };
 
-    console.log(payload);
+    // console.log(payload);
 
     try {
       const data = await UpdatePermission(payload);
@@ -61,22 +61,15 @@ const EditPermissions = ({
   };
 
   const handleSelected = (selected: Permission[]) => {
-    // setIsFresh(false);
-
     if (selected.length < defaultPermissions.length) {
-      return setDefaultPermissions(selected);
+      setDefaultPermissions(selected);
+      return;
     }
 
-    // Create a new array by combining elements from defaultPermissions and selected
     const updatedPermissions = [...defaultPermissions];
 
     selected.forEach((item: Permission) => {
-      // Check if item is not already in updatedPermissions
-      if (
-        !updatedPermissions.some(
-          (perm: Permission) => perm.value === item?.value
-        )
-      ) {
+      if (!updatedPermissions.some((perm) => perm.value === item.value)) {
         updatedPermissions.push(item);
       }
     });
@@ -95,11 +88,11 @@ const EditPermissions = ({
             isMulti={true}
             width={"100%"}
             onChange={(selected: Permission[]) => handleSelected(selected)}
-            value={selectedPermissions || []}
+            value={defaultPermissions || []}
             options={permissionList?.map((permission: any) => {
               return { value: permission?._id, label: permission?.name };
             })}
-            defaultValue={[]}
+            defaultValue={defaultPermissions}
             placeholder="Select permissions"
           />
         </div>

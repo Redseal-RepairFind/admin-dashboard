@@ -8,7 +8,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 const perPageOptions = [5, 10, 15, 25, 35, 45];
 
 type dData = {
-  data: { lastPage: number }; // Ensure lastPage is of type number
+  data: { lastPage: number; data: any }; // Ensure lastPage is of type number
 };
 
 const Pagination = ({ data }: dData) => {
@@ -19,6 +19,7 @@ const Pagination = ({ data }: dData) => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  // console.log(data?.data);
   // Sync pageNo and perPage with URL query params on component mount
   useEffect(() => {
     const currentPageFromURL = searchParams.get("page");
