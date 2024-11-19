@@ -12,6 +12,7 @@ interface IProps {
 }
 
 const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
+  // console.log(jobDetail);
   return (
     <>
       {/* Logo */}
