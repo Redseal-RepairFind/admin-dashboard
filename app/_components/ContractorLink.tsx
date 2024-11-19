@@ -49,11 +49,13 @@ export default function ContractorProfileLink({
   }, [contractorsId]);
 
   return (
-    <button
-      id="openContractorProfile"
-      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-    >
-      Open Contractor Profile
-    </button>
+    <div className="w-full h-screen flex items-center justify-center">
+      <button
+        id="openContractorProfile"
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      >
+        Open Contractor Profile
+      </button>
+    </div>
   );
 }
