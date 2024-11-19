@@ -9,22 +9,24 @@ export default function ContractorProfileLink({
 }) {
   useEffect(() => {
     const openProfile = () => {
-      // Dynamic URLs
+      // App deep link URL
       const appURL = `repairfindcustomerapp://contractorprofile?contractorsId=${contractorsId}`;
+
+      // Store URLs for fallback
       const appStoreURL = "https://apps.apple.com/app/repairfind-customer-app";
       const playStoreURL =
         "https://play.google.com/store/apps/details?id=com.repairfindcustomer";
       const fallbackURL = `https://repairfind.ca/contractorprofile/${contractorsId}`;
 
-      // Detect platform
+      // Detect user platform
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       const isAndroid = /Android/i.test(navigator.userAgent);
 
-      // Try opening the app
+      // Attempt to open the app
       const startTime = Date.now();
       window.location.href = appURL;
 
-      // Redirect to the appropriate store or fallback after a timeout
+      // Redirect to fallback after a timeout if the app does not open
       setTimeout(() => {
         if (Date.now() - startTime < 1500) {
           if (isIOS) {
@@ -38,24 +40,9 @@ export default function ContractorProfileLink({
       }, 1500);
     };
 
-    // Attach the event listener
-    const button = document.getElementById("openContractorProfile");
-    button?.addEventListener("click", openProfile);
-
-    return () => {
-      // Cleanup
-      button?.removeEventListener("click", openProfile);
-    };
+    // Trigger the function on component mount
+    openProfile();
   }, [contractorsId]);
 
-  return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <button
-        id="openContractorProfile"
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      >
-        Open Contractor Profile
-      </button>
-    </div>
-  );
+  return null; // No UI needed since it's auto-triggered
 }
