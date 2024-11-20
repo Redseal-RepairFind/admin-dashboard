@@ -40,17 +40,17 @@ export default function ContractorProfileLink({
 
       // Attempt to open the app
       const startTime = Date.now();
-      globalObject.location.href = appURL;
+      window.location.href = appURL;
 
       // Redirect to fallback if the app is not opened
       setTimeout(() => {
         if (Date.now() - startTime < 1500) {
           if (isIOS) {
-            globalObject.location.href = appStoreURL;
+            window.location.href = appStoreURL;
           } else if (isAndroid) {
-            globalObject.location.href = playStoreURL;
+            window.location.href = playStoreURL;
           } else {
-            globalObject.location.href = fallbackURL; // Desktop fallback
+            window.location.href = fallbackURL; // Desktop fallback
           }
         }
       }, 1500);
@@ -58,6 +58,5 @@ export default function ContractorProfileLink({
 
     openProfile(); // Automatically trigger on mount
   }, [contractorsId]);
-
   return null;
 }
