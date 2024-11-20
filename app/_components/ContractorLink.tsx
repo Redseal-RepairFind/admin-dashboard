@@ -45,13 +45,13 @@ export default function ContractorProfileLink({
       // Redirect to fallback if the app is not opened
       setTimeout(() => {
         if (Date.now() - startTime < 1500) {
-          if (isIOS) {
-            window.location.href = appStoreURL;
-          } else if (isAndroid) {
-            window.location.href = playStoreURL;
-          } else {
-            window.location.href = fallbackURL; // Desktop fallback
-          }
+          // if (isIOS) {
+          //   window.location.href = appStoreURL;
+          // } else if (isAndroid) {
+          //   window.location.href = playStoreURL;
+          // } else {
+          window.location.href = fallbackURL; // Desktop fallback
+          // }
         }
       }, 1500);
     };
