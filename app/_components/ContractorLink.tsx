@@ -9,16 +9,12 @@ export default function ContractorProfileLink({
 }) {
   useEffect(() => {
     const openProfile = () => {
-      // App deep link URL
       const appURL = `repairfindcustomerapp://contractorprofile?contractorsId=${contractorsId}`;
-
-      // Store URLs for fallback
-      const appStoreURL = "https://apps.apple.com/app/repairfind-customer-app";
+      const appStoreURL = "https://apps.apple.com/app/6483208887";
       const playStoreURL =
-        "https://play.google.com/store/apps/details?id=com.repairfindcustomer";
-      const fallbackURL = `https://repairfind.ca/contractorprofile/${contractorsId}`;
+        "https://play.google.com/store/apps/details?id=com.theproductdude.repairfindcustomer&pli=1";
+      const fallbackURL = `https://repairfind.ca/`;
 
-      // Detect user platform
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       const isAndroid = /Android/i.test(navigator.userAgent);
 
@@ -26,23 +22,23 @@ export default function ContractorProfileLink({
       const startTime = Date.now();
       window.location.href = appURL;
 
-      // Redirect to fallback after a timeout if the app does not open
+      // Redirect to fallback if the app is not opened
       setTimeout(() => {
-        if (Date.now() - startTime < 1500) {
-          if (isIOS) {
+        if (Date.now() - startTime < 2500) {
+          if (isIOS && !isAndroid) {
             window.location.href = appStoreURL;
-          } else if (isAndroid) {
+          } else if (!isIOS && isAndroid) {
             window.location.href = playStoreURL;
-          } else {
-            window.location.href = fallbackURL; // Desktop fallback
           }
+        } else {
+          // If the app isn't opened within 1500ms, redirect to fallback URL
+          window.location.href = fallbackURL;
         }
-      }, 1500);
+      }, 2500);
     };
 
-    // Trigger the function on component mount
-    openProfile();
+    openProfile(); // Automatically trigger on mount
   }, [contractorsId]);
 
-  return null; // No UI needed since it's auto-triggered
+  return null; // No UI since it auto-triggers
 }
