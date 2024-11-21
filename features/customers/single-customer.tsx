@@ -22,6 +22,7 @@ import ActionColumn from "../shared/inner-pages/action-column";
 import ActionButton from "../shared/inner-pages/action-button";
 import toast from "react-hot-toast";
 import useCustomers from "@/lib/hooks/useCustomers";
+import { formatCurrency } from "@/lib/utils/curencyConverter";
 
 const SingleCustomer = () => {
   const { value: customerDetails } = useAppSelector(
@@ -36,7 +37,7 @@ const SingleCustomer = () => {
 
   // console.log(id);
 
-  const { isLoading, data: customerInfo } = useQuery(
+  const { isLoading, data: customer } = useQuery(
     ["Customer Information", id],
     () => {
       return customers.getCustomerDetails({
@@ -48,6 +49,8 @@ const SingleCustomer = () => {
       select: (response) => response?.data,
     }
   );
+
+  const customerInfo = customer?.customer;
 
   // console.log(customerInfo);
 
@@ -147,16 +150,15 @@ const SingleCustomer = () => {
                       : "-"
                   }
                 />
-                <SingleLineColumn name="Amount Spent" value="$" />
+                <SingleLineColumn
+                  name="Amount Spent"
+                  value={formatCurrency(customer?.totalAmountSpent)}
+                />
                 <SingleLineColumn
                   name="NO. of jobs"
-                  value={
-                    customerInfo?.jobHistory > 0
-                      ? customerDetails?.jobHistory?.length?.toString()
-                      : "No jobs yet"
-                  }
+                  value={customer?.jobCounts}
                 />
-                <SingleLineColumn name="Payment account" value="" />
+                {/* <SingleLineColumn name="Payment account" value="" /> */}
                 {/* <SingleLineColumn name="Address" value="" /> */}
                 {/* <ActionColumn>
                   <div className="flex gap-x-4">

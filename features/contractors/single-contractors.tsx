@@ -63,7 +63,7 @@ const SingleContractor = () => {
 
   // console.log(current_contractor_jobs);
 
-  const { isLoading: loadingInfo, data: contractorInfo } = useQuery(
+  const { isLoading: loadingInfo, data } = useQuery(
     ["Contractor Information", id],
     () => {
       return contractors.getContractorDetails({
@@ -72,10 +72,11 @@ const SingleContractor = () => {
     },
     {
       refetchOnWindowFocus: true,
-      select: (response) => response?.contractor,
+      select: (response) => response?.data,
     }
   );
 
+  const contractorInfo = data?.contractor;
   // console.log(contractorInfo);
 
   const handleChangeStatus = async (status: string) => {
@@ -95,6 +96,10 @@ const SingleContractor = () => {
       }
     }
   };
+
+  // console.log(
+  //   contractorInfo?.profile.availability.map((av) => av.day.join(", "))
+  // );
 
   return (
     <>
@@ -181,7 +186,15 @@ const SingleContractor = () => {
                 />
                 <SingleLineColumn
                   name="Available Days"
-                  value={contractorInfo?.profile?.availableDays?.join(",")}
+                  value={
+                    <div className="flex items-center gap-2 ">
+                      {contractorInfo?.profile?.availability?.map((av: any) => (
+                        <p key={av?.day} className="">
+                          {av?.day}
+                        </p>
+                      ))}
+                    </div>
+                  }
                 />
                 <SingleLineColumn
                   name="City"
@@ -195,9 +208,17 @@ const SingleContractor = () => {
                   name="Years of Exp."
                   value={contractorInfo?.profile?.experienceYear}
                 />
-                <SingleLineColumn name="Amount Spent" value="$" />
-                <SingleLineColumn name="NO. of jobs" value="No jobs yet" />
-                <SingleLineColumn name="Payment account" value="" />
+                {/* <SingleLineColumn name="Amount Spent" value="$" /> */}
+                <SingleLineColumn
+                  name="NO. of jobs Completed"
+                  value={contractorInfo?.stats?.jobsCompleted}
+                />
+                {contractorInfo?.companyName ? (
+                  <SingleLineColumn
+                    name="Company name"
+                    value={contractorInfo?.companyName}
+                  />
+                ) : null}
                 <SingleLineColumn
                   name="Account status"
                   value={contractorInfo?.status}
