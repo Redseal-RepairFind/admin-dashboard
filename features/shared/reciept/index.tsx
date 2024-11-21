@@ -12,7 +12,7 @@ interface IProps {
 }
 
 const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
-  // console.log(jobDetail);
+  console.log(jobDetail);
   return (
     <>
       {/* Logo */}
@@ -137,22 +137,23 @@ const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
         <table className="text-sm w-full text-left mt-5">
           <thead>
             <tr className="bg-[#F1F1F1]">
-              <th className="font-[500] py-3 px-4">Materials</th>
               <th className="font-[500] py-3 px-4">Rate</th>
               <th className="font-[500] py-3 px-4">Quantity</th>
               <th className="font-[500] py-3 px-4">Amount</th>
+              <th className="font-[500] py-3 px-4">Description</th>
             </tr>
           </thead>
 
           <tbody>
-            {jobDetail?.quotations?.map((item: any, index: any) => (
+            {jobDetail?.contract?.estimates?.map((item: any, index: any) => (
               <tr key={item._id}>
-                <td className="text-sm py-3 px-4 capitalize">
+                {/* <td className="text-sm py-3 px-4 capitalize">
                   {item.material}
-                </td>
+                </td> */}
                 <td className="text-sm py-3 px-4">{item.rate}</td>
-                <td className="text-sm py-3 px-4">{item.qty}</td>
+                <td className="text-sm py-3 px-4">{item.quantity}</td>
                 <td className="text-sm py-3 px-4">{item.amount}</td>
+                <td className="text-sm py-3 px-4">{item.description}</td>
               </tr>
             ))}
 
