@@ -1,3 +1,6 @@
+import Image from "next/image";
+import IssuesIcon from "@/public/hugeicons_complaint.png";
+
 export const Overview = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -969,4 +972,10 @@ export const Check = () => (
       strokeLinejoin="round"
     />
   </svg>
+);
+
+export const Issues = () => (
+  <div className="relative w-6 h-6">
+    <Image src={IssuesIcon} fill className="" alt="Issues icon" />
+  </div>
 );

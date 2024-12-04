@@ -58,10 +58,36 @@ export function formatTimeDDMMYY(
   return formattedDate;
 }
 
-export function formatDate(date: any) {
-  const year = date?.getFullYear();
-  const month = String(date?.getMonth() + 1).padStart(2, "0"); // Months are 0-based
-  const day = String(date?.getDate()).padStart(2, "0");
+export function formatDate(
+  date: Date | string | number | null | undefined
+): string {
+  if (!date) {
+    return "No Date Available"; // Fallback if the date is null, undefined, or invalid
+  }
 
-  return `${year}-${month}-${day}`;
+  try {
+    // Convert date to a Date instance if it's not already
+    const parsedDate =
+      typeof date === "string" || typeof date === "number"
+        ? new Date(date)
+        : date;
+
+    // Check if the parsed date is valid
+    if (isNaN(parsedDate.getTime())) {
+      return "Invalid Date";
+    }
+
+    const userLocale = Intl.DateTimeFormat().resolvedOptions().locale;
+
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+
+    return new Intl.DateTimeFormat(userLocale, options).format(parsedDate);
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return "Date Formatting Error";
+  }
 }

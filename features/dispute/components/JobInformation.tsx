@@ -12,7 +12,7 @@ import "react-responsive-modal/styles.css";
 import { useParams } from "next/navigation";
 import LoadingTemplate from "@/features/layout/loading";
 import JobMedia from "./JobMedia";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { dispute } from "@/lib/api/dispute";
 import { UserContext } from "@/context/user-context";
 import io, { Socket } from "socket.io-client";
@@ -20,6 +20,10 @@ import toast from "react-hot-toast";
 
 const JobInformation = () => {
   const { singleDispute, loadingSingleDispute, refetchDispute } = useDisputes();
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleModalClose = () => setOpenModal(false);
+  const handleModalOpen = () => setOpenModal(true);
 
   const [open, setOpen] = useState<boolean>(false);
   const modalRef = useRef(null);
@@ -47,6 +51,38 @@ const JobInformation = () => {
       select: (data) => data?.data,
     }
   );
+
+  const { data: handleSiteVisit } = useMutation(dispute.enableSiteVisit);
+
+  async function handleRevisitSite(id: string) {
+    toast.loading("Enabling site visit...");
+    try {
+      await dispute.enableSiteVisit(id);
+      toast.remove();
+      toast.success("Site visit enabled successfully");
+      refetchDispute();
+      handleModalClose();
+    } catch (error) {
+      toast.remove();
+      toast.error("Failed to enable site visit");
+      console.error(error);
+    }
+  }
+
+  async function handleSettleDispute(id: string) {
+    toast.loading("Settling dispute...");
+    try {
+      await dispute.settleDisputeIssue(id);
+      toast.remove();
+      toast.success("Isssue successfully settled");
+      refetchDispute();
+      handleModalClose();
+    } catch (error) {
+      toast.remove();
+      toast.error("Failed to settle dispute");
+      console.error(error);
+    }
+  }
 
   const customer_id =
     singleDispute?.data?.conversations?.arbitratorCustomer?._id;
@@ -124,6 +160,8 @@ const JobInformation = () => {
     };
   }, [token]);
 
+  // console.log(singleDispute);
+
   return (
     <>
       {loadingSingleDispute && <LoadingTemplate />}
@@ -160,6 +198,34 @@ const JobInformation = () => {
         <DisputeForm info={singleDispute?.data?.description} />
         {singleDispute?.data?.status === "RESOLVED" ? null : (
           <div className="w-full flex items-center justify-start gap-5">
+            <Modal
+              open={openModal}
+              onClose={() => handleModalClose()}
+              classNames={{
+                modal: "customModal",
+              }}
+            >
+              <h1 className="text-lg font-bold  mb-8">
+                Perform more actions below
+              </h1>
+              <div className="w-80 flex items-center mt-6 justify-between">
+                <button
+                  onClick={() => {
+                    handleRevisitSite(singleDispute?.data?._id);
+                  }}
+                  className={`text-white px-8 py-3 rounded-md text-sm bg-black`}
+                >
+                  Enable site visit
+                </button>
+                <button
+                  onClick={() => handleSettleDispute(singleDispute?.data?._id)}
+                  className={`px-8 py-3 rounded-md text-sm border border-black`}
+                >
+                  Settle dispute
+                </button>
+              </div>
+            </Modal>
+
             <button
               onClick={() => {
                 setResolveType("contractor");
@@ -186,6 +252,13 @@ const JobInformation = () => {
               className={`px-8 py-3 rounded-md text-sm border border-black`}
             >
               Enable Revisit
+            </button>
+
+            <button
+              onClick={handleModalOpen}
+              className={`px-8 py-3 rounded-md text-sm border border-black`}
+            >
+              + More Actions
             </button>
           </div>
         )}

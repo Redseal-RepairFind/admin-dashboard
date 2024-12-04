@@ -2,7 +2,7 @@ import apiClient from "./apii";
 
 const client = apiClient();
 
-const user = JSON.parse(
+const user = JSON?.parse(
   sessionStorage.getItem("repairfind_session_user") || ""
 );
 
@@ -51,6 +51,12 @@ export const dispute = {
         payload
       )
       .then(({ data }) => data),
+  enableSiteVisit: (id: string) =>
+    client
+      .post(`/admin/disputes/${id}/change-to-site-visit`)
+      .then(({ data }) => data),
+  settleDisputeIssue: (id: string) =>
+    client.post(`/admin/disputes/${id}/settle`).then(({ data }) => data),
 
   getConversation: () =>
     client

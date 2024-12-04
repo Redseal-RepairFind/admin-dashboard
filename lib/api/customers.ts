@@ -55,7 +55,8 @@ export const customers = {
       | "jobs"
       | "emergencies"
       | "jobdays"
-      | "transactions";
+      | "transactions"
+      | "";
     limit: number;
     page: number;
     criteria: string;
@@ -65,9 +66,12 @@ export const customers = {
     customersWithBooking?: boolean;
     accountStatus: string;
   }) =>
+    route &&
     client
       .get(
-        `/admin/${route}?limit=${limit}&page=${page}&sort=${criteria}${
+        `/admin/${route}?limit=${limit}&page=${page}${
+          criteria ? `&sort=${criteria}` : ""
+        }${
           accountStatus ? `&accountStatus=${accountStatus.toUpperCase()}` : ""
         }${
           customersWithBooking
@@ -75,7 +79,11 @@ export const customers = {
             : ""
         }${search ? `&searchFields=firstName,lastName&search=${search}` : ""}${
           type ? `&type=${type}` : ""
-        }${status ? `&status=${status}` : ""}`
+        }${
+          status && route === "disputes"
+            ? `&status=${status.toUpperCase()}`
+            : ""
+        }`
       )
       .then(({ data }) => data),
 
@@ -103,7 +111,8 @@ export const customers = {
       | "jobs"
       | "emergencies"
       | "jobdays"
-      | "transactions";
+      | "transactions"
+      | "";
 
     criteria: string;
     search?: string;
@@ -112,9 +121,12 @@ export const customers = {
     customersWithBooking?: boolean;
     accountStatus: string;
   }) =>
+    route &&
     client
       .get(
-        `/admin/${route}?limit=${limit}&page=${page}&startDate=${startDate}&endDate=${endDate}&sort=${criteria}${
+        `/admin/${route}?limit=${limit}&page=${page}&startDate=${startDate}&endDate=${endDate}${
+          criteria ? `&sort=${criteria}` : ""
+        }${
           accountStatus ? `&accountStatus=${accountStatus.toUpperCase()}` : ""
         }${
           customersWithBooking
@@ -122,11 +134,16 @@ export const customers = {
             : ""
         }${search ? `&searchFields=firstName,lastName&search=${search}` : ""}${
           type ? `&type=${type}` : ""
-        }${status ? `&status=${status}` : ""}`
+        }${
+          status && route === "disputes"
+            ? `&status=${status.toUpperCase()}`
+            : ""
+        }`
       )
       .then(({ data }) => data),
 
   getAllData: ({ route }: { route: string }) =>
+    route &&
     client.get(`/admin/${route}?limit=1000000000`).then(({ data }) => data),
 
   getSearchSort: ({
@@ -143,4 +160,21 @@ export const customers = {
     client
       .get(`/admin/${route}?limit=${limit}&page=${page}`)
       .then(({ data }) => data),
+  gettIssues: ({
+    page,
+    limit,
+    startDate,
+    endDate,
+    criteria,
+  }: {
+    page: number;
+    limit: number;
+    startDate: string;
+    endDate: string;
+    criteria: string;
+  }) => client.get(`/admin/issues?limit=${limit}&page=${page}`),
+  acceptIssue: (id: string) => client.post(`/admin/issues/${id}/accept`),
+  getSingleIssue: (id: string) => client.get(`/admin/issues/${id}`),
+  sanctionUser: ({ id, payload }: { id: string; payload: any }) =>
+    client.post(`/admin/issues/${id}/sanction`, payload),
 };

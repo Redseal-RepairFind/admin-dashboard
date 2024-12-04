@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { customers } from "../api/customers";
-import { useQuery } from "react-query";
+import { useQuery, useMutation } from "react-query";
 import { formatDate } from "@/lib/utils/format-date";
 
 export function useSortedData(
@@ -13,23 +13,24 @@ export function useSortedData(
     | "emergencies"
     | "jobdays"
     | "transactions"
+    | ""
 ) {
   const searchParams = useSearchParams();
   const param = new URLSearchParams(window.location.search);
   const initialState = useMemo(() => new Date(1999, 9, 14), []);
-  const [startDate, setStartDate] = useState(initialState);
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState<any>();
+  const [endDate, setEndDate] = useState<any>();
   const [searchTerm, setSearchTerm] = useState("");
   const [queryedList, setQueryedList] = useState<any[]>([]);
   const [isQuerying, setIsQuerying] = useState(false);
   const [notFound, setNotFound] = useState(false);
-  const [criteria, setCriteria] = useState("fullName");
+  const [criteria, setCriteria] = useState("");
   const [statusDataToRender, setStatusDataToRender] = useState();
 
   const params = searchParams.get("sort") || "All";
   const currentPage = searchParams.get("page") || 1;
   const perPage = searchParams.get("perPage") || 10;
-  const status = searchParams.get("status") || "";
+  const status = searchParams.get("status") || "OPEN";
   const type = searchParams.get("type") || "";
   const listStatus = searchParams.get("listStatus") || "All";
   const customersWithBooking = searchParams.get("customersWithBooking") || "";
@@ -38,13 +39,18 @@ export function useSortedData(
   const pathname = usePathname();
   const router = useRouter();
 
+  const { mutateAsync: acceptIssue, isLoading: isAccepting } = useMutation(
+    customers.acceptIssue
+  );
+  const { mutateAsync: strikeUser } = useMutation(customers.sanctionUser);
+
   // Use effect to handle sorting by date
 
-  // console.log(!!customersWithBooking);
+  // console.log(status);
   useEffect(() => {
     const sortParam = params.toLowerCase().replaceAll("_", " ");
     const now = new Date();
-    const critria = searchParams.get("sortList") || "firstName";
+    const critria = searchParams.get("sortList") || "";
 
     if (sortParam === "last 24h") {
       setStartDate(new Date(now.getTime() - 24 * 60 * 60 * 1000));
@@ -56,8 +62,8 @@ export function useSortedData(
       setStartDate(new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000));
       setEndDate(now);
     } else {
-      setStartDate(initialState);
-      setEndDate(now);
+      setStartDate("");
+      setEndDate("");
     }
 
     setCriteria(critria);
@@ -112,11 +118,35 @@ export function useSortedData(
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
 
+  const {
+    data: issuesData,
+    isLoading: loadingIssues,
+    refetch: refetchIssues,
+  } = useQuery(
+    ["issues", startDate, endDate, Number(perPage), Number(currentPage)],
+    () =>
+      customers.gettIssues({
+        page: Number(currentPage) || 1,
+        limit: Number(perPage) || 10,
+        criteria: criteria,
+        startDate: formatDate(startDate),
+        endDate: formatDate(endDate),
+      }),
+    {
+      enabled: pathname === "/issues", // Fetch only when isQuerying is true
+    }
+
+    // { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
+  );
+
   // all data for search
 
   const { isLoading: loadingAllData, data: allData } = useQuery(
-    ["allData", route],
-    () => customers.getAllData({ route })
+    ["allData"],
+    () => customers.getAllData({ route }),
+    {
+      enabled: isQuerying, // Fetch only when isQuerying is true
+    }
   );
 
   const handleQuery = (value: string) => {
@@ -132,6 +162,8 @@ export function useSortedData(
     setIsQuerying(true);
     // param.set("sort", "All");
     // param.set("page", "1");
+
+    // console.log(sortedData);
 
     if (allData?.data) {
       // console.log(allData);
@@ -268,5 +300,11 @@ export function useSortedData(
     setIsQuerying,
     refetch,
     statusDataToRender,
+    acceptIssue,
+    isAccepting,
+    strikeUser,
+    issuesData,
+    loadingIssues,
+    refetchIssues,
   };
 }
