@@ -25,21 +25,30 @@ const JobDayData = ({ info }: { info: any }) => {
           value={formatTimeDDMMYY(info?.createdAt, true)}
         />
         <LineColumn
-          name="Job Location"
+          // name="Job Location"
           value={
-            <div className="">
-              <p className="font-semibold mb-2">{info?.jobLocation?.address}</p>
+            <div className="w-full">
+              <div className="flex gap-6 items-center">
+                <p className="font-semibold mb-2">Job Location</p>
+                <p className="font-semibold mb-2">
+                  {info?.jobLocation?.address}
+                </p>
+              </div>
               <GoogleMapsEmbed coords={defaultCenter} />
             </div>
           }
         />
         <LineColumn
-          name="Contractor's Location"
+          // name="çLocation"
           value={
             <div className="">
-              <p className="font-semibold mb-2">
-                {info?.contractorLocation?.address}
-              </p>
+              <div className="flex gap-6 items-center">
+                <p className="font-semibold mb-2">Contractor's Location</p>
+                <p className="font-semibold mb-2">
+                  {info?.contractorLocation?.address}
+                </p>
+              </div>
+
               <GoogleMapsEmbed coords={defaultContractorCenter} />
             </div>
           }

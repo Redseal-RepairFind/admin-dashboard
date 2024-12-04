@@ -110,7 +110,24 @@ function Form({
         </select>
         {errors?.app?.message ? <Errors>{errors?.app?.message}</Errors> : null}{" "}
       </Column>
-
+      <Column>
+        <Label htmlFor="Platform">Supported Version</Label>
+        <select
+          id="isSupported"
+          className="h-12 px-2 border-gray-700 border rounded-md"
+          {...register("isSupported", {
+            required: "Please confirm if version is supported",
+          })}
+          defaultValue={type === "edit" ? data?.isSupported : ""}
+        >
+          <option value="">- -</option>
+          <option value="true">True</option>
+          <option value="false">False</option>
+        </select>
+        {errors?.isSupported?.message ? (
+          <Errors>{errors?.isSupported?.message}</Errors>
+        ) : null}
+      </Column>
       <Column>
         <Label htmlFor="isCurrent">Is Current?</Label>
         <select

@@ -17,7 +17,7 @@ const useDisputes = () => {
   const [search, setSearch] = useState("");
   const [dataToRender, setDataToRender] = useState<any>();
 
-  const [status, setStatus] = useState("OPEN");
+  // const [status, setStatus] = useState("OPEN");
 
   const { mutateAsync: AcceptDispute } = useMutation(dispute.acceptDispute);
   const { mutateAsync: SettleDispute } = useMutation(dispute.settleDispute);
@@ -26,7 +26,8 @@ const useDisputes = () => {
   const { id } = useParams();
   const params = useSearchParams();
 
-  const sessionStatus = params.get("disputeStatus")?.toUpperCase() || "OPEN";
+  const status = params.get("disputeStatus")?.toUpperCase() || "OPEN";
+
   const {
     sortedData,
     loadingSortedData: loadingDisputes,
@@ -41,32 +42,32 @@ const useDisputes = () => {
     isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
   }, [isQuerying, queryedList, setDataToRender, sortedData]);
 
-  useEffect(() => {
-    // if (sessionStatus === "OPEN") {
-    //   // If sessionStatus is "OPEN", render the full data array
-    //   setDataToRender(sortedData?.data);
-    // } else
+  // useEffect(() => {
+  //   // if (sessionStatus === "OPEN") {
+  //   //   // If sessionStatus is "OPEN", render the full data array
+  //   //   setDataToRender(sortedData?.data);
+  //   // } else
 
-    if (sortedData?.data?.data) {
-      // Filter the data based on sessionStatus
-      const filteredArray = sortedData.data.data.filter(
-        (item: any) => item.status === sessionStatus
-      );
+  //   if (sortedData?.data?.data) {
+  //     // Filter the data based on sessionStatus
+  //     const filteredArray = sortedData.data.data.filter(
+  //       (item: any) => item.status.toLowerCase() === status.toLowerCase()
+  //     );
 
-      // console.log(filteredArray, sessionStatus);
+  //     // console.log(filteredArray, sessionStatus);
 
-      // Clone the sortedData structure and replace only the data field
-      const updatedFilteredData = {
-        ...sortedData,
-        data: {
-          ...sortedData.data, // Retain other properties of sortedData
-          data: filteredArray, // Replace only the actual data array
-        },
-      };
+  //     // Clone the sortedData structure and replace only the data field
+  //     const updatedFilteredData = {
+  //       ...sortedData,
+  //       data: {
+  //         ...sortedData.data, // Retain other properties of sortedData
+  //         data: filteredArray, // Replace only the actual data array
+  //       },
+  //     };
 
-      setDataToRender(updatedFilteredData);
-    }
-  }, [sessionStatus, sortedData]);
+  //     setDataToRender(updatedFilteredData);
+  //   }
+  // }, [sessionStatus, sortedData]);
 
   // const {
   //   data: disputes,
@@ -153,7 +154,6 @@ const useDisputes = () => {
 
   return {
     status,
-    setStatus,
     // disputes,
     loadingDisputes,
     handleAccept,

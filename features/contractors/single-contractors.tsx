@@ -181,8 +181,19 @@ const SingleContractor = () => {
                   )}
                 />
                 <SingleLineColumn
-                  name="Skill"
-                  value={contractorInfo?.profile?.skill}
+                  name="Skills"
+                  value={
+                    contractorInfo?.profile?.skill ||
+                    contractorInfo?.profile?.skills?.map(
+                      (skill: string, index: number) => (
+                        <span key={skill} className="text-sm">
+                          {skill}
+                          {index < contractorInfo?.profile?.skills.length - 1 &&
+                            " || "}
+                        </span>
+                      )
+                    )
+                  }
                 />
                 <SingleLineColumn
                   name="Available Days"

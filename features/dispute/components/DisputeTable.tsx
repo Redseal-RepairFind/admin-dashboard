@@ -39,7 +39,6 @@ const types = [
 const DisputeTable = () => {
   const {
     status,
-    setStatus,
     loadingDisputes,
     handleAccept,
     search,
@@ -70,7 +69,7 @@ const DisputeTable = () => {
   };
 
   // Fetch the initial 'sort' parameter from the URL (query)
-  const initialString = param.get("disputeStatus");
+  const initialString = param.get("status");
   const initialSortValue = initialString
     ? initialString.replace(/_/g, " ")
     : "OPEN";
@@ -82,7 +81,7 @@ const DisputeTable = () => {
 
   // On page load, ensure the sort value in the state is in sync with URL
   useEffect(() => {
-    const sortFromParam = param.get("disputeStatus");
+    const sortFromParam = param.get("status");
     if (sortFromParam) {
       const updatedSortValue = sortFromParam.replace(/_/g, " ");
       setSortValue(updatedSortValue); // Update state based on URL query params
@@ -100,7 +99,7 @@ const DisputeTable = () => {
       }); // Remove query params if 'All' is selected (default)
     } else {
       const params = new URLSearchParams(window.location.search);
-      params.set("disputeStatus", formattedValue); // Set the selected filter in query params
+      params.set("status", formattedValue); // Set the selected filter in query params
       router.replace(`${pathname}?${params.toString()}`, {
         scroll: false,
       });
@@ -116,12 +115,13 @@ const DisputeTable = () => {
         <div className="flex items-center justify-start gap-5">
           {types.map((type: any, index: number) => (
             <button
-              className={
-                status === type?.slug ? "font-semibold" : "text-gray-400"
-              }
+              className={`${
+                sortValue.toLowerCase() === type.slug.toLowerCase()
+                  ? "font-semibold"
+                  : "text-gray-400"
+              }`}
               onClick={() => {
                 sessionStorage.setItem("session_dispute_status", type.slug);
-                setStatus(type.slug);
                 updateUrlParams(type.slug);
               }}
               key={index}
@@ -169,15 +169,17 @@ const DisputeTable = () => {
                       // disabled={status === "RESOLVED"}
                       onClick={() => handleAction(item?._id, item?.status)}
                       className={`text-white px-5 py-3 rounded-md text-sm ${
-                        status === "RESOLVED" ? " bg-gray-500" : "bg-black "
+                        item?.status === "RESOLVED"
+                          ? " bg-gray-500"
+                          : "bg-black "
                       }
                       `}
                     >
-                      {status === "OPEN"
+                      {item?.status === "OPEN"
                         ? "Accept"
-                        : status === "RESOLVED"
+                        : item?.status === "RESOLVED"
                         ? "View Dispute"
-                        : status === "REVISIT"
+                        : item?.status === "REVISIT"
                         ? "View Dispute"
                         : "Resolve"}
                     </button>

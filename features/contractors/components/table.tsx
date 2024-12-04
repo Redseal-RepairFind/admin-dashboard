@@ -56,6 +56,8 @@ const ContractorsTable: React.FC<IProps> = ({
 
   const mainData = contractorData?.data;
 
+  console.log(contractorData);
+
   const pageProps = {
     data: mainData,
   };
@@ -153,9 +155,16 @@ const ContractorsTable: React.FC<IProps> = ({
                 </Td>
                 <Td>
                   <span className="capitalize">
-                    {item?.profile?.skill === undefined
-                      ? "Not Submitted"
-                      : item?.profile?.skill}
+                    {item?.profile?.skill ||
+                      item?.profile?.skills?.map(
+                        (skill: string, index: number) => (
+                          <span key={skill} className="text-sm">
+                            {skill}
+                            {index < item?.profile?.skills.length - 1 && " || "}
+                          </span>
+                        )
+                      ) ||
+                      "No Skills"}
                   </span>
                 </Td>
                 <Td>{item?.accountStatus}</Td>

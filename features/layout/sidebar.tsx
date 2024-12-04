@@ -18,6 +18,7 @@ import {
   TotalJobs,
   TotalRevenue,
   AppVersion,
+  Issues,
 } from "@/public/svg";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -52,6 +53,8 @@ const Sidebar = () => {
 
     { name: "Emergency", svg: <MdEmergency />, route: "/emergency" },
     { name: "Dispute", svg: <Transactions />, route: "/dispute" },
+    { name: "Issues", svg: <Issues />, route: "/issues" },
+
     { name: "App versions", svg: <AppVersion />, route: "/App_version" },
     // { name: "Transactions", svg: <Transactions />, route: "/transactions" },
     { name: "Gst Validation", svg: <Gst />, route: "/gst" },
