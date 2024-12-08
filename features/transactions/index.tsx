@@ -45,6 +45,7 @@ const Transactions = () => {
     setIsQuerying,
     isQuerying,
     queryedList,
+    transactionsToRender,
   } = useSortedData("transactions");
 
   useEffect(() => {
@@ -55,7 +56,7 @@ const Transactions = () => {
 
   const stats = sortedData?.data?.stats;
 
-  // console.log(stats);
+  // console.log(transactionsToRender);
 
   const columns = [
     "Initiator's Name",

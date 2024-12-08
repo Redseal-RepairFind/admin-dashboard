@@ -26,6 +26,7 @@ export function useSortedData(
   const [notFound, setNotFound] = useState(false);
   const [criteria, setCriteria] = useState("");
   const [statusDataToRender, setStatusDataToRender] = useState();
+  const [transactionsToRender, setTransactionsToRender] = useState<any>();
 
   const params = searchParams.get("sort") || "All";
   const currentPage = searchParams.get("page") || 1;
@@ -35,6 +36,7 @@ export function useSortedData(
   const listStatus = searchParams.get("listStatus") || "All";
   const customersWithBooking = searchParams.get("customersWithBooking") || "";
   const accountStatus = searchParams.get("accountStatus") || "";
+  const transactionStatus = searchParams.get("status") || "All";
 
   const pathname = usePathname();
   const router = useRouter();
@@ -145,7 +147,7 @@ export function useSortedData(
     ["allData"],
     () => customers.getAllData({ route }),
     {
-      enabled: isQuerying, // Fetch only when isQuerying is true
+      enabled: isQuerying || transactionStatus !== "All", // Fetch only when isQuerying is true
     }
   );
 
@@ -212,8 +214,26 @@ export function useSortedData(
       });
     }
   };
-  // const itemh = allData?.data?.data?.filter((item: any) => [item?.type]);
-  // console.log(itemh);
+
+  // useEffect(() => {
+  //   if (route === "transactions") {
+  //     if (transactionStatus === "All") setTransactionsToRender(sortedData);
+  //     else {
+  //       const filteredData = allData?.data?.data.filter((data: any) =>
+  //         data?.status.toLowerCase().includes(transactionStatus.toLowerCase())
+  //       );
+
+  //       const updatedFilteredData = {
+  //         ...allData,
+  //         data: {
+  //           ...allData?.data, // Keep the metadata such as pagination, totalItems, etc.
+  //           data: filteredData, // Replace only the actual data array with the filtered results
+  //         },
+  //       };
+  //       setTransactionsToRender(updatedFilteredData);
+  //     }
+  //   }
+  // }, [transactionStatus, allData, route, sortedData]);
 
   useEffect(() => {
     if (listStatus === "All") setStatusDataToRender(sortedData);
@@ -306,5 +326,6 @@ export function useSortedData(
     issuesData,
     loadingIssues,
     refetchIssues,
+    transactionsToRender,
   };
 }
