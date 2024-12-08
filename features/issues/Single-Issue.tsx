@@ -130,7 +130,7 @@ function SingleIssue({ id }: { id?: string }) {
     status,
   } = issue;
 
-  console.log(issue);
+  // console.log(issue);
 
   return (
     <div className="px-8 py-5">

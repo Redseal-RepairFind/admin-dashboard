@@ -58,22 +58,21 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
   // console.log(emergencyData, "d");
 
   const handleAction = async (id: string) => {
-    return () => {
-      // console.log(id);
-      if (currentType === "PENDING") return handleAccept(id);
-      // refetch();
-      // console.log("e");
-      setEmergencyID(id);
-      setTimeout(() => {
-        // setOpen(true);
-        router.push(`/emergency/${id}`);
-      }, 100);
-    };
+    if (currentType === "PENDING") await handleAccept(id);
+    setEmergencyID(id);
+    console.log("click");
+
+    setTimeout(() => {
+      // setOpen(true);
+      router.push(`/emergency/${id}`);
+    }, 100);
   };
 
   const pageProps = {
     data: sortData?.data,
   };
+
+  // console.log(currentType);
 
   return (
     <>

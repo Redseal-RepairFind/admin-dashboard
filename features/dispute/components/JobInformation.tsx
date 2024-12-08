@@ -17,10 +17,29 @@ import { dispute } from "@/lib/api/dispute";
 import { UserContext } from "@/context/user-context";
 import io, { Socket } from "socket.io-client";
 import toast from "react-hot-toast";
+import IssueCard from "@/features/issues/Issue-card";
+import { useSortedData } from "@/lib/hooks/useSortedData";
 
 const JobInformation = () => {
   const { singleDispute, loadingSingleDispute, refetchDispute } = useDisputes();
+
+  const { strikeUser } = useSortedData("disputes");
   const [openModal, setOpenModal] = useState(false);
+
+  const [issueData, setIssueData] = useState({
+    // userId: "",
+    reason: "",
+    level: 0,
+  });
+
+  const [issueModal, setIssueModal] = useState(false);
+
+  const handleOpenIssueModal = () => {
+    setOpenModal(false);
+    setIssueModal(true);
+  };
+
+  const handleCloseIssueModal = () => setIssueModal(false);
 
   const handleModalClose = () => setOpenModal(false);
   const handleModalOpen = () => setOpenModal(true);
@@ -162,6 +181,42 @@ const JobInformation = () => {
 
   // console.log(singleDispute);
 
+  async function handleStrikeUser() {
+    toast.loading(
+      `Issuing ${
+        singleDispute?.data?.disputerType.toLowerCase().includes("customer")
+          ? "Contractor"
+          : "Customer"
+      } a strike...`
+    );
+    try {
+      const payload = {
+        ...issueData,
+        userId: singleDispute?.data?.disputerType
+          .toLowerCase()
+          .includes("customer")
+          ? singleDispute.data?.contractor?.id
+          : singleDispute.data?.customer?.id,
+      };
+      const data = await strikeUser({ payload, id: singleDispute?.data?._id });
+      //  refetchIssues();
+      // console.log(data);
+
+      toast.remove();
+      toast.success(
+        `Strike successfully Issued to  ${
+          singleDispute?.data?.disputerType.toLowerCase().includes("customer")
+            ? "Contractor"
+            : "Customer"
+        }`
+      );
+      handleCloseIssueModal();
+    } catch (error: any) {
+      toast.remove();
+      toast.error(error?.message);
+    }
+  }
+
   return (
     <>
       {loadingSingleDispute && <LoadingTemplate />}
@@ -208,7 +263,7 @@ const JobInformation = () => {
               <h1 className="text-lg font-bold  mb-8">
                 Perform more actions below
               </h1>
-              <div className="w-80 flex items-center mt-6 justify-between">
+              <div className="min-w-80 gap-4 flex items-center mt-6 justify-between">
                 <button
                   onClick={() => {
                     handleRevisitSite(singleDispute?.data?._id);
@@ -218,12 +273,39 @@ const JobInformation = () => {
                   Enable site visit
                 </button>
                 <button
-                  onClick={() => handleSettleDispute(singleDispute?.data?._id)}
+                  onClick={() => handleOpenIssueModal()}
                   className={`px-8 py-3 rounded-md text-sm border border-black`}
                 >
-                  Settle dispute
+                  Sanction{" "}
+                  {singleDispute?.data?.disputerType
+                    .toLowerCase()
+                    .includes("customer")
+                    ? "Contractor"
+                    : "Customer"}
                 </button>
               </div>
+            </Modal>
+            <Modal
+              open={issueModal}
+              center
+              onClose={handleCloseIssueModal}
+              classNames={{
+                modal: "customModal",
+              }}
+              container={modalRef.current}
+            >
+              <IssueCard
+                title="Sanction User"
+                offender={
+                  singleDispute?.data?.disputerType
+                    .toLowerCase()
+                    .includes("customer")
+                    ? "Contractor"
+                    : "Customer"
+                }
+                setIssueData={setIssueData}
+                handleOpenSanction={() => handleStrikeUser()}
+              />
             </Modal>
 
             <button

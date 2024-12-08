@@ -81,7 +81,7 @@ export const customers = {
           type ? `&type=${type}` : ""
         }${
           status && route === "disputes"
-            ? `&status=${status.toUpperCase()}`
+            ? `&status=${status?.toUpperCase()}`
             : ""
         }`
       )
@@ -136,7 +136,7 @@ export const customers = {
           type ? `&type=${type}` : ""
         }${
           status && route === "disputes"
-            ? `&status=${status.toUpperCase()}`
+            ? `&status=${status?.toUpperCase()}`
             : ""
         }`
       )
