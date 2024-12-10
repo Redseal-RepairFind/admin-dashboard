@@ -83,6 +83,10 @@ export const customers = {
           status && route === "disputes"
             ? `&status=${status?.toUpperCase()}`
             : ""
+        }${
+          status && route === "transactions"
+            ? `&status=${status?.toUpperCase()}`
+            : ""
         }`
       )
       .then(({ data }) => data),
@@ -136,6 +140,10 @@ export const customers = {
           type ? `&type=${type}` : ""
         }${
           status && route === "disputes"
+            ? `&status=${status?.toUpperCase()}`
+            : ""
+        }${
+          status && route === "transactions"
             ? `&status=${status?.toUpperCase()}`
             : ""
         }`
