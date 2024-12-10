@@ -36,7 +36,7 @@ export function useSortedData(
   const listStatus = searchParams.get("listStatus") || "All";
   const customersWithBooking = searchParams.get("customersWithBooking") || "";
   const accountStatus = searchParams.get("accountStatus") || "";
-  const transactionStatus = searchParams.get("status") || "All";
+  const transactionStatus = searchParams.get("status") || "";
 
   const pathname = usePathname();
   const router = useRouter();
@@ -89,6 +89,7 @@ export function useSortedData(
       type,
       customersWithBooking,
       accountStatus,
+      // transactionStatus,
       // searchTerm,
     ],
     () =>
@@ -98,7 +99,7 @@ export function useSortedData(
             limit: Number(perPage) || 10,
             page: Number(currentPage) || 1,
             criteria: criteria,
-            status,
+            status: route === "disputes" ? status : transactionStatus,
             type,
             customersWithBooking: !!customersWithBooking,
             accountStatus,
@@ -111,7 +112,7 @@ export function useSortedData(
             endDate: formatDate(endDate),
             route,
             criteria: criteria,
-            status,
+            status: route === "disputes" ? status : transactionStatus,
             type,
             customersWithBooking: !!customersWithBooking,
             accountStatus,
@@ -147,9 +148,10 @@ export function useSortedData(
     ["allData"],
     () => customers.getAllData({ route }),
     {
-      enabled: isQuerying || transactionStatus !== "All", // Fetch only when isQuerying is true
+      enabled: isQuerying, // Fetch only when isQuerying is true
     }
   );
+  // console.log(transactionStatus);
 
   const handleQuery = (value: string) => {
     setSearchTerm(value);
@@ -164,8 +166,6 @@ export function useSortedData(
     setIsQuerying(true);
     // param.set("sort", "All");
     // param.set("page", "1");
-
-    // console.log(sortedData);
 
     if (allData?.data) {
       // console.log(allData);
