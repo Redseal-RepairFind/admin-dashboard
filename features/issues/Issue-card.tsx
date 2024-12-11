@@ -14,7 +14,7 @@ const sanctionList = [
   },
   {
     sanction: "Medium",
-    message: "When the issue Level is Meium defendant is Issued a strike",
+    message: "When the issue Level is Medium defendant is Issued a strike",
     level: 2,
   },
   {
@@ -24,7 +24,7 @@ const sanctionList = [
   },
   {
     sanction: "None",
-    message: "",
+    message: "No sanction will be issued",
     level: 0,
   },
 ];
@@ -34,11 +34,13 @@ function IssueCard({
   offender,
   setIssueData,
   handleOpenSanction,
+  type = "issue",
 }: {
   title: string;
   offender: "Customer" | "Contractor";
   setIssueData: any;
   handleOpenSanction: any;
+  type?: "issue" | "dispute";
 }) {
   const [sanction, setSanction] = useState({
     sanction: "Select",
@@ -69,7 +71,6 @@ function IssueCard({
       reason: data.reason,
       level: sanction.level,
     });
-
     handleOpenSanction();
   }
 
@@ -112,7 +113,10 @@ function IssueCard({
           </span>
         ) : null}
         {sanction.message ? (
-          <div className="w-full border-t border-t-gray-300 mt-16">
+          <form
+            className="w-full border-t border-t-gray-300 mt-16"
+            onSubmit={handleSubmit(handleSanction)}
+          >
             <h2 className="py-4">Reason</h2>
 
             <textarea
@@ -130,12 +134,19 @@ function IssueCard({
             )}
 
             <button
-              className="px-8 py-3 bg-[#dd0a0a] text-white rounded-md hover:text-[#dd0404] hover:border hover:bg-white hover:border-[#dd0404] duration-500 transition-all"
-              onClick={handleSubmit(handleSanction)}
+              className={`px-8 py-3 ${
+                sanction.sanction === "None"
+                  ? "bg-black"
+                  : "bg-[#dd0a0a] hover:text-[#dd0404] hover:border hover:bg-white hover:border-[#dd0404] "
+              } text-white rounded-md duration-500 transition-all`}
             >
-              {sanction.sanction === "High" ? "Suspend" : "Strike"}
+              {sanction.sanction === "High"
+                ? "Suspend"
+                : sanction.sanction === "None"
+                ? "Resolve"
+                : "Strike"}
             </button>
-          </div>
+          </form>
         ) : null}
       </div>
     </div>

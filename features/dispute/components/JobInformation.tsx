@@ -23,7 +23,7 @@ import { useSortedData } from "@/lib/hooks/useSortedData";
 const JobInformation = () => {
   const { singleDispute, loadingSingleDispute, refetchDispute } = useDisputes();
 
-  const { strikeUser } = useSortedData("disputes");
+  const { SanctionUser: strikeUser } = useSortedData("disputes");
   const [openModal, setOpenModal] = useState(false);
 
   const [issueData, setIssueData] = useState({
@@ -47,6 +47,7 @@ const JobInformation = () => {
   const [open, setOpen] = useState<boolean>(false);
   const modalRef = useRef(null);
   const { id } = useParams();
+  const [openDialog, setopenDialog] = useState(false);
 
   const [resolveType, setResolveType] = useState<string>("");
 
@@ -198,9 +199,9 @@ const JobInformation = () => {
           ? singleDispute.data?.contractor?.id
           : singleDispute.data?.customer?.id,
       };
+      // console.log(payload);
       const data = await strikeUser({ payload, id: singleDispute?.data?._id });
       //  refetchIssues();
-      // console.log(data);
 
       toast.remove();
       toast.success(
@@ -210,11 +211,16 @@ const JobInformation = () => {
             : "Customer"
         }`
       );
-      handleCloseIssueModal();
+      setopenDialog(false);
     } catch (error: any) {
       toast.remove();
       toast.error(error?.message);
     }
+  }
+
+  function handleOpenDialog() {
+    setopenDialog(true);
+    handleCloseIssueModal();
   }
 
   return (
@@ -304,8 +310,41 @@ const JobInformation = () => {
                     : "Customer"
                 }
                 setIssueData={setIssueData}
-                handleOpenSanction={() => handleStrikeUser()}
+                handleOpenSanction={handleOpenDialog}
               />
+            </Modal>
+
+            <Modal
+              open={openDialog}
+              center
+              onClose={() => setopenDialog(false)}
+              classNames={{
+                modal: "customModal",
+              }}
+              container={modalRef.current}
+            >
+              <h1 className="text-lg font-bold mt-4 mb-8">
+                Are you sure you want to Sanction{" "}
+                {singleDispute?.data?.disputerType
+                  .toLowerCase()
+                  .includes("customer")
+                  ? "Contractor"
+                  : "Customer"}
+              </h1>
+              <div className="min-w-80 gap-4 grid grid-cols-2 mt-6 ">
+                <button
+                  onClick={() => setopenDialog(false)}
+                  className={`px-8 py-3 rounded-md text-sm border border-black`}
+                >
+                  Cancel{" "}
+                </button>
+                <button
+                  onClick={handleStrikeUser}
+                  className={`text-white px-8 py-3 rounded-md text-sm bg-red-600`}
+                >
+                  Continue
+                </button>
+              </div>
             </Modal>
 
             <button

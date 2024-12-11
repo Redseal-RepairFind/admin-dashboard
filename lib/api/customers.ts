@@ -185,4 +185,6 @@ export const customers = {
   getSingleIssue: (id: string) => client.get(`/admin/issues/${id}`),
   sanctionUser: ({ id, payload }: { id: string; payload: any }) =>
     client.post(`/admin/issues/${id}/sanction`, payload),
+  sanctionDisputeUser: ({ id, payload }: { id: string; payload: any }) =>
+    client.post(`/admin/disputes/${id}/sanction`, payload),
 };
