@@ -45,6 +45,9 @@ export function useSortedData(
     customers.acceptIssue
   );
   const { mutateAsync: strikeUser } = useMutation(customers.sanctionUser);
+  const { mutateAsync: SanctionUser } = useMutation(
+    customers.sanctionDisputeUser
+  );
 
   // Use effect to handle sorting by date
 
@@ -327,5 +330,6 @@ export function useSortedData(
     loadingIssues,
     refetchIssues,
     transactionsToRender,
+    SanctionUser,
   };
 }

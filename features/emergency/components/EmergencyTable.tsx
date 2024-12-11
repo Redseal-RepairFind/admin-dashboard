@@ -145,7 +145,11 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
                             : "bg-black "
                         }`}
                       >
-                        {currentType === "PENDING" ? "Accept" : "Resolve"}
+                        {currentType === "PENDING"
+                          ? "Accept"
+                          : currentType === "RESOLVED"
+                          ? "View"
+                          : "Resolve"}
                       </button>
                     </Td>
                   </tr>
