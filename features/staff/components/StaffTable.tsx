@@ -130,9 +130,11 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     setPageNo: setCurrentPage,
   };
 
+  // console.log(rowOptions);
+
   return (
     <TableCard>
-      <div className="flex items-center justify-between w-full">
+      <div className="flex items-center justify-between w-full -z-50">
         {/* <Heading name="Staff list" /> */}
         <div className="flex gap-8">
           <Search
@@ -218,14 +220,20 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
 
             <tbody>
               {dataToRender?.data?.map((item: any, index: number) => (
-                <tr className="border-b border-gray-200" key={item?._id}>
+                <tr
+                  className="border-b border-gray-200 z-10 overflow-visible"
+                  key={item?._id}
+                >
                   <Td>
                     {item?.firstName} {item?.lastName}
                   </Td>
                   <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
                   <Td>{item?.email}</Td>
                   <Td>
-                    <div className="flex gap-[6px] items-center">
+                    <div
+                      className="flex gap-[6px] items-center z-0"
+                      style={{ zIndex: "1000" }}
+                    >
                       {item?.status?.toLowerCase() === "active" ? (
                         <CompletedState />
                       ) : item?.status?.toLowerCase() === "suspended" ? (
@@ -246,17 +254,19 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
                       </span>
                     </div>
                   </Td>
-                  <Td>
-                    <div onClick={(e) => e.stopPropagation()} className="w-fit">
-                      <VerticalMenu isBackground={true}>
-                        <div>
+                  <Td className="z-0">
+                    <div className="relative w-fit z-50 overflow-visible">
+                      <VerticalMenu
+                        isBackground={true}
+                        width="min-w-[200px]"
+                        className="relative z-50"
+                      >
+                        <div onClick={(e) => e.stopPropagation()}>
                           {rowOptions?.map((option, index) => (
                             <button
                               key={index}
-                              onClick={() => {
-                                option?.action(item);
-                              }}
-                              className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                              onClick={() => option?.action(item)}
+                              className="block w-[200px] border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
                             >
                               {option?.name}
                             </button>
