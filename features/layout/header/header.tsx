@@ -67,7 +67,7 @@ const Header: React.FC<IProps> = ({ children }) => {
         Notification.requestPermission().then((permission) => {
           if (permission !== "granted") {
             console.warn("Notification permission not granted");
-            // alert("Notification permission not granted");
+            alert("Notification permission not granted");
           }
         });
       }
