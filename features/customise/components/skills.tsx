@@ -11,6 +11,7 @@ import { customise } from "@/lib/api/customise";
 interface Skill {
   _id: string;
   name: string;
+  verifiable: any;
 }
 
 export default function Skills() {
@@ -32,6 +33,7 @@ export default function Skills() {
     },
   });
   const [editValue, setEditValue] = useState("");
+  const [verifiable, setVerifiable] = useState<any>();
 
   if (!skillsToRender) return <h1>NO SKILLS TO RENDER</h1>;
 
@@ -63,9 +65,12 @@ export default function Skills() {
       // await EditSkills(skillId, { name: skillId });
 
       if (type === "edit") {
-        const payload = { name: editValue };
+        const payload = {
+          name: editValue || name,
+          verifiable: verifiable === "true",
+        };
 
-        console.log(payload);
+        // console.log(payload);
 
         if (!payload) {
           toast.error("Please enter a valid skill name");
@@ -118,6 +123,20 @@ export default function Skills() {
                   // value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
                 />
+
+                <span className="mt-4 mb-6 flex items-center gap-4 w-[60%]">
+                  <label htmlFor="Verifiable">Verifiable</label>
+                  <select
+                    name="verifiable"
+                    id={`verifiable-${i}`}
+                    className="w-1/2 p-2 border "
+                    defaultValue={skill?.verifiable}
+                    onChange={(e) => setVerifiable(e.target.value)}
+                  >
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                  </select>
+                </span>
 
                 <div className="grid grid-cols-2 gap-2 items-center gap">
                   <button
