@@ -18,8 +18,8 @@ const Tabs: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<number>(sessionTab);
   const [skillInputs, setSkillInputs] = useState<
-    { id: number; value: string }[]
-  >([{ id: 0, value: "" }]);
+    { id: number; value: string; verifiable: any }[]
+  >([{ id: 0, value: "", verifiable: false }]);
   const [isFulSkill, setIsFulSkill] = useState(false);
 
   const handleTabChange = (tabNumber: number) => {
@@ -57,16 +57,20 @@ const Tabs: React.FC = () => {
     toast.loading("Processing new skill(s)...");
 
     let data;
+    console.log(skillInputs);
     try {
       if (skillInputs.length === 1) {
-        data = await AddSkill({ name: skillInputs[0].value });
+        data = await AddSkill({
+          name: skillInputs[0].value,
+          verifiable: skillInputs[0].verifiable,
+        });
       } else if (skillInputs.length > 1) {
         data = await AddSkills({ skills: newSkills });
       }
       toast.remove();
-      toast.success(data?.message);
+      // toast.success(data?.message);
       // console.log(data);
-      setSkillInputs([{ id: 0, value: "" }]);
+      setSkillInputs([{ id: 0, value: "", verifiable: false }]);
       setTimeout(() => {
         refetchSkills();
       }, 1000);
@@ -85,10 +89,20 @@ const Tabs: React.FC = () => {
     );
   };
 
+  const handleVerifiable = (index: number, newValue: string) => {
+    setSkillInputs((prevInputs) =>
+      prevInputs.map((input, i) =>
+        i === index
+          ? { ...input, verifiable: newValue === "true" } // Converts string to boolean
+          : input
+      )
+    );
+  };
+
   const addSkillInput = () => {
     setSkillInputs((prevInputs) => [
       ...prevInputs,
-      { id: prevInputs.length, value: "" },
+      { id: prevInputs.length, value: "", verifiable: false },
     ]);
   };
 
@@ -160,25 +174,41 @@ const Tabs: React.FC = () => {
                 </label>
 
                 {skillInputs.map((input, i) => (
-                  <div className="flex items-center gap-4" key={i}>
-                    <input
-                      type="text"
-                      name="skill"
-                      id={`skill-${i}`}
-                      autoComplete="skill"
-                      className="w-[60%] border-0 py-2 px-3 mt-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 capitalize"
-                      placeholder="Add new skill"
-                      value={input.value}
-                      onChange={(e) => handleSkillChange(i, e.target.value)}
-                    />
-                    {i !== 0 ? (
-                      <button
-                        onClick={() => removeSkillInput(i)}
-                        className="font-bold text-3xl"
+                  <div key={i}>
+                    <div className="flex items-center gap-4">
+                      <input
+                        type="text"
+                        name="skill"
+                        id={`skill-${i}`}
+                        autoComplete="skill"
+                        className="w-[60%] border-0 py-2 px-3 mt-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 capitalize"
+                        placeholder="Add new skill"
+                        value={input.value}
+                        onChange={(e) => handleSkillChange(i, e.target.value)}
+                      />
+                      {i !== 0 ? (
+                        <button
+                          onClick={() => removeSkillInput(i)}
+                          className="font-bold text-3xl"
+                        >
+                          &times;
+                        </button>
+                      ) : null}
+                    </div>
+
+                    <span className="mt-4 mb-6 flex items-center gap-4 w-[60%]">
+                      <label htmlFor="Verifiable">Verifiable</label>
+                      <select
+                        name="verifiable"
+                        id={`verifiable-${i}`}
+                        className="w-1/2 p-2"
+                        value={input.verifiable}
+                        onChange={(e) => handleVerifiable(i, e.target.value)}
                       >
-                        &times;
-                      </button>
-                    ) : null}
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
+                      </select>
+                    </span>
                   </div>
                 ))}
               </div>
