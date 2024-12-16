@@ -73,6 +73,7 @@ export function useSortedData(
 
     setCriteria(critria);
   }, [params, initialState, searchParams]);
+  // console.log(startDate);
 
   // Fetch sorted data
   const {

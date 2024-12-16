@@ -31,6 +31,10 @@ function SortLists({ sortProps, initialState }: any) {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  useEffect(() => {
+    setIsOpen((is) => !is);
+  }, [initialSortValue]);
+
   // On page load, ensure the sort value in the state is in sync with URL
   useEffect(() => {
     const sortFromParam = param.get("sortList");
