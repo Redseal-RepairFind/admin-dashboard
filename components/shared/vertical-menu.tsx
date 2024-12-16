@@ -74,7 +74,7 @@ const VerticalMenu = ({
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, [isMenuOpen]);
+  }, [isMenuOpen, handleOutsideClick]);
 
   const dropdown = (
     <div
