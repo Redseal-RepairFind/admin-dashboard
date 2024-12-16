@@ -208,7 +208,7 @@ const CustomersTable: React.FC<IProps> = ({
                 </Td> */}
                 <Td>
                   <div onClick={(e) => e.stopPropagation()} className="w-fit">
-                    <VerticalMenu top="-20px" isBackground={true}>
+                    <VerticalMenu isBackground={true}>
                       {item?.status === "in-review" ? (
                         <div>
                           {rowPendingOptions?.map((option, index) => (
