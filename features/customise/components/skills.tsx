@@ -104,7 +104,7 @@ export default function Skills() {
         <h1 className="font-bold text-2xl mb-4">All Skills</h1>
         {skillsToRender?.map((skill: Skill, i: number) => (
           <div className="flex items-center gap-2 mb-4" key={skill._id}>
-            <span className="flex justify-center rounded-full items-center h-6 w-6 bg-white text-black text-sm z-10">
+            <span className="h-6 w-6 bg-white text-black text-sm z-10">
               {i + 1}
             </span>
             <Modal
