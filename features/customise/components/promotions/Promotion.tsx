@@ -284,7 +284,7 @@ function Promotion() {
                   </Td>
                   <Td>
                     <div onClick={(e) => e.stopPropagation()}>
-                      <VerticalMenu isBackground={true} right="50px">
+                      <VerticalMenu isBackground={true}>
                         <button
                           onClick={() => handleOpenModal("edit", item)}
                           className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
