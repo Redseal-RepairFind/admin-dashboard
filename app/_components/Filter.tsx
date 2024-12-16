@@ -25,6 +25,10 @@ function Filter({ children }: FilterProp) {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  useEffect(() => {
+    setIsOpen((is) => !is);
+  }, [sortValue]);
+
   // On page load, ensure the sort value in the state is in sync with URL
   useEffect(() => {
     const sortFromParam = param.get("sort");
