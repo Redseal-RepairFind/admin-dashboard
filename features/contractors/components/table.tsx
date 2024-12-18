@@ -56,7 +56,7 @@ const ContractorsTable: React.FC<IProps> = ({
 
   const mainData = contractorData?.data;
 
-  console.log(contractorData);
+  // console.log(contractorData);
 
   const pageProps = {
     data: mainData,

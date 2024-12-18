@@ -20,10 +20,30 @@ import {
 import useAnalytics from "@/lib/hooks/useAnalytics";
 import LoadingTemplate from "../layout/loading";
 import { dynaMetrycs } from "@/features/overview/components/dummyMetrics";
+import { useSortedData } from "@/lib/hooks/useSortedData";
 
 const Overview = () => {
   const { data, isLoading, dummyMetrics, loadingMetrics, getMetric } =
     useAnalytics();
+
+  // const { jobs, currentPage, setCurrentPage, perPage, setPerPage } =
+  //   useAnalytics();
+  const {
+    sortedData: jobs,
+    queryedList,
+    isQuerying,
+    loadingSortedData,
+  } = useSortedData("jobs");
+
+  // Initialize with the correct default data
+  const [dataToRender, setDataToRender] = useState<any>(
+    isQuerying ? queryedList : jobs
+  );
+
+  useEffect(() => {
+    // Update data based on `isQuerying` state
+    setDataToRender(isQuerying ? queryedList : jobs);
+  }, [isQuerying, queryedList, jobs]);
 
   useEffect(() => {
     if (typeof Notification !== "undefined") {
@@ -35,7 +55,7 @@ const Overview = () => {
     }
   }, []);
 
-  const loading = isLoading || loadingMetrics;
+  const loading = isLoading || loadingMetrics || loadingSortedData;
   const [metricText, setMetricText] = useState("");
 
   const { metryc, metrycSTotal } = getMetric(metricText);
@@ -144,7 +164,7 @@ const Overview = () => {
           <Metrics />
           <JobStatus />
         </div>
-        <OverviewTable />
+        <OverviewTable dataToRender={dataToRender} />
       </PageBody>
     </>
   );

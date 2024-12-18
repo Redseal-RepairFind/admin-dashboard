@@ -26,6 +26,8 @@ import { useAppDispatch } from "@/lib/redux/hooks";
 import { setsingleJobDetail } from "@/lib/redux/slices/single-job-detail";
 import useAnalytics from "@/lib/hooks/useAnalytics";
 import Pagination from "@/components/shared/pagination";
+import { useSortedData } from "@/lib/hooks/useSortedData";
+import Search from "@/components/shared/search";
 
 // Since the table data is dynamic a table component will replace by this template
 // This Template defines how you can implement any table on your page
@@ -40,13 +42,10 @@ const table_headings = [
   "Status",
 ];
 
-const OverviewTable = () => {
+const OverviewTable = ({ dataToRender }: { dataToRender: any }) => {
   const [currentJobsList, setCurrentJobsList] = useState<IJobsList>();
 
-  const { jobs, currentPage, setCurrentPage, perPage, setPerPage } =
-    useAnalytics();
-
-  // console.log(jobs);
+  const { handleQuery, setIsQuerying } = useSortedData("jobs");
 
   function replaceUnderscoreWithSpace(str: string) {
     if (!str || typeof str !== "string") return null;
@@ -54,17 +53,19 @@ const OverviewTable = () => {
   }
 
   const pageProps = {
-    data: jobs,
-    perPage,
-    setPerPage,
-    pageNo: currentPage,
-    setPageNo: setCurrentPage,
+    data: dataToRender?.data,
   };
 
   return (
     <TableCard>
       <div className="flex items-center justify-between w-full">
         <Heading name="Job List" />
+        {/* <Search
+          search={""}
+          setSearch={handleQuery}
+          placeholder="Search..."
+          setIsQuerying={setIsQuerying}
+        /> */}
       </div>
 
       <TableOverflow>
@@ -78,7 +79,7 @@ const OverviewTable = () => {
           </Thead>
 
           <tbody>
-            {jobs?.data?.map((item: any, index: number) => (
+            {dataToRender?.data?.data?.map((item: any, index: number) => (
               <tr
                 className="border-b border-gray-200"
                 key={index}
