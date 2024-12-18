@@ -21,7 +21,7 @@ import { useSortedData } from "@/lib/hooks/useSortedData";
 function SingleIssue({ id }: { id?: string }) {
   const router = useRouter();
 
-  const { strikeUser, refetchIssues } = useSortedData("");
+  const { strikeUser, refetchIssues } = useSortedData("issues");
 
   // States for issue data and loading state
   const [issue, setIssue] = useState<any>(null);

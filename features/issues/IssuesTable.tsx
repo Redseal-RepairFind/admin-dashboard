@@ -14,6 +14,7 @@ import { ComplaintsState, CompletedState } from "@/public/svg";
 import { useSortedData } from "@/lib/hooks/useSortedData";
 import LoadingTemplate from "../layout/loading";
 import { toast } from "react-hot-toast";
+import Pagination from "@/components/shared/pagination";
 
 const table_headings = [
   "Reporter Type",
@@ -23,22 +24,24 @@ const table_headings = [
   "Action",
 ];
 const types = [
-  { id: 1, value: "All", slug: "ALL" },
+  // { id: 1, value: "All", slug: "ALL" },
   { id: 2, value: "Pending", slug: "PENDING" },
   { id: 3, value: "Reviewed", slug: "REVIEWED" },
   { id: 4, value: "Resolved", slug: "RESOLVED" },
   { id: 5, value: "Rejected", slug: "REJECTED" }, // Changed id to 5
 ];
 
-function IssuesTable() {
+function IssuesTable({ dataToRender }: { dataToRender: any }) {
   const [status, setStatus] = useState("All");
-  const [dataToRender, setDataToRender] = useState<any>([]);
+  // const [dataToRender, setDataToRender] = useState<any>([]);
   const {
     issuesData: sortedData,
     loadingIssues: loadingSortedData,
     acceptIssue,
     isAccepting,
-  } = useSortedData("");
+    setIsQuerying,
+    handleQuery,
+  } = useSortedData("issues");
 
   // console.log(sortedData?.data?.data?.data);
 
@@ -48,7 +51,7 @@ function IssuesTable() {
 
   const initialString = param.get("issuesStatus");
   const initialSortValue =
-    param.get("issuesStatus")?.replace(/_/g, " ") || "ALL";
+    param.get("issuesStatus")?.replace(/_/g, " ") || "PENDING";
 
   // // Set the selected sort value state, initialize with the value from URL
   const [sortValue, setSortValue] = useState(initialSortValue);
@@ -90,18 +93,18 @@ function IssuesTable() {
     router.push(`/issues/${id}`);
   }
 
-  useEffect(() => {
-    if (sortValue.toLowerCase() === "all")
-      setDataToRender(sortedData?.data?.data?.data);
-    else {
-      const data = sortedData?.data?.data?.data?.filter(
-        (issu: any) => issu.status.toLowerCase() === sortValue.toLowerCase()
-      );
-      setDataToRender(data);
-    }
+  // useEffect(() => {
+  //   if (sortValue.toLowerCase() === "all")
+  //     setDataToRender(sortedData?.data?.data?.data);
+  //   else {
+  //     const data = sortedData?.data?.data?.data?.filter(
+  //       (issu: any) => issu.status.toLowerCase() === sortValue.toLowerCase()
+  //     );
+  //     setDataToRender(data);
+  //   }
 
-    // console.log(dataToRender, sortedData);
-  }, [sortValue, sortedData]);
+  //   // console.log(dataToRender, sortedData);
+  // }, [sortValue, sortedData]);
 
   async function handleAcceptIssue(id: string) {
     toast.loading("Accepting....");
@@ -116,6 +119,12 @@ function IssuesTable() {
       toast.error(e?.message);
     }
   }
+
+  // console.log(sortedData);
+
+  const pageProps = {
+    data: sortedData?.data?.data,
+  };
 
   return (
     <TableCard>
@@ -138,12 +147,12 @@ function IssuesTable() {
             </button>
           ))}
         </div>
-        <Search
+        {/* <Search
           search={""}
-          setSearch={() => {}}
+          setSearch={handleQuery}
           placeholder="Search..."
-          setIsQuerying={() => {}}
-        />
+          setIsQuerying={setIsQuerying}
+        /> */}
       </div>
 
       {loadingSortedData ? (
@@ -159,7 +168,7 @@ function IssuesTable() {
               </tr>
             </Thead>
             <tbody>
-              {dataToRender?.map((issue: any, i: any) => (
+              {dataToRender?.data?.data?.data?.map((issue: any, i: any) => (
                 <tr
                   key={i}
                   className="border-b border-gray-100 cursor-pointer hover:bg-slate-200 transition-all duration-300"
@@ -220,6 +229,10 @@ function IssuesTable() {
           </Table>
         </TableOverflow>
       )}
+
+      <div className="mt-4 w-full">
+        <Pagination {...pageProps} />
+      </div>
     </TableCard>
   );
 }

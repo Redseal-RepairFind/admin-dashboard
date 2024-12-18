@@ -13,7 +13,7 @@ export function useSortedData(
     | "emergencies"
     | "jobdays"
     | "transactions"
-    | ""
+    | "issues"
 ) {
   const searchParams = useSearchParams();
   const param = new URLSearchParams(window.location.search);
@@ -37,6 +37,7 @@ export function useSortedData(
   const customersWithBooking = searchParams.get("customersWithBooking") || "";
   const accountStatus = searchParams.get("accountStatus") || "";
   const transactionStatus = searchParams.get("status") || "";
+  const issuesStatus = searchParams.get("issuesStatus") || "PENDING";
 
   const pathname = usePathname();
   const router = useRouter();
@@ -103,7 +104,12 @@ export function useSortedData(
             limit: Number(perPage) || 10,
             page: Number(currentPage) || 1,
             criteria: criteria,
-            status: route === "disputes" ? status : transactionStatus,
+            status:
+              route === "disputes"
+                ? status
+                : route === "transactions"
+                ? transactionStatus
+                : issuesStatus,
             type,
             customersWithBooking: !!customersWithBooking,
             accountStatus,
@@ -116,7 +122,12 @@ export function useSortedData(
             endDate: formatDate(endDate),
             route,
             criteria: criteria,
-            status: route === "disputes" ? status : transactionStatus,
+            status:
+              route === "disputes"
+                ? status
+                : route === "transactions"
+                ? transactionStatus
+                : issuesStatus,
             type,
             customersWithBooking: !!customersWithBooking,
             accountStatus,

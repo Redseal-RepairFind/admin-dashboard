@@ -56,7 +56,7 @@ export const customers = {
       | "emergencies"
       | "jobdays"
       | "transactions"
-      | "";
+      | "issues";
     limit: number;
     page: number;
     criteria: string;
@@ -87,6 +87,8 @@ export const customers = {
           status && route === "transactions"
             ? `&status=${status?.toUpperCase()}`
             : ""
+        }${
+          status && route === "issues" ? `&status=${status?.toUpperCase()}` : ""
         }`
       )
       .then(({ data }) => data),
@@ -116,7 +118,7 @@ export const customers = {
       | "emergencies"
       | "jobdays"
       | "transactions"
-      | "";
+      | "issues";
 
     criteria: string;
     search?: string;
@@ -146,6 +148,8 @@ export const customers = {
           status && route === "transactions"
             ? `&status=${status?.toUpperCase()}`
             : ""
+        }${
+          status && route === "issues" ? `&status=${status?.toUpperCase()}` : ""
         }`
       )
       .then(({ data }) => data),
