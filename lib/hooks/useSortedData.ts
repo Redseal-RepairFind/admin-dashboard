@@ -56,7 +56,7 @@ export function useSortedData(
   useEffect(() => {
     const sortParam = params.toLowerCase().replaceAll("_", " ");
     const now = new Date();
-    const critria = searchParams.get("sortList") || "";
+    const critria = searchParams.get("sortList") || "firstName";
 
     if (sortParam === "last 24h") {
       setStartDate(new Date(now.getTime() - 24 * 60 * 60 * 1000));
@@ -73,7 +73,7 @@ export function useSortedData(
     }
 
     setCriteria(critria);
-  }, [params, initialState, searchParams]);
+  }, [params, initialState, searchParams, criteria]);
   // console.log(startDate);
 
   // Fetch sorted data
@@ -94,6 +94,7 @@ export function useSortedData(
       type,
       customersWithBooking,
       accountStatus,
+      criteria,
       // transactionStatus,
       // searchTerm,
     ],
@@ -141,7 +142,14 @@ export function useSortedData(
     isLoading: loadingIssues,
     refetch: refetchIssues,
   } = useQuery(
-    ["issues", startDate, endDate, Number(perPage), Number(currentPage)],
+    [
+      "issues",
+      startDate,
+      endDate,
+      Number(perPage),
+      Number(currentPage),
+      criteria,
+    ],
     () =>
       customers.gettIssues({
         page: Number(currentPage) || 1,

@@ -58,10 +58,10 @@ function VersionTable() {
 
   const handleCloseModal = () => setModalOpen(false);
 
-  // console.log(appData);
+  // console.log(dataToRender);
 
   const pageProps = {
-    data: dataToRender,
+    data: dataToRender?.data,
   };
 
   return (
@@ -69,6 +69,7 @@ function VersionTable() {
       <Modal
         open={modalOpen}
         onClose={handleCloseModal}
+        center
         classNames={{
           modal: "customModal",
         }}
@@ -112,7 +113,7 @@ function VersionTable() {
             </Thead>
 
             <tbody>
-              {dataToRender?.map((item: any, index: number) => (
+              {dataToRender?.data?.data?.map((item: any, index: number) => (
                 <tr
                   key={index}
                   className="border-b border-gray-100 cursor-pointer hover:bg-slate-200 transition-all duration-300"

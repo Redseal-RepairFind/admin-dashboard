@@ -38,11 +38,17 @@ function useAppVersion() {
     isLoading,
     refetch,
     error,
-  } = useQuery(["app version", params], () => versionControl.getVersions(), {
-    cacheTime: 30000,
-    staleTime: 30000,
-    refetchOnWindowFocus: true,
-  });
+  } = useQuery(
+    ["app version", params, currentPage, perPage],
+    () => versionControl.getVersions(Number(currentPage), Number(perPage)),
+    {
+      cacheTime: 30000,
+      staleTime: 30000,
+      refetchOnWindowFocus: true,
+    }
+  );
+
+  // console.log(appData);
 
   const {
     data: singleVersion,
@@ -58,17 +64,24 @@ function useAppVersion() {
     }
   );
 
-  const totalVersions = dataToRender?.length;
+  const totalVersions = appData?.data?.totalItems;
 
   useEffect(() => {
     if (params.toLowerCase() === "all" || params === "All") {
-      setDataToRender(appData?.data);
+      setDataToRender(appData);
     } else {
-      const data = appData?.data?.filter(
+      const data = appData?.data?.data?.filter(
         (appd: any) => appd.type.toLowerCase() === params.toLowerCase()
       );
 
-      setDataToRender(data);
+      const mainData = {
+        ...appData,
+        data: {
+          ...appData?.data,
+          data,
+        },
+      };
+      setDataToRender(mainData);
     }
   }, [params, appData]);
 
