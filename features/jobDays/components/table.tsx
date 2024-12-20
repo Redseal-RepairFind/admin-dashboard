@@ -83,11 +83,11 @@ const JobsTable: React.FC<IProps> = ({
 
         <div className="flex items-center gap-2">
           {/* <h1 className="text-lg font-semibold ">Sort List</h1> */}
-          {/* <SortLists
+          <SortLists
             sortProps={sortProps}
             initialstate={"createdAt"}
             initialState="All"
-          /> */}
+          />
         </div>
         <div className="flex gap-8">
           <Search

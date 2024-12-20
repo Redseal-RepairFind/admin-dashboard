@@ -70,6 +70,7 @@ function SingleVersion() {
           <div className="my-8">
             <Modal
               open={modalOpen?.edit?.isOpen}
+              center
               onClose={() => handleCloseModal("edit")}
               classNames={{
                 modal: "customModal",
@@ -88,6 +89,7 @@ function SingleVersion() {
 
             <Modal
               open={modalOpen?.delete?.isOpen}
+              center
               onClose={() => handleCloseModal("delete")}
               classNames={{
                 modal: "customModal",

@@ -4,7 +4,10 @@ const client = apiClient();
 
 const baseURL = "admin/app-versions";
 export const versionControl = {
-  getVersions: () => client.get(baseURL).then(({ data }) => data),
+  getVersions: (page: number, limit: number) =>
+    client
+      .get(`${baseURL}?page=${page}&limit=${limit}`)
+      .then(({ data }) => data),
   getVersionById: (id: string) =>
     client.get(`${baseURL}/${id}`).then(({ data }) => data),
   createVersion: (payload: any) =>
