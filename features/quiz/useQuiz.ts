@@ -77,7 +77,7 @@ export function useQuiz() {
   const [state, dispatch] = useReducer(quizReducer, initialState);
   const [isNext, setIsNext] = useState(true);
 
-  const time = 120;
+  const time = 1200;
 
   const [seconds, setSeconds] = useState(time);
 
