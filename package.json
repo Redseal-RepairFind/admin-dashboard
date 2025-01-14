@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -H 0.0.0.0",
+    "dev": "next dev -H 0.0.0.0 & npx next-video sync -w",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -21,6 +21,7 @@
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.2",
     "next": "14.0.4",
+    "next-video": "^2.0.0",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
     "react-chat-elements": "^12.0.15",
