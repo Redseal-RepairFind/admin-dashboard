@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TableCard, {
   BorderedTableCard,
 } from "@/features/shared/table/components/table-card";
@@ -17,14 +17,12 @@ import {
   formatTimeDDMMYY as convertDate,
   formatDateToDDMMYY,
 } from "@/lib/utils/format-date";
-import { trimString } from "@/lib/utils/trim-string";
 import { useCustomerHistoryTable } from "../hooks/jobhistory";
 import FilterBox from "@/features/shared/job-history-filter/filter-box";
-import { useQuery } from "react-query";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { customers } from "../../../lib/api/customers";
-import Ratings from "@/components/shared/ratings";
+import { useJobInfo } from "./useJobInfo";
 
 const table_headings = [
   "Contractor’s Name",
@@ -41,7 +39,7 @@ interface IProps {
 
 export const JobsHistory: React.FC<IProps> = ({ jobHistory }) => {
   const {
-    handleQuery,
+    // handleQuery,
     notFound,
     showFilters,
     setShowFilters,
@@ -55,24 +53,25 @@ export const JobsHistory: React.FC<IProps> = ({ jobHistory }) => {
   const params = useParams();
 
   const id = params?.slug;
+  const {
+    isLoading,
+    filterData: jobInfo,
+    isQuerying,
+    queryedList,
+    handleQuery,
+    handleFilter,
+  } = useJobInfo(id);
+  const [dataToRender, setDataToRender] = useState<any>();
 
   // console.log(id);
 
-  const { isLoading, data: jobInfo } = useQuery(
-    ["Job Information", id],
-    () => {
-      return customers.getCustomerHistory({
-        id,
-      });
-    },
-    {
-      refetchOnWindowFocus: true,
-      select: (response) => response,
-    }
-  );
+  useEffect(() => {
+    isQuerying ? setDataToRender(queryedList) : setDataToRender(jobInfo);
+  }, [isQuerying, queryedList, setDataToRender, jobInfo]);
 
   // console.log(jobInfo);
 
+  // const columns = ["Customer's Name", "Date Joined", "Email", "Phone Number"];
   return (
     <BorderedTableCard>
       <div className="flex items-center justify-between w-full">
@@ -84,12 +83,7 @@ export const JobsHistory: React.FC<IProps> = ({ jobHistory }) => {
             notFound={notFound}
           />
           <Filter showFilters={showFilters} setShowFilters={setShowFilters}>
-            <FilterBox
-              handleMonthFiltering={handleMonthFiltering}
-              handleYearFiltering={handleYearFiltering}
-              availableYears={availableYears}
-              setShowFilters={setShowFilters}
-            />
+            <FilterBox handleFilter={handleFilter} />
           </Filter>
         </div>
       </div>
@@ -105,7 +99,7 @@ export const JobsHistory: React.FC<IProps> = ({ jobHistory }) => {
           </Thead>
 
           <tbody>
-            {jobInfo?.jobs?.map((item: any, index: any) => (
+            {dataToRender?.jobs?.map((item: any, index: any) => (
               <tr
                 key={index}
                 // onClick={() => handleViewJob(item)}

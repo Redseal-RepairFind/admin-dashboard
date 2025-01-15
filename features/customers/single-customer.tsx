@@ -1,5 +1,5 @@
 "use client";
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import Header from "../shared/inner-pages/header";
 import Wrapper from "../shared/inner-pages/wrapper";
 import { filledArrayFromNumber } from "@/lib/utils/array-from-number";
@@ -18,13 +18,25 @@ import Image from "next/image";
 import { customers } from "../../lib/api/customers";
 import LoadingTemplate from "../layout/loading";
 import { extractFirstLetter } from "@/lib/utils/extract-initials";
-import ActionColumn from "../shared/inner-pages/action-column";
-import ActionButton from "../shared/inner-pages/action-button";
+
 import toast from "react-hot-toast";
 import useCustomers from "@/lib/hooks/useCustomers";
 import { formatCurrency } from "@/lib/utils/curencyConverter";
+import { downloadPDF } from "@/lib/utils/downloadPdf";
+import { formatTimeDDMMYY } from "@/lib/utils/format-date";
+import * as XLSX from "xlsx";
+import { useJobInfo } from "./components/useJobInfo";
+import Modal from "react-responsive-modal";
+import ExportModal from "@/app/_components/ExportModal";
 
 const SingleCustomer = () => {
+  const [dataToRender, setDataToRender] = useState<any>();
+
+  const [openModal, setOpenModal] = useState(false);
+  const ref = useRef();
+  const handleModalOpen = () => setOpenModal(true);
+  const handleModalClose = () => setOpenModal(false);
+
   const { value: customerDetails } = useAppSelector(
     (state: RootState) => state.singleCustomerDetail
   );
@@ -34,8 +46,10 @@ const SingleCustomer = () => {
   const { SuspendCustomer } = useCustomers();
 
   const id = params?.slug;
+  const { jobInfo } = useJobInfo(id);
 
   // console.log(id);
+  // console.log(jobInfo);
 
   const { isLoading, data: customer } = useQuery(
     ["Customer Information", id],
@@ -83,6 +97,67 @@ const SingleCustomer = () => {
       }
     }
   };
+
+  const rows = jobInfo?.jobs?.map((item: any) => [
+    item.contractor?.name,
+    item?.title,
+    formatTimeDDMMYY(item?.date),
+    item?.location?.address,
+    item?.type,
+    item?.status,
+  ]);
+
+  // console.log(jobInfo);
+
+  const exportToExcel = (data: any, fileName: string) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    // Apply column widths
+    worksheet["!cols"] = [
+      { wch: 20 }, // CustomerName column width
+      { wch: 15 }, // ID column width
+      { wch: 25 }, // ContractorName column width
+      { wch: 50 }, // Address column width
+      { wch: 15 }, // Date column width
+      { wch: 20 }, // Status column width
+      // { wch: 20 }, // Status column width
+    ];
+
+    // Apply header styling (assuming headers start at A1)
+    const headerCells = ["A1", "B1", "C1", "D1", "E1", "F1", "G1"];
+    headerCells.forEach((cell) => {
+      if (worksheet[cell]) {
+        worksheet[cell].s = {
+          font: { bold: true, color: { rgb: "FFFFFF" } },
+          fill: { fgColor: { rgb: "4F81BD" } },
+          alignment: { horizontal: "center", vertical: "center" },
+        };
+      }
+    });
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
+  };
+  const columns = ["Name", "Title", "Date", "Address", "Type", "Status"];
+
+  function handleDownloadPdf(type: "excel" | "pdf") {
+    const dataToExport = jobInfo?.jobs?.map((item: any) => {
+      return {
+        ContractorName: item.contractor?.name,
+        JobTitle: item?.title,
+        Date_Joined: formatTimeDDMMYY(item?.date),
+        Address: item?.location?.address,
+        Type: item?.type,
+        Status: item?.status,
+      };
+    });
+    type === "excel"
+      ? exportToExcel(dataToExport, "Jobs_History")
+      : downloadPDF(columns, rows, "Jobs_History", "Job History");
+
+    handleModalClose();
+  }
 
   if (isLoading) return <LoadingTemplate />;
 
@@ -182,10 +257,27 @@ const SingleCustomer = () => {
             </table>
           </BorderRectangle>
         </div>
-
+        <Modal
+          open={openModal}
+          onClose={handleModalClose}
+          classNames={{
+            modal: "customModal",
+          }}
+          center
+          container={ref.current}
+        >
+          <ExportModal
+            title="Job History"
+            exportExcel={() => handleDownloadPdf("excel")}
+            exportPDF={() => handleDownloadPdf("pdf")}
+          />
+        </Modal>
         <div className="mt-24 mb-10 flex flex-col">
           <div className="self-end mb-7">
-            <DownloadButton text="Download JOB HISTORY" />
+            <DownloadButton
+              text="Download JOB HISTORY"
+              onClick={handleModalOpen}
+            />
           </div>
           <JobsHistory jobHistory={customerDetails?.jobHistory} />
         </div>
