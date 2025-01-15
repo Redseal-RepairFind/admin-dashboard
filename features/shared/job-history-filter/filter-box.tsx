@@ -62,7 +62,7 @@ const FilterBox: React.FC<IProps> = ({ handleFilter, availableYears }) => {
         {dropDateSelect && (
           <div className={`flex flex-col gap-4 mt-4`}>
             <div className="">
-              <label className="mb-1 block">Select Year:</label>
+              <label className="mb-1 block">Select Types:</label>
               <div className="bg-[#f0f0f0] pl-2 pr-2 py-1 rounded-md">
                 <select
                   className="bg-transparent pr-2 outline-none w-full"
@@ -79,7 +79,7 @@ const FilterBox: React.FC<IProps> = ({ handleFilter, availableYears }) => {
             </div>
 
             <div className="">
-              <label className="mb-1 block">Select Month:</label>
+              <label className="mb-1 block">Select Status:</label>
               <div className="bg-[#f0f0f0] pl-2 pr-2 py-1 rounded-md">
                 <select
                   className="bg-transparent pr-2 outline-none w-full"
