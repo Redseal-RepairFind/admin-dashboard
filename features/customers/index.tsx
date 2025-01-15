@@ -79,6 +79,8 @@ const Customers = () => {
     `${item?.phoneNumber?.code} ${item?.phoneNumber?.number}`,
   ]);
 
+  // console.log(rows);
+
   const exportToExcel = (data: any, fileName: string) => {
     const worksheet = XLSX.utils.json_to_sheet(data);
 
