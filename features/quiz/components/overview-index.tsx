@@ -2,7 +2,7 @@
 
 import { Header, SubmitBtn } from "./index";
 import question from "@/public/Vector.png";
-import timer from "@/public/union.png";
+import timer from "@/public/Union.png";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import badge from "public/barger.png";

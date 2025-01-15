@@ -2,7 +2,7 @@
 
 import { useQuiz } from "../useQuiz";
 import fail from "@/public/fail.png";
-import celebrate from "@/public/celebrate.png";
+import celebrate from "@/public/Celebrate.png";
 import Image from "next/image";
 import { SubmitBtn } from "./index";
 import { useRouter } from "next/navigation";

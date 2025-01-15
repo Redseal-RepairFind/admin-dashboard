@@ -1,26 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { Header, SubmitBtn } from "./index";
 import timer from "@/public/timer.png";
 import { useQuiz } from "../useQuiz";
 import LoadingTemplate from "@/features/layout/loading";
 import Quiz from "./Quiz";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import toast from "react-hot-toast";
 
 function OverviewQuestions() {
   const [isLastQuestion, setIsLastQuestion] = useState(false); // Track if the answer is submitted
 
-  const {
-    questions,
-    isLoadingQuestions,
-    setSubmitted,
-    isNext,
-    setIsNext,
-    currentQuestion,
-    handleNextOrPrev,
-  } = useQuiz();
+  const { questions, isLoadingQuestions, currentQuestion, handleNextOrPrev } =
+    useQuiz();
   // const [curQuiz, setCurQuiz] = useState({
   //   quizIndex: 0,
   //   currentQuiz: questions?.data?.questions[0],
