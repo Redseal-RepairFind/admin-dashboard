@@ -1,14 +1,14 @@
 import { quiz } from "@/lib/api/quiz";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useReducer, useState } from "react";
-import { useQuery } from "react-query";
+import toast from "react-hot-toast";
+import { useMutation, useQuery } from "react-query";
 
 export function useQuiz() {
   const paramsSession = useSearchParams();
 
-  const session =
-    paramsSession.get("session") ||
-    "66f801fa2f33d3e40fe741a2%25668092d2c471ba08168f71cd";
+  const session = paramsSession.get("session") || "";
+
   // const { data: questions, isLoading: isLoadingQuestions } = useQuery(
   //   ["questions"],
   //   () => quiz.getQuestions()
@@ -19,8 +19,11 @@ export function useQuiz() {
     () => quiz.getQuiz(session)
   );
 
-  // console.log(sessionQuiz);
+  const { mutateAsync: submitQuiz, isLoading: submitting } = useMutation(
+    quiz.submitQuiz
+  );
 
+  // console.log(sessionQuiz);
   const initialState = {
     selectedAnswer: "",
     submitted: false,
@@ -31,6 +34,39 @@ export function useQuiz() {
       currentQuiz: questions?.data?.questions?.[0], // Set as `null` initially
     },
   };
+
+  async function handleSubmitQuiz() {
+    toast.loading("Submitting quiz...");
+    const quizANswer = JSON.parse(sessionStorage.getItem("userAnswer") || "[]");
+    try {
+      const payloadArr = quizANswer.map((session: any) => {
+        return {
+          answer: session.answer,
+          question: session.question,
+        };
+      });
+
+      const payload = {
+        response: payloadArr,
+      };
+
+      console.log(payload, session);
+
+      const data = await submitQuiz({
+        session: "678921fac9e2df4e2ecba1c7%25672e1d7146b218aa8bb6a8f0",
+        answers: payload,
+      });
+
+      toast.success("Quiz submitted successfully");
+      return data;
+    } catch (error: any) {
+      toast.error("Failed to submit quiz");
+      console.error("Failed to submit quiz", error);
+    } finally {
+      toast.remove();
+      sessionStorage.removeItem("userAnswer");
+    }
+  }
 
   function quizReducer(state: any, action: any) {
     switch (action.type) {
@@ -115,11 +151,7 @@ export function useQuiz() {
     dispatch({ type: "RESET_SELECTED_ANSWER" });
   }
 
-  function handleSelectOption(
-    option: string,
-    id: string,
-    correctAnswer: string
-  ) {
+  function handleSelectOption(option: string, id: string, question: string) {
     // Retrieve and parse existing answers from sessionStorage
     const answerSession = JSON.parse(
       sessionStorage.getItem("userAnswer") || "[]"
@@ -133,8 +165,8 @@ export function useQuiz() {
     // Prepare the new answer object
     const curAnswer = {
       id,
-      answerGiven: option,
-      point: option === correctAnswer ? 1 : 0,
+      answer: option,
+      question: question,
     };
 
     // Update the session answers
@@ -162,15 +194,11 @@ export function useQuiz() {
     dispatch({ type: "NEXT_QUESTION", payload: direction });
   }
 
-  function handleSubmit(answerGiven: { id: string; answerGiven: string }) {
-    dispatch({ type: "USER_ANSWER", payload: answerGiven });
+  function handleSubmit(answer: { id: string; answer: string }) {
+    dispatch({ type: "USER_ANSWER", payload: answer });
   }
-  function handleUserAnswers(answerGiven: {
-    id: string;
-    answerGiven: string;
-    point: number;
-  }) {
-    dispatch({ type: "USER_ANSWER", payload: answerGiven });
+  function handleUserAnswers(answer: { answer: string; question: string }) {
+    dispatch({ type: "USER_ANSWER", payload: answer });
   }
 
   // const { data: quizes, isLoading: isLoadingQuizzes } = useQuery(
@@ -193,5 +221,6 @@ export function useQuiz() {
     setIsNext,
     handleUserAnswers,
     seconds,
+    handleSubmitQuiz,
   };
 }

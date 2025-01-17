@@ -11,9 +11,9 @@ function OverviewIndex() {
   const router = useRouter();
   const params = useSearchParams();
 
-  const session =
-    params.get("session") ||
-    "66f801fa2f33d3e40fe741a2%25668092d2c471ba08168f71cd";
+  const session = params.get("session") || "";
+
+  console.log(session);
 
   function navigate(route: string) {
     router.push(route);
