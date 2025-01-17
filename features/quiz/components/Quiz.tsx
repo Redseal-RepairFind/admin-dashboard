@@ -55,7 +55,7 @@ function QuizItem({
   isLastQuestion: boolean;
   setIsLastQuestion: any;
 }) {
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState({ open: false, data: [] });
 
   const { seconds } = useQuiz();
 
@@ -66,6 +66,7 @@ function QuizItem({
     submitted,
     handleUserAnswers,
     userAnswers,
+    handleSubmitQuiz,
   } = useQuiz();
   const options = ["A", "B", "C", "D"];
 
@@ -75,14 +76,17 @@ function QuizItem({
     point: selectedAnswer === quiz?.answer[0] ? 1 : 0,
   };
 
-  const answerSession = JSON?.parse(sessionStorage.getItem("userAnswer") || "");
+  const answerSession = JSON?.parse(
+    sessionStorage.getItem("userAnswer") || "[]"
+  );
 
   const answered = answerSession.some((answer: any) => answer.id === quiz._id);
   // console.log(userAnswers);
 
-  function handleNextQuestion() {
+  async function handleNextQuestion() {
     if (isLastQuestion) {
-      setOpenModal(true);
+      const data = await handleSubmitQuiz();
+      setOpenModal({ open: true, data: data });
       handleUserAnswers(answerObject);
     } else {
       if (answered) {
@@ -95,16 +99,24 @@ function QuizItem({
     }
   }
   useEffect(() => {
-    if (seconds === 0) {
-      setIsLastQuestion(true);
-      setOpenModal(true);
+    async function subm() {
+      if (seconds === 0) {
+        setIsLastQuestion(true);
+        const data = await handleSubmitQuiz();
+        setOpenModal({ open: true, data: data });
+      }
     }
-  }, [seconds, setIsLastQuestion]);
+    subm();
+  }, [seconds, setIsLastQuestion, handleSubmitQuiz]);
 
   return (
     <div className="flex flex-col gap-2">
-      <Modal onClose={() => setOpenModal(true)} open={openModal} center>
-        <ModalInfo />
+      <Modal
+        onClose={() => setOpenModal({ open: true, data: [] })}
+        open={openModal?.open}
+        center
+      >
+        <ModalInfo info={openModal.data} />
       </Modal>
       <div className="flex items-start mb-5">
         <Header title={`${index?.toLocaleString()}.`} className="mr-1 " />
@@ -118,7 +130,7 @@ function QuizItem({
           key={idx}
           option={option}
           index={options[idx]}
-          correctAnswer={quiz?.answer[0]}
+          question={quiz?.question}
           selectedAnswer={selectedAnswer} // Pass selectedAnswer as a prop
           handleSelectOption={handleSelectOption} // Pass the handler
           id={quiz?._id}
@@ -160,7 +172,7 @@ function QuizItem({
 function Option({
   option,
   index,
-  correctAnswer,
+  question,
   selectedAnswer,
   handleSelectOption,
   id,
@@ -169,13 +181,9 @@ function Option({
 {
   option: string;
   index: String;
-  correctAnswer: string;
+  question: string;
   selectedAnswer: string | null;
-  handleSelectOption: (
-    option: string,
-    id: string,
-    correctAnswer: string
-  ) => void;
+  handleSelectOption: (option: string, id: string, question: string) => void;
   id: string;
   // submitted: boolean;
 }) {
@@ -186,12 +194,13 @@ function Option({
   //   handleSelectOption,
   // } = useQuiz();
 
-  const answerSession = JSON.parse(sessionStorage.getItem("userAnswer") || "");
+  const answerSession = JSON.parse(
+    sessionStorage.getItem("userAnswer") || "[]"
+  );
 
   const answered = answerSession.find((answer: any) => answer.id === id);
-  const isSelected =
-    selectedAnswer === option || answered?.answerGiven === option; // Ensure only one option is selected
-  const isCorrectAnswer = correctAnswer === option;
+  const isSelected = selectedAnswer === option || answered?.answer === option; // Ensure only one option is selected
+  // const isCorrectAnswer = correctAnswer === option;
 
   // console.log(answered);
 
@@ -201,7 +210,7 @@ function Option({
         isSelected ? "bg-[#f8f8f8] shadow-md" : "bg-white shadow-sm"
       }  border border-[#f2f2f2]`}
       onClick={() => {
-        handleSelectOption(option, id, correctAnswer);
+        handleSelectOption(option, id, question);
       }}
     >
       <div className="grid grid-cols-[16px,1fr] items-center gap-3">
