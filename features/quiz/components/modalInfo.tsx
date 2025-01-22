@@ -36,7 +36,7 @@ function ModalInfo({ info }: { info: any }) {
   const message = passed
     ? "You have earned the 'Ready to Work' badge and can now accept jobs!"
     : "It is great that you tried. You can take the test again.";
-  const btnText = info?.data?.results?.passed ? "Continue to App" : "Try Again";
+  const btnText = passed ? "Continue to App" : "Try Again";
 
   return (
     <div className="xl:max-w-[800px] px-6 py-6 flex flex-col gap-5 items-center">
