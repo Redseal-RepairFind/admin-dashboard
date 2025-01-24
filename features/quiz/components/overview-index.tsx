@@ -13,7 +13,7 @@ function OverviewIndex() {
 
   const session = params.get("session") || "";
 
-  console.log(session);
+  // console.log(encodeURIComponent(session));
 
   function navigate(route: string) {
     router.push(route);
@@ -59,7 +59,9 @@ function OverviewIndex() {
         </BackBtn>
         <SubmitBtn
           className="justify-center"
-          onClick={() => navigate(`/quiz/questions?session=${session}`)}
+          onClick={() =>
+            navigate(`/quiz/questions?session=${encodeURIComponent(session)}`)
+          }
         >
           Start Quiz
         </SubmitBtn>

@@ -9,11 +9,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 function ModalInfo({ info }: { info: any }) {
   const router = useRouter();
-  const session = useSearchParams() || "";
+  const params = useSearchParams() || "";
+
+  const session = params.get("session") || "";
 
   function handleCloseModal() {
     sessionStorage.removeItem("userAnswer");
-    router.push(`/quiz/${session}`);
+    router.push(`/quiz?session=${encodeURIComponent(session)}`);
   }
 
   const handleRedirect = () => {
@@ -24,7 +26,9 @@ function ModalInfo({ info }: { info: any }) {
     // Fallback to download page if the app isn't installed
     setTimeout(() => {
       window.location.href = fallbackUrl;
-    }, 2000); // Adjust the timeout duration as needed
+    }, 5000); // Adjust the timeout duration as needed
+
+    sessionStorage.removeItem("userAnswer");
   };
 
   const passed = info?.data?.result?.passed;
@@ -42,7 +46,7 @@ function ModalInfo({ info }: { info: any }) {
     <div className="xl:max-w-[800px] px-6 py-6 flex flex-col gap-5 items-center">
       <h2 className="font-semibold">
         Score:{" "}
-        {`${info?.data?.result?.totalAnswered} / ${info?.data?.result?.totalQuestions}`}
+        {`${info?.data?.result?.totalCorrect} / ${info?.data?.result?.totalQuestions}`}
       </h2>
 
       <span className="relative w-[130px] h-[120px]">

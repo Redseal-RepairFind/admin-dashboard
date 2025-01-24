@@ -111,11 +111,7 @@ function QuizItem({
 
   return (
     <div className="flex flex-col gap-2">
-      <Modal
-        onClose={() => setOpenModal({ open: true, data: [] })}
-        open={openModal?.open}
-        center
-      >
+      <Modal onClose={() => {}} open={openModal?.open} center>
         <ModalInfo info={openModal.data} />
       </Modal>
       <div className="flex items-start mb-5">
