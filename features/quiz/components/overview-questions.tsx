@@ -10,8 +10,13 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 function OverviewQuestions() {
   const [isLastQuestion, setIsLastQuestion] = useState(false); // Track if the answer is submitted
 
-  const { questions, isLoadingQuestions, currentQuestion, handleNextOrPrev } =
-    useQuiz();
+  const {
+    questions,
+    isLoadingQuestions,
+    currentQuestion,
+    handleNextOrPrev,
+    submitting,
+  } = useQuiz();
   // const [curQuiz, setCurQuiz] = useState({
   //   quizIndex: 0,
   //   currentQuiz: questions?.data?.questions[0],
@@ -43,7 +48,7 @@ function OverviewQuestions() {
     }
   };
 
-  if (isLoadingQuestions || !currentQuestion.currentQuiz) {
+  if (isLoadingQuestions || !currentQuestion.currentQuiz || submitting) {
     return <LoadingTemplate />;
   }
 

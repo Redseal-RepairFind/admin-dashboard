@@ -6,6 +6,7 @@ import LoadingTemplate from "@/features/layout/loading";
 import Quiz from "./Quiz";
 import { ReactNode } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 export default function Index() {
   const { questions: quizes, isLoadingQuestions: isLoadingQuizzes } = useQuiz();
@@ -13,6 +14,8 @@ export default function Index() {
   const params = useSearchParams();
 
   const session = params.get("session") || "";
+
+  // console.log();
 
   if (isLoadingQuizzes) return <LoadingTemplate />;
 
@@ -38,7 +41,9 @@ export default function Index() {
         <div className="flex items-center justify-center w-full">
           <SubmitBtn
             onClick={() => {
-              router.push(`/quiz/overview?session=${session}`);
+              router.push(
+                `/quiz/overview?session=${encodeURIComponent(session)}`
+              );
             }}
           >
             Continue
@@ -56,11 +61,22 @@ export function SubmitBtn({
   children,
   onClick,
   className,
+  href,
 }: {
   children: ReactNode;
   onClick?: () => void;
   className?: string;
+  href?: string;
 }) {
+  if (href)
+    return (
+      <Link
+        href={href}
+        className={`py-2 px-16 ${className} rounded-md text-white bg-black flex items-center gap-2 hover:bg-gray-700 transition duration-300 ease-in-out`}
+      >
+        {children}
+      </Link>
+    );
   return (
     <button
       className={`py-2 px-16 ${className} rounded-md text-white bg-black flex items-center gap-2 hover:bg-gray-700 transition duration-300 ease-in-out`}

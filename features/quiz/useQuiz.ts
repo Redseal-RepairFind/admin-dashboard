@@ -15,8 +15,9 @@ export function useQuiz() {
   // );
 
   const { data: questions, isLoading: isLoadingQuestions } = useQuery(
-    ["sessionQuiz"],
-    () => quiz.getQuiz(session)
+    ["sessionQuiz", encodeURIComponent(session)], // Add session as a dependency
+    () => quiz.getQuiz(encodeURIComponent(session)),
+    { staleTime: 300000 } // Cache data for 5 minutes
   );
 
   const { mutateAsync: submitQuiz, isLoading: submitting } = useMutation(
@@ -50,10 +51,10 @@ export function useQuiz() {
         response: payloadArr,
       };
 
-      console.log(payload, session);
+      // console.log(payload, session);
 
       const data = await submitQuiz({
-        session: "678921fac9e2df4e2ecba1c7%25672e1d7146b218aa8bb6a8f0",
+        session: encodeURIComponent(session),
         answers: payload,
       });
 
@@ -222,5 +223,6 @@ export function useQuiz() {
     handleUserAnswers,
     seconds,
     handleSubmitQuiz,
+    submitting,
   };
 }

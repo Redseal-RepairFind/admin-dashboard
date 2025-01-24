@@ -15,7 +15,6 @@ import SubmitBtn from "@/components/ui/submit-btn";
 export default function VerifyEmail() {
   const { signUpMail } = useAppSelector((state: RootState) => state.auth);
   const router = useRouter();
-
   const { VerifyEmail } = useAuth();
 
   const searchParams = useSearchParams();
