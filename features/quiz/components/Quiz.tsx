@@ -85,9 +85,14 @@ function QuizItem({
 
   async function handleNextQuestion() {
     if (isLastQuestion) {
-      const data = await handleSubmitQuiz();
-      setOpenModal({ open: true, data: data });
-      handleUserAnswers(answerObject);
+      try {
+        const data = await handleSubmitQuiz();
+        setOpenModal({ open: true, data: data });
+        handleUserAnswers(answerObject);
+      } catch (error) {
+        toast.error("Unable to submit quiz");
+        console.error(error);
+      }
     } else {
       if (answered) {
         onHandleNextQuestion("next", quiz?._id);

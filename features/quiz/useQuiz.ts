@@ -55,17 +55,20 @@ export function useQuiz() {
 
       const data = await submitQuiz({
         session: encodeURIComponent(session),
+        // session,
         answers: payload,
       });
 
+      toast.remove();
       toast.success("Quiz submitted successfully");
+      sessionStorage.removeItem("userAnswer");
       return data;
     } catch (error: any) {
+      toast.remove();
       toast.error("Failed to submit quiz");
-      console.error("Failed to submit quiz", error);
+      throw new Error(`Failed to submit quiz ${error?.message}`);
     } finally {
       toast.remove();
-      sessionStorage.removeItem("userAnswer");
     }
   }
 
