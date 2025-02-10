@@ -53,11 +53,11 @@ const Contractors = () => {
       : setDataToRender(statusDataToRender);
   }, [isQuerying, queryedList, setDataToRender, statusDataToRender]);
 
-  console.log(sortedData);
+  // console.log(sortedData);
   const columns = [
     "Contractor's Name",
     "Skill",
-    "Status",
+    "Certn. Status",
     "Email",
     "Stage",
     "Ratings",

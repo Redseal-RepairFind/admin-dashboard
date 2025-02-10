@@ -32,7 +32,7 @@ const table_headings = [
   "Select All",
   "Contractor’s Name",
   "Skill",
-  "Status",
+  "Certn. Status",
   "Email Address",
   // "No of Jobs",
   "Sign-up Stage",
