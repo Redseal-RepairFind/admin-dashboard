@@ -32,6 +32,7 @@ const table_headings = [
   "Select All",
   "Contractor’s Name",
   "Skill",
+  "Status",
   "Certn. Status",
   "Email Address",
   // "No of Jobs",
@@ -168,6 +169,8 @@ const ContractorsTable: React.FC<IProps> = ({
                   </span>
                 </Td>
                 <Td>{item?.accountStatus}</Td>
+
+                <Td>{item?.certnStatus}</Td>
 
                 <Td>{item?.email}</Td>
 

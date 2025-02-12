@@ -32,4 +32,9 @@ export const contractors = {
     client
       .get(`/admin/customer/job/detail/${id}?page=1&limit=50`)
       .then(({ data }) => data),
+
+  giveManualCertn: ({ id }: { id: any }) =>
+    client.post(`/admin/contractors/${id}/approve-certn`),
+  deleteContractor: ({ id, payload }: { id: any; payload: any }) =>
+    client.post(`/admin/contractors/${id}/delete`, payload),
 };
