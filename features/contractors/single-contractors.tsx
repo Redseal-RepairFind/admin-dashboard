@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Header from "../shared/inner-pages/header";
 import Wrapper from "../shared/inner-pages/wrapper";
 import { filledArrayFromNumber } from "@/lib/utils/array-from-number";
@@ -22,18 +22,41 @@ import {
 import LoadingTemplate from "../layout/loading";
 import { redirect, useRouter, useParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { contractors } from "../../lib/api/contractors";
 import useContractors from "@/lib/hooks/useContractors";
+import Modal from "react-responsive-modal";
+import DeleteModal from "../customise/components/promotions/DeleteModal";
+import SubmitBtn from "@/components/ui/submit-btn";
 
 const SingleContractor = () => {
   const { value: contractorDetails } = useAppSelector(
     (state: RootState) => state.singleContractorDetail
   );
-
+  const [open, setOpen] = useState({
+    manualCertn: false,
+    delete: false,
+  });
   const router = useRouter();
+  const editRef = useRef();
+  const deleteRef = useRef();
 
-  const { SuspendContractor } = useContractors();
+  const {
+    SuspendContractor,
+    giveManualCertn,
+    isUpdating,
+    deleteContractor,
+    isDeleting,
+  } = useContractors();
+  const queryClient = useQueryClient();
+
+  function openModal(name: "manualCertn" | "delete") {
+    setOpen({ ...open, [name]: true });
+  }
+
+  function closeModal(name: "manualCertn" | "delete") {
+    setOpen({ ...open, [name]: false });
+  }
 
   // useLayoutEffect(() => {
   //   console.log(contractorDetails.contractorProfile._id);
@@ -49,8 +72,6 @@ const SingleContractor = () => {
   const params = useParams();
 
   const id = params?.slug;
-
-  // console.log(contractorDetails);
 
   // const stringified_jobs =
   //   typeof window !== undefined
@@ -79,21 +100,19 @@ const SingleContractor = () => {
   const contractorInfo = data?.contractor;
   // console.log(contractorInfo);
 
-  const handleChangeStatus = async (status: string) => {
-    if (confirm("Kindly confirm this action")) {
-      toast.loading("Processing...");
-      try {
-        const data = await SuspendContractor({
-          contractorId: contractorInfo?._id,
-          status,
-        });
-        toast.remove();
-        toast.success(data?.message);
-        router.push("/contractors");
-      } catch (e: any) {
-        toast.remove();
-        toast.error(e?.response?.message);
-      }
+  const handleChangeStatus = async () => {
+    toast.loading("Processing...");
+    try {
+      const data = await giveManualCertn({ id });
+
+      toast.remove();
+      toast.success("Certn given successfully");
+      router.push(`/contractors/${id}`);
+      closeModal("manualCertn");
+      queryClient.invalidateQueries("Contractor Information"); // Invalidate the query to re-fetch data
+    } catch (e: any) {
+      toast.remove();
+      toast.error(e?.response?.message || "unable to give contractor status");
     }
   };
 
@@ -129,6 +148,67 @@ const SingleContractor = () => {
                   </p>
                 </div>
               )}
+
+              <Modal
+                onClose={() => closeModal("delete")}
+                open={open.delete}
+                center
+                classNames={{
+                  modal: "customModal",
+                }}
+                container={deleteRef.current}
+              >
+                <DeleteModal
+                  name="Contractor"
+                  closeModal={() => closeModal("delete")}
+                  onSubmit={deleteContractor}
+                  type=""
+                  title="Delete Contractor"
+                  who="contractor"
+                />
+              </Modal>
+
+              <Modal
+                onClose={() => closeModal("manualCertn")}
+                open={open.manualCertn}
+                center
+                classNames={{
+                  modal: "customModal",
+                }}
+                container={editRef.current}
+              >
+                <div className="max-w-[400px] px-4">
+                  <h1 className="font-semibold text-center text-xl">
+                    Are you sure you want to give{" "}
+                    <span className="text-red-600 font-bold ">
+                      {contractorInfo?.name}
+                    </span>{" "}
+                    Certn?
+                  </h1>
+
+                  <p className="text-gray-400 text-center text-sm">
+                    Make sure he passed the necessary criteria before you
+                    proceed
+                  </p>
+
+                  <div className="w-full items-center flex gap-3">
+                    <button
+                      className="bg-gray-200 h-12 w-full mt-5 flex items-center rounded-md justify-center text-gray-800"
+                      onClick={() => {
+                        closeModal("manualCertn");
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <SubmitBtn
+                      isSubmitting={isUpdating}
+                      onClick={handleChangeStatus}
+                    >
+                      Give Manual Certn
+                    </SubmitBtn>
+                  </div>
+                </div>
+              </Modal>
             </div>
 
             <div className="-mt-2">
@@ -175,10 +255,7 @@ const SingleContractor = () => {
                 />
                 <SingleLineColumn
                   name="Certn Status"
-                  value={contractorInfo?.certnReport?.status?.replace(
-                    /_/g,
-                    " "
-                  )}
+                  value={contractorInfo?.certnStatus}
                 />
                 <SingleLineColumn
                   name="Skills"
@@ -236,40 +313,19 @@ const SingleContractor = () => {
                 />
                 <ActionColumn>
                   <div className="flex gap-x-4">
-                    {/* <ActionButton
-                      actionName="Validate Document"
-                      onClick={() => validateDocuments}
-                      color="border-green-600 text-green-600"
-                    />
-                    <ActionButton
-                      actionName="Activate"
-                      onClick={() => handleChangeStatus("active")}
-                      color="border-green-600 text-green-600"
-                    />
-                    <ActionButton
-                      actionName="Review"
-                      onClick={() => handleChangeStatus("in-review")}
-                      color="border-yellow-500 text-yellow-500"
-                    />
-                    <ActionButton
-                      actionName="Close"
-                      onClick={() => handleChangeStatus("closed")}
-                      color="border-red-600 text-red-600"
-                    /> */}
-                    {/* {contractorInfo?.status !== "active" && (
+                    {contractorInfo?.certnStatus !== "COMPLETE" && (
                       <ActionButton
-                        actionName="Activate"
-                        onClick={() => handleChangeStatus("active")}
+                        actionName="Give Manual Certn."
+                        onClick={() => openModal("manualCertn")}
                         color="border-green-600 text-green-600"
                       />
                     )}
-                    {contractorInfo?.status === "active" && (
-                      <ActionButton
-                        actionName="Suspend"
-                        onClick={() => handleChangeStatus("suspend")}
-                        color="border-red-600 text-red-600"
-                      />
-                    )} */}
+
+                    <ActionButton
+                      actionName="Delete Contractor"
+                      onClick={() => openModal("delete")}
+                      color="border-red-600 text-red-600"
+                    />
                   </div>
                 </ActionColumn>
               </tbody>
