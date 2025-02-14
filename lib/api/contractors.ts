@@ -37,4 +37,8 @@ export const contractors = {
     client.post(`/admin/contractors/${id}/approve-certn`),
   deleteContractor: ({ id, payload }: { id: any; payload: any }) =>
     client.post(`/admin/contractors/${id}/delete`, payload),
+  giveMultipleCertn: (payload: any) =>
+    client.post(`/admin/contractors/multiple-certn-approvals`, payload),
+  deleteMultipleContractors: (payload: any) =>
+    client.post(`/admin/contractors/delete-multiple`, payload),
 };

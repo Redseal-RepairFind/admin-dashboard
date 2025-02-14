@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef, useState } from "react";
 import TableCard from "@/features/shared/table/components/table-card";
 import Heading from "@/features/shared/table/components/table-heading";
 import Searchbar from "@/features/shared/table/components/searchbar";
@@ -27,6 +27,14 @@ import SortLists from "@/app/_components/Sort";
 import Search from "@/components/shared/search";
 import CheckBox from "@/app/_components/Check-box";
 import { useCheckedList } from "@/context/checked-context";
+import ActionButton from "@/features/shared/inner-pages/action-button";
+import { FaArrowDown } from "react-icons/fa";
+import Modal from "react-responsive-modal";
+import DeleteModal from "@/features/customise/components/promotions/DeleteModal";
+import { SubmitBtn } from "@/features/quiz/components";
+import useContractors from "@/lib/hooks/useContractors";
+import { useQueryClient } from "react-query";
+import toast from "react-hot-toast";
 
 const table_headings = [
   "Select All",
@@ -55,9 +63,25 @@ const ContractorsTable: React.FC<IProps> = ({
 }) => {
   const { handleViewAContractors } = useContractorTable({ setLoading });
 
-  const mainData = contractorData?.data;
+  const { giveMultipleManualCertn, deleteMultipleContractor } =
+    useContractors();
+  const queryClient = useQueryClient();
 
-  // console.log(contractorData);
+  const mainData = contractorData?.data;
+  const [open, setOpen] = useState({
+    manualCertn: false,
+    delete: false,
+    edit: false,
+  });
+  const editRef = useRef();
+  const deleteRef = useRef();
+  function openModal(name: "manualCertn" | "delete" | "edit") {
+    setOpen({ ...open, [name]: true });
+  }
+
+  function closeModal() {
+    setOpen({ edit: false, manualCertn: false, delete: false });
+  }
 
   const pageProps = {
     data: mainData,
@@ -81,7 +105,30 @@ const ContractorsTable: React.FC<IProps> = ({
     },
   ];
 
-  const { checkedList, handleCheck, handleSelectAll } = useCheckedList();
+  const { checkedList, handleCheck, handleSelectAll, setCheckedList } =
+    useCheckedList();
+
+  const ids = checkedList?.map((data: any) => data?._id);
+
+  async function handleMultipleCertns() {
+    toast.loading("Processing...");
+    const contractorIds = {
+      contractorIds: ids,
+    };
+    try {
+      await giveMultipleManualCertn(contractorIds);
+
+      toast.remove();
+      toast.success("Contractor(s) Certn. status updated successfully");
+      queryClient.invalidateQueries("sortData");
+      setCheckedList([]);
+      closeModal();
+    } catch (error) {
+      console.error("Error while updating multiple contractors: ", error);
+      toast.remove();
+      toast.error("Error while updating while updating contractors certn");
+    }
+  }
 
   return (
     <TableCard>
@@ -91,6 +138,32 @@ const ContractorsTable: React.FC<IProps> = ({
           <h1 className="text-lg font-semibold ">Sort List</h1>
           <SortLists sortProps={sortProps} initialState="Name (A-Z)" />
         </div>
+
+        {checkedList.length > 0 ? (
+          <div className="relative min-w-[200px] ">
+            <button
+              className="bg-gray-50 px-4 py-2 rounded-sm border border-gray-300 text-gray-800 "
+              onClick={open.edit ? () => closeModal() : () => openModal("edit")}
+            >
+              Update selected Contractors
+            </button>
+            {open.edit ? (
+              <div className="flex flex-col gap-4 absolute inset-0 p-4 h-[150px] top-12 bg-white rounded-md shadow-xl">
+                <ActionButton
+                  actionName="Manually assign Certn."
+                  onClick={() => openModal("manualCertn")}
+                  color="border-green-600 text-green-600"
+                />
+
+                <ActionButton
+                  actionName="Delete Contractor"
+                  onClick={() => openModal("delete")}
+                  color="border-red-600 text-red-600"
+                />
+              </div>
+            ) : null}
+          </div>
+        ) : null}
         <div className="flex gap-8">
           <Search
             placeholder="Search by name or email"
@@ -100,7 +173,59 @@ const ContractorsTable: React.FC<IProps> = ({
           />
         </div>
       </div>
+      <Modal
+        onClose={() => closeModal()}
+        open={open.delete}
+        center
+        classNames={{
+          modal: "customModal",
+        }}
+        container={deleteRef.current}
+      >
+        <DeleteModal
+          name="Contractor"
+          closeModal={() => {
+            closeModal();
+          }}
+          onSubmit={deleteMultipleContractor}
+          type=""
+          title={`Are you sure you want to delete Contractor? `}
+          who="contractor"
+          ids={ids}
+        />
+      </Modal>
 
+      <Modal
+        onClose={() => closeModal()}
+        open={open.manualCertn}
+        center
+        classNames={{
+          modal: "customModal",
+        }}
+        container={editRef.current}
+      >
+        <div className="max-w-[400px] px-4">
+          <h1 className="font-semibold text-center text-xl">
+            Are you sure you want to Manually give contractor(s) Certn pass?
+          </h1>
+
+          <p className="text-gray-400 text-center text-sm">
+            Make sure he passed the necessary criteria before you proceed
+          </p>
+
+          <div className="w-full items-center mt-6 flex gap-3">
+            <button
+              className="bg-gray-200 h-12 w-full  flex items-center rounded-md justify-center text-gray-800"
+              onClick={() => {
+                closeModal();
+              }}
+            >
+              Cancel
+            </button>
+            <SubmitBtn onClick={handleMultipleCertns}>Proceed</SubmitBtn>
+          </div>
+        </div>
+      </Modal>
       <TableOverflow>
         <Table>
           <Thead>

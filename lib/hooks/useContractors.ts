@@ -16,6 +16,13 @@ const useContractors = () => {
     contractors.deleteContractor
   );
 
+  const { mutateAsync: giveMultipleManualCertn } = useMutation(
+    contractors.giveMultipleCertn
+  );
+  const { mutateAsync: deleteMultipleContractor } = useMutation(
+    contractors.deleteMultipleContractors
+  );
+
   const [search, setSearch] = useState("");
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,10 +51,6 @@ const useContractors = () => {
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
 
-  // const {} = useQuery(['man'])
-
-  const router = useRouter();
-
   return {
     contractorData,
     loadingContractors,
@@ -65,6 +68,8 @@ const useContractors = () => {
     isUpdating,
     deleteContractor,
     isDeleting,
+    giveMultipleManualCertn,
+    deleteMultipleContractor,
   };
 };
 
