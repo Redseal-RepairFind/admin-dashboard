@@ -4,6 +4,7 @@ import Heading from "@/features/shared/table/components/table-heading";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useQueryClient } from "react-query";
 
 function DeleteModal({
   name,
@@ -12,6 +13,7 @@ function DeleteModal({
   type,
   title,
   who = "regular",
+  ids,
 }: {
   name: string;
   closeModal: any;
@@ -19,17 +21,21 @@ function DeleteModal({
   type: string;
   title: string;
   who?: "regular" | "contractor";
+  ids?: string[];
 }) {
   const [email, setEmail] = useState({ email: "", error: "" });
   const params = useParams();
+  const queryClient = useQueryClient();
 
   const id = params?.slug;
   const router = useRouter();
-  console.log(id);
-
+  // console.log(id);
   const validateEmail = (email: string) => {
     if (!email) {
-      setEmail((email) => ({ ...email, error: "Email address is required" }));
+      setEmail((email) => ({
+        ...email,
+        error: "An admin Email address is required",
+      }));
       return false;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -45,10 +51,22 @@ function DeleteModal({
     try {
       toast.loading("Deleting Contractor");
       const payload = { confirmationCode: email.email.toLowerCase() };
-      const data = await onSubmit({
-        id,
-        payload,
-      });
+
+      let data;
+      if (id) {
+        data = await onSubmit({
+          id,
+          payload,
+        });
+      }
+
+      if (ids) {
+        data = await onSubmit({
+          contractorIds: ids,
+          confirmationCode: email.email.toLowerCase(),
+        });
+        queryClient.invalidateQueries("sortData");
+      }
 
       toast.remove();
       toast.success(data.message || "Contractor deleted successfully");
@@ -80,7 +98,7 @@ function DeleteModal({
       {/* Confirmation for delete */}
       <p className="text-center">
         {who === "contractor"
-          ? `Are you sure you want to delete ${name} ${type}?. Kindly enter the ${name}'s email to confirm this action`
+          ? `Kindly confirm your admin login email to proceed. This action can not be undone`
           : ` Are you sure you want to delete ${name} ${type}?. This action cannot be
         undone.`}
       </p>

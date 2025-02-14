@@ -163,7 +163,7 @@ const SingleContractor = () => {
                   closeModal={() => closeModal("delete")}
                   onSubmit={deleteContractor}
                   type=""
-                  title="Delete Contractor"
+                  title={`Are you sure you want to delete Contractor? `}
                   who="contractor"
                 />
               </Modal>
@@ -179,11 +179,11 @@ const SingleContractor = () => {
               >
                 <div className="max-w-[400px] px-4">
                   <h1 className="font-semibold text-center text-xl">
-                    Are you sure you want to give{" "}
+                    Are you sure you want to Manually give{" "}
                     <span className="text-red-600 font-bold ">
                       {contractorInfo?.name}
                     </span>{" "}
-                    Certn?
+                    Certn pass?
                   </h1>
 
                   <p className="text-gray-400 text-center text-sm">
@@ -204,7 +204,7 @@ const SingleContractor = () => {
                       isSubmitting={isUpdating}
                       onClick={handleChangeStatus}
                     >
-                      Give Manual Certn
+                      Proceed
                     </SubmitBtn>
                   </div>
                 </div>
@@ -315,7 +315,7 @@ const SingleContractor = () => {
                   <div className="flex gap-x-4">
                     {contractorInfo?.certnStatus !== "COMPLETE" && (
                       <ActionButton
-                        actionName="Give Manual Certn."
+                        actionName="Manually assign Certn."
                         onClick={() => openModal("manualCertn")}
                         color="border-green-600 text-green-600"
                       />

@@ -8,7 +8,7 @@ type Checked = {
 };
 type CheckedData = {
   checkedList: any;
-  setCheckedList: React.Dispatch<React.SetStateAction<Checked>>;
+  setCheckedList: any;
   handleCheck: (data: any) => void;
   handleSelectAll: (data: any) => void;
 };
