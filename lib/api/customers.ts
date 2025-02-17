@@ -154,7 +154,19 @@ export const customers = {
       )
       .then(({ data }) => data),
 
-  getAllData: ({ route }: { route: string }) =>
+  getAllData: ({
+    route,
+  }: {
+    route:
+      | "customers"
+      | "contractors"
+      | "disputes"
+      | "jobs"
+      | "emergencies"
+      | "jobdays"
+      | "transactions"
+      | "issues";
+  }) =>
     route &&
     client.get(`/admin/${route}?limit=1000000000`).then(({ data }) => data),
 

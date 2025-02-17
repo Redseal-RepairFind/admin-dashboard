@@ -25,16 +25,27 @@ import {
 import { useSortedData } from "@/lib/hooks/useSortedData";
 import AnalyticCard from "../jobs/components/analytic-card";
 import { downloadPDF } from "@/lib/utils/downloadPdf";
+import Heading from "../shared/table/components/table-heading";
 
+type ModalType = {
+  isOpen: boolean;
+  content: "" | "full" | "selected";
+};
 const Contractors = () => {
   const [loading, setLoading] = useState(true);
 
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState<ModalType>({
+    isOpen: false,
+    content: "",
+  });
   const { checkedList } = useCheckedList();
   const ref = useRef();
 
-  const handleModalOpen = () => setOpenModal(true);
-  const handleModalClose = () => setOpenModal(false);
+  const handleModalOpen = () => setOpenModal({ ...openModal, isOpen: true });
+  const handleModalClose = () => {
+    setOpenModal({ ...openModal, isOpen: false, content: "" });
+    setIsQuerying(false);
+  };
   const {
     sortedData,
     loadingSortedData,
@@ -43,6 +54,7 @@ const Contractors = () => {
     isQuerying,
     queryedList,
     statusDataToRender,
+    allData,
   } = useSortedData("contractors");
   const [dataToRender, setDataToRender] = useState<any>();
   const stats = sortedData?.data?.stats;
@@ -52,6 +64,12 @@ const Contractors = () => {
       ? setDataToRender(queryedList)
       : setDataToRender(statusDataToRender);
   }, [isQuerying, queryedList, setDataToRender, statusDataToRender]);
+
+  // useEffect(() => {
+  //   if (openModal.content === "full") {
+  //     setIsQuerying(true);
+  //   }
+  // }, [openModal.content, setIsQuerying]);
 
   // console.log(sortedData);
   const columns = [
@@ -64,7 +82,11 @@ const Contractors = () => {
   ];
 
   const rowsData =
-    checkedList?.length > 0 ? checkedList : sortedData?.data?.data;
+    openModal.content === "full" && isQuerying
+      ? allData?.data?.data
+      : checkedList?.length > 0
+      ? checkedList
+      : sortedData?.data?.data;
   const rows = rowsData?.map((item: any) => [
     item?.name,
     item?.profile?.skill === undefined ? "Not Submitted" : item?.profile?.skill,
@@ -126,6 +148,16 @@ const Contractors = () => {
       : downloadPDF(columns, rows, "ContractorList", "Contractor List");
 
     handleModalClose();
+  }
+
+  function handleSelected(type: "" | "full" | "selected") {
+    setOpenModal({ ...openModal, content: type });
+
+    if (type === "full") {
+      setIsQuerying(true);
+    } else {
+      setIsQuerying(false);
+    }
   }
 
   return (
@@ -200,18 +232,23 @@ const Contractors = () => {
             </div>
           </div>
           <Modal
-            open={openModal}
+            open={openModal.isOpen}
             onClose={handleModalClose}
+            center
             classNames={{
               modal: "customModal",
             }}
             container={ref.current}
           >
-            <ExportModal
-              title="Contractor's List"
-              exportExcel={() => handleDownloadPdf("excel")}
-              exportPDF={() => handleDownloadPdf("pdf")}
-            />
+            {openModal.content === "" ? (
+              <ConfirmModal onHandleSelected={handleSelected} />
+            ) : (
+              <ExportModal
+                title="Select Export Platform"
+                exportExcel={() => handleDownloadPdf("excel")}
+                exportPDF={() => handleDownloadPdf("pdf")}
+              />
+            )}
           </Modal>
           <ContractorsTable
             setLoading={setLoading}
@@ -226,3 +263,33 @@ const Contractors = () => {
 };
 
 export default Contractors;
+
+function ConfirmModal({
+  onHandleSelected,
+}: {
+  onHandleSelected: (type: "" | "full" | "selected") => void;
+}) {
+  return (
+    <div className="w-[400px]">
+      <Heading name={`Export Contractors`} />
+
+      <p className="text-gray-500 my-6">
+        Kindly select how much data to export
+      </p>
+      <div className="flex items-center gap-2">
+        <button
+          className="h-12 w-full bg-blue-500 text-white px-2 flex rounded-md items-center justify-center transition-all duration-400 hover:bg-gray-700 hover:text-white "
+          onClick={() => onHandleSelected("selected")}
+        >
+          Export Selected
+        </button>
+        <button
+          className="h-12 w-full bg-white border border-blue-700 px-2 rounded-md text-blue-600 flex items-center justify-center hover:bg-gray-700 hover:text-white  transition-all duration-400"
+          onClick={() => onHandleSelected("full")}
+        >
+          Export All Cont.
+        </button>
+      </div>
+    </div>
+  );
+}
