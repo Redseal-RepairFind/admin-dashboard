@@ -26,6 +26,8 @@ import { useSortedData } from "@/lib/hooks/useSortedData";
 import AnalyticCard from "../jobs/components/analytic-card";
 import { downloadPDF } from "@/lib/utils/downloadPdf";
 import Heading from "../shared/table/components/table-heading";
+import "./modalAnimations.css";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 type ModalType = {
   isOpen: boolean;
@@ -58,6 +60,7 @@ const Contractors = () => {
   } = useSortedData("contractors");
   const [dataToRender, setDataToRender] = useState<any>();
   const stats = sortedData?.data?.stats;
+  const nodeRef = useRef(null);
 
   useEffect(() => {
     isQuerying
@@ -240,15 +243,26 @@ const Contractors = () => {
             }}
             container={ref.current}
           >
-            {openModal.content === "" ? (
-              <ConfirmModal onHandleSelected={handleSelected} />
-            ) : (
-              <ExportModal
-                title="Select Export Platform"
-                exportExcel={() => handleDownloadPdf("excel")}
-                exportPDF={() => handleDownloadPdf("pdf")}
-              />
-            )}
+            <TransitionGroup>
+              <CSSTransition
+                key={openModal.content}
+                timeout={1000}
+                classNames="fade"
+                nodeRef={nodeRef} // Add the ref here
+              >
+                <div ref={nodeRef}>
+                  {openModal.content === "" ? (
+                    <ConfirmModal onHandleSelected={handleSelected} />
+                  ) : (
+                    <ExportModal
+                      title="Contractor's List"
+                      exportExcel={() => handleDownloadPdf("excel")}
+                      exportPDF={() => handleDownloadPdf("pdf")}
+                    />
+                  )}
+                </div>
+              </CSSTransition>
+            </TransitionGroup>
           </Modal>
           <ContractorsTable
             setLoading={setLoading}
@@ -270,7 +284,7 @@ function ConfirmModal({
   onHandleSelected: (type: "" | "full" | "selected") => void;
 }) {
   return (
-    <div className="w-[400px]">
+    <div className="w-[400px] bg-white h-full">
       <Heading name={`Export Contractors`} />
 
       <p className="text-gray-500 my-6">
@@ -278,13 +292,13 @@ function ConfirmModal({
       </p>
       <div className="flex items-center gap-2">
         <button
-          className="h-12 w-full bg-blue-500 text-white px-2 flex rounded-md items-center justify-center transition-all duration-400 hover:bg-gray-700 hover:text-white "
+          className="h-12 w-full bg-gray-500 text-white px-2 flex rounded-md items-center justify-center transition-all duration-400 hover:bg-gray-700 hover:text-white "
           onClick={() => onHandleSelected("selected")}
         >
           Export Selected
         </button>
         <button
-          className="h-12 w-full bg-white border border-blue-700 px-2 rounded-md text-blue-600 flex items-center justify-center hover:bg-gray-700 hover:text-white  transition-all duration-400"
+          className="h-12 w-full bg-white border border-gray-700 px-2 rounded-md text-gray-600 flex items-center justify-center hover:bg-gray-700 hover:text-white  transition-all duration-400"
           onClick={() => onHandleSelected("full")}
         >
           Export All Cont.
