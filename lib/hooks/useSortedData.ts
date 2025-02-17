@@ -351,5 +351,6 @@ export function useSortedData(
     refetchIssues,
     transactionsToRender,
     SanctionUser,
+    allData,
   };
 }
