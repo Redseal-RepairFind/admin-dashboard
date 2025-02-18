@@ -19,6 +19,7 @@ interface IProps {
 
 const Header: React.FC<IProps> = ({ children }) => {
   const [image, setImage] = useState("");
+  const [permission, setPermission] = useState<any>(true);
 
   const playNotification = useSoundNotification("/sounds/notification.mp3");
 
@@ -67,7 +68,7 @@ const Header: React.FC<IProps> = ({ children }) => {
         Notification.requestPermission().then((permission) => {
           if (permission !== "granted") {
             console.warn("Notification permission not granted");
-            alert("Notification permission not granted");
+            setPermission(false);
           }
         });
       }
@@ -135,8 +136,24 @@ const Header: React.FC<IProps> = ({ children }) => {
     };
   }, [token, url, playNotification, refetch]);
 
+  function handleNotification() {
+    setPermission(true);
+    const ONE_HOUR_IN_MILSEC = 60 * 60 * 1000;
+
+    setTimeout(() => {
+      if (Notification.permission !== "granted") {
+        Notification.requestPermission().then((permission) => {
+          if (permission !== "granted") {
+            console.warn("Notification permission not granted");
+            setPermission(false);
+          }
+        });
+      }
+    }, ONE_HOUR_IN_MILSEC);
+  }
+
   return (
-    <>
+    <div>
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -148,6 +165,23 @@ const Header: React.FC<IProps> = ({ children }) => {
       >
         <Notifications />
       </Modal>
+      {!permission ? (
+        <div className="bg-gray-800 mb-8 py-2 top-0 right-10 mx-10 mt-3 flex items-center z-50 text-gray-800 justify-center gap-12 shadow-2xl rounded-sm">
+          <p className="text-white">
+            Please enable notifications from your browser settings to receive
+            Emergencies, alerts and updates.
+          </p>
+          <div className="flex items-center gap-4">
+            <button
+              className="bg-white py-2 px-4 rounded-md"
+              onClick={handleNotification}
+            >
+              I understand
+            </button>
+            {/* <button className="bg-red-600 py-2 px-4 rounded-md">Cancel</button> */}
+          </div>
+        </div>
+      ) : null}
       <div
         className="flex px-[3vw] pt-8 pb-6 justify-between border-b-[#ddd] border-b 
     items-center sticky top-[0px] gap-x-[200px] overflow-x-auto bg-[#F0F0F0] z-20"
@@ -211,7 +245,7 @@ const Header: React.FC<IProps> = ({ children }) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
