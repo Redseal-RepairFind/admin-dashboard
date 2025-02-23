@@ -35,11 +35,14 @@ function DeleteModal({
     if (!email) {
       setEmail((email) => ({
         ...email,
-        error: "Enter the Correct  word",
+        error: "Can not be empty",
       }));
       return false;
+    } else if (email !== "DELETE") {
+      setEmail((email) => ({ ...email, error: "Enter the Correct  word" }));
+      return false;
     }
-    // || email !== "DELETE"
+    //
     // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     // if (!emailRegex.test(email)) {
     //   setEmail((email) => ({ ...email, error: "Invalid email address" }));
