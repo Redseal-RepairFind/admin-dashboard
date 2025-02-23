@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "react-query";
+import { validate } from "uuid";
 
 function DeleteModal({
   name,
@@ -34,15 +35,16 @@ function DeleteModal({
     if (!email) {
       setEmail((email) => ({
         ...email,
-        error: "An admin Email address is required",
+        error: "Enter the Correct  word",
       }));
       return false;
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setEmail((email) => ({ ...email, error: "Invalid email address" }));
-      return false;
-    }
+    // || email !== "DELETE"
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // if (!emailRegex.test(email)) {
+    //   setEmail((email) => ({ ...email, error: "Invalid email address" }));
+    //   return false;
+    // }
     setEmail((email) => ({ ...email, error: "" }));
     return true;
   };
@@ -75,7 +77,9 @@ function DeleteModal({
     } catch (error: any) {
       console.error(error);
       toast.remove();
-      toast.error(error?.message || "Unable to delete contractor");
+      toast.error(
+        error?.response?.data?.message || "Unable to delete contractor"
+      );
       // Handle error here
     }
   };
@@ -97,17 +101,25 @@ function DeleteModal({
       </div>
       {/* Confirmation for delete */}
       <p className="text-center">
-        {who === "contractor"
-          ? `Kindly confirm your admin login email to proceed. This action can not be undone`
-          : ` Are you sure you want to delete ${name} ${type}?. This action cannot be
-        undone.`}
+        {who === "contractor" ? (
+          <span className="">
+            Kindly confirm by typing the word{" "}
+            <span className="py-1 px-2 rounded-sm bg-red-50 font-bold text-red-600">
+              DELETE
+            </span>{" "}
+            to proceed. This action can not be undone
+          </span>
+        ) : (
+          ` Are you sure you want to delete ${name} ${type}?. This action cannot be
+        undone.`
+        )}
       </p>
 
       {who === "contractor" && (
         <>
           <input
             type="text "
-            placeholder="Enter Contractor Email"
+            placeholder="Enter the word"
             className={`outline py-2 px-4 rounded-md ${
               email.error ? "outline-red-600" : "outline-gray-300"
             }`}

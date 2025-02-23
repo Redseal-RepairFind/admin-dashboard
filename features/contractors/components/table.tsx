@@ -123,10 +123,13 @@ const ContractorsTable: React.FC<IProps> = ({
       queryClient.invalidateQueries("sortData");
       setCheckedList([]);
       closeModal();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error while updating multiple contractors: ", error);
       toast.remove();
-      toast.error("Error while updating while updating contractors certn");
+      toast.error(
+        error?.response?.data?.message ||
+          "Error while updating while updating contractors certn"
+      );
     }
   }
 

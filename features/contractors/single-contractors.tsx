@@ -112,7 +112,9 @@ const SingleContractor = () => {
       queryClient.invalidateQueries("Contractor Information"); // Invalidate the query to re-fetch data
     } catch (e: any) {
       toast.remove();
-      toast.error(e?.response?.message || "unable to give contractor status");
+      toast.error(
+        e?.response?.data?.message || "unable to give contractor status"
+      );
     }
   };
 

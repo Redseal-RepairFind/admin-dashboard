@@ -8,7 +8,6 @@ import JobInformation from "./components/JobInformation";
 import Chat from "./components/Chat";
 import useDisputes from "@/lib/hooks/useDisputes";
 import { useRouter } from "next/navigation";
-import { Modal } from "react-responsive-modal";
 
 const SingleDispute = () => {
   const [currentDisputeTab, setCurrentDisputeTab] = useState("information");

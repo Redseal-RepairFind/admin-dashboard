@@ -113,7 +113,7 @@ function useAppVersion() {
     } catch (error: any) {
       console.error(error);
       toast.remove();
-      toast.error(error?.response?.message);
+      toast.error(error?.response?.data.message);
     }
   }
 
@@ -128,7 +128,7 @@ function useAppVersion() {
     } catch (error: any) {
       console.error(error);
       toast.remove();
-      toast.error(error?.response?.message);
+      toast.error(error?.response?.data.message);
     }
   }
 
