@@ -35,8 +35,6 @@ const Sidebar = () => {
     );
   });
 
-  console.log(isLoading);
-
   return (
     <div className="max-w-[280px] w-[21%] min-w-[250px] bg-white overflow-y-auto scrollbar-thin z-30 max-h-screen">
       <div className="flex flex-col gap-4">
