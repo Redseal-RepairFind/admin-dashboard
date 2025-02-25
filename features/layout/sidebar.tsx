@@ -1,74 +1,41 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "@/public/logo.svg";
-import {
-  AccountSettings,
-  Analytics,
-  Contractors,
-  Customers,
-  Customise,
-  Jobs,
-  Logout,
-  Overview,
-  RFReps,
-  Transactions,
-  Gst,
-  JobIcon,
-  TotalJobs,
-  TotalRevenue,
-  AppVersion,
-  Issues,
-} from "@/public/svg";
+import Cookies from "js-cookie";
+
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { MdEmergency } from "react-icons/md";
+import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
+import { navLinks } from "@/lib/utils/utils";
+import { Logout } from "@/public/svg";
+import { useLoader } from "@/context/LoaderContext";
+import LoadingPage from "@/app/loading";
 
 const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { loadingPermission, adminPermissions } = useAdminPermissions();
 
-  interface INavLinks {
-    name: string;
-    svg: React.ReactNode;
-    route: string;
-  }
+  const { isLoading, setLoading } = useLoader();
 
   const logOut = () => {
     router.push("/login");
     sessionStorage.clear();
+    Cookies.remove("token");
   };
 
-  const navLinks: INavLinks[] = [
-    { name: "Overview", svg: <Overview />, route: "/overview" },
-    // { name: "Jobs", svg: <Jobs />, route: "/jobs" },
-    { name: "Employees", svg: <RFReps />, route: "/staff" },
-    // { name: "Analytics", svg: <Analytics />, route: "/analytics" },
-    { name: "Customers", svg: <Customers />, route: "/customers" },
-    { name: "Contractors", svg: <Contractors />, route: "/contractors" },
-    { name: "Jobs", svg: <JobIcon />, route: "/jobs" },
-    { name: "Booking Analysis", svg: <TotalJobs />, route: "/job_days" },
+  const filteredNavLinks = navLinks?.filter((link) => {
+    // Include routes with no readPermissions or matching permissions
+    return (
+      link.readPermissions.length === 0 ||
+      link.readPermissions.some((permission) =>
+        adminPermissions?.data?.includes(permission)
+      )
+    );
+  });
 
-    { name: "Transactions", svg: <TotalRevenue />, route: "/transactions" },
-
-    { name: "Emergency", svg: <MdEmergency />, route: "/emergency" },
-    { name: "Dispute", svg: <Transactions />, route: "/dispute" },
-    { name: "Issues", svg: <Issues />, route: "/issues" },
-
-    { name: "App versions", svg: <AppVersion />, route: "/App_version" },
-    // { name: "Transactions", svg: <Transactions />, route: "/transactions" },
-    { name: "Gst Validation", svg: <Gst />, route: "/gst" },
-    { name: "Customise", svg: <Customise />, route: "/customise" },
-    { name: "Promotion", svg: <AccountSettings />, route: "/promotion" },
-
-    // {
-    //   name: "Account Settings",
-    //   svg: <AccountSettings />,
-    //   route: "/account-settings",
-    // },
-  ];
-
-  // ;
+  console.log(isLoading);
 
   return (
     <div className="max-w-[280px] w-[21%] min-w-[250px] bg-white overflow-y-auto scrollbar-thin z-30 max-h-screen">
@@ -80,7 +47,7 @@ const Sidebar = () => {
         </div>
 
         {/* Navigation */}
-        {navLinks.map((link, index) => (
+        {filteredNavLinks.map((link, index) => (
           <Link
             key={index}
             className={`flex gap-2 text-sm items-center pl-14 py-3 transition-all duration-500 
@@ -90,6 +57,7 @@ const Sidebar = () => {
             "border-l-[6px] border-l-[#333] bg-[#F1F1F1]"
           }`}
             href={link.route}
+            onClick={() => setLoading(true)}
           >
             <span>{link.svg}</span>
             {link.name}

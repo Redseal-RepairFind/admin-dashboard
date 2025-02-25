@@ -78,7 +78,6 @@ const useStaff = () => {
     setQueryedList(updatedFilteredData);
   }
 
-  console.log();
   return {
     staffData,
     loadingStaff,
