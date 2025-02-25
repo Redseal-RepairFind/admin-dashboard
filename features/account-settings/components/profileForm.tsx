@@ -67,7 +67,7 @@ const ProfileForm = () => {
       setIsLoading(false);
       if (res?.success) {
         localStorage.removeItem("token");
-        router.push("/auth/login");
+        router.push("/login");
       }
     });
   };

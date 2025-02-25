@@ -44,7 +44,7 @@ export default function VerifyEmail() {
       const data = await VerifyEmail(formField);
       console.log(data);
       setIsSubmitting(false);
-      router.push(`/auth/login`);
+      router.push(`/login`);
       toast.success(data?.message);
     } catch (e: any) {
       console.log(e);

@@ -52,7 +52,7 @@ export default function Login() {
               </label>
               <div className="text-sm">
                 <a
-                  href="/auth/forget-password"
+                  href="/forget-password"
                   className="font-semibold text-indigo-600 hover:text-indigo-500"
                 >
                   Forgot password?
@@ -72,7 +72,7 @@ export default function Login() {
         {/* <p className="mt-3 text-center text-sm text-gray-500">
           Don&apos;t have an account?{" "}
           <a
-            href="/auth/signup"
+            href="/signup"
             className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
           >
             Create an account

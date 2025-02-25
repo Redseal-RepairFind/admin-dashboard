@@ -16,7 +16,7 @@ const Layout: React.FC<IProps> = ({ children }) => {
   useEffect(() => {
     const token = sessionStorage.getItem("userToken");
     if (!token) {
-      router.push("/auth/login");
+      router.push("/login");
     }
 
     setisLoadingAdmin(false);
