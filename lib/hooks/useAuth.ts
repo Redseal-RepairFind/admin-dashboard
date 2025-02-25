@@ -22,6 +22,7 @@ const useAuth = () => {
     try {
       const data = await Login(values);
       // console.log(data);
+
       setCurrentUser(data?.profile);
       sessionStorage.setItem("userToken", data?.Token);
       sessionStorage.setItem(
@@ -30,7 +31,7 @@ const useAuth = () => {
       );
       if (data?.profile?.hasWeakPassword) {
         toast.error("Kindly change your password...");
-        return router.push(`/auth/change-password?email=${values?.email}`);
+        return router.push(`/change-password?email=${values?.email}`);
       }
       router.push("/");
       toast.success(data?.message);
@@ -45,7 +46,7 @@ const useAuth = () => {
     // console.log(values);
     try {
       const data = await Register(values);
-      router.push(`/auth/verify-email?id=${values?.email}`);
+      router.push(`/verify-email?id=${values?.email}`);
       toast.success(data?.message);
     } catch (e: any) {
       console.log(e);
@@ -58,7 +59,7 @@ const useAuth = () => {
     try {
       const data = await ForgotPassword(values);
       //   console.log(data);
-      router.push(`/auth/reset-password?email=${values.email}`);
+      router.push(`/reset-password?email=${values.email}`);
       toast.success(data?.message);
     } catch (e: any) {
       console.log(e);

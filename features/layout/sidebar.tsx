@@ -35,7 +35,7 @@ const Sidebar = () => {
   }
 
   const logOut = () => {
-    router.push("/auth/login");
+    router.push("/login");
     sessionStorage.clear();
   };
 

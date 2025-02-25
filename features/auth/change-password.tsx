@@ -60,7 +60,7 @@ export default function ResetPassword() {
         setIsSubmitting(false);
         toast.success(data?.message);
         setTimeout(() => {
-          router.push(`/auth/login`);
+          router.push(`/login`);
         }, 1000);
       } catch (e: any) {
         console.log(e);
@@ -179,7 +179,7 @@ export default function ResetPassword() {
         {/* <p className="mt-3 text-center text-sm text-gray-500">
           Remember your password?{" "}
           <a
-            href="/auth/login"
+            href="/login"
             className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
           >
             Back to login

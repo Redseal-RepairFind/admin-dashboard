@@ -119,7 +119,7 @@ export default function Signup() {
         <p className="mt-3 text-center text-sm text-gray-500">
           Already have an account?
           <a
-            href="/auth/login"
+            href="/login"
             className="font-semibold leading-6 ml-2 text-indigo-600 hover:text-indigo-500"
           >
             Login
