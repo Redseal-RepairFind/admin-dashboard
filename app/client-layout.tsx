@@ -6,6 +6,8 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 import { UserProvider } from "context/user-context";
 import { CheckedProvider } from "context/checked-context";
+import { LoaderProvider } from "@/context/LoaderContext";
+import GlobalLayout from "./Global";
 
 const queryClient = new QueryClient();
 
@@ -13,7 +15,11 @@ function ClientLayout({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <UserProvider>
-        <CheckedProvider>{children}</CheckedProvider>
+        <LoaderProvider>
+          <GlobalLayout>
+            <CheckedProvider>{children}</CheckedProvider>
+          </GlobalLayout>
+        </LoaderProvider>
       </UserProvider>
       <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
     </QueryClientProvider>
