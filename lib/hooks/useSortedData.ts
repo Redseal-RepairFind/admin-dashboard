@@ -45,6 +45,7 @@ export function useSortedData(
   const { mutateAsync: acceptIssue, isLoading: isAccepting } = useMutation(
     customers.acceptIssue
   );
+
   const { mutateAsync: strikeUser } = useMutation(customers.sanctionUser);
   const { mutateAsync: SanctionUser } = useMutation(
     customers.sanctionDisputeUser
@@ -149,6 +150,7 @@ export function useSortedData(
       Number(perPage),
       Number(currentPage),
       criteria,
+      issuesStatus,
     ],
     () =>
       customers.gettIssues({
@@ -157,6 +159,7 @@ export function useSortedData(
         criteria: criteria,
         startDate: formatDate(startDate),
         endDate: formatDate(endDate),
+        status: issuesStatus,
       }),
     {
       enabled: pathname === "/issues", // Fetch only when isQuerying is true

@@ -17,6 +17,8 @@ import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import { useRouter } from "next/navigation";
 import Pagination from "@/components/shared/pagination";
+import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
+import toast from "react-hot-toast";
 
 const table_headings = [
   "ID",
@@ -42,6 +44,8 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
 
   const [emergencyID, setEmergencyID] = useState<any>("");
 
+  const { adminPermissions } = useAdminPermissions();
+
   const modalRef = useRef(null);
 
   const router = useRouter();
@@ -58,14 +62,23 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
   // console.log(emergencyData, "d");
 
   const handleAction = async (id: string) => {
-    if (currentType === "PENDING") await handleAccept(id);
-    setEmergencyID(id);
-    console.log("click");
+    if (
+      !adminPermissions?.data?.includes("resolve_emergency") ||
+      !adminPermissions?.data?.includes("crud_emergency")
+    ) {
+      toast.remove();
 
-    setTimeout(() => {
-      // setOpen(true);
-      router.push(`/emergency/${id}`);
-    }, 100);
+      toast.error("You don't have permission to resolve emergency");
+      return;
+    } else if (currentType === "PENDING") {
+      await handleAccept(id);
+      setEmergencyID(id);
+
+      setTimeout(() => {
+        // setOpen(true);
+        router.push(`/emergency/${id}`);
+      }, 100);
+    }
   };
 
   const pageProps = {

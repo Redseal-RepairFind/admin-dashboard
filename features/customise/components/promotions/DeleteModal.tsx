@@ -1,6 +1,7 @@
 "use client";
 
 import Heading from "@/features/shared/table/components/table-heading";
+import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -28,6 +29,10 @@ function DeleteModal({
   const params = useParams();
   const queryClient = useQueryClient();
 
+  const { adminPermissions } = useAdminPermissions();
+
+  console.log(adminPermissions?.data);
+
   const id = params?.slug;
   const router = useRouter();
   // console.log(id);
@@ -54,6 +59,13 @@ function DeleteModal({
 
   const handleDelete = async () => {
     try {
+      if (
+        !adminPermissions.data.includes("delete_contractor") ||
+        !adminPermissions.data.includes("crud_contractor")
+      ) {
+        toast.error("You don't have permission to delete contractors");
+        return;
+      }
       toast.loading("Deleting Contractor");
       const payload = { confirmationCode: email.email.toLowerCase() };
 

@@ -20,6 +20,8 @@ import Pagination from "@/components/shared/pagination";
 import { trimString } from "@/lib/utils/trim-string";
 import Search from "@/components/shared/search";
 import { useSortedData } from "@/lib/hooks/useSortedData";
+import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
+import toast from "react-hot-toast";
 
 const table_headings = [
   "ID",
@@ -55,8 +57,18 @@ const DisputeTable = () => {
   const router = useRouter();
   const pathname = usePathname();
   const param = useSearchParams();
+  const { adminPermissions } = useAdminPermissions();
 
   const handleAction = async (id: any, status: string) => {
+    if (
+      !adminPermissions?.data?.includes("resolve_dispute") ||
+      !adminPermissions?.data?.includes("crud_dispute")
+    ) {
+      toast.remove();
+
+      toast.error("You don't have permission to resolve dispute");
+      return;
+    }
     // console.log(id);
     if (status === "OPEN") return handleAccept(id);
 

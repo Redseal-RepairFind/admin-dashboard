@@ -28,6 +28,7 @@ import useContractors from "@/lib/hooks/useContractors";
 import Modal from "react-responsive-modal";
 import DeleteModal from "../customise/components/promotions/DeleteModal";
 import SubmitBtn from "@/components/ui/submit-btn";
+import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
 
 const SingleContractor = () => {
   const { value: contractorDetails } = useAppSelector(
@@ -57,6 +58,7 @@ const SingleContractor = () => {
   function closeModal(name: "manualCertn" | "delete") {
     setOpen({ ...open, [name]: false });
   }
+  const { adminPermissions } = useAdminPermissions();
 
   // useLayoutEffect(() => {
   //   console.log(contractorDetails.contractorProfile._id);
@@ -101,6 +103,13 @@ const SingleContractor = () => {
   // console.log(contractorInfo);
 
   const handleChangeStatus = async () => {
+    if (
+      !adminPermissions.data.includes("update_contractor") ||
+      !adminPermissions.data.includes("crud_contractor")
+    ) {
+      toast.error("You don't have permission to update contractor");
+      return;
+    }
     toast.loading("Processing...");
     try {
       const data = await giveManualCertn({ id });

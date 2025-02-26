@@ -48,7 +48,7 @@ const EditPermissions = ({
 
     try {
       const data = await UpdatePermission(payload);
-      console.log(data);
+      // console.log(data);
       toast.success(data?.message);
       setTimeout(() => {
         refetch();

@@ -190,13 +190,18 @@ export const customers = {
     startDate,
     endDate,
     criteria,
+    status,
   }: {
     page: number;
     limit: number;
     startDate: string;
     endDate: string;
     criteria: string;
-  }) => client.get(`/admin/issues?limit=${limit}&page=${page}`),
+    status: string;
+  }) =>
+    client.get(
+      `/admin/issues?limit=${limit}&page=${page}&status=${status?.toUpperCase()}`
+    ),
   acceptIssue: (id: string) => client.post(`/admin/issues/${id}/accept`),
   getSingleIssue: (id: string) => client.get(`/admin/issues/${id}`),
   sanctionUser: ({ id, payload }: { id: string; payload: any }) =>
