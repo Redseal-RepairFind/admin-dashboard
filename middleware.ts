@@ -8,10 +8,10 @@ import { navLinks as routes } from "@/lib/utils/utils";
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
 
-  if (!token) {
-    // If no token is found, redirect to the login page
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
+  // if (!token) {
+  //   // If no token is found, redirect to the login page
+  //   return NextResponse.redirect(new URL("/not-authorized", request.url));
+  // }
 
   // Fetch user permissions using the token
   const userPermissions = await fetchPermissionsFromAPI(token);

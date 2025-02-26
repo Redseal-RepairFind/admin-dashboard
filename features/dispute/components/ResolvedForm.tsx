@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import useEmergency from "@/lib/hooks/useEmergency";
 import useDisputes from "@/lib/hooks/useDisputes";
 import { useForm } from "react-hook-form";
@@ -19,10 +19,11 @@ const SettleEmergency = ({
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm();
 
   const { SettleDispute, refetchDispute } = useDisputes();
+  const [error, setError] = useState("");
 
   const handleSettle = async (payload: any) => {
     try {
@@ -56,10 +57,29 @@ const SettleEmergency = ({
             <textarea
               rows={5}
               {...register("remark", {
-                required: true,
+                required: "Please Enter a valid reason",
+                minLength: {
+                  value: 3,
+                  message: "Enter a valid Reason ",
+                },
+                validate: (value) => {
+                  if (!value.trim()) {
+                    return "Remark cannot be only spaces";
+                  }
+                  return true;
+                },
               })}
-              className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
+              className={`block w-full  ${
+                errors?.remark?.message
+                  ? "border border-red-500"
+                  : "border border-gray-200"
+              }  outline-0 rounded-md py-3 px-4 sm:text-sm `}
             />
+            {errors?.remark?.message && (
+              <span className="text-red-500">
+                {errors?.remark?.message?.toString()}
+              </span>
+            )}
           </div>
         </div>
         <SubmitBtn isSubmitting={isSubmitting}>Proceed</SubmitBtn>

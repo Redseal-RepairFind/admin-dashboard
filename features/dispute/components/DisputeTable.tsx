@@ -22,6 +22,7 @@ import Search from "@/components/shared/search";
 import { useSortedData } from "@/lib/hooks/useSortedData";
 import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
 import toast from "react-hot-toast";
+import { useLoader } from "@/context/LoaderContext";
 
 const table_headings = [
   "ID",
@@ -58,6 +59,7 @@ const DisputeTable = () => {
   const pathname = usePathname();
   const param = useSearchParams();
   const { adminPermissions } = useAdminPermissions();
+  const { setLoading } = useLoader();
 
   const handleAction = async (id: any, status: string) => {
     if (
@@ -70,8 +72,9 @@ const DisputeTable = () => {
       return;
     }
     // console.log(id);
-    if (status === "OPEN") return handleAccept(id);
+    if (status === "OPEN") return await handleAccept(id);
 
+    setLoading(true);
     router.push(`/dispute/${id}`);
     // console.log("d");
   };
