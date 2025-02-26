@@ -15,6 +15,8 @@ import { useSortedData } from "@/lib/hooks/useSortedData";
 import LoadingTemplate from "../layout/loading";
 import { toast } from "react-hot-toast";
 import Pagination from "@/components/shared/pagination";
+import { useLoader } from "@/context/LoaderContext";
+import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
 
 const table_headings = [
   "Reporter Type",
@@ -33,6 +35,8 @@ const types = [
 
 function IssuesTable({ dataToRender }: { dataToRender: any }) {
   const [status, setStatus] = useState("All");
+  const { handleNavigation } = useLoader();
+
   // const [dataToRender, setDataToRender] = useState<any>([]);
   const {
     issuesData: sortedData,
@@ -55,6 +59,7 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
 
   // // Set the selected sort value state, initialize with the value from URL
   const [sortValue, setSortValue] = useState(initialSortValue);
+  // const { adminPermissions } = useAdminPermissions();
 
   // const [isOpen, setIsOpen] = useState(false);
 
@@ -90,7 +95,7 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
   }
 
   function handleSinglePageRoute(id: string) {
-    router.push(`/issues/${id}`);
+    handleNavigation(`/issues/${id}`);
   }
 
   // useEffect(() => {

@@ -35,6 +35,7 @@ import { SubmitBtn } from "@/features/quiz/components";
 import useContractors from "@/lib/hooks/useContractors";
 import { useQueryClient } from "react-query";
 import toast from "react-hot-toast";
+import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
 
 const table_headings = [
   "Select All",
@@ -107,10 +108,18 @@ const ContractorsTable: React.FC<IProps> = ({
 
   const { checkedList, handleCheck, handleSelectAll, setCheckedList } =
     useCheckedList();
+  const { adminPermissions } = useAdminPermissions();
 
   const ids = checkedList?.map((data: any) => data?._id);
 
   async function handleMultipleCertns() {
+    if (
+      !adminPermissions.data.includes("update_contractor") ||
+      !adminPermissions.data.includes("crud_contractor")
+    ) {
+      toast.error("You don't have permission to update contractor");
+      return;
+    }
     toast.loading("Processing...");
     const contractorIds = {
       contractorIds: ids,

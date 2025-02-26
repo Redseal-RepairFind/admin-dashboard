@@ -60,6 +60,7 @@ const useEmergency = () => {
   );
 
   const handleAccept = async (payload: any) => {
+    
     toast.loading("Processing...");
     try {
       const response = await AcceptEmergency(payload);
