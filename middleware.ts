@@ -2,7 +2,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { fetchPermissionsFromAPI } from "./lib/api/fetchPermissions";
-import { cookies } from "next/headers";
 import { navLinks as routes } from "@/lib/utils/utils";
 
 export async function middleware(request: NextRequest) {

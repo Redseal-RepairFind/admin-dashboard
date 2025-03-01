@@ -269,6 +269,10 @@ const SingleContractor = () => {
                   value={contractorInfo?.certnStatus}
                 />
                 <SingleLineColumn
+                  name="Certn Price"
+                  value={contractorInfo?.hasFreeCertn ? "Free" : "Paid"}
+                />
+                <SingleLineColumn
                   name="Skills"
                   value={
                     contractorInfo?.profile?.skill ||
