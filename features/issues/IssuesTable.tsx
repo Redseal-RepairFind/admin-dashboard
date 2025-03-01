@@ -180,7 +180,7 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
                 >
                   <Td>{issue?.reporterType}</Td>
                   <Td>
-                    {issue.reporter.name ||
+                    {issue?.reporter?.name ||
                       `${issue?.reporter?.firstName} ${issue?.reporter?.lastName}`}
                   </Td>
                   <Td>{formatDateToDDMMYY(issue.createdAt)}</Td>
