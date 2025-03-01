@@ -40,12 +40,13 @@ import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
 const table_headings = [
   "Select All",
   "Contractor’s Name",
-  "Skill",
-  "Status",
-  "Certn. Status",
   "Email Address",
-  // "No of Jobs",
+  "Skill",
   "Sign-up Stage",
+  "Certn. Method",
+  "Certn. Status",
+  "Account Status",
+  // "No of Jobs",
   "Ratings",
 ];
 
@@ -141,6 +142,8 @@ const ContractorsTable: React.FC<IProps> = ({
       );
     }
   }
+
+  // console.log(contractorData);
 
   return (
     <TableCard>
@@ -291,6 +294,7 @@ const ContractorsTable: React.FC<IProps> = ({
                 <Td>
                   <span className="capitalize">{item?.name}</span>
                 </Td>
+                <Td>{item?.email}</Td>
                 <Td>
                   <span className="capitalize">
                     {item?.profile?.skill ||
@@ -305,13 +309,22 @@ const ContractorsTable: React.FC<IProps> = ({
                       "No Skills"}
                   </span>
                 </Td>
-                <Td>{item?.accountStatus}</Td>
-
-                <Td>{item?.certnStatus}</Td>
-
-                <Td>{item?.email}</Td>
-
                 <Td>{item?.onboarding?.stage?.label}</Td>
+                <Td>
+                  {item?.certnStatus === "COMPLETE" && item?.hasManualCertn
+                    ? "Manual"
+                    : item?.certnStatus === "COMPLETE" && !item?.hasManualCertn
+                    ? "Automatic"
+                    : "No Certn."}
+                </Td>
+                <Td>{item?.certnStatus}</Td>
+                <Td>
+                  {item?.accountStatus === "REVIEWING"
+                    ? "INACTIVE"
+                    : item?.accountStatus.includes("APPROVE")
+                    ? "ACTIVE"
+                    : item?.accountStatus}
+                </Td>
 
                 <Td>
                   <Ratings rating={item?.rating} />
