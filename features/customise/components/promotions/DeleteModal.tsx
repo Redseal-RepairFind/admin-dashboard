@@ -31,8 +31,6 @@ function DeleteModal({
 
   const { adminPermissions } = useAdminPermissions();
 
-  console.log(adminPermissions?.data);
-
   const id = params?.slug;
   const router = useRouter();
   // console.log(id);
