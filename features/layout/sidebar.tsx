@@ -28,8 +28,8 @@ const Sidebar = () => {
   const filteredNavLinks = navLinks?.filter((link) => {
     // Include routes with no readPermissions or matching permissions
     return (
-      link.readPermissions.length === 0 ||
-      link.readPermissions.some((permission) =>
+      link?.readPermissions.length === 0 ||
+      link?.readPermissions.some((permission) =>
         adminPermissions?.data?.includes(permission)
       )
     );
