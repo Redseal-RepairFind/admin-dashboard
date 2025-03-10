@@ -14,7 +14,7 @@ import LoadingTemplate from "../layout/loading";
 import JobHistory from "./JobHistory";
 import IssueCard from "./Issue-card";
 import SanctionCard from "./Sanction-Card";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import toast from "react-hot-toast";
 import { useSortedData } from "@/lib/hooks/useSortedData";
 
@@ -24,7 +24,7 @@ function SingleIssue({ id }: { id?: string }) {
   const { strikeUser, refetchIssues } = useSortedData("issues");
 
   // States for issue data and loading state
-  const [issue, setIssue] = useState<any>(null);
+  // const [issue, setIssue] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [openModal, setOpenModal] = useState({
     issueCard: false,
@@ -37,23 +37,31 @@ function SingleIssue({ id }: { id?: string }) {
   });
 
   // Fetch issue data
-  useEffect(() => {
-    if (!id) return;
+  // useEffect(() => {
+  //   if (!id) return;
 
-    const getIssue = async () => {
-      setIsLoading(true);
-      try {
-        const issue = await customers.getSingleIssue(id);
-        setIssue(issue?.data?.data || null);
-      } catch (error) {
-        console.error("Error fetching issue:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  //   const getIssue = async () => {
+  //     setIsLoading(true);
+  //     try {
+  //       const issue = await customers.getSingleIssue(id);
+  //       setIssue(issue?.data?.data || null);
+  //     } catch (error) {
+  //       console.error("Error fetching issue:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    getIssue();
-  }, [id]);
+  //   getIssue();
+  // }, [id]);
+
+  const {
+    data: issuesData,
+    isLoading: fetchingIssues,
+    refetch,
+  } = useQuery(["singleIssue", id], () => customers.getSingleIssue(id || ""));
+
+  const issue = issuesData?.data?.data;
 
   // Handle modal state
   const handleModalClose = (card: "issue" | "sanction") => {
@@ -86,7 +94,6 @@ function SingleIssue({ id }: { id?: string }) {
     try {
       const payload = { ...issueData, userId: reported.id };
       const data = await strikeUser({ payload, id: issue.id });
-      refetchIssues();
       // console.log(data);
 
       toast.remove();
@@ -96,6 +103,8 @@ function SingleIssue({ id }: { id?: string }) {
         }`
       );
       handleModalClose("sanction");
+
+      refetch();
     } catch (error: any) {
       toast.remove();
       toast.error(error?.message);
@@ -103,7 +112,7 @@ function SingleIssue({ id }: { id?: string }) {
   }
 
   // Loading state rendering
-  if (isLoading) {
+  if (isLoading || fetchingIssues) {
     return <LoadingTemplate />;
   }
 
