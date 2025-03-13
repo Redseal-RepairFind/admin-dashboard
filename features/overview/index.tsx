@@ -83,7 +83,7 @@ const Overview = () => {
       svg: <TotalRevenue />,
       svgColor: "bg-[#E3C87C]",
       name: "Total Revenue",
-      numbers: data?.totalRevenue?.toLocaleString(),
+      numbers: data?.totalRevenue,
       percent: 3.6,
       route: "/transactions",
     },

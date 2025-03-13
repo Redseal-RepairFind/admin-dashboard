@@ -25,4 +25,24 @@ export const staff = {
 
   suspendStaff: (payload: any) =>
     client.post("/admin/staffs/status", payload).then(({ data }) => data),
+
+  // teams
+  createTeam: (payload: any) =>
+    client.post("/admin/teams", payload).then(({ data }) => data),
+
+  getTeams: () => client.get("/admin/teams").then(({ data }) => data),
+
+  getTeamDetails: (id: any) =>
+    client.get(`/admin/teams/${id}`).then(({ data }) => data),
+
+  updateTeamDetails: ({ id, payload }: { id: string; payload: any }) =>
+    client
+      .patch(`/admin/teams/${id}/permissions`, payload)
+      .then(({ data }) => data),
+
+  deleteTeam: (id: string) =>
+    client.delete(`/admin/teams/${id}`).then(({ data }) => data),
+
+  updateTeamPermissions: ({ id, payload }: { id: string; payload: any }) =>
+    client.patch(`/admin/teams/${id}/permissions`, payload).then(({ data }) => data),
 };

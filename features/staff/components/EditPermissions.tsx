@@ -14,10 +14,14 @@ const EditPermissions = ({
   currentStaff,
   hideModal,
   refetch,
+  type = "editPermission",
+  handleEditPermission,
 }: {
   currentStaff: any;
   hideModal: any;
   refetch: any;
+  type?: "editTeams" | "editPermission";
+  handleEditPermission?: any;
 }) => {
   const { permissionList, UpdatePermission } = useStaff();
 
@@ -44,12 +48,23 @@ const EditPermissions = ({
       permissions: defaultPermissions.map((permission) => permission.value),
     };
 
-    // console.log(payload);
+
+    const team = {
+      id: currentStaff?._id,
+      permissions: defaultPermissions.map((permission) => permission.value),
+    };
 
     try {
-      const data = await UpdatePermission(payload);
+      let data;
+      if (type === "editTeams") {
+        data = await handleEditPermission(team);
+
+        console.log(payload);
+      } else {
+        data = await UpdatePermission(payload);
+      }
       // console.log(data);
-      toast.success(data?.message);
+      toast.success(data?.message || "Permission updated successfully");
       setTimeout(() => {
         refetch();
         hideModal();

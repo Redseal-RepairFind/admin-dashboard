@@ -19,7 +19,7 @@ import { CompletedState, PendingState, SuspendedState } from "@/public/svg";
 import Search from "@/components/shared/search";
 import Pagination from "@/components/shared/pagination";
 import { ScaleLoader } from "react-spinners";
-import AddTeams from "./AddTeams";
+import AddTeams from "@/features/shared/teams/components/AddTeams";
 
 const table_headings = [
   "Staff Name",
@@ -148,12 +148,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
             Create Employee
           </button>
 
-          <button
-            onClick={() => setOpenTeamsForm(true)}
-            className="border border-[#262626] bg-[] text-[#262626] py-2.5 px-5 rounded-md"
-          >
-            Add New Team
-          </button>
+        
         </div>
       </div>
       <Modal
@@ -169,19 +164,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
           <AddStaff setOpen={setOpen} />
         </div>
       </Modal>
-      <Modal
-        open={openTeamsForm}
-        onClose={() => setOpenTeamsForm(false)}
-        center
-        classNames={{
-          modal: "customModal",
-        }}
-        container={modalRef.current}
-      >
-        <div className="w-[600px] pt-6">
-          <AddTeams setOpenTeamsForm={setOpenTeamsForm} />
-        </div>
-      </Modal>
+    
       <Modal
         open={openPermissions}
         onClose={() => setOpenPermissions(false)}
