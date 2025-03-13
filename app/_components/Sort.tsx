@@ -65,7 +65,7 @@ function SortLists({ sortProps, initialState }: any) {
 
   return (
     <button
-      className="text-xs font-medium border border-gray-400 rounded-sm py-4 px-2 focus:ring-0 outline-none relative min-w-28 bg-white transition-all duration-500 flex justify-between items-center z-50"
+      className="text-xs font-medium border border-gray-400 rounded-sm py-4 px-2 focus:ring-0 outline-none relative min-w-28 bg-white transition-all duration-500 flex justify-between items-center z-30"
       onClick={() => setIsOpen((is) => !is)}
     >
       <span className="capitalize">{sortValue}</span>
@@ -95,7 +95,7 @@ function List({ state, onClick, closeModal, sortProps }: ListProps) {
     closeModal(); // Close the modal when a filter is selected
   }
   return (
-    <ul className="absolute text-xs font-medium border border-gray-400 rounded-sm focus:ring-0 outline-none min-w-28 left-0 top-14 bg-white shadow-2xl transition-all duration-500 z-50">
+    <ul className="absolute text-xs font-medium border border-gray-400 rounded-sm focus:ring-0 outline-none min-w-28 left-0 top-14 bg-white shadow-2xl transition-all duration-500 z-40">
       {sortProps.map((sortProp: any) => (
         <li
           className={`${
