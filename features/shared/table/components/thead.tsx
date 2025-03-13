@@ -5,7 +5,7 @@ interface IProps {
 }
 
 const Thead: React.FC<IProps> = ({ children }) => {
-  return <thead className="bg-[#F1F1F1]">{children}</thead>;
+  return <thead className="bg-[#F1F1F1] z-10">{children}</thead>;
 };
 
 export default Thead;

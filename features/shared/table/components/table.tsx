@@ -6,7 +6,7 @@ interface IProps {
 
 const Table: React.FC<IProps> = ({ children }) => {
   return (
-    <table className="w-full text-left whitespace-nowrap mt-6 overflow-y-visible">
+    <table className="w-full text-left relative whitespace-nowrap mt-6 overflow-y-visible -z-10">
       {children}
     </table>
   );

@@ -6,7 +6,9 @@ interface IProps {
 
 const TableOverflow: React.FC<IProps> = ({ children }) => {
   return (
-    <div className="w-full overflow-x-auto overflow-y-visible">{children}</div>
+    <div className="w-full overflow-x-auto relative min-h-60 overflow-y-visible z-10">
+      {children}
+    </div>
   );
 };
 

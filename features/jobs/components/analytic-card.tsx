@@ -77,6 +77,7 @@ const AnalyticCard: React.FC<IProps> = ({
     } else {
       const params = new URLSearchParams(window.location.search);
       params.set(statusName, formattedValue); // Set the selected filter in query params
+      params.set("page", "1"); // Reset the page number to 1
       router.replace(`${pathname}?${params.toString()}`, {
         scroll: false,
       });

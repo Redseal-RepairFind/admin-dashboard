@@ -16,11 +16,10 @@ import LoadingTemplate from "../layout/loading";
 import { toast } from "react-hot-toast";
 import Pagination from "@/components/shared/pagination";
 import { useLoader } from "@/context/LoaderContext";
-import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
 
 const table_headings = [
-  "Reporter Type",
-  "Issuer",
+  "Complainant Platform",
+  "Complainant Name",
   "Issue date",
   "Status",
   "Action",
@@ -42,9 +41,6 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
     issuesData: sortedData,
     loadingIssues: loadingSortedData,
     acceptIssue,
-    isAccepting,
-    setIsQuerying,
-    handleQuery,
   } = useSortedData("issues");
 
   // console.log(sortedData?.data?.data?.data);
@@ -148,7 +144,7 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
               }}
               key={index}
             >
-              {type.value}
+              {type.value.includes("Reviewed") ? "Ongoing" : type.value}
             </button>
           ))}
         </div>
@@ -181,7 +177,7 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
                   <Td>{issue?.reporterType}</Td>
                   <Td>
                     {issue?.reporter?.name ||
-                      `${issue?.reporter?.firstName} ${issue?.reporter?.lastName}`}
+                      `${issue?.reporter?.firstName} ${issue?.reporter?.lastName} `}
                   </Td>
                   <Td>{formatDateToDDMMYY(issue.createdAt)}</Td>
                   <Td>

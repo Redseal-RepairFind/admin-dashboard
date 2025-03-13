@@ -36,6 +36,8 @@ import useContractors from "@/lib/hooks/useContractors";
 import { useQueryClient } from "react-query";
 import toast from "react-hot-toast";
 import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
+import LoadingTemplate from "@/features/layout/loading";
+import Empty from "@/components/ui/empty-data";
 
 const table_headings = [
   "Select All",
@@ -47,7 +49,7 @@ const table_headings = [
   "Certn. Status",
   "Account Status",
   // "No of Jobs",
-  "Ratings",
+  "Strikes",
 ];
 
 interface IProps {
@@ -55,6 +57,9 @@ interface IProps {
   contractorData: any;
   handleSearch: any;
   setIsQuerying: any;
+  loadingSortedData: boolean;
+  isQuerying: boolean;
+  setSearchTerm: any;
 }
 
 const ContractorsTable: React.FC<IProps> = ({
@@ -62,6 +67,9 @@ const ContractorsTable: React.FC<IProps> = ({
   contractorData,
   handleSearch,
   setIsQuerying,
+  loadingSortedData,
+  isQuerying,
+  setSearchTerm,
 }) => {
   const { handleViewAContractors } = useContractorTable({ setLoading });
 
@@ -181,10 +189,11 @@ const ContractorsTable: React.FC<IProps> = ({
         ) : null}
         <div className="flex gap-8">
           <Search
-            placeholder="Search by name or email"
+            placeholder="Search by name"
             setSearch={handleSearch}
             setIsQuerying={setIsQuerying}
             search=""
+            handleEmpty={setSearchTerm}
           />
         </div>
       </div>
@@ -242,102 +251,116 @@ const ContractorsTable: React.FC<IProps> = ({
         </div>
       </Modal>
       <TableOverflow>
-        <Table>
-          <Thead>
-            <tr>
-              {table_headings?.map((heading, index) =>
-                heading === "Select All" ? (
-                  <th
-                    key={"Select"}
-                    className="flex items-center justify-center gap-2 h-12 pl-2 w-8"
-                  >
-                    <CheckBox
-                      onClick={(event: any) => {
-                        event.stopPropagation(); // Prevents event from bubbling to parent elements
-                        handleSelectAll(contractorData);
-                      }}
-                      isChecked={
-                        checkedList?.length ===
-                        contractorData?.data?.data?.length
-                      }
-                    />
-                  </th>
-                ) : (
-                  <Th key={index}>{heading}</Th>
-                )
-              )}
-            </tr>
-          </Thead>
+        {loadingSortedData && isQuerying ? (
+          <LoadingTemplate />
+        ) : (
+          <Table>
+            {/* <LoadingTemplate /> */}
+            <Thead>
+              <tr>
+                {table_headings?.map((heading, index) =>
+                  heading === "Select All" ? (
+                    <th
+                      key={"Select"}
+                      className="flex items-center justify-center gap-2 h-12 pl-2 w-8"
+                    >
+                      <CheckBox
+                        onClick={(event: any) => {
+                          event.stopPropagation(); // Prevents event from bubbling to parent elements
+                          handleSelectAll(contractorData);
+                        }}
+                        isChecked={
+                          checkedList?.length ===
+                          contractorData?.data?.data?.length
+                        }
+                      />
+                    </th>
+                  ) : (
+                    <Th key={index}>{heading}</Th>
+                  )
+                )}
+              </tr>
+            </Thead>
 
-          <tbody>
-            {mainData?.data?.map((item: any, index: number) => (
-              <tr
-                key={index}
-                className="cursor-pointer border-b border-gray-200"
-                onClick={() => {
-                  sessionStorage.setItem(
-                    "current_contractor_jobs",
-                    JSON.stringify(item?.job)
-                  );
-                  handleViewAContractors(item);
-                }}
-              >
-                <td className="flex items-center justify-center gap-2 h-12 pl-2 w-8">
-                  <CheckBox
-                    onClick={(event: any) => {
-                      event.stopPropagation(); // Prevents event from bubbling to parent elements
-                      handleCheck(item);
+            {mainData?.data?.length > 0 ? (
+              <tbody>
+                {mainData?.data?.map((item: any, index: number) => (
+                  <tr
+                    key={index}
+                    className="cursor-pointer border-b border-gray-200"
+                    onClick={() => {
+                      sessionStorage.setItem(
+                        "current_contractor_jobs",
+                        JSON.stringify(item?.job)
+                      );
+                      handleViewAContractors(item);
                     }}
-                    isChecked={checkedList?.some((data: any) => data === item)}
-                  />
-                </td>
-                <Td>
-                  <span className="capitalize">{item?.name}</span>
-                </Td>
-                <Td>{item?.email}</Td>
-                <Td>
-                  <span className="capitalize">
-                    {item?.profile?.skill ||
-                      item?.profile?.skills?.map(
-                        (skill: string, index: number) => (
-                          <span key={skill} className="text-sm">
-                            {skill}
-                            {index < item?.profile?.skills.length - 1 && " || "}
-                          </span>
-                        )
-                      ) ||
-                      "No Skills"}
-                  </span>
-                </Td>
-                <Td>{item?.onboarding?.stage?.label}</Td>
-                <Td>
-                  {item?.certnStatus === "COMPLETE" && item?.hasManualCertn
-                    ? "Manual"
-                    : item?.certnStatus === "COMPLETE" && !item?.hasManualCertn
-                    ? "Automatic"
-                    : "No Certn."}
-                </Td>
-                <Td>{item?.certnStatus}</Td>
-                <Td>
-                  {item?.accountStatus === "REVIEWING"
-                    ? "INACTIVE"
-                    : item?.accountStatus.includes("APPROVE")
-                    ? "ACTIVE"
-                    : item?.accountStatus}
-                </Td>
+                  >
+                    <td className="flex items-center justify-center gap-2 h-12 pl-2 w-8">
+                      <CheckBox
+                        onClick={(event: any) => {
+                          event.stopPropagation(); // Prevents event from bubbling to parent elements
+                          handleCheck(item);
+                        }}
+                        isChecked={checkedList?.some(
+                          (data: any) => data === item
+                        )}
+                      />
+                    </td>
+                    <Td>
+                      <span className="capitalize">{item?.name}</span>
+                    </Td>
+                    <Td>{item?.email}</Td>
+                    <Td>
+                      <span className="capitalize">
+                        {item?.profile?.skill ||
+                          item?.profile?.skills?.map(
+                            (skill: string, index: number) => (
+                              <span key={skill} className="text-sm">
+                                {skill}
+                                {index < item?.profile?.skills.length - 1 &&
+                                  " || "}
+                              </span>
+                            )
+                          ) ||
+                          "No Skills"}
+                      </span>
+                    </Td>
+                    <Td>{item?.onboarding?.stage?.label}</Td>
+                    <Td>
+                      {item?.certnStatus === "COMPLETE" && item?.hasManualCertn
+                        ? "Manual"
+                        : item?.certnStatus === "COMPLETE" &&
+                          !item?.hasManualCertn
+                        ? "Automatic"
+                        : "No Certn."}
+                    </Td>
+                    <Td>{item?.certnStatus}</Td>
+                    <Td>
+                      {item?.accountStatus === "REVIEWING"
+                        ? "INACTIVE"
+                        : item?.accountStatus.includes("APPROVE")
+                        ? "ACTIVE"
+                        : item?.accountStatus}
+                    </Td>
 
-                <Td>
-                  <Ratings rating={item?.rating} />
-                </Td>
+                    <Td>
+                      {/* <Ratings rating={item?.rating} /> */}
+                      {item?.sanctions?.length}
+                    </Td>
 
-                {/* Actions */}
-                {/* <Td>
+                    {/* Actions */}
+                    {/* <Td>
                   <Action setLoading={setLoading} id={item?._id} />
                 </Td> */}
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+                  </tr>
+                ))}
+              </tbody>
+            ) : (
+              <Empty message="No Contractors found" />
+            )}
+          </Table>
+        )}
       </TableOverflow>
       {/* <Paginator /> */}
       <div className="w-full mt-2">

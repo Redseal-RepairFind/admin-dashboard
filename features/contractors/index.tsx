@@ -29,7 +29,7 @@ import Heading from "../shared/table/components/table-heading";
 import "./modalAnimations.css";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
-type ModalType = {
+export type ModalType = {
   isOpen: boolean;
   content: "" | "full" | "selected";
 };
@@ -57,16 +57,17 @@ const Contractors = () => {
     queryedList,
     statusDataToRender,
     allData,
+    setSearchTerm,
   } = useSortedData("contractors");
   const [dataToRender, setDataToRender] = useState<any>();
   const stats = sortedData?.data?.stats;
   const nodeRef = useRef(null);
 
-  useEffect(() => {
-    isQuerying
-      ? setDataToRender(queryedList)
-      : setDataToRender(statusDataToRender);
-  }, [isQuerying, queryedList, setDataToRender, statusDataToRender]);
+  // useEffect(() => {
+  //   isQuerying
+  //     ? setDataToRender(queryedList)
+  //     : setDataToRender(statusDataToRender);
+  // }, [isQuerying, queryedList, setDataToRender, statusDataToRender]);
 
   // useEffect(() => {
   //   if (openModal.content === "full") {
@@ -81,7 +82,7 @@ const Contractors = () => {
     "Certn. Status",
     "Email",
     "Stage",
-    "Ratings",
+    "Strikes",
   ];
 
   const rowsData =
@@ -141,7 +142,7 @@ const Contractors = () => {
         Status: item?.accountStatus,
         Email: item?.email,
         Stage: item?.onboarding?.stage?.label,
-        Ratings: item?.rating,
+        Ratings: item?.sanctions?.length,
       };
     });
     if (!dataToExport) return;
@@ -166,7 +167,7 @@ const Contractors = () => {
   return (
     <>
       <Header />
-      {loadingSortedData ? (
+      {loadingSortedData && !isQuerying ? (
         <LoadingTemplate />
       ) : (
         <PageBody>
@@ -266,9 +267,12 @@ const Contractors = () => {
           </Modal>
           <ContractorsTable
             setLoading={setLoading}
-            contractorData={dataToRender}
+            contractorData={statusDataToRender}
             handleSearch={handleQuery}
             setIsQuerying={setIsQuerying}
+            setSearchTerm={setSearchTerm}
+            loadingSortedData={loadingSortedData}
+            isQuerying={isQuerying}
           />
         </PageBody>
       )}
@@ -278,7 +282,7 @@ const Contractors = () => {
 
 export default Contractors;
 
-function ConfirmModal({
+export function ConfirmModal({
   onHandleSelected,
 }: {
   onHandleSelected: (type: "" | "full" | "selected") => void;

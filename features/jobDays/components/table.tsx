@@ -102,7 +102,7 @@ const JobsTable: React.FC<IProps> = ({
       <TableOverflow>
         <Table>
           <Thead>
-            <tr>
+            <tr className="z-10">
               {table_headings?.map((heading, index) =>
                 heading === "Select All" ? (
                   <th
