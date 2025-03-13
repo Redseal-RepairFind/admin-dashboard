@@ -21,6 +21,14 @@ const useStaff = () => {
     permissions.addPermission
   );
 
+  // teams mutation
+  const { mutateAsync: createTeam } = useMutation(staff.createTeam);
+  const { mutateAsync: editTeamInfo } = useMutation(staff.updateTeamDetails);
+  const { mutateAsync: editTeamPermission } = useMutation(
+    staff.updateTeamPermissions
+  );
+  const { mutateAsync: deleteTeam } = useMutation(staff.deleteTeam);
+
   const {
     data: staffData,
     refetch: refetchStaffData,
@@ -41,6 +49,37 @@ const useStaff = () => {
       select: (data) => data?.data,
     }
   );
+
+  const {
+    data: teamsData,
+    isLoading: isLoadingTeams,
+    refetch: refetchTeams,
+  } = useQuery(
+    ["teams"],
+    () => {
+      return staff.getTeams();
+    },
+    {
+      cacheTime: 3000,
+      staleTime: 3000,
+      refetchOnWindowFocus: true,
+      select: (data) => data?.data,
+    }
+  );
+
+  // const { data: teamData, isLoading: isLoadingTeam } = useQuery(
+  //   ["team", id],
+  //   () => {
+  //     return staff.getTeamDetails(id);
+  //   },
+  //   {
+  //     cacheTime: 30000,
+  //     staleTime: 30000,
+  //     refetchOnWindowFocus: true,
+  //     select: (data) => data?.data,
+  //     enabled: Boolean(id),
+  //   }
+  // );
 
   const {
     data: permissionList,
@@ -98,6 +137,16 @@ const useStaff = () => {
     isQuerying,
     handleSearch,
     setIsQuerying,
+    teamsData,
+    isLoadingTeams,
+    createTeam,
+    editTeamInfo,
+    editTeamPermission,
+    deleteTeam,
+    refetchTeams,
+
+    // teamData,
+    // isLoadingTeam,
   };
 };
 
