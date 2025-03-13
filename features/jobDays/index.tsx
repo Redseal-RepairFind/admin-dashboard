@@ -12,7 +12,6 @@ import {
   QuotesGivenMetrics,
   AverageDisputeResolutionTimeMetrics,
 } from "@/public/svg";
-import userPic from "@/public/admin-pic.png";
 import LoadingTemplate from "../layout/loading";
 
 import { useCheckedList } from "@/context/checked-context";
@@ -41,7 +40,7 @@ const Jobs = () => {
   const {
     sortedData,
     loadingSortedData,
-    handleQuery,
+    handleFrontEndQuery,
     setIsQuerying,
     isQuerying,
     queryedList,
@@ -184,7 +183,7 @@ const Jobs = () => {
       info: stats?.totalConfirmed?.toLocaleString(),
       iconColor: "bg-[#bdecc6]",
       tip: "The total contractor trips confirmed by Customer",
-      status: "confirmed",
+      // status: "confirmed",
     },
   ];
 
@@ -241,7 +240,7 @@ const Jobs = () => {
           <JobsTable
             setLoading={setLoading}
             filteredData={dataToRender}
-            handleSearch={handleQuery}
+            handleSearch={handleFrontEndQuery}
             setIsQuerying={setIsQuerying}
           />
         </div>

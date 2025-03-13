@@ -29,6 +29,9 @@ import SortLists from "@/app/_components/Sort";
 import { sortContractors } from "@/lib/utils/sortData";
 import CheckBox from "@/app/_components/Check-box";
 import { useCheckedList } from "@/context/checked-context";
+import { useSortedData } from "@/lib/hooks/useSortedData";
+import LoadingTemplate from "@/features/layout/loading";
+import Empty from "@/components/ui/empty-data";
 
 const table_headings = [
   "Select All",
@@ -60,6 +63,9 @@ interface IProps {
   filteredData: any;
   handleSearch: any;
   setIsQuerying: any;
+  loadingSortedData: boolean;
+  isQuerying: boolean;
+  setSearchTerm: any;
 }
 
 const CustomersTable: React.FC<IProps> = ({
@@ -67,6 +73,9 @@ const CustomersTable: React.FC<IProps> = ({
   filteredData,
   handleSearch,
   setIsQuerying,
+  loadingSortedData,
+  isQuerying,
+  setSearchTerm,
 }) => {
   const { handleViewACustomer } = useCustomersTable({ setLoading });
   // const [dataToRender, setDataToRender] = useState<any[]>();
@@ -80,6 +89,7 @@ const CustomersTable: React.FC<IProps> = ({
     setSearch,
   } = useCustomers();
 
+  // console.log(isQuerying);
   let rowOptions = [
     {
       name: "View Customer",
@@ -142,55 +152,70 @@ const CustomersTable: React.FC<IProps> = ({
           setSearch={handleSearch}
           placeholder="Search..."
           setIsQuerying={setIsQuerying}
+          handleEmpty={setSearchTerm}
         />
       </div>
 
       <TableOverflow>
-        <Table>
-          <Thead>
-            <tr>
-              {table_headings?.map((heading, index) =>
-                heading === "Select All" ? (
-                  <th
-                    key={"Select"}
-                    className="flex items-center gap-2 py-4 px-2"
-                  >
-                    {/* <span className=" font-[500] px-5 py-3">{heading}</span> */}
-                    <CheckBox
-                      onClick={(event: any) => handleSelectAll(filteredData)}
-                      isChecked={
-                        checkedList.length === filteredData?.data?.data?.length
-                      }
-                    />
-                  </th>
-                ) : (
-                  <Th key={index}>{heading}</Th>
-                )
-              )}
-            </tr>
-          </Thead>
+        {loadingSortedData && isQuerying ? (
+          <LoadingTemplate />
+        ) : (
+          <Table>
+            <Thead>
+              <tr>
+                {table_headings?.map((heading, index) =>
+                  heading === "Select All" ? (
+                    <th
+                      key={"Select"}
+                      className="flex items-center gap-2 py-4 px-2"
+                    >
+                      {/* <span className=" font-[500] px-5 py-3">{heading}</span> */}
+                      <CheckBox
+                        onClick={(event: any) => {
+                          event.stopPropagation();
 
-          <tbody>
-            {filteredData?.data?.data?.map((item: any, index: number) => (
-              <tr
-                key={item?._id}
-                // onClick={() => handleViewACustomer(item)}
-                className="cursor-pointer border-b border-gray-200"
-              >
-                <td className="flex items-center px-2 py-4 h-full">
-                  <CheckBox
-                    onClick={(event: any) => handleCheck(item)}
-                    isChecked={checkedList.some((data: any) => data === item)}
-                  />
-                </td>
-                <Td>{item?.name}</Td>
-                <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
-                <Td>{item?.email}</Td>
-                <Td>
-                  {item?.phoneNumber?.code}
-                  {item?.phoneNumber?.number}
-                </Td>
-                {/* <Td>
+                          handleSelectAll(filteredData);
+                        }}
+                        isChecked={
+                          checkedList.length ===
+                          filteredData?.data?.data?.length
+                        }
+                      />
+                    </th>
+                  ) : (
+                    <Th key={index}>{heading}</Th>
+                  )
+                )}
+              </tr>
+            </Thead>
+
+            {filteredData?.data?.data?.length > 0 ? (
+              <tbody>
+                {filteredData?.data?.data?.map((item: any, index: number) => (
+                  <tr
+                    key={item?._id}
+                    onClick={() => handleViewACustomer(item)}
+                    className="cursor-pointer border-b border-gray-200"
+                  >
+                    <td className="flex items-center px-2 py-4 h-full">
+                      <CheckBox
+                        onClick={(event: any) => {
+                          event.stopPropagation();
+                          handleCheck(item);
+                        }}
+                        isChecked={checkedList.some(
+                          (data: any) => data === item
+                        )}
+                      />
+                    </td>
+                    <Td>{item?.name}</Td>
+                    <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
+                    <Td>{item?.email}</Td>
+                    <Td>
+                      {item?.phoneNumber?.code}
+                      {item?.phoneNumber?.number}
+                    </Td>
+                    {/* <Td>
                   <div className="flex gap-[6px] items-center">
                     {item?.status === "active" ? (
                       <CompletedState />
@@ -206,45 +231,52 @@ const CustomersTable: React.FC<IProps> = ({
                     </span>
                   </div>
                 </Td> */}
-                <Td>
-                  <div onClick={(e) => e.stopPropagation()} className="w-fit">
-                    <VerticalMenu isBackground={true}>
-                      {item?.status === "in-review" ? (
-                        <div>
-                          {rowPendingOptions?.map((option, index) => (
-                            <button
-                              key={index}
-                              onClick={() => {
-                                option?.action(item);
-                              }}
-                              className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-                            >
-                              {option?.name}
-                            </button>
-                          ))}
-                        </div>
-                      ) : (
-                        <div>
-                          {rowOptions?.map((option, index) => (
-                            <button
-                              key={index}
-                              onClick={() => {
-                                option?.action(item);
-                              }}
-                              className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-                            >
-                              {option?.name}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </VerticalMenu>
-                  </div>
-                </Td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+                    <Td>
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-fit"
+                      >
+                        <VerticalMenu isBackground={true}>
+                          {item?.status === "in-review" ? (
+                            <div>
+                              {rowPendingOptions?.map((option, index) => (
+                                <button
+                                  key={index}
+                                  onClick={() => {
+                                    option?.action(item);
+                                  }}
+                                  className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                                >
+                                  {option?.name}
+                                </button>
+                              ))}
+                            </div>
+                          ) : (
+                            <div>
+                              {rowOptions?.map((option, index) => (
+                                <button
+                                  key={index}
+                                  onClick={() => {
+                                    option?.action(item);
+                                  }}
+                                  className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                                >
+                                  {option?.name}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </VerticalMenu>
+                      </div>
+                    </Td>
+                  </tr>
+                ))}
+              </tbody>
+            ) : (
+              <Empty message="No Customers found" />
+            )}
+          </Table>
+        )}
       </TableOverflow>
       <div className="w-full mt-2">
         <Pagination {...pageProps} />

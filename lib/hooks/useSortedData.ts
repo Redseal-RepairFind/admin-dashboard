@@ -96,15 +96,15 @@ export function useSortedData(
       customersWithBooking,
       accountStatus,
       criteria,
-      // transactionStatus,
-      // searchTerm,
+      isQuerying,
+      searchTerm,
     ],
     () =>
       params === "All"
         ? customers.getAnalytics({
             route,
             limit: Number(perPage) || 10,
-            page: Number(currentPage) || 1,
+            page: searchTerm ? 1 : Number(currentPage) || 1,
             criteria: criteria,
             status:
               route === "disputes"
@@ -115,10 +115,10 @@ export function useSortedData(
             type,
             customersWithBooking: !!customersWithBooking,
             accountStatus,
-            // search: searchTerm,
+            search: searchTerm,
           })
         : customers.getSortingAnalytics({
-            page: Number(currentPage),
+            page: searchTerm ? 1 : Number(currentPage) || 1,
             limit: Number(perPage),
             startDate: formatDate(startDate),
             endDate: formatDate(endDate),
@@ -133,7 +133,7 @@ export function useSortedData(
             type,
             customersWithBooking: !!customersWithBooking,
             accountStatus,
-            // search: searchTerm,
+            search: searchTerm,
           }),
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
@@ -174,28 +174,29 @@ export function useSortedData(
     ["allData"],
     () => customers.getAllData({ route }),
     {
-      enabled: isQuerying, // Fetch only when isQuerying is true
+      enabled: isQuerying || (listStatus !== "All" && route.includes("jobs")), // Fetch only when isQuerying is true
     }
   );
+  // const allData ={
+  //   data:[]
+  // }
   // console.log(transactionStatus);
 
-  const handleQuery = (value: string) => {
-    setSearchTerm(value);
-
+  const handleFrontEndQuery = (value: string) => {
     if (value === "") {
       setIsQuerying(false);
       setQueryedList([]);
       setNotFound(false);
+      setSearchTerm("");
     }
     // Clear the search parameter from the URL when the search term is empty
 
     setIsQuerying(true);
-    // param.set("sort", "All");
-    // param.set("page", "1");
-
+    param.set("sort", "All");
+    param.set("page", "1");
     if (allData?.data) {
       // console.log(allData);
-      const filteredArray = allData.data.data.filter(
+      const filteredArray = allData.data?.data.filter(
         (item: any) =>
           item?.name?.toLowerCase()?.includes(value.toLowerCase()) ||
           item?.contractor?.firstName
@@ -216,29 +217,74 @@ export function useSortedData(
           item?.fromUser?.name?.toLowerCase()?.includes(value.toLowerCase()) ||
           item?.toUser?.name?.toLowerCase()?.includes(value.toLowerCase())
       );
-
       // Create a new object that retains the structure of sortedData
-      const updatedFilteredData = {
-        ...sortedData,
-        data: {
-          ...sortedData.data, // Keep the metadata such as pagination, totalItems, etc.
-          data: filteredArray, // Replace only the actual data array with the filtered results
-        },
-      };
 
-      setQueryedList(updatedFilteredData);
+      if (filteredArray?.length > Number(perPage)) {
+        // divide the total item by the filteredArray length this will give us the last page
+        const lastPage = Math.ceil(filteredArray.length / Number(perPage));
 
-      if (filteredArray.length === 0) {
-        setNotFound(true);
+        // console.log(lastPage);
+
+        // if the page changes , then we display data accordingly, eg lperPage = 10, page 2 will display from index 10=> 19
+
+        let pageData: any[];
+
+        if (Number(currentPage) === 1) {
+          pageData = filteredArray.slice(0, Number(perPage));
+        } else if (Number(currentPage) > 1 && Number(currentPage) < lastPage) {
+          pageData = filteredArray.slice(
+            Number(perPage) * (Number(currentPage) - 1),
+            Number(perPage) * Number(currentPage)
+          );
+        } else {
+          pageData = filteredArray.slice(
+            Number(perPage) * (Number(currentPage) - 1),
+            filteredArray.length
+          );
+        }
+
+        const updatedFilteredData = {
+          ...sortedData,
+          data: {
+            ...sortedData.data, // Keep the metadata such as pagination, totalItems, etc.
+            lastPage: lastPage,
+            data: pageData, // Replace only the actual data array with the filtered results
+          },
+        };
+        setQueryedList(updatedFilteredData);
       } else {
-        setNotFound(false);
+        const updatedFilteredData = {
+          ...sortedData,
+          data: {
+            ...sortedData.data, // Keep the metadata such as pagination, totalItems, etc.
+            data: filteredArray, // Replace only the actual data array with the filtered results
+          },
+        };
+        setQueryedList(updatedFilteredData);
+        if (filteredArray.length === 0) {
+          setNotFound(true);
+        } else {
+          setNotFound(false);
+        }
+        // Update the URL with the new query parameters
+        router.replace(`${pathname}?${param.toString()}`, {
+          scroll: false,
+        });
       }
-
-      // Update the URL with the new query parameters
-      router.replace(`${pathname}?${param.toString()}`, {
-        scroll: false,
-      });
     }
+  };
+
+  const handleQuery = (value: string) => {
+    if (value === "") {
+      setIsQuerying(false);
+      setQueryedList([]);
+      setNotFound(false);
+      setSearchTerm("");
+    }
+    // Clear the search parameter from the URL when the search term is empty
+
+    setIsQuerying(true);
+    setSearchTerm(value);
   };
 
   // useEffect(() => {
@@ -264,7 +310,7 @@ export function useSortedData(
   useEffect(() => {
     if (listStatus === "All") setStatusDataToRender(sortedData);
     else {
-      let data;
+      let filteredArray;
       // if (route === "contractors") {
       //   data = allData?.data?.data.filter(
       //     (item: any) =>
@@ -273,7 +319,7 @@ export function useSortedData(
       // }
 
       if (route === "jobs") {
-        data = allData?.data?.data.filter((item: any) => {
+        filteredArray = allData?.data?.data.filter((item: any) => {
           if (
             listStatus.toLowerCase() === "listing" ||
             listStatus === "request"
@@ -310,25 +356,62 @@ export function useSortedData(
             ?.toLowerCase()
             .includes(listStatus?.toLowerCase());
         });
-      }
-      if (route === "jobdays") {
-        data = allData?.data?.data.filter((item: any) => {
+      } else if (route === "jobdays") {
+        filteredArray = allData?.data?.data.filter((item: any) => {
           return item?.status
             ?.toLowerCase()
             .includes(listStatus?.toLowerCase());
         });
+
+        console.log(filteredArray);
       }
 
-      const updatedFilteredData = {
-        ...allData,
-        data: {
-          ...allData?.data, // Keep the metadata such as pagination, totalItems, etc.
-          data: data, // Replace only the actual data array with the filtered results
-        },
-      };
-      setStatusDataToRender(updatedFilteredData);
+      if (filteredArray?.length > Number(perPage)) {
+        // divide the total item by the filteredArray length this will give us the last page
+        const lastPage = Math.ceil(filteredArray.length / Number(perPage));
+
+        // console.log(lastPage);
+
+        // if the page changes , then we display data accordingly, eg lperPage = 10, page 2 will display from index 10=> 19
+
+        let pageData: any[];
+
+        if (Number(currentPage) === 1) {
+          pageData = filteredArray.slice(0, Number(perPage));
+        } else if (Number(currentPage) > 1 && Number(currentPage) < lastPage) {
+          pageData = filteredArray.slice(
+            Number(perPage) * (Number(currentPage) - 1),
+            Number(perPage) * Number(currentPage)
+          );
+        } else {
+          pageData = filteredArray.slice(
+            Number(perPage) * (Number(currentPage) - 1),
+            filteredArray.length
+          );
+        }
+
+        const updatedFilteredData = {
+          ...allData,
+          data: {
+            ...allData.data, // Keep the metadata such as pagination, totalItems, etc.
+            lastPage: lastPage,
+            data: pageData, // Replace only the actual data array with the filtered results
+          },
+        };
+        setStatusDataToRender(updatedFilteredData);
+        console.log(updatedFilteredData);
+      } else {
+        const updatedFilteredData = {
+          ...allData,
+          data: {
+            ...allData?.data, // Keep the metadata such as pagination, totalItems, etc.
+            data: filteredArray, // Replace only the actual data array with the filtered results
+          },
+        };
+        setStatusDataToRender(updatedFilteredData);
+      }
     }
-  }, [listStatus, sortedData, perPage, allData, route]);
+  }, [listStatus, allData, perPage, route, currentPage, sortedData]);
 
   if (error) {
     console.error("Error fetching sorted data:", error);
@@ -355,5 +438,7 @@ export function useSortedData(
     transactionsToRender,
     SanctionUser,
     allData,
+    setSearchTerm,
+    handleFrontEndQuery,
   };
 }

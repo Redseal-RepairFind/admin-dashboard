@@ -10,17 +10,22 @@ const Search = ({
   search,
   setSearch,
   setIsQuerying,
+  handleEmpty,
 }: {
   placeholder?: any;
   search: any;
   setSearch: any;
   setIsQuerying: any;
+  handleEmpty?: any;
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    if (searchTerm === "") setIsQuerying(false);
-  }, [searchTerm, setIsQuerying]);
+    if (searchTerm === "") {
+      handleEmpty?.("");
+      setIsQuerying(false);
+    }
+  }, [searchTerm, setIsQuerying, handleEmpty]);
   return (
     <div className="border border-[#ddd] flex py-2 pl-3 pr-2 items-center min-w-[400px] rounded justify-between">
       <input

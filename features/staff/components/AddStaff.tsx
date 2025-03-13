@@ -51,30 +51,6 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
     // console.log(payload);
   };
 
-  const handleSelected = (selected: Permission[]) => {
-    // setIsFresh(false);
-
-    if (selected.length < defaultPermissions.length) {
-      return setDefaultPermissions(selected);
-    }
-
-    // Create a new array by combining elements from defaultPermissions and selected
-    const updatedPermissions = [...defaultPermissions];
-
-    selected.forEach((item: Permission) => {
-      // Check if item is not already in updatedPermissions
-      if (
-        !updatedPermissions.some(
-          (perm: Permission) => perm.value === item?.value
-        )
-      ) {
-        updatedPermissions.push(item);
-      }
-    });
-
-    setDefaultPermissions(updatedPermissions);
-  };
-
   return (
     <div className="w-full">
       <form
@@ -162,22 +138,10 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
           />
         </div>
 
-        <div className="mb-4 h-[200px]">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Permissions
-          </label>
-          <CustomDropdown
-            isMulti={true}
-            width={"100%"}
-            onChange={(selected: Permission[]) => handleSelected(selected)}
-            value={defaultPermissions || []}
-            options={permissionList?.map((permission: any) => {
-              return { value: permission?._id, label: permission?.name };
-            })}
-            defaultValue={[]}
-            placeholder="Select permissions"
-          />
-        </div>
+        <AddPermissions
+          defaultPermissions={defaultPermissions}
+          setDefaultPermissions={setDefaultPermissions}
+        />
 
         <div className="flex items-center justify-between">
           <SubmitBtn isSubmitting={isSubmitting}>Submit</SubmitBtn>
@@ -188,3 +152,60 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
 };
 
 export default AddStaff;
+
+export function AddPermissions({
+  defaultPermissions,
+  setDefaultPermissions,
+}: {
+  defaultPermissions: Permission[];
+  setDefaultPermissions: any;
+}) {
+  const { permissionList } = useStaff();
+
+  // const [defaultPermissions, setDefaultPermissions] = useState<Permission[]>(
+  //   []
+  // );
+
+  const handleSelected = (selected: Permission[]) => {
+    // setIsFresh(false);
+
+    if (selected.length < defaultPermissions.length) {
+      return setDefaultPermissions(selected);
+    }
+
+    // Create a new array by combining elements from defaultPermissions and selected
+    const updatedPermissions = [...defaultPermissions];
+
+    selected.forEach((item: Permission) => {
+      // Check if item is not already in updatedPermissions
+      if (
+        !updatedPermissions.some(
+          (perm: Permission) => perm.value === item?.value
+        )
+      ) {
+        updatedPermissions.push(item);
+      }
+    });
+
+    setDefaultPermissions(updatedPermissions);
+  };
+
+  return (
+    <div className="mb-4 h-[200px]">
+      <label className="block text-gray-700 text-sm font-bold mb-2">
+        Permissions
+      </label>
+      <CustomDropdown
+        isMulti={true}
+        width={"100%"}
+        onChange={(selected: Permission[]) => handleSelected(selected)}
+        value={defaultPermissions || []}
+        options={permissionList?.map((permission: any) => {
+          return { value: permission?._id, label: permission?.name };
+        })}
+        defaultValue={[]}
+        placeholder="Select permissions"
+      />
+    </div>
+  );
+}

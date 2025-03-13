@@ -20,6 +20,8 @@ import { useCheckedList } from "@/context/checked-context";
 import * as XLSX from "xlsx";
 import Modal from "react-responsive-modal";
 import ExportModal from "@/app/_components/ExportModal";
+import { ConfirmModal, ModalType } from "../contractors";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 type FilterData = {
   customers: any[];
@@ -33,8 +35,6 @@ export type Checked = {
 const Customers = () => {
   // Fetching customers data
 
-  const [dataToRender, setDataToRender] = useState<any>();
-
   const {
     sortedData,
     loadingSortedData,
@@ -42,17 +42,27 @@ const Customers = () => {
     setIsQuerying,
     isQuerying,
     queryedList,
+    allData,
+    setSearchTerm,
   } = useSortedData("customers");
-  const [openModal, setOpenModal] = useState(false);
+
+  const [openModal, setOpenModal] = useState<ModalType>({
+    isOpen: false,
+    content: "",
+  });
+  const nodeRef = useRef(null);
 
   const { checkedList } = useCheckedList();
 
-  const handleModalOpen = () => setOpenModal(true);
-  const handleModalClose = () => setOpenModal(false);
+  const handleModalOpen = () => setOpenModal({ ...openModal, isOpen: true });
+  const handleModalClose = () => {
+    setOpenModal({ ...openModal, isOpen: false, content: "" });
+    setIsQuerying(false);
+  };
 
-  useEffect(() => {
-    isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
-  }, [isQuerying, queryedList, setDataToRender, sortedData]);
+  // useEffect(() => {
+  //   isQuerying ? setDataToRender(sortedData) : setDataToRender(sortedData);
+  // }, [isQuerying, queryedList, setDataToRender, sortedData]);
   const ref = useRef();
 
   const [loading, setLoading] = useState(true);
@@ -71,7 +81,11 @@ const Customers = () => {
   const columns = ["Customer's Name", "Date Joined", "Email", "Phone Number"];
 
   const rowsData =
-    checkedList?.length > 0 ? checkedList : sortedData?.data?.data;
+    openModal.content === "full" && isQuerying
+      ? allData?.data?.data
+      : checkedList?.length > 0
+      ? checkedList
+      : sortedData?.data?.data;
   const rows = rowsData?.map((item: any) => [
     item?.name,
     formatDateToDDMMYY(item.createdAt),
@@ -127,12 +141,20 @@ const Customers = () => {
     handleModalClose();
   }
 
-  // console.log(sortedData);
+  function handleSelected(type: "" | "full" | "selected") {
+    setOpenModal({ ...openModal, content: type });
+
+    if (type === "full") {
+      setIsQuerying(true);
+    } else {
+      setIsQuerying(false);
+    }
+  }
 
   return (
     <>
       <Header />
-      {loadingSortedData ? (
+      {loadingSortedData && !isQuerying ? (
         <LoadingTemplate />
       ) : (
         <PageBody>
@@ -169,25 +191,50 @@ const Customers = () => {
             </div>
           </div>
           <Modal
-            open={openModal}
+            open={openModal.isOpen}
             onClose={handleModalClose}
             classNames={{
               modal: "customModal",
             }}
             container={ref.current}
+            center
           >
-            <ExportModal
+            {/* <ExportModal
               title="Customer's List"
               exportExcel={() => handleDownloadPdf("excel")}
               exportPDF={() => handleDownloadPdf("pdf")}
-            />
+            /> */}
+
+            <TransitionGroup>
+              <CSSTransition
+                key={openModal.content}
+                timeout={1000}
+                classNames="fade"
+                nodeRef={nodeRef} // Add the ref here
+              >
+                <div ref={nodeRef}>
+                  {openModal.content === "" ? (
+                    <ConfirmModal onHandleSelected={handleSelected} />
+                  ) : (
+                    <ExportModal
+                      title="Customer's List"
+                      exportExcel={() => handleDownloadPdf("excel")}
+                      exportPDF={() => handleDownloadPdf("pdf")}
+                    />
+                  )}
+                </div>
+              </CSSTransition>
+            </TransitionGroup>
           </Modal>
 
           <CustomersTable
-            filteredData={dataToRender}
+            filteredData={sortedData}
             setLoading={setLoading}
             handleSearch={handleQuery}
             setIsQuerying={setIsQuerying}
+            isQuerying={isQuerying}
+            loadingSortedData={loadingSortedData}
+            setSearchTerm={setSearchTerm}
           />
         </PageBody>
       )}

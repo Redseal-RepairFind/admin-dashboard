@@ -1,19 +1,12 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import TableCard from "@/features/shared/table/components/table-card";
-import Heading from "@/features/shared/table/components/table-heading";
-import Searchbar from "@/features/shared/table/components/searchbar";
-import Filter from "@/features/shared/table/components/filter";
-import Paginator from "@/features/shared/table/components/paginator";
 import TableOverflow from "@/features/shared/table/components/table-overflow";
 import Table from "@/features/shared/table/components/table";
 import Thead from "@/features/shared/table/components/thead";
 import Th from "@/features/shared/table/components/th";
 import Td from "@/features/shared/table/components/td";
 import { formatDateToDDMMYY } from "@/lib/utils/format-date";
-// import FilterBox from "./filter-box";
-import { permissions } from "lib/api/permissions";
-import { useQuery } from "react-query";
 import useStaff from "@/lib/hooks/useStaff";
 import AddStaff from "./AddStaff";
 import { Modal } from "react-responsive-modal";
@@ -22,16 +15,11 @@ import VerticalMenu from "@/components/shared/vertical-menu";
 import EditPermissions from "./EditPermissions";
 import AddPermission from "./AddPermission";
 import toast from "react-hot-toast";
-import {
-  CompletedState,
-  PendingState,
-  SuspendedState,
-  RatingStar,
-  YellowStar,
-} from "@/public/svg";
+import { CompletedState, PendingState, SuspendedState } from "@/public/svg";
 import Search from "@/components/shared/search";
 import Pagination from "@/components/shared/pagination";
 import { ScaleLoader } from "react-spinners";
+import AddTeams from "./AddTeams";
 
 const table_headings = [
   "Staff Name",
@@ -64,6 +52,8 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
   } = useStaff();
 
   const [open, setOpen] = useState(false);
+  const [openTeamsForm, setOpenTeamsForm] = useState(false);
+
   const [openPAdd, setOpenPAdd] = useState(false);
   const [openPermissions, setOpenPermissions] = useState(false);
   const [dataToRender, setDataToRender] = useState<any>([]);
@@ -157,6 +147,13 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
           >
             Create Employee
           </button>
+
+          <button
+            onClick={() => setOpenTeamsForm(true)}
+            className="border border-[#262626] bg-[] text-[#262626] py-2.5 px-5 rounded-md"
+          >
+            Add New Team
+          </button>
         </div>
       </div>
       <Modal
@@ -170,6 +167,19 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
       >
         <div className="w-[600px] pt-6">
           <AddStaff setOpen={setOpen} />
+        </div>
+      </Modal>
+      <Modal
+        open={openTeamsForm}
+        onClose={() => setOpenTeamsForm(false)}
+        center
+        classNames={{
+          modal: "customModal",
+        }}
+        container={modalRef.current}
+      >
+        <div className="w-[600px] pt-6">
+          <AddTeams setOpenTeamsForm={setOpenTeamsForm} />
         </div>
       </Modal>
       <Modal

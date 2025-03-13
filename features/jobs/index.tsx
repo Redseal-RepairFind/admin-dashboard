@@ -54,7 +54,7 @@ const Jobs = () => {
   const {
     sortedData,
     loadingSortedData,
-    handleQuery,
+    handleFrontEndQuery,
     setIsQuerying,
     isQuerying,
     queryedList,
@@ -82,7 +82,7 @@ const Jobs = () => {
     "status",
   ];
 
-  // console.log(sortedData);
+  // console.log(statusDataToRender);
 
   function contName(item: any) {
     const contractorName = `${item?.contractor?.firstName || "--"}  ${
@@ -368,7 +368,7 @@ const Jobs = () => {
           <JobsTable
             setLoading={setLoading}
             filteredData={dataToRender}
-            handleSearch={handleQuery}
+            handleSearch={handleFrontEndQuery}
             setIsQuerying={setIsQuerying}
           />
         </div>

@@ -31,13 +31,15 @@ import SubmitBtn from "@/components/ui/submit-btn";
 import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
 
 const SingleContractor = () => {
-  const { value: contractorDetails } = useAppSelector(
-    (state: RootState) => state.singleContractorDetail
-  );
+  // const { value: contractorDetails } = useAppSelector(
+  //   (state: RootState) => state.singleContractorDetail
+  // );
+
   const [open, setOpen] = useState({
     manualCertn: false,
     delete: false,
   });
+
   const router = useRouter();
   const editRef = useRef();
   const deleteRef = useRef();
@@ -127,9 +129,7 @@ const SingleContractor = () => {
     }
   };
 
-  // console.log(
-  //   contractorInfo?.profile.availability.map((av) => av.day.join(", "))
-  // );
+  console.log(contractorInfo);
 
   return (
     <>
@@ -138,16 +138,16 @@ const SingleContractor = () => {
         <Wrapper>
           <div className="flex gap-x-6 item-center">
             <div className="w-[86px] h-[86px] flex item-center justify-center">
-              {contractorDetails?.contractorProfile.profileImage && (
+              {contractorInfo?.profilePhoto?.url && (
                 <Image
-                  src={contractorDetails?.contractorProfile.profileImage}
+                  src={contractorInfo?.profilePhoto?.url}
                   alt=""
                   width={87}
                   height={87}
                   className="rounded-[50%]"
                 />
               )}
-              {!contractorDetails?.contractorProfile.profileImage && (
+              {!contractorInfo?.profilePhoto?.url && (
                 <div className="w-[86px] h-[86px] rounded-[50%] bg-[#D9D9D9] flex items-center justify-center">
                   <p className="text-[30px] font-[600] text-white">
                     <span className="capitalize">
@@ -228,9 +228,9 @@ const SingleContractor = () => {
               </p>
 
               <p className="mt-[2px] mb-[6px] text-sm capitalize">
-                {contractorDetails?.document?.skill === undefined
+                {/* {con?.document?.skill === undefined
                   ? "Not Submitted"
-                  : contractorDetails?.document?.skill}
+                  : contractorDetails?.document?.skill} */}
               </p>
 
               <div className="flex gap-x-1">
@@ -322,6 +322,10 @@ const SingleContractor = () => {
                     value={contractorInfo?.companyName}
                   />
                 ) : null}
+                <SingleLineColumn
+                  name="Strikes"
+                  value={contractorInfo?.sanctions?.length}
+                />
                 <SingleLineColumn
                   name="Account status"
                   value={contractorInfo?.status}
