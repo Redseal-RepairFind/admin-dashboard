@@ -10,7 +10,7 @@ export const store = configureStore({
   reducer: {
     auth: auth,
     singleCustomerDetail: singleCustomer,
-    // singleContractorDetail: singleContractor,
+    singleContractorDetail: singleContractor,
     singleTransaction: singleTransaction,
     jobDetail: singleJobDetail,
     overviewTotal: totalSlice,
