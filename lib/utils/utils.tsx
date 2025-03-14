@@ -37,32 +37,32 @@ export const navLinks: INavLinks[] = [
     name: "Employees",
     svg: <RFReps />,
     route: "/staff",
-    readPermissions: [],
+    readPermissions: ["manage_staffs", "manage_permissions"],
   },
   {
     name: "Teams ",
     svg: <Jobs />,
     route: "/teams",
-    readPermissions: [],
+    readPermissions: ["manage_staffs"],
   },
   // { name: "Analytics", svg: <Analytics />, route: "/analytics" },
   {
     name: "Customers",
     svg: <Customers />,
     route: "/customers",
-    readPermissions: ["view_customers", "read_customers", "crud_customers"],
+    readPermissions: ["manage_customers"],
   },
   {
     name: "Contractors",
     svg: <Contractors />,
     route: "/contractors",
-    readPermissions: ["read_contractor", "crud_contractor"],
+    readPermissions: ["manage_contractors", "delete_contractors"],
   },
   {
     name: "Jobs",
     svg: <JobIcon />,
     route: "/jobs",
-    readPermissions: ["read_job", "crud_job"],
+    readPermissions: [],
   },
   {
     name: "Booking Analysis",
@@ -75,28 +75,33 @@ export const navLinks: INavLinks[] = [
     name: "Transactions",
     svg: <TotalRevenue />,
     route: "/transactions",
-    readPermissions: ["read_transaction", "crud_transaction"],
+    readPermissions: [],
   },
 
   {
     name: "Emergency",
     svg: <MdEmergency />,
     route: "/emergency",
-    readPermissions: ["read_emergency", "crud_emergency"],
+    readPermissions: ["manage_emergencies"],
   },
   {
     name: "Dispute",
     svg: <Transactions />,
     route: "/dispute",
-    readPermissions: ["read_dispute", "crud_dispute"],
+    readPermissions: ["manage_disputes"],
   },
-  { name: "Issues", svg: <Issues />, route: "/issues", readPermissions: [] },
+  {
+    name: "Issues",
+    svg: <Issues />,
+    route: "/issues",
+    readPermissions: ["manage_issues"],
+  },
 
   {
     name: "App versions",
     svg: <AppVersion />,
     route: "/App_version",
-    readPermissions: [],
+    readPermissions: ["manage_app_versions"],
   },
   // { name: "Transactions", svg: <Transactions />, route: "/transactions" },
   {
@@ -109,13 +114,13 @@ export const navLinks: INavLinks[] = [
     name: "Customise",
     svg: <Customise />,
     route: "/customise",
-    readPermissions: [],
+    readPermissions: ["manage_quizzes", "manage_questions"],
   },
   {
     name: "Promotion",
     svg: <AccountSettings />,
     route: "/promotion",
-    readPermissions: [],
+    readPermissions: ["manage_promotions"],
   },
 
   // {

@@ -33,7 +33,6 @@ function DeleteModal({
 
   const id = params?.slug;
   const router = useRouter();
-  // console.log(adminPermissions.data.includes("crud_contractor"));
   const validateEmail = (email: string) => {
     if (!email) {
       setEmail((email) => ({
@@ -56,10 +55,7 @@ function DeleteModal({
   };
 
   const handleDelete = async () => {
-    if (
-      !adminPermissions.data.includes("delete_contractor") &&
-      !adminPermissions.data.includes("crud_contractor")
-    ) {
+    if (!adminPermissions.data.includes("delete_contractor")) {
       toast.error("You don't have permission to delete contractors");
       return;
     }

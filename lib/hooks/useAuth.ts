@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { UserContext } from "@/context/user-context";
 
+import Cookies from "js-cookie";
+
 const useAuth = () => {
   const { mutateAsync: Login } = useMutation(auth.login);
   const { mutateAsync: Register } = useMutation(auth.register);
@@ -29,6 +31,7 @@ const useAuth = () => {
         "repairfind_session_user",
         JSON.stringify(data?.profile)
       );
+      Cookies.set("user", JSON.stringify(data?.profile), { expires: 1 });
       if (data?.profile?.hasWeakPassword) {
         toast.error("Kindly change your password...");
         return router.push(`/change-password?email=${values?.email}`);

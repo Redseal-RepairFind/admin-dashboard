@@ -122,10 +122,7 @@ const ContractorsTable: React.FC<IProps> = ({
   const ids = checkedList?.map((data: any) => data?._id);
 
   async function handleMultipleCertns() {
-    if (
-      !adminPermissions.data.includes("update_contractor") ||
-      !adminPermissions.data.includes("crud_contractor")
-    ) {
+    if (!adminPermissions.data.includes("manage_contractors")) {
       toast.error("You don't have permission to update contractor");
       return;
     }

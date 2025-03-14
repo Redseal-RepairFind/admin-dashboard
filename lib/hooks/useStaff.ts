@@ -29,6 +29,8 @@ const useStaff = () => {
   );
   const { mutateAsync: deleteTeam } = useMutation(staff.deleteTeam);
 
+  const { mutateAsync: addStaffToTeam } = useMutation(staff.addStaffToTeam);
+
   const {
     data: staffData,
     refetch: refetchStaffData,
@@ -143,6 +145,7 @@ const useStaff = () => {
     editTeamInfo,
     editTeamPermission,
     deleteTeam,
+    addStaffToTeam,
     refetchTeams,
 
     // teamData,
