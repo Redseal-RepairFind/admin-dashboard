@@ -89,7 +89,7 @@ function List({ state, onClick, closeModal }: ListProps) {
     closeModal(); // Close the modal when a filter is selected
   }
   return (
-    <ul className="absolute text-xs font-medium border border-gray-400 rounded-sm  focus:ring-0  outline-none w-28 left-0 top-14 bg-white shadow-2xl transition-all duration-500 ">
+    <ul className="absolute text-xs font-medium border border-gray-400 rounded-sm  focus:ring-0  outline-none w-28 left-0 top-14 bg-white shadow-2xl transition-all duration-500 z-30">
       {filterProps.map((filterProp) => (
         <li
           className={`${

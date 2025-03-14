@@ -48,18 +48,15 @@ const EditPermissions = ({
       permissions: defaultPermissions.map((permission) => permission.value),
     };
 
-
     const team = {
       id: currentStaff?._id,
-      permissions: defaultPermissions.map((permission) => permission.value),
+      permissions: defaultPermissions.map((permission) => permission.label),
     };
 
     try {
       let data;
       if (type === "editTeams") {
         data = await handleEditPermission(team);
-
-        console.log(payload);
       } else {
         data = await UpdatePermission(payload);
       }

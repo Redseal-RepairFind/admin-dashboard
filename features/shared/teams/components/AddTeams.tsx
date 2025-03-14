@@ -32,39 +32,35 @@ function AddTeams({
     formState: { isSubmitting },
   } = useForm();
 
+  let payload;
   const onSubmit = async (data: any) => {
-    const payload = {
-      ...data,
-      permissions: defaultPermissions.map(
-        (permission: any) => permission.label
-      ),
-    };
-
-    const payLoad4Edit = {
-      ...data,
-      permissions: editData?.permissions,
-    };
-
-    const editPayload = {
-      ...payLoad4Edit,
-      id: editData?._id,
-    };
-
     if (type === "create") {
       if (!defaultPermissions.length)
         return toast.error("Kindly add permissions");
+
+      payload = {
+        ...data,
+        permissions: defaultPermissions.map(
+          (permission: any) => permission.label
+        ),
+      };
       await onHandleSubmit(payload);
       close();
       refetch();
     } else if (type === "edit") {
-      console.log(editPayload);
+      payload = {
+        ...data,
+      };
+
+      const editPayload = {
+        ...payload,
+        id: editData?._id,
+      };
       await onHandleSubmit(editPayload);
       close();
       refetch();
     }
   };
-
-  console.log(editData);
 
   return (
     <div className="w-full">
@@ -105,11 +101,12 @@ function AddTeams({
             defaultValue={type === "edit" ? editData?.description : ""}
           />
         </div>
-
-        <AddPermissions
-          defaultPermissions={defaultPermissions}
-          setDefaultPermissions={setDefaultPermissions}
-        />
+        {type === "create" ? (
+          <AddPermissions
+            defaultPermissions={defaultPermissions}
+            setDefaultPermissions={setDefaultPermissions}
+          />
+        ) : null}
 
         <div className="flex items-center justify-between">
           <SubmitBtn isSubmitting={isSubmitting}>Submit</SubmitBtn>

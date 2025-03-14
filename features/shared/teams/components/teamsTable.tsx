@@ -21,6 +21,7 @@ import AddTeams from "@/features/shared/teams/components/AddTeams";
 import EditPermissions from "@/features/staff/components/EditPermissions";
 import DeleteModal from "@/features/customise/components/promotions/DeleteModal";
 import Heading from "../../table/components/table-heading";
+import { describe } from "node:test";
 
 const table_headings = ["Team Name", "Description", "Action"];
 function TeamsTable() {
@@ -62,14 +63,43 @@ function TeamsTable() {
   };
 
   const handleCreateEdit = async (team: any) => {
+    const id = team?.id;
+    const payload = {
+      permissions: team.permissions,
+    };
     toast.loading("Editing Team...");
     try {
-      const data = await editTeamInfo(team);
+      const data = await editTeamPermission({ id, payload });
 
       toast.remove();
       refetchTeams();
 
       // toast.success(data?.message || " Team Edited Successfully");
+    } catch (error: any) {
+      toast.remove();
+
+      toast.error(error?.response?.data?.message || "Team Editing failed");
+      console.error(error);
+    }
+  };
+
+  const handleEdit = async (team: any) => {
+    console.log(team);
+
+    const id = team?.id;
+    const payload = {
+      name: team.name,
+      description: team.description,
+    };
+
+    toast.loading("Editing Team...");
+    try {
+      const data = await editTeamInfo({ id, payload });
+
+      toast.remove();
+      refetchTeams();
+
+      toast.success(data?.message || " Team Edited Successfully");
     } catch (error: any) {
       toast.remove();
 
@@ -104,13 +134,13 @@ function TeamsTable() {
         setItem(item);
       },
     },
-    // {
-    //   name: "Edit Team Info",
-    //   action: (item: any) => {
-    //     setOpenTeamsForm({ ...openTeamsForm, editInfo: true });
-    //     setItem(item);
-    //   },
-    // },
+    {
+      name: "Edit Team Info",
+      action: (item: any) => {
+        setOpenTeamsForm({ ...openTeamsForm, editInfo: true });
+        setItem(item);
+      },
+    },
     {
       name: "Delete Team",
       action: (item: any) => {
@@ -192,7 +222,7 @@ function TeamsTable() {
         <div className="w-[600px] pt-6">
           <AddTeams
             type="edit"
-            onHandleSubmit={handleCreateEdit}
+            onHandleSubmit={handleEdit}
             editData={item}
             close={() =>
               setOpenTeamsForm({ ...openTeamsForm, editInfo: false })
@@ -243,7 +273,8 @@ function TeamsTable() {
           </div>
           {/* Confirmation for delete */}
           <p className="text-center">
-            Are you sure you want to delete Team? This action cannot be undone.
+            Are you sure you want to delete "{item?.name || ""}" Team? This
+            action cannot be undone.
           </p>
 
           <div className="grid grid-cols-2 gap-2 items-center gap">
