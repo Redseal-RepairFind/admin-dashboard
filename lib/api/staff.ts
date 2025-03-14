@@ -36,13 +36,13 @@ export const staff = {
     client.get(`/admin/teams/${id}`).then(({ data }) => data),
 
   updateTeamDetails: ({ id, payload }: { id: string; payload: any }) =>
-    client
-      .patch(`/admin/teams/${id}/permissions`, payload)
-      .then(({ data }) => data),
+    client.patch(`/admin/teams/${id}`, payload).then(({ data }) => data),
 
   deleteTeam: (id: string) =>
     client.delete(`/admin/teams/${id}`).then(({ data }) => data),
 
   updateTeamPermissions: ({ id, payload }: { id: string; payload: any }) =>
-    client.patch(`/admin/teams/${id}/permissions`, payload).then(({ data }) => data),
+    client
+      .patch(`/admin/teams/${id}/permissions`, payload)
+      .then(({ data }) => data),
 };
