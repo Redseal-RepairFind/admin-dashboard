@@ -20,17 +20,25 @@ import Search from "@/components/shared/search";
 import Pagination from "@/components/shared/pagination";
 import { ScaleLoader } from "react-spinners";
 import AddTeams from "@/features/shared/teams/components/AddTeams";
+import { SubmitBtn } from "@/features/quiz/components";
 
 const table_headings = [
   "Staff Name",
   "Date Joined",
   "Email Address",
+  "Team",
   "Status",
   "Action",
 ];
 
 interface IProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+interface Teams {
+  item: any;
+  openTeams: boolean;
+  teamId: string;
 }
 
 const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
@@ -49,19 +57,25 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     queryedList,
     setIsQuerying,
     handleSearch,
+    teamsData,
+    addStaffToTeam,
   } = useStaff();
 
   const [open, setOpen] = useState(false);
-  const [openTeamsForm, setOpenTeamsForm] = useState(false);
+  const [openTeamsForm, setOpenTeamsForm] = useState<Teams>({
+    item: null,
+    openTeams: false,
+    teamId: "",
+  });
 
   const [openPAdd, setOpenPAdd] = useState(false);
   const [openPermissions, setOpenPermissions] = useState(false);
   const [dataToRender, setDataToRender] = useState<any>([]);
-
   const [currentStaff, setCurrentStaff] = useState();
-
-  // console.log(search);
-  // console.log(permissionList);
+  const [openModal, setOpenModal] = useState(false);
+  //
+  // console.log(teamsData);
+  // console.log(staffData);
 
   useEffect(() => {
     isQuerying ? setDataToRender(queryedList) : setDataToRender(staffData);
@@ -110,7 +124,36 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
         }
       },
     },
+    {
+      name: "Edit Staff team",
+      action: (item: any) => {
+        setOpenTeamsForm({ ...openTeamsForm, item, openTeams: true });
+      },
+    },
   ];
+
+  const handleAddStaffToTeam = async (e: any) => {
+    e.preventDefault();
+
+    toast.loading("Adding To team...");
+    try {
+      const payload = {
+        staffId: openTeamsForm?.item?._id,
+        teamId: openTeamsForm?.teamId,
+      };
+
+      const data = await addStaffToTeam(payload);
+      toast.remove();
+      toast.success(data?.message || "User added to Team successfully");
+
+      refetchStaffData();
+      setOpenTeamsForm({ teamId: "", item: null, openTeams: false });
+    } catch (error: any) {
+      toast.remove();
+      toast.error(error?.response?.data?.message || "Failed to add to team");
+      console.error(error);
+    }
+  };
 
   const pageProps = {
     data: staffData,
@@ -147,8 +190,6 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
           >
             Create Employee
           </button>
-
-        
         </div>
       </div>
       <Modal
@@ -164,7 +205,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
           <AddStaff setOpen={setOpen} />
         </div>
       </Modal>
-    
+
       <Modal
         open={openPermissions}
         onClose={() => setOpenPermissions(false)}
@@ -196,6 +237,78 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
         </div>
       </Modal>
 
+      {/* <Modal
+        open={openTeamsForm.openTeams}
+        onClose={() =>
+          setOpenTeamsForm({ teamId: "", item: null, openTeams: false })
+        }
+        center
+        classNames={{
+          modal: "customModal",
+        }}
+        container={modalRef.current}
+      >
+        <div className="w-[400px] flex flex-col gap-3">
+          <h1 className="font-bold text-xl text-center">
+            Add or remove staff from a team
+          </h1>
+          <p className="text-center">You can add or remove Staff from a team</p>
+          <div className="flex items-center justify-end gap-4">
+            <button
+              onClick={() => setOpenPAdd(true)}
+              className="border border-[#262626] py-2.5 px-5 rounded-md"
+            >
+              Add Staff to team
+            </button>
+            <button
+              onClick={() => setOpen(true)}
+              className="border border-[#262626] bg-[#262626] text-white py-2.5 px-5 rounded-md"
+            >
+              Remove Staff from team
+            </button>
+          </div>
+        </div>
+      </Modal> */}
+
+      <Modal
+        open={openTeamsForm.openTeams}
+        onClose={() =>
+          setOpenTeamsForm({ teamId: "", item: null, openTeams: false })
+        }
+        center
+        classNames={{
+          modal: "customModal",
+        }}
+        container={modalRef.current}
+      >
+        <form
+          className="w-[400px] min-h-44 flex flex-col justify-between items-center pt-6"
+          onSubmit={handleAddStaffToTeam}
+        >
+          <select
+            name="Teams"
+            id="teams"
+            className="w-full"
+            value={openTeamsForm.teamId}
+            onChange={(e) =>
+              setOpenTeamsForm({ ...openTeamsForm, teamId: e.target.value })
+            }
+          >
+            <option value="" disabled>
+              Select a team
+            </option>
+            {teamsData?.map((team: any) => (
+              <option value={team?._id} key={team?._id}>
+                {team?.name}
+              </option>
+            ))}
+          </select>
+          <SubmitBtn className="w-full text-center flex items-center justify-center">
+            Submit
+          </SubmitBtn>
+        </form>
+      </Modal>
+
       <TableOverflow>
         {loadingStaff ? (
           <div className="flex items-center justify-center py-10">
@@ -222,6 +335,19 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
                   </Td>
                   <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
                   <Td>{item?.email}</Td>
+                  <Td>
+                    <span className="capitalize">
+                      {item?.teams.length > 0
+                        ? item?.teams.map((skill: any, index: number) => (
+                            <span key={skill?._id} className="text-sm">
+                              {skill.name}
+                              {index < item?.teams.length - 1 && " || "}
+                            </span>
+                          ))
+                        : "No Teams"}
+                    </span>
+                  </Td>
+
                   <Td>
                     <div
                       className="flex gap-[6px] items-center z-0"

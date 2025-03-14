@@ -62,10 +62,7 @@ const EmergencyTable: React.FC<IProps> = ({ setLoading }) => {
   // console.log(emergencyData, "d");
 
   const handleAction = async (id: string) => {
-    if (
-      !adminPermissions?.data?.includes("resolve_emergency") ||
-      !adminPermissions?.data?.includes("crud_emergency")
-    ) {
+    if (!adminPermissions?.data?.includes("manage_emergencies")) {
       toast.remove();
 
       toast.error("You don't have permission to resolve emergency");

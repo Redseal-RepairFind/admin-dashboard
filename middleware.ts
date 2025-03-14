@@ -6,6 +6,7 @@ import { navLinks as routes } from "@/lib/utils/utils";
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
+  const user = request.cookies.get("user")?.value;
 
   // if (!token) {
   //   // If no token is found, redirect to the login page
@@ -13,7 +14,10 @@ export async function middleware(request: NextRequest) {
   // }
 
   // Fetch user permissions using the token
-  const userPermissions = await fetchPermissionsFromAPI(token);
+  const userPermissions = await fetchPermissionsFromAPI(
+    token,
+    JSON?.parse(user || "")
+  );
 
   const route = routes.find((route) =>
     request.nextUrl.pathname.startsWith(route.route)
@@ -23,7 +27,7 @@ export async function middleware(request: NextRequest) {
     route &&
     route.readPermissions.length > 0 &&
     !route.readPermissions.some((permission) =>
-      userPermissions?.data.includes(permission)
+      userPermissions?.includes(permission)
     )
   ) {
     // Redirect to a "not authorized" page if the user lacks permissions

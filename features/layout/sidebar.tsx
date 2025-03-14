@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "@/public/logo.svg";
 import Cookies from "js-cookie";
 
@@ -11,11 +11,15 @@ import { navLinks } from "@/lib/utils/utils";
 import { Logout } from "@/public/svg";
 import { useLoader } from "@/context/LoaderContext";
 import LoadingPage from "@/app/loading";
+import {
+  fetchPermissionsFromAPI,
+  getAllPermissions,
+} from "@/lib/api/fetchPermissions";
 
 const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const { loadingPermission, adminPermissions } = useAdminPermissions();
+  const [adminPermissions, setAdminPermissions] = useState<string[]>();
 
   const { isLoading, setLoading } = useLoader();
 
@@ -23,14 +27,30 @@ const Sidebar = () => {
     router.push("/login");
     sessionStorage.clear();
     Cookies.remove("token");
+    Cookies.remove("user");
   };
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    const users = Cookies.get("user");
+    async function fn() {
+      const teamsPerm = await fetchPermissionsFromAPI(
+        token,
+        JSON?.parse(users || "")
+      );
+
+      setAdminPermissions(teamsPerm);
+    }
+
+    fn();
+  }, []);
 
   const filteredNavLinks = navLinks?.filter((link) => {
     // Include routes with no readPermissions or matching permissions
     return (
       link?.readPermissions.length === 0 ||
       link?.readPermissions.some((permission) =>
-        adminPermissions?.data?.includes(permission)
+        adminPermissions?.includes(permission)
       )
     );
   });

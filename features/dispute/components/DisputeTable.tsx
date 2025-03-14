@@ -62,10 +62,7 @@ const DisputeTable = () => {
   const { setLoading } = useLoader();
 
   const handleAction = async (id: any, status: string) => {
-    if (
-      !adminPermissions?.data?.includes("resolve_dispute") ||
-      !adminPermissions?.data?.includes("crud_dispute")
-    ) {
+    if (!adminPermissions?.data?.includes("manage_disputes")) {
       toast.remove();
 
       toast.error("You don't have permission to resolve dispute");
