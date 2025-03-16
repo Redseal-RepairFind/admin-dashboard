@@ -39,7 +39,7 @@ const Filter: React.FC<IProps> = ({
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
               className="px-5 py-3 bg-white flex flex-col gap-1 absolute min-w-[250px]
-        top-[50px] right-0 z-10 rounded-[8px] options-shadow"
+        top-[50px] right-0 rounded-[8px] options-shadow z-50"
             >
               <button
                 className="self-end mb-4"

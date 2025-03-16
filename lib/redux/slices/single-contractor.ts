@@ -70,11 +70,11 @@ export const singleContractorSlice = createSlice({
       state,
       action: PayloadAction<IContractorsDetails>
     ) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       state.value = action.payload;
     },
     setSingleContractorsJob: (state, action: PayloadAction<IJobHistory>) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       state.history = action.payload;
     },
   },

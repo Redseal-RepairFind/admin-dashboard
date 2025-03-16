@@ -174,7 +174,7 @@ export function useSortedData(
     ["allData"],
     () => customers.getAllData({ route }),
     {
-      enabled: isQuerying || (listStatus !== "All" && route.includes("jobs")), // Fetch only when isQuerying is true
+      enabled: isQuerying || listStatus !== "All", // Fetch only when isQuerying is true
     }
   );
   // const allData ={
@@ -399,7 +399,6 @@ export function useSortedData(
           },
         };
         setStatusDataToRender(updatedFilteredData);
-        console.log(updatedFilteredData);
       } else {
         const updatedFilteredData = {
           ...allData,

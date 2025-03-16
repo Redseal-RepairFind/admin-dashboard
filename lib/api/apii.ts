@@ -17,9 +17,9 @@ const apiClient = () => {
 
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
-          Cookies.set("token", token, { expires: 1 });
+          Cookies.set("reparfind_token", token, { expires: 1 });
         } else {
-          Cookies.remove("token");
+          Cookies.remove("reparfind_token");
         }
       }
       return config;

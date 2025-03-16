@@ -273,8 +273,8 @@ function TeamsTable() {
           </div>
           {/* Confirmation for delete */}
           <p className="text-center">
-            Are you sure you want to delete "{item?.name || ""}" Team? This
-            action cannot be undone.
+            Are you sure you want to delete {item?.name || ""} Team? This action
+            cannot be undone.
           </p>
 
           <div className="grid grid-cols-2 gap-2 items-center gap">

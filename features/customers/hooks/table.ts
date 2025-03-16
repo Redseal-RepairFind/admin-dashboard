@@ -81,7 +81,7 @@ export const useCustomersTable = ({ setLoading }: UseJobsTableProps) => {
         (item) => item.rating?.avgRating === value
       );
 
-      console.log(filteredMatchingRating);
+      // console.log(filteredMatchingRating);
 
       setQueryedCustomers({ customers: filteredMatchingRating });
     }
@@ -136,7 +136,7 @@ export const useCustomersTable = ({ setLoading }: UseJobsTableProps) => {
           (customer) => {
             const createdAtDate = new Date(customer.customer.createdAt);
             const createdAtMonth = createdAtDate.getMonth() + 1;
-            console.log(createdAtMonth);
+            // console.log(createdAtMonth);
             return createdAtMonth === value;
           }
         );

@@ -3,8 +3,10 @@ import { formatTimeDDMMYY } from "@/lib/utils/format-date";
 import { trimString } from "@/lib/utils/trim-string";
 import { CompletedState, PendingState } from "@/public/svg";
 import Image from "next/image";
-import React from "react";
+import React, { useRef } from "react";
 import { IJobHistory, IJobs } from "@/lib/types";
+
+import { useReactToPrint } from "react-to-print";
 
 interface IProps {
   closeModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -12,11 +14,21 @@ interface IProps {
 }
 
 const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
-  console.log(jobDetail);
+  const totalEstimate = jobDetail.contract.estimates
+    .map((est: any) => est.amount)
+    .reduce((est: number, estRed: number) => est + estRed, 0);
+
+  // console.log(totalEstimate);
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({
+    contentRef,
+  });
+
   return (
-    <>
+    <div ref={contentRef} className="p-6">
       {/* Logo */}
-      <>
+      <span>
         <Image
           src="/reciept-logo.svg"
           alt=""
@@ -38,7 +50,7 @@ const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
             fill="#121212"
           />
         </svg>
-      </>
+      </span>
 
       <div className="flex justify-between items-center mt-8">
         <div className="flex gap-5">
@@ -67,7 +79,10 @@ const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
           </div>
         </div>
         {/* Download Button */}
-        <button className="border border-[#333333] outline-none bg-transparent flex gap-2 py-2 px-2">
+        <button
+          className="border border-[#333333] outline-none bg-transparent flex gap-2 py-2 px-2"
+          onClick={() => handlePrint()}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="14"
@@ -121,7 +136,7 @@ const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
       <div className="flex justify-between mt-8">
         <div>
           <p className="text-sm font-[500] text-[#7B7B7B]">Estimate</p>
-          <p>${jobDetail?.totalAmountContractorWithdraw}</p>
+          <p>${totalEstimate}</p>
         </div>
         <div>
           <p className="text-sm font-[500] text-[#7B7B7B]">Due Date</p>
@@ -156,7 +171,7 @@ const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
                 <td className="text-sm py-3 px-4">{item.description}</td>
               </tr>
             ))}
-
+            {/* 
             <tr>
               <td className="text-sm py-3 px-4"></td>
               <td className="text-sm py-3 px-4"></td>
@@ -164,10 +179,10 @@ const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
               <td className="text-sm py-3 px-4">{jobDetail?.totalQuatation}</td>
             </tr>
             <tr>
-              {/* <td className="text-sm py-3 px-4"></td>
+              <td className="text-sm py-3 px-4"></td>
               <td className="text-sm py-3 px-4"></td>
               <td className="text-sm py-3 px-4">Quantity</td>
-              <td className="text-sm py-3 px-4"></td> */}
+              <td className="text-sm py-3 px-4"></td>
             </tr>
             <tr>
               <td className="text-sm py-3 px-4"></td>
@@ -182,11 +197,11 @@ const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
               <td className="text-sm py-3 px-4">
                 {jobDetail?.totalAmountCustomerToPaid}
               </td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 };
 

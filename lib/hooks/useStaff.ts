@@ -5,11 +5,12 @@ import { staff } from "../api/staff";
 import { permissions } from "../api/permissions";
 import { useMutation, useQuery } from "react-query";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const useStaff = () => {
-  const [perPage, setPerPage] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
+  const searchParams = useSearchParams();
+  const currentPage = searchParams.get("page") || 1;
+  const perPage = searchParams.get("perPage") || 10;
   const [search, setSearch] = useState("");
   const [isQuerying, setIsQuerying] = useState(false);
   const [queryedList, setQueryedList] = useState<any[]>([]);
@@ -90,7 +91,7 @@ const useStaff = () => {
   } = useQuery(
     ["Permissions"],
     () => {
-      return permissions.getPermissions();
+      return permissions.getPermissions(Number(perPage), Number(currentPage));
     },
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
@@ -130,9 +131,7 @@ const useStaff = () => {
     UpdatePermission,
     SuspendStaff,
     perPage,
-    setPerPage,
     currentPage,
-    setCurrentPage,
     search,
     setSearch,
     queryedList,

@@ -126,7 +126,7 @@ const SingleContractor = () => {
     }
   };
 
-  console.log(contractorInfo);
+  // console.log(contractorInfo);
 
   return (
     <>

@@ -57,7 +57,7 @@ const Tabs: React.FC = () => {
     toast.loading("Processing new skill(s)...");
 
     let data;
-    console.log(skillInputs);
+    // console.log(skillInputs);
     try {
       if (skillInputs.length === 1) {
         data = await AddSkill({

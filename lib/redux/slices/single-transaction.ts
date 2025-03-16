@@ -79,7 +79,7 @@ export const singleTranactionSlice = createSlice({
   initialState,
   reducers: {
     setSingleTranactionsDetail: (state, action: PayloadAction<any>) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       state.value = action.payload;
     },
   },

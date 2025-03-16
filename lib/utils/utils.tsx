@@ -37,7 +37,7 @@ export const navLinks: INavLinks[] = [
     name: "Employees",
     svg: <RFReps />,
     route: "/staff",
-    readPermissions: ["manage_staffs", "manage_permissions"],
+    readPermissions: ["manage_permissions"],
   },
   {
     name: "Teams ",

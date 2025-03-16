@@ -66,7 +66,7 @@ function IssueCard({
   }, [sanction]);
 
   function handleSanction(data: any) {
-    if (sanction.level < 1) alert("Please select an Issue Level ");
+    if (sanction.level < 0) alert("Please select an Issue Level ");
     setIssueData({
       reason: data.reason,
       level: sanction.level,

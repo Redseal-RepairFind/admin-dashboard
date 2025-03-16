@@ -208,4 +208,9 @@ export const customers = {
     client.post(`/admin/issues/${id}/sanction`, payload),
   sanctionDisputeUser: ({ id, payload }: { id: string; payload: any }) =>
     client.post(`/admin/disputes/${id}/sanction`, payload),
+
+  // single jobs
+
+  getSingleJob: (id: string) =>
+    client.get(`/admin/jobs/${id}`).then(({ data }) => data),
 };
