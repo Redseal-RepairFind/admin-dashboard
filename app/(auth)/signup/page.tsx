@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Signup from "@/features/auth/signup";
 import React from "react";
 

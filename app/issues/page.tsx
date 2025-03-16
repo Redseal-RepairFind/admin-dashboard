@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Issues from "@/features/issues";
 import Layout from "@/features/layout/layout";
 

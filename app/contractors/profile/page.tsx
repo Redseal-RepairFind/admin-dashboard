@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import ContractorProfileLink from "@/app/_components/ContractorLink";
 
 export default function Page({

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Analytics from "@/features/analytics";
 import Layout from "@/features/layout/layout";
 import React from "react";

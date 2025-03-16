@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { FaCheckSquare } from "react-icons/fa";
 import { GiCancel } from "react-icons/gi";

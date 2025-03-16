@@ -14,7 +14,7 @@ interface IProps {
 }
 
 const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
-  const totalEstimate = jobDetail.contract.estimates
+  const totalEstimate = jobDetail?.contract?.estimates
     .map((est: any) => est.amount)
     .reduce((est: number, estRed: number) => est + estRed, 0);
 
@@ -24,7 +24,6 @@ const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
   const handlePrint = useReactToPrint({
     contentRef,
   });
-
   return (
     <div ref={contentRef} className="p-6">
       {/* Logo */}

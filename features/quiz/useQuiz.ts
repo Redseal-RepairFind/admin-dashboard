@@ -1,3 +1,5 @@
+"use client";
+
 import { quiz } from "@/lib/api/quiz";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useReducer, useState } from "react";

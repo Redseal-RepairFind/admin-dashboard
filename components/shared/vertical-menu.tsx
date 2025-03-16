@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect, useRef, ReactNode } from "react";
 import ReactDOM from "react-dom";
 import { FaEllipsisV } from "react-icons/fa";
