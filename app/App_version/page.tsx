@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Index from "@/features/appVersion/Index";
 import Header from "@/features/layout/header/header";
 import Layout from "@/features/layout/layout";

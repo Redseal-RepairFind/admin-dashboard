@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Index from "@/features/promotion/index";
 import Layout from "@/features/layout/layout";
 

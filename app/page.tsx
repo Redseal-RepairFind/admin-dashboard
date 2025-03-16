@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Layout from "@/features/layout/layout";
 import OverviewPage from "@/features/overview";
 

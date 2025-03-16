@@ -4,34 +4,22 @@ import { trimString } from "@/lib/utils/trim-string";
 import { CompletedState, PendingState } from "@/public/svg";
 import Image from "next/image";
 import React, { useRef } from "react";
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
+
 import { ITransactionsDetail } from "@/lib/types";
 
 interface IProps {
   closeModal: React.Dispatch<React.SetStateAction<boolean>>;
   transactionDetail: ITransactionsDetail;
 }
+import { useReactToPrint } from "react-to-print";
 
 const Reciept: React.FC<IProps> = ({ closeModal, transactionDetail }) => {
   const componentRef = useRef<HTMLDivElement>(null);
-  const handlePrint = async () => {
-    const pdf = new jsPDF("p", "px", "a4");
-    const canvas = await html2canvas(componentRef.current as HTMLElement);
-    const imgData = canvas.toDataURL("image/png");
-    const xPos = (pdf.internal.pageSize.getWidth() - canvas.width * 0.6) / 2;
-    const yPos = (pdf.internal.pageSize.getHeight() - canvas.height * 0.6) / 2;
-    pdf.addImage(
-      imgData,
-      "PNG",
-      xPos,
-      yPos,
-      canvas.width * 0.6,
-      canvas.height * 0.6
-    );
-    pdf.save("sample.pdf");
-  };
 
+  const contentRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({
+    contentRef: componentRef,
+  });
   return (
     <div ref={componentRef}>
       {/* Logo */}
@@ -89,7 +77,7 @@ const Reciept: React.FC<IProps> = ({ closeModal, transactionDetail }) => {
         </div>
         {/* Download Button */}
         <button
-          onClick={handlePrint}
+          onClick={() => handlePrint()}
           className="border border-[#333333] outline-none bg-transparent flex gap-2 py-2 px-2"
         >
           <svg

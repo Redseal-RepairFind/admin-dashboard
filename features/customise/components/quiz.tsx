@@ -1,4 +1,5 @@
-// pages/index.js
+"use client";
+
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import QuestionForm from "./questionForm";
 import QuestionPreview from "./questionPreview";

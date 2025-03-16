@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import useEmergency from "@/lib/hooks/useEmergency";
 import useDisputes from "@/lib/hooks/useDisputes";

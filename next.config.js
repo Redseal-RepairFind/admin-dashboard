@@ -30,6 +30,16 @@ const nextConfig = {
       },
     ],
   },
+
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Ignore the 'fs' module in the client-side build
+      config.resolve.fallback = {
+        fs: false,
+      };
+    }
+    return config;
+  },
 };
 
 module.exports = withNextVideo(nextConfig);

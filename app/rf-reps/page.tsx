@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Layout from "@/features/layout/layout";
 import Representatives from "@/features/reps";
 
