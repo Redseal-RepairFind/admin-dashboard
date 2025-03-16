@@ -36,7 +36,7 @@ function SkillsTab() {
       } else if (skillInputs.length > 1) {
         data = await AddSkills({ skills: newSkills });
 
-        console.log(newSkills, newSkills.length);
+        // console.log(newSkills, newSkills.length);
       }
       toast.remove();
       toast.success(data?.message);

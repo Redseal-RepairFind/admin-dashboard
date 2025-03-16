@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { IJobs, IJobsList } from "@/lib/types";
 import { generateRange } from "@/lib/utils/generate-range";
 import {
@@ -10,12 +10,16 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { setsingleJobDetail } from "@/lib/redux/slices/single-job-detail";
 import { RootState } from "@/lib/redux/store";
 import { useSortedData } from "@/lib/hooks/useSortedData";
+import { customers } from "@/lib/api/customers";
+import { useQuery } from "react-query";
 
 interface UseJobsTableProps {
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setLoading?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const useJobTable = ({ setLoading }: UseJobsTableProps) => {
+  const { slug } = useParams();
+
   const [currentJobsList, setCurrentJobsList] = useState<any>([]);
   const [queryedJobsList, setQueryedJobsList] = useState<any>([]);
   const [isQuerying, setIsQuerying] = useState(false);
@@ -28,7 +32,7 @@ export const useJobTable = ({ setLoading }: UseJobsTableProps) => {
     useSortedData("jobs");
 
   useEffect(() => {
-    setLoading(loadingCustomers);
+    setLoading?.(loadingCustomers);
     if (jobData?.data?.data) {
       setCurrentJobsList(jobData?.data?.data);
     }
@@ -128,11 +132,16 @@ export const useJobTable = ({ setLoading }: UseJobsTableProps) => {
     }
   };
 
+  const { isLoading: loadingSingleJob, data: aingleJob } = useQuery(
+    ["single job"],
+    () => customers.getSingleJob(slug.toString())
+  );
+
   const dispatch = useAppDispatch();
   const pathname = usePathname();
   const router = useRouter();
   const handleViewInvoice = (item: any) => {
-    setLoading(true);
+    setLoading?.(true);
     dispatch(setsingleJobDetail(item));
     router.push(`${pathname}/${item._id}`);
   };
@@ -154,5 +163,7 @@ export const useJobTable = ({ setLoading }: UseJobsTableProps) => {
     currentJobsList,
     handleViewInvoice,
     totalJobs,
+    loadingSingleJob,
+    aingleJob,
   };
 };

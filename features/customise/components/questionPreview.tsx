@@ -54,7 +54,7 @@ const QuestionPreview: React.FC<QuestionPreviewProps> = ({
     // console.log(values);
     try {
       const response = await AddQuiz(values);
-      console.log(response);
+      // console.log(response);
       toast.success(response?.message);
       setIsLoading(false);
       setTimeout(() => {

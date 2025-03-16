@@ -61,10 +61,10 @@ export const useCustomerHistoryTable = ({ jobHistory }: IProps) => {
   useEffect(() => {
     if (!isQuerying) {
       setCurrentCustomerHistory(jobHistory);
-      console.log("not querying");
+      // console.log("not querying");
     } else {
       setCurrentCustomerHistory(queryedCustomerHistory);
-      console.log("querying");
+      // console.log("querying");
     }
   }, [isQuerying, jobHistory, queryedCustomerHistory]);
 
@@ -153,7 +153,7 @@ export const useCustomerHistoryTable = ({ jobHistory }: IProps) => {
           (history) => {
             const createdAtDate = new Date(history.job.createdAt);
             const createdAtMonth = createdAtDate.getMonth() + 1;
-            console.log(createdAtMonth);
+            // console.log(createdAtMonth);
             return createdAtMonth === value;
           }
         );

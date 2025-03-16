@@ -17,6 +17,8 @@ import GoBack from "@/features/shared/go-back-button/go-back";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { RootState } from "@/lib/redux/store";
 import Reciept from "@/features/shared/reciept";
+import { useJobTable } from "../hooks/table";
+import LoadingTemplate from "@/features/layout/loading";
 
 const Invoice = () => {
   const text = `Lorem ipsum dolor sit amet consectetur. At leo felis etiam massa maecenas eget fermentum lacus. Lorem ipsum dolor sit amet consectetur. At leo felis etiam massa maecenas eget fermentum lacus. Lorem ipsum dolor sit amet consectetur. At leo felis etiam massa maecenas eget fermentum lacus.`;
@@ -27,16 +29,21 @@ const Invoice = () => {
   };
   useOnClickOutside(ref, closeModal);
 
+  const { loadingSingleJob, aingleJob } = useJobTable({});
+
+  const jobDetail = aingleJob?.data;
+
   const router = useRouter();
-  const { value: jobDetail } = useAppSelector(
-    (state: RootState) => state.jobDetail
-  );
-  useLayoutEffect(() => {
-    if (jobDetail._id === "") {
-      router.push("/jobs");
-    }
-  }, [jobDetail._id]);
+  // useLayoutEffect(() => {
+  //   if (jobDetail._id === "") {
+  //     router.push("/jobs");
+  //   }
+  // }, [jobDetail._id]);
   // const [isLoading, setIsLoading] = useState(false);
+
+  if (loadingSingleJob) {
+    return <LoadingTemplate />;
+  }
   return (
     <>
       {/* Modal */}
@@ -47,7 +54,7 @@ const Invoice = () => {
       >
         <div className="flex w-full justify-center">
           <div
-            className="w-[600px] bg-white max-w-auto relative p-7 overflow-y-auto h-screen"
+            className="w-[600px] bg-white max-w-auto relative  overflow-y-auto h-screen"
             ref={ref}
           >
             <Reciept jobDetail={jobDetail} closeModal={setShowModal} />

@@ -55,7 +55,7 @@ export const singleCustomerSlice = createSlice({
       state.value = action.payload;
     },
     setSingleCustomersJob: (state, action: PayloadAction<IJobHistory>) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       state.history = action.payload;
     },
   },

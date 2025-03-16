@@ -32,7 +32,7 @@ export const useContractorTable = ({ setLoading }: IProps) => {
     getContactorDetail(data).then((response: IContractors) => {
       setLoading(false);
       setContractors(response);
-      console.log(response);
+      // console.log(response);
     });
   }, []);
 
@@ -147,7 +147,7 @@ export const useContractorTable = ({ setLoading }: IProps) => {
               artisans.contractorProfile.createdAt
             );
             const createdAtMonth = createdAtDate.getMonth() + 1;
-            console.log(createdAtMonth);
+            // console.log(createdAtMonth);
             return createdAtMonth === value;
           }
         );
@@ -163,15 +163,15 @@ export const useContractorTable = ({ setLoading }: IProps) => {
         (item) => item.rating?.avgRating === value
       );
 
-      console.log(filteredMatchingRating);
+      // console.log(filteredMatchingRating);
 
       setQueryedContractors({ artisans: filteredMatchingRating });
     }
   };
 
-  const handleStatusFiltering = (value: number) => {
-    console.log(value);
-  };
+  // const handleStatusFiltering = (value: number) => {
+  //   console.log(value);
+  // };
 
   return {
     handleQuery,

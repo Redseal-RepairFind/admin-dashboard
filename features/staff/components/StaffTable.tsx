@@ -47,9 +47,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     refetchStaffData,
     SuspendStaff,
     perPage,
-    setPerPage,
     currentPage,
-    setCurrentPage,
     search,
     setSearch,
     loadingStaff,
@@ -156,11 +154,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
   };
 
   const pageProps = {
-    data: staffData,
-    perPage,
-    setPerPage,
-    pageNo: currentPage,
-    setPageNo: setCurrentPage,
+    data: staffData?.data,
   };
 
   // console.log(rowOptions);

@@ -16,7 +16,7 @@ const Action: React.FC<IProps> = ({ setLoading, id }) => {
   const handleOptions = (option: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setLoading(true);
-    console.log(id);
+    // console.log(id);
     validateAContractorDocument({ contractorDocsId: id }).then((response) => {
       if (response) {
         setLoading(false);

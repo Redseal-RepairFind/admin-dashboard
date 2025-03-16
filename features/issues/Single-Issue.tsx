@@ -237,12 +237,14 @@ function SingleIssue({ id }: { id?: string }) {
       {/* <JobHistory /> */}
 
       <div className="flex items-center gap-2 mt-6">
-        <button
-          className="px-4 py-3 bg-[#dd0a0a] text-white rounded-md hover:text-[#dd0404] hover:border hover:bg-white hover:border-[#dd0404] duration-500 transition-all"
-          onClick={() => handleModalOpen("issue")}
-        >
-          Sanction
-        </button>
+        {status === "RESOLVED" ? null : (
+          <button
+            className="px-4 py-3 bg-[#dd0a0a] text-white rounded-md hover:text-[#dd0404] hover:border hover:bg-white hover:border-[#dd0404] duration-500 transition-all"
+            onClick={() => handleModalOpen("issue")}
+          >
+            Sanction
+          </button>
+        )}
         {/* <button
           className="px-4 py-3 border border-black rounded-md text-[12px] hover:text-white hover:bg-black duration-500 transition-all"
           onClick={handleGotoChat}

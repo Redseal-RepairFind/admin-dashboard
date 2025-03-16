@@ -36,7 +36,7 @@ const Invoice = () => {
     (state: RootState) => state.singleCustomerDetail
   );
 
-  console.log(customerDetails);
+  // console.log(customerDetails);
   const router = useRouter();
   useLayoutEffect(() => {
     if (

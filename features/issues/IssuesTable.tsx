@@ -173,6 +173,11 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
                 <tr
                   key={i}
                   className="border-b border-gray-100 cursor-pointer hover:bg-slate-200 transition-all duration-300"
+                  onClick={() => {
+                    issue?.status === "PENDING"
+                      ? null
+                      : handleSinglePageRoute(issue._id);
+                  }}
                 >
                   <Td>{issue?.reporterType}</Td>
                   <Td>
@@ -214,11 +219,7 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
                           : handleAcceptIssue(issue?._id);
                       }}
                     >
-                      {issue?.status === "RESOLVED"
-                        ? "Resolved"
-                        : issue?.status === "REVIEWED"
-                        ? "View"
-                        : "Accept"}
+                      {issue?.status === "PENDING" ? "Accept" : "View"}
                     </button>
                   </Td>
                   {/* <Td>

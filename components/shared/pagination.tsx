@@ -19,7 +19,7 @@ const Pagination = ({ data }: dData) => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // console.log(data?.data);
+  // console.log(data);
   // Sync pageNo and perPage with URL query params on component mount
   useEffect(() => {
     const currentPageFromURL = searchParams.get("page");

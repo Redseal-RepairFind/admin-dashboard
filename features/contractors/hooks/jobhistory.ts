@@ -10,7 +10,7 @@ interface IProps {
 }
 
 function findContractorHistorySmallestYear(arrayOfObjects: IJobHistory[]) {
-  console.log(arrayOfObjects);
+  // console.log(arrayOfObjects);
   if (arrayOfObjects.length === 0) {
     return null; // Return null if the array is empty
   }
@@ -59,10 +59,10 @@ export const useContractorHistoryTable = ({ jobHistory }: IProps) => {
   useEffect(() => {
     if (!isQuerying) {
       setCurrentContractorHistory(jobHistory);
-      console.log("not querying");
+      // console.log("not querying");
     } else {
       setCurrentContractorHistory(queryedContractorHistory);
-      console.log("querying");
+      // console.log("querying");
     }
   }, [isQuerying, jobHistory, queryedContractorHistory]);
 
@@ -147,7 +147,7 @@ export const useContractorHistoryTable = ({ jobHistory }: IProps) => {
           (history) => {
             const createdAtDate = new Date(history.job.createdAt);
             const createdAtMonth = createdAtDate.getMonth() + 1;
-            console.log(createdAtMonth);
+            // console.log(createdAtMonth);
             return createdAtMonth === value;
           }
         );
