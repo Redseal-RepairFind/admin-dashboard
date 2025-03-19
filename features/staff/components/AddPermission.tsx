@@ -14,6 +14,7 @@ const AddPermission = ({ hideModal }: { hideModal: any }) => {
   } = useForm();
 
   const onSubmit = async (payload: any) => {
+    console.log(payload);
     try {
       const data = await AddNewPermission(payload);
       // console.log(data);
@@ -27,7 +28,7 @@ const AddPermission = ({ hideModal }: { hideModal: any }) => {
       toast.error(e?.response?.data?.message);
     }
 
-    // console.log(payload);
+    console.log(payload);
   };
 
   return (

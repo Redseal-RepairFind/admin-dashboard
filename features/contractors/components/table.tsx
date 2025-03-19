@@ -2,33 +2,18 @@
 import React, { useRef, useState } from "react";
 import TableCard from "@/features/shared/table/components/table-card";
 import Heading from "@/features/shared/table/components/table-heading";
-import Searchbar from "@/features/shared/table/components/searchbar";
-import Filter from "@/features/shared/table/components/filter";
-import Paginator from "@/features/shared/table/components/paginator";
 import TableOverflow from "@/features/shared/table/components/table-overflow";
 import Table from "@/features/shared/table/components/table";
 import Thead from "@/features/shared/table/components/thead";
 import Th from "@/features/shared/table/components/th";
 import Td from "@/features/shared/table/components/td";
-import {
-  CompletedState,
-  PendingState,
-  RatingStar,
-  YellowStar,
-} from "@/public/svg";
-import Action from "./action";
-import { filledArrayFromNumber } from "@/lib/utils/array-from-number";
-import { trimString } from "@/lib/utils/trim-string";
 import { useContractorTable } from "../hooks/table";
-import Ratings from "@/components/shared/ratings";
 import Pagination from "@/components/shared/pagination";
 import SortLists from "@/app/_components/Sort";
-
 import Search from "@/components/shared/search";
 import CheckBox from "@/app/_components/Check-box";
 import { useCheckedList } from "@/context/checked-context";
 import ActionButton from "@/features/shared/inner-pages/action-button";
-import { FaArrowDown } from "react-icons/fa";
 import Modal from "react-responsive-modal";
 import DeleteModal from "@/features/customise/components/promotions/DeleteModal";
 import { SubmitBtn } from "@/features/quiz/components";

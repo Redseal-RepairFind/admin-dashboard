@@ -5,14 +5,39 @@ import toast from "react-hot-toast";
 import PasswordField from "@/components/ui/password-input";
 import SubmitBtn from "@/components/ui/submit-btn";
 import CustomDropdown from "@/components/shared/custom-dropdown";
+import CheckBox from "@/app/_components/Check-box";
 
 interface Permission {
   value: string;
   label: string;
 }
 
+interface FetchedPermissions {
+  name: string;
+  _id: string;
+  description: string;
+  // createdAt?: string;
+}
+
+interface Teams {
+  name: string;
+  _id: string;
+}
+
+interface CheckedList {
+  teams: Teams[] | any;
+  permissions: FetchedPermissions[];
+}
+
 const AddStaff = ({ setOpen }: { setOpen: any }) => {
-  const { permissionList, AddStaff: InviteUser, refetchStaffData } = useStaff();
+  const {
+    permissionList,
+    AddStaff: InviteUser,
+    refetchStaffData,
+    teamsData,
+  } = useStaff();
+
+  const [checkedList, setCheckedList] = useState<FetchedPermissions[]>([]);
 
   const [defaultPermissions, setDefaultPermissions] = useState<Permission[]>(
     []
@@ -24,15 +49,30 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
     formState: { isSubmitting },
   } = useForm();
 
+  const handleSelect = (item: any) => {
+    const isAlreadySelected = checkedList?.some(
+      (selectedItem: FetchedPermissions) => selectedItem._id === item._id
+    );
+
+    const updatedList = isAlreadySelected
+      ? checkedList?.filter(
+          (selectedItem: FetchedPermissions) => selectedItem._id !== item._id
+        ) // Remove the item if it is already selected
+      : [...checkedList, item]; // Add the item if it is not already selected
+
+    setCheckedList(updatedList);
+
+    // console.log(updatedList); // Log the updated list
+  };
+
   // console.log(defaultPermissions);
 
   const onSubmit = async (data: any) => {
-    if (!defaultPermissions.length)
-      return toast.error("Kindly add permissions");
+    if (!checkedList.length) return toast.error("Kindly add permissions");
 
     const payload = {
       ...data,
-      permisions: defaultPermissions.map((permission) => permission.value),
+      permisions: checkedList.map((permission) => permission._id),
     };
 
     try {
@@ -138,9 +178,38 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
           />
         </div>
 
+        {/* <div className="grid grid-cols-3 gap-2 ">
+          {permissionList.map((permission: FetchedPermissions) => (
+            <span className="flex items-center gap-2" key={permission?._id}>
+              <CheckBox
+                isChecked={
+                  checkedList?.some(
+                    (item: any) => item?._id === permission?._id
+                  ) || false
+                }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSelect(permission);
+                }}
+              />
+              <p
+                className={`${
+                  checkedList?.some(
+                    (item: any) => item?._id === permission?._id
+                  )
+                    ? "text-gray-800"
+                    : "text-gray-400"
+                }`}
+              >
+                {permission?.name}
+              </p>
+            </span>
+          ))}
+        </div> */}
+
         <AddPermissions
-          defaultPermissions={defaultPermissions}
-          setDefaultPermissions={setDefaultPermissions}
+          defaultPermissions={checkedList}
+          setDefaultPermissions={setCheckedList}
         />
 
         <div className="flex items-center justify-between">
@@ -156,38 +225,27 @@ export default AddStaff;
 export function AddPermissions({
   defaultPermissions,
   setDefaultPermissions,
-}: {
-  defaultPermissions: Permission[];
+}: // handleSelect
+{
+  defaultPermissions: FetchedPermissions[];
   setDefaultPermissions: any;
+  // handleSelect: (item: any) => void
 }) {
   const { permissionList } = useStaff();
+  const handleSelect = (item: any) => {
+    const isAlreadySelected = defaultPermissions?.some(
+      (selectedItem: FetchedPermissions) => selectedItem._id === item._id
+    );
 
-  // const [defaultPermissions, setDefaultPermissions] = useState<Permission[]>(
-  //   []
-  // );
+    const updatedList = isAlreadySelected
+      ? defaultPermissions?.filter(
+          (selectedItem: FetchedPermissions) => selectedItem._id !== item._id
+        ) // Remove the item if it is already selected
+      : [...defaultPermissions, item]; // Add the item if it is not already selected
 
-  const handleSelected = (selected: Permission[]) => {
-    // setIsFresh(false);
+    setDefaultPermissions(updatedList);
 
-    if (selected.length < defaultPermissions.length) {
-      return setDefaultPermissions(selected);
-    }
-
-    // Create a new array by combining elements from defaultPermissions and selected
-    const updatedPermissions = [...defaultPermissions];
-
-    selected.forEach((item: Permission) => {
-      // Check if item is not already in updatedPermissions
-      if (
-        !updatedPermissions.some(
-          (perm: Permission) => perm.value === item?.value
-        )
-      ) {
-        updatedPermissions.push(item);
-      }
-    });
-
-    setDefaultPermissions(updatedPermissions);
+    // console.log(updatedList); // Log the updated list
   };
 
   return (
@@ -195,7 +253,35 @@ export function AddPermissions({
       <label className="block text-gray-700 text-sm font-bold mb-2">
         Permissions
       </label>
-      <CustomDropdown
+      <div className="grid grid-cols-3 gap-2 ">
+        {permissionList.map((permission: FetchedPermissions) => (
+          <span className="flex items-center gap-2" key={permission?._id}>
+            <CheckBox
+              isChecked={
+                defaultPermissions?.some(
+                  (item: any) => item?._id === permission?._id
+                ) || false
+              }
+              onClick={(e) => {
+                e.stopPropagation();
+                handleSelect(permission);
+              }}
+            />
+            <p
+              className={`${
+                defaultPermissions?.some(
+                  (item: any) => item?._id === permission?._id
+                )
+                  ? "text-gray-800"
+                  : "text-gray-400"
+              }`}
+            >
+              {permission?.name}
+            </p>
+          </span>
+        ))}
+      </div>
+      {/* <CustomDropdown
         isMulti={true}
         width={"100%"}
         onChange={(selected: Permission[]) => handleSelected(selected)}
@@ -205,7 +291,7 @@ export function AddPermissions({
         })}
         defaultValue={[]}
         placeholder="Select permissions"
-      />
+      /> */}
     </div>
   );
 }

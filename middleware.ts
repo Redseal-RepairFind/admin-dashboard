@@ -15,6 +15,8 @@ export async function middleware(request: NextRequest) {
   // Fetch user permissions using the token
   const userPermissions = await fetchPermissionsFromAPI(token);
 
+  console.log();
+
   const route = routes.find((route) =>
     request.nextUrl.pathname.startsWith(route.route)
   );

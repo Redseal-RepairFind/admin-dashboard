@@ -63,6 +63,8 @@ function SingleIssue({ id }: { id?: string }) {
 
   const issue = issuesData?.data?.data;
 
+  console.log(issue);
+
   // Handle modal state
   const handleModalClose = (card: "issue" | "sanction") => {
     card === "issue"
