@@ -8,7 +8,7 @@ function CheckBox({
   onClick: (event: any) => void;
 }) {
   return (
-    <button onClick={onClick} className="w-12 -h-12">
+    <button onClick={onClick} className="" type="button">
       <span
         className={`h-4 w-4 rounded-sm border flex items-center justify-center border-black ${
           isChecked ? " bg-black " : ""

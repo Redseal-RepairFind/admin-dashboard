@@ -41,7 +41,7 @@ function AddTeams({
       payload = {
         ...data,
         permissions: defaultPermissions.map(
-          (permission: any) => permission.label
+          (permission: any) => permission.name
         ),
       };
       await onHandleSubmit(payload);

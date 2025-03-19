@@ -157,7 +157,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
     data: staffData?.data,
   };
 
-  // console.log(rowOptions);
+  console.log();
 
   return (
     <TableCard>
@@ -172,12 +172,12 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
           />
         </div>
         <div className="flex items-center justify-end gap-4">
-          <button
+          {/* <button
             onClick={() => setOpenPAdd(true)}
             className="border border-[#262626] py-2.5 px-5 rounded-md"
           >
             Add Permission
-          </button>
+          </button> */}
           <button
             onClick={() => setOpen(true)}
             className="border border-[#262626] bg-[#262626] text-white py-2.5 px-5 rounded-md"

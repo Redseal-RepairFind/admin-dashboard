@@ -15,6 +15,7 @@ import {
   TotalRevenue,
   AppVersion,
   Issues,
+  FeedBackIcon,
 } from "@/public/svg";
 
 import { MdEmergency } from "react-icons/md";
@@ -37,15 +38,16 @@ export const navLinks: INavLinks[] = [
     name: "Employees",
     svg: <RFReps />,
     route: "/staff",
-    readPermissions: ["manage_permissions"],
+    readPermissions: [],
   },
-  {
-    name: "Teams ",
-    svg: <Jobs />,
-    route: "/teams",
-    readPermissions: ["manage_staffs"],
-  },
+  // {
+  //   name: "Teams ",
+  //   svg: <Jobs />,
+  //   route: "/teams",
+  //   readPermissions: ["manage_staffs"],
+  // },
   // { name: "Analytics", svg: <Analytics />, route: "/analytics" },
+
   {
     name: "Customers",
     svg: <Customers />,
@@ -76,6 +78,12 @@ export const navLinks: INavLinks[] = [
     svg: <TotalRevenue />,
     route: "/transactions",
     readPermissions: [],
+  },
+  {
+    name: "Feed Backs",
+    svg: <FeedBackIcon />,
+    route: "/feedbacks",
+    readPermissions: ["manage_staffs"],
   },
 
   {

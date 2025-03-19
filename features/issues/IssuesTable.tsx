@@ -16,13 +16,14 @@ import LoadingTemplate from "../layout/loading";
 import { toast } from "react-hot-toast";
 import Pagination from "@/components/shared/pagination";
 import { useLoader } from "@/context/LoaderContext";
+import Empty from "@/components/ui/empty-data";
 
 const table_headings = [
-  "Complainant Platform",
-  "Complainant Name",
+  "Complainant name",
+  "Defendant Name",
   "Issue date",
-  "Status",
-  "Action",
+  "Assigned Admin",
+  "Assigned Date",
 ];
 const types = [
   // { id: 1, value: "All", slug: "ALL" },
@@ -121,11 +122,12 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
     }
   }
 
-  // console.log(sortedData);
-
   const pageProps = {
     data: sortedData?.data?.data,
   };
+
+  const mainData = dataToRender?.data?.data?.data;
+  console.log(mainData);
 
   return (
     <TableCard>
@@ -168,8 +170,8 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
                 ))}
               </tr>
             </Thead>
-            <tbody>
-              {dataToRender?.data?.data?.data?.map((issue: any, i: any) => (
+            <tbody className={`relative `}>
+              {mainData?.map((issue: any, i: any) => (
                 <tr
                   key={i}
                   className="border-b border-gray-100 cursor-pointer hover:bg-slate-200 transition-all duration-300"
@@ -179,15 +181,29 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
                       : handleSinglePageRoute(issue._id);
                   }}
                 >
-                  <Td>{issue?.reporterType}</Td>
                   <Td>
-                    {issue?.reporter?.name ||
-                      `${issue?.reporter?.firstName} ${issue?.reporter?.lastName} `}
+                    <span>
+                      {issue?.reporter?.name
+                        ? issue?.reporter?.name
+                        : `${issue?.reporter?.firstName} ${issue?.reporter?.lastName}  `}
+                    </span>
+                    {"  "}
+                    <span>({issue?.reporterType.replace(/s/g, "")})</span>
+                  </Td>
+                  <Td className="">
+                    <span>
+                      {issue?.reported?.name ||
+                        `${issue?.reported?.firstName} ${issue?.reported?.lastName} `}
+                    </span>
+                    <span>
+                      {" "}
+                      <span> ({issue?.reportedType.replace(/s/g, "")})</span>
+                    </span>
                   </Td>
                   <Td>{formatDateToDDMMYY(issue.createdAt)}</Td>
                   <Td>
                     <span className="flex items-center gap-2">
-                      {issue?.status !== "RESOLVED" ? (
+                      {/* {issue?.status !== "RESOLVED" ? (
                         <>
                           <ComplaintsState />
                           <p className="text-danger capitalize">
@@ -201,11 +217,13 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
                             {issue?.status.toLowerCase()}
                           </p>
                         </>
-                      )}
+                      )} */}
+
+                      {issue?.admin?.name || "Repair Admin"}
                     </span>
                   </Td>
                   <Td>
-                    <button
+                    {/* <button
                       className={`px-3 py-2 rounded-md font-semibold w-40 border duration-500 transition-all border-black text-black    ${
                         issue?.status === "RESOLVED"
                           ? "bg-black hover:bg-gray-600 text-white cursor-not-allowed"
@@ -220,7 +238,9 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
                       }}
                     >
                       {issue?.status === "PENDING" ? "Accept" : "View"}
-                    </button>
+                    </button> */}
+
+                    {formatDateToDDMMYY(issue?.assignedAt)}
                   </Td>
                   {/* <Td>
                 <Link to={`/issues/${issue._id}`}>View Details</Link>
