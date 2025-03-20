@@ -41,6 +41,8 @@ interface Teams {
   teamId: string;
 }
 
+type Toggle = { to: "add" | "edit"; text: string };
+
 const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
   const {
     staffData,
@@ -70,10 +72,20 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
   const [openPermissions, setOpenPermissions] = useState(false);
   const [dataToRender, setDataToRender] = useState<any>([]);
   const [currentStaff, setCurrentStaff] = useState();
-  const [openModal, setOpenModal] = useState(false);
+  const [toggle, setToggle] = useState<Toggle>({
+    to: "add",
+    text: "Add Admin to Team",
+  });
   //
   // console.log(teamsData);
   // console.log(staffData);
+
+  function toggleEditAdd() {
+    setToggle((prevToggle) => ({
+      to: prevToggle.to === "add" ? "edit" : "add",
+      text: prevToggle.to === "add" ? "Edit Admin" : "Add Admin to Team",
+    }));
+  }
 
   useEffect(() => {
     isQuerying ? setDataToRender(queryedList) : setDataToRender(staffData);
@@ -126,32 +138,13 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
       name: "Edit Staff team",
       action: (item: any) => {
         setOpenTeamsForm({ ...openTeamsForm, item, openTeams: true });
+
+        // console.log(item);
       },
     },
   ];
 
-  const handleAddStaffToTeam = async (e: any) => {
-    e.preventDefault();
-
-    toast.loading("Adding To team...");
-    try {
-      const payload = {
-        staffId: openTeamsForm?.item?._id,
-        teamId: openTeamsForm?.teamId,
-      };
-
-      const data = await addStaffToTeam(payload);
-      toast.remove();
-      toast.success(data?.message || "User added to Team successfully");
-
-      refetchStaffData();
-      setOpenTeamsForm({ teamId: "", item: null, openTeams: false });
-    } catch (error: any) {
-      toast.remove();
-      toast.error(error?.response?.data?.message || "Failed to add to team");
-      console.error(error);
-    }
-  };
+  // console.log(openTeamsForm);
 
   const pageProps = {
     data: staffData?.data,
@@ -210,6 +203,8 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
         container={permissionRef.current}
       >
         <div className="w-[600px] pt-6">
+          {/* <h1 className="text-center font-bold text-xl py-5">Edit</h1> */}
+
           <EditPermissions
             refetch={refetchStaffData}
             hideModal={() => setOpenPermissions(false)}
@@ -275,11 +270,34 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
         }}
         container={modalRef.current}
       >
-        <form
-          className="w-[400px] min-h-44 flex flex-col justify-between items-center pt-6"
-          onSubmit={handleAddStaffToTeam}
-        >
-          <select
+        <div className="w-[600px] min-h-44 flex flex-col justify-between items-center pt-6">
+          {/* <div className="flex items-center gap-3">
+            <span className="font-bold">Add to Team</span>
+            <button
+              className="w-10 h-5 relative flex items-center rounded-2xl bg-gray-300 px-1"
+              onClick={toggleEditAdd}
+            >
+              <div
+                className={`h-4 w-4 rounded-full bg-gray-900 ${
+                  toggle.to === "add" ? "left-[2px]" : "right-[2px]"
+                } absolute transition-all duration-300`}
+              />
+            </button>
+            <span className="font-bold">Edit Team</span>
+          </div> */}
+
+          <h1 className="text-center font-bold text-xl py-5">{toggle.text}</h1>
+
+          <EditPermissions
+            refetch={refetchStaffData}
+            hideModal={() =>
+              setOpenTeamsForm({ teamId: "", item: null, openTeams: false })
+            }
+            currentStaff={openTeamsForm?.item}
+            type="addPermissions"
+          />
+
+          {/* <select
             name="Teams"
             id="teams"
             className="w-full"
@@ -296,11 +314,11 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
                 {team?.name}
               </option>
             ))}
-          </select>
-          <SubmitBtn className="w-full text-center flex items-center justify-center">
+          </select> */}
+          {/* <SubmitBtn className="w-full text-center flex items-center justify-center">
             Submit
-          </SubmitBtn>
-        </form>
+          </SubmitBtn> */}
+        </div>
       </Modal>
 
       <TableOverflow>

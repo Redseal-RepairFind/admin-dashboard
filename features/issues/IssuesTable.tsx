@@ -23,7 +23,7 @@ const table_headings = [
   "Defendant Name",
   "Issue date",
   "Assigned Admin",
-  "Assigned Date",
+  // "Assigned Date",
 ];
 const types = [
   // { id: 1, value: "All", slug: "ALL" },
@@ -108,26 +108,12 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
   //   // console.log(dataToRender, sortedData);
   // }, [sortValue, sortedData]);
 
-  async function handleAcceptIssue(id: string) {
-    toast.loading("Accepting....");
-    try {
-      const data = await acceptIssue(id);
-      toast.remove();
-      toast.success("Issue accepted by an admin");
-      handleSinglePageRoute(id);
-    } catch (e: any) {
-      console.error(e);
-      toast.remove();
-      toast.error(e?.message);
-    }
-  }
-
   const pageProps = {
     data: sortedData?.data?.data,
   };
 
   const mainData = dataToRender?.data?.data?.data;
-  console.log(mainData);
+  // console.log(mainData);
 
   return (
     <TableCard>
@@ -176,9 +162,7 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
                   key={i}
                   className="border-b border-gray-100 cursor-pointer hover:bg-slate-200 transition-all duration-300"
                   onClick={() => {
-                    issue?.status === "PENDING"
-                      ? null
-                      : handleSinglePageRoute(issue._id);
+                    handleSinglePageRoute(issue._id);
                   }}
                 >
                   <Td>
@@ -219,10 +203,10 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
                         </>
                       )} */}
 
-                      {issue?.admin?.name || "Repair Admin"}
+                      {issue?.admin?.name || "No assigned admin yet"}
                     </span>
                   </Td>
-                  <Td>
+                  {/* <Td>
                     {/* <button
                       className={`px-3 py-2 rounded-md font-semibold w-40 border duration-500 transition-all border-black text-black    ${
                         issue?.status === "RESOLVED"
@@ -238,10 +222,10 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
                       }}
                     >
                       {issue?.status === "PENDING" ? "Accept" : "View"}
-                    </button> */}
+                    </button> 
 
                     {formatDateToDDMMYY(issue?.assignedAt)}
-                  </Td>
+                  </Td> */}
                   {/* <Td>
                 <Link to={`/issues/${issue._id}`}>View Details</Link>
               </Td> */}

@@ -41,10 +41,16 @@ const EditPermissions = ({
   currentStaff: any;
   hideModal: any;
   refetch: any;
-  type?: "editTeams" | "editPermission";
+  type?: "editTeams" | "editPermission" | "addPermissions";
   handleEditPermission?: any;
 }) => {
-  const { permissionList, UpdatePermission, teamsData } = useStaff();
+  const {
+    permissionList,
+    UpdatePermission,
+    teamsData,
+    addStaffToTeam,
+    refetchStaffData,
+  } = useStaff();
   const [checkedList, setCheckedList] = useState<CheckedList>({
     teams: type.includes("editTeams") ? currentStaff : currentStaff?.teams,
     permissions: currentStaff?.permissions,
@@ -59,28 +65,40 @@ const EditPermissions = ({
     selectedPermissions || []
   );
 
+  // console.log(checkedList);
   useEffect(() => {
-    if (type.includes("editPermission")) {
-      // userPermission = userPermission.map((team: any) => {
+    if (type.includes("editPermission") || type.includes("addPermission")) {
+      // Filter teams based on checkedList.teams
       const teams = teamsData?.filter((item: any) =>
         checkedList?.teams.some((team: any) => team?._id === item?._id)
       );
+
+      // Extract permissions from the selected teams
       const teamsPerm = teams?.map((team: any) => team?.permissions);
 
-      const userPermission: any[] = [
+      // Flatten the permissions array and ensure uniqueness
+      const teamPermissions: any[] = [
         ...new Map(
           teamsPerm
-            .flatMap((subArray: any) => subArray)
+            ?.flatMap((subArray: any) => subArray)
             .map((item: any) => [item?._id, item])
         ).values(),
       ];
 
-      // });
+      // Combine teamPermissions with checkedList.permissions and remove duplicates
+      const combinedPermissions: any[] = [
+        ...new Map(
+          [...teamPermissions, ...checkedList.permissions].map((item: any) => [
+            item?._id,
+            item,
+          ])
+        ).values(),
+      ];
 
-      setCheckedList({ ...checkedList, permissions: userPermission });
-      // console.log(userPermission);
+      // Update the checkedList with the combined permissions
+      setCheckedList({ ...checkedList, permissions: combinedPermissions });
     }
-  }, [checkedList.teams, type, teamsData]);
+  }, [checkedList.teams, teamsData, type]);
 
   // console.log(permissionList.map((permission: any) => permission.name));
 
@@ -101,14 +119,39 @@ const EditPermissions = ({
         [type]: updatedList,
       };
     });
-
-    // console.log(checkedList);
   };
+  // console.log(currentStaff);
 
   const {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm();
+
+  const handleAddStaffToTeam = async () => {
+    toast.loading("Adding To team...");
+    try {
+      const payload = {
+        staffId: currentStaff?._id,
+        teams: checkedList?.teams?.map((team: any) => team?._id),
+        permissions: checkedList?.permissions?.map(
+          (permission: any) => permission?._id
+        ),
+      };
+
+      // console.log(payload);
+
+      const data = await addStaffToTeam(payload);
+      toast.remove();
+      // toast.success(data?.message || "User added to Team successfully");
+
+      refetchStaffData();
+      hideModal();
+    } catch (error: any) {
+      toast.remove();
+      toast.error(error?.response?.data?.message || "Failed to add to team");
+      console.error(error);
+    }
+  };
 
   const onSubmit = async (data: any) => {
     // const payload = {
@@ -117,102 +160,26 @@ const EditPermissions = ({
     // };
     const payload = {
       staffId: currentStaff?._id,
-      permissions: [
-        "add_user",
-        "view_customers",
-        "update_customer",
-        "crud_customer",
-        "delete_customer",
-        "read_contractor",
-        "update_contractor",
-        "delete_contractor",
-        "crud_contractor",
-        "read_emergency",
-        "delete_emergency",
-        "update_emergency",
-        "crud_emergency",
-        "delete_dispute",
-        "update_dispute",
-        "crud_dispute",
-        "resolve_dispute",
-        "read_dispute",
-        "resolve_emergency",
-        "crud_job",
-        "enable_job_revisit",
-        "create_transaction",
-        "read_transaction",
-        "delete_transaction",
-        "create_payment",
-        "delete_job",
-        "crud_transaction",
-        "update_job",
-        "delete_payment",
-        "update_transaction",
-        "create_job",
-        "update_payment",
-        "read_job",
-        "crud_payment",
-        "read_payment",
-        "read_customer",
-        "manage_dispute",
-        "add_promotion",
-        "delete_promotion",
-        "add_staff",
-        "add_permission",
-        "manage_staff",
-        "update_permission",
-        "manage_contractor_stripe",
-        "delete_issues",
-        "manage_coupon",
-        "manage_app_version",
-        "manage_staff_permission",
-        "update_promotion",
-        "manage_contractor_certn",
-        "manage_issue",
-        "manage_quiz",
-        "delete_question",
-        "update_question",
-        "view_staff",
-        "view_permission",
-        "view_app_version",
-        "view_question",
-        "view_skills",
-        "add_skills",
-        "view_promotion",
-        "delete_skills",
-        "update_skills",
-        "view_quiz",
-        "tomiwa",
-        "manage_disputes",
-        "manage_permissions",
-        "manage_app_versions",
-        "manage_staffs",
-        "manage_emergencies",
-        "delete_contractors",
-        "manage_contractors",
-        "manage_customers",
-        "manage_issues",
-        "manage_promotions",
-        "manage_skills",
-        "manage_questions",
-        "manage_quizzes",
-      ],
+      permissions: checkedList.permissions.map((permission) => permission._id),
     };
 
     const team = {
       id: currentStaff?._id,
-      permissions: defaultPermissions.map((permission) => permission.label),
+      permissions: checkedList.permissions.map((permission) => permission.name),
     };
-    console.log(payload);
+    // console.log(payload);
 
     try {
       let data;
       if (type === "editTeams") {
         data = await handleEditPermission(team);
-      } else {
+      } else if (type === "editPermission") {
         data = await UpdatePermission(payload);
+      } else {
+        data = await handleAddStaffToTeam();
+
+        console.log(data);
       }
-      console.log(payload);
       toast.success(data?.message || "Permission updated successfully");
       setTimeout(() => {
         refetch();
@@ -220,7 +187,7 @@ const EditPermissions = ({
       }, 1000);
     } catch (e: any) {
       console.log(e);
-      toast.error(e?.response?.data?.message);
+      toast.error(e?.response?.data?.message || "Permission update failed");
     }
   };
 
@@ -246,46 +213,54 @@ const EditPermissions = ({
       <div className="w-full">
         <div className="mb-4 min-h-[400px] p-4 overflow-y-scroll">
           <div className="w-full flex flex-col gap-6 pb-8 border-b border-b-slate-600">
-            <label className="block text-gray-700 text-xl font-bold mb-2">
-              Teams
-            </label>
-            <div className="grid grid-cols-4 gap-4">
-              {teamsData?.map((team: any) => (
-                <span className="flex items-center gap-2" key={team?._id}>
-                  <CheckBox
-                    isChecked={
-                      type.includes("editPermission")
-                        ? checkedList?.teams?.some(
-                            (item: any) => item?._id === team?._id
-                          )
-                        : checkedList?.teams?.name.includes(team?.name)
-                    }
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSelect("teams", team);
-                    }}
-                  />
-                  <p
-                    className={`${
-                      type.includes("editPermission")
-                        ? checkedList?.teams?.some(
-                            (item: any) => item?._id === team?._id
-                          )
-                        : checkedList?.teams?.name.includes(team?.name)
-                        ? "text-gray-800"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    {team?.name}
-                  </p>
-                </span>
-              ))}
-            </div>
+            {type.includes("addPermission") ? (
+              <>
+                <label className="block text-gray-700 text-xl font-bold mb-2">
+                  Teams
+                </label>
+                <div className="grid grid-cols-4 gap-4">
+                  {teamsData?.map((team: any) => (
+                    <span className="flex items-center gap-2" key={team?._id}>
+                      <CheckBox
+                        isChecked={
+                          type.includes("editPermission") ||
+                          type.includes("addPermission")
+                            ? checkedList?.teams?.some(
+                                (item: any) => item?._id === team?._id
+                              )
+                            : checkedList?.teams?.name.includes(team?.name)
+                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSelect("teams", team);
+                        }}
+                      />
+                      <p
+                        className={`${
+                          type.includes("editPermission") ||
+                          type.includes("addPermission")
+                            ? checkedList?.teams?.some(
+                                (item: any) => item?._id === team?._id
+                              )
+                            : checkedList?.teams?.name.includes(team?.name)
+                            ? "text-gray-800"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {team?.name}
+                      </p>
+                    </span>
+                  ))}
+                </div>
+              </>
+            ) : null}
           </div>
 
           <div className="mt-6 flex flex-col gap-6">
             <label className="block text-gray-700 text-xl font-bold mb-2">
-              Additional Permissions
+              {type.includes("addPermission")
+                ? " Additional Permissions"
+                : "Edit Permissions"}
             </label>
 
             <div className="grid grid-cols-3 gap-2 ">

@@ -46,6 +46,9 @@ export const staff = {
       .patch(`/admin/teams/${id}/permissions`, payload)
       .then(({ data }) => data),
 
-  addStaffToTeam: (payload: { staffId: string; teamId: string }) =>
-    client.post("/admin/staffs/team", payload).then(({ data }) => data),
+  addStaffToTeam: (payload: {
+    staffId: string;
+    teams: string[];
+    permissions: string[];
+  }) => client.post("/admin/staffs/team", payload).then(({ data }) => data),
 };
