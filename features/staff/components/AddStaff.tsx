@@ -65,7 +65,7 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
     // console.log(updatedList); // Log the updated list
   };
 
-  // console.log(defaultPermissions);
+  // console.log(checkedList);
 
   const onSubmit = async (data: any) => {
     if (!checkedList.length) return toast.error("Kindly add permissions");
@@ -77,7 +77,7 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
 
     try {
       const data = await InviteUser(payload);
-      console.log(data);
+      // console.log(data);
       toast.success(data?.message);
       setTimeout(() => {
         refetchStaffData();
