@@ -17,11 +17,12 @@ import SanctionCard from "./Sanction-Card";
 import { useMutation, useQuery } from "react-query";
 import toast from "react-hot-toast";
 import { useSortedData } from "@/lib/hooks/useSortedData";
+import SingleLineColumn from "../shared/inner-pages/single-line-column";
 
 function SingleIssue({ id }: { id?: string }) {
   const router = useRouter();
 
-  const { strikeUser, refetchIssues } = useSortedData("issues");
+  const { strikeUser, refetchIssues, acceptIssue } = useSortedData("issues");
 
   // States for issue data and loading state
   // const [issue, setIssue] = useState<any>(null);
@@ -63,7 +64,7 @@ function SingleIssue({ id }: { id?: string }) {
 
   const issue = issuesData?.data?.data;
 
-  console.log(issue);
+  // console.log(issue);
 
   // Handle modal state
   const handleModalClose = (card: "issue" | "sanction") => {
@@ -139,7 +140,23 @@ function SingleIssue({ id }: { id?: string }) {
     createdAt,
     comment,
     status,
+    action,
+    admin,
+    _id,
   } = issue;
+
+  async function handleAcceptIssue() {
+    toast.loading("Accepting....");
+    try {
+      const data = await acceptIssue(_id);
+      toast.remove();
+      toast.success("Issue accepted by an admin");
+    } catch (e: any) {
+      console.error(e);
+      toast.remove();
+      toast.error(e?.message);
+    }
+  }
 
   // console.log(issue);
 
@@ -233,20 +250,71 @@ function SingleIssue({ id }: { id?: string }) {
             {comment || "No comment provided."}
           </span>
         </div>
+
+        {admin ? (
+          <>
+            <table className="mt-3 p-3 w-full flex flex-col gap-2">
+              <tbody>
+                <th className="text-[#3a3a3a]">Admin Info</th>
+                <SingleLineColumn
+                  name="Admin name:"
+                  value={admin?.name}
+                  className="gap-8 flex items-center"
+                />
+
+                <SingleLineColumn
+                  name="Admin Email:"
+                  value={admin?.email}
+                  className="gap-8 flex items-center"
+                />
+                {/* <SingleLineColumn
+              name="How did you settle this issue:"
+              value={action}
+              className="gap-8 flex items-center"
+            /> */}
+              </tbody>
+            </table>
+
+            <div className="mt-3 p-3 w-full flex flex-col gap-2">
+              <h2 className="text-[#3a3a3a]">Reason for sanction</h2>
+              <span className="bg-[#f9f9f9] w-full rounded-md text-[12px] p-3">
+                {action || "No comment provided."}
+              </span>
+            </div>
+          </>
+        ) : (
+          <div className="mt-3 p-3 w-full flex flex-col gap-2">
+            <h2 className="text-[#3a3a3a]">Admin section</h2>
+            <span className="bg-[#f9f9f9] w-full rounded-md text-[12px] p-3">
+              {"No admin yet."}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* TBC */}
       {/* <JobHistory /> */}
 
       <div className="flex items-center gap-2 mt-6">
-        {status === "RESOLVED" ? null : (
+        {status === "PENDING" ? (
+          <button
+            className={`px-3 py-2 rounded-md font-semibold w-40 border duration-500 transition-all border-black text-black    ${
+              status === "RESOLVED"
+                ? "bg-black hover:bg-gray-600 text-white cursor-not-allowed"
+                : "hover:bg-black hover:text-white"
+            }`}
+            onClick={handleAcceptIssue}
+          >
+            Accept Issue
+          </button>
+        ) : status === "REVIEWED" ? (
           <button
             className="px-4 py-3 bg-[#dd0a0a] text-white rounded-md hover:text-[#dd0404] hover:border hover:bg-white hover:border-[#dd0404] duration-500 transition-all"
             onClick={() => handleModalOpen("issue")}
           >
             Sanction
           </button>
-        )}
+        ) : null}
         {/* <button
           className="px-4 py-3 border border-black rounded-md text-[12px] hover:text-white hover:bg-black duration-500 transition-all"
           onClick={handleGotoChat}

@@ -190,22 +190,12 @@ function Option({
   id: string;
   // submitted: boolean;
 }) {
-  // const {
-  //   setSubmitted,
-  //   setSelectedAnswer,
-  //   selectedAnswer,
-  //   handleSelectOption,
-  // } = useQuiz();
-
   const answerSession = JSON.parse(
     sessionStorage.getItem("userAnswer") || "[]"
   );
 
   const answered = answerSession.find((answer: any) => answer.id === id);
   const isSelected = selectedAnswer === option || answered?.answer === option; // Ensure only one option is selected
-  // const isCorrectAnswer = correctAnswer === option;
-
-  // console.log(answered);
 
   return (
     <button

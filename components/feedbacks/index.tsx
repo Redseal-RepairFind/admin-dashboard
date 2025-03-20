@@ -1,14 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import { useSortedData } from "@/lib/hooks/useSortedData";
 import Header from "@/features/layout/header/header";
 import PageBody from "@/features/shared/page-body/page-body";
 import PageHeading from "@/features/shared/page-body/page-heading";
-import IssuesTable from "@/features/issues/IssuesTable";
 import FeedbacksTable from "./feedbacksTable";
 
 function Feedbacks() {
+
   return (
     <>
       <Header />

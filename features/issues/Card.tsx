@@ -7,6 +7,7 @@ function Card({
   sanctions,
   onClick,
   data,
+  type = "issue",
 }: {
   initiator?: any;
   customer?: any;
@@ -14,6 +15,7 @@ function Card({
   sanctions?: any;
   onClick?: any;
   data?: any;
+  type?: string;
 }) {
   // console.log(data);
   return (

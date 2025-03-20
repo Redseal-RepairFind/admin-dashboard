@@ -17,13 +17,15 @@ import Pagination from "@/components/shared/pagination";
 import { useLoader } from "@/context/LoaderContext";
 import Empty from "@/components/ui/empty-data";
 import LoadingTemplate from "@/features/layout/loading";
+import useFeedbacks from "@/lib/hooks/useFeedbacks";
 
 const table_headings = [
-  "Complainant name",
-  "Defendant Name",
-  "Issue date",
-  "Assigned Admin",
-  "Assigned Date",
+  "User's name",
+  "Email",
+  "Application",
+  "Account Type",
+  "Feedback Date",
+  "Response admin Name",
 ];
 const types = [
   // { id: 1, value: "All", slug: "ALL" },
@@ -33,62 +35,29 @@ const types = [
 ];
 
 function FeedbacksTable({ dataToRender }: { dataToRender?: any }) {
-  const [status, setStatus] = useState("All");
-  const { handleNavigation } = useLoader();
+  const {
+    feedbackData,
+    loadingFeedbacks,
+    updateUrlParams,
+    sortValue,
+    handleSinglePageRoute,
+  } = useFeedbacks();
 
-  // const [dataToRender, setDataToRender] = useState<any>([]);
+  const [feedbacksData, setFeedbackData] = useState<any[]>();
 
-  // console.log(sortedData?.data?.data?.data);
+  const searchParams = useSearchParams();
 
-  const router = useRouter();
-  const pathname = usePathname();
-  const param = useSearchParams();
+  const statuse = searchParams.get("feedbackStatus") || "OPEN";
 
-  const initialString = param.get("feedbackStatus");
-  const initialSortValue =
-    param.get("feedbackStatus")?.replace(/_/g, " ") || "OPEN";
-
-  // // Set the selected sort value state, initialize with the value from URL
-  const [sortValue, setSortValue] = useState(initialSortValue);
-  // const { adminPermissions } = useAdminPermissions();
-
-  // const [isOpen, setIsOpen] = useState(false);
-
-  // On page load, ensure the sort value in the state is in sync with URL
   useEffect(() => {
-    const sortFromParam = param.get("feedbackStatus");
-    if (sortFromParam) {
-      const updatedSortValue = sortFromParam.replace(/_/g, " ");
-      setSortValue(updatedSortValue); // Update state based on URL query params
+    if (feedbackData) {
+      const data = feedbackData?.data?.filter(
+        (feedback: any) =>
+          feedback?.status?.toLowerCase() === statuse?.toLowerCase()
+      );
+      setFeedbackData(data);
     }
-  }, [param]);
-
-  // Function to update the URL params and the state
-  function updateUrlParams(value: string) {
-    const formattedValue = value.replace(/ /g, "_").toLowerCase(); // Replace spaces with underscores
-
-    // Update the URL query parameters
-    if (value === "OPEN") {
-      router.replace(`${pathname}`, {
-        scroll: false,
-      }); // Remove query params if 'All' is selected (default)
-    } else {
-      const params = new URLSearchParams(window.location.search);
-      params.set("feedbackStatus", formattedValue); // Set the selected filter in query params
-      router.replace(`${pathname}?${params.toString()}`, {
-        scroll: false,
-      });
-    }
-
-    // Set the selected value in the state
-    setSortValue(value);
-    setStatus(value);
-  }
-
-  function handleSinglePageRoute(id: string) {
-    handleNavigation(`/feedbacks/${id}`);
-  }
-
+  }, [statuse]);
   // useEffect(() => {
   //   if (sortValue.toLowerCase() === "all")
   //     setDataToRender(sortedData?.data?.data?.data);
@@ -120,11 +89,6 @@ function FeedbacksTable({ dataToRender }: { dataToRender?: any }) {
   //   data: sortedData?.data?.data,
   // };
 
-  const loadingSortedData = false;
-
-  const mainData = dataToRender?.data?.data?.data;
-  // console.log(mainData);
-
   return (
     <TableCard>
       <div className="flex items-center justify-between">
@@ -154,18 +118,60 @@ function FeedbacksTable({ dataToRender }: { dataToRender?: any }) {
         /> */}
       </div>
 
-      {loadingSortedData ? (
+      {loadingFeedbacks ? (
         <LoadingTemplate />
       ) : (
         <TableOverflow>
           <Table>
             <Thead>
               <tr>
-                {table_headings?.map((heading, index) => (
-                  <Th key={index}>{heading}</Th>
-                ))}
+                {table_headings?.map((heading, index) => {
+                  // Check if it's the last item and the status is "Closed" or "Ongoing"
+                  if (
+                    index === table_headings.length - 1 &&
+                    (statuse.toLowerCase() === "closed" ||
+                      statuse.toLowerCase() === "ongoing")
+                  ) {
+                    return <Th key={index}>{heading}</Th>;
+                  }
+
+                  // Render all other items except the last one
+                  if (index !== table_headings.length - 1) {
+                    return <Th key={index}>{heading}</Th>;
+                  }
+
+                  // Return null for the last item if the condition is not met
+                  return null;
+                })}
               </tr>
             </Thead>
+
+            <tbody className={`relative `}>
+              {feedbacksData?.map((issue: any, i: any) => (
+                <tr
+                  key={i}
+                  className="border-b border-gray-100 cursor-pointer hover:bg-slate-200 transition-all duration-300"
+                  onClick={() => {
+                    handleSinglePageRoute(issue._id);
+                  }}
+                >
+                  <Td>
+                    {issue?.user?.name
+                      ? issue?.user?.name
+                      : `${issue?.user?.firstName} ${issue?.user?.lastName}  `}
+                  </Td>
+                  <Td className="">{issue?.user?.email}</Td>
+                  <Td>{issue?.userType}</Td>
+                  <Td>
+                    <span className="flex items-center gap-2">
+                      {issue?.user?.accountType}
+                    </span>
+                  </Td>
+                  <Td>{formatDateToDDMMYY(issue.createdAt)}</Td>
+                  <Td>{issue?.response?.adminId?.name}</Td>
+                </tr>
+              ))}
+            </tbody>
           </Table>
         </TableOverflow>
       )}

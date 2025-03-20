@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Header from "../shared/inner-pages/header";
 import Wrapper from "../shared/inner-pages/wrapper";
 import { filledArrayFromNumber } from "@/lib/utils/array-from-number";
@@ -8,17 +8,11 @@ import GoBack from "../shared/go-back-button/go-back";
 import BorderRectangle from "../shared/inner-pages/bordered-rect";
 import SingleLineColumn from "../shared/inner-pages/single-line-column";
 import Image from "next/image";
-import JobsHistory from "./components/job-history";
-import DownloadButton from "../shared/page-body/download-button";
-import { RootState } from "@/lib/redux/store";
-import { useAppSelector } from "@/lib/redux/hooks";
+
 import { extractFirstLetter } from "@/lib/utils/extract-initials";
 import ActionColumn from "../shared/inner-pages/action-column";
 import ActionButton from "../shared/inner-pages/action-button";
-import {
-  changeContractorStatus,
-  validateAContractorDocument,
-} from "@/lib/api/api";
+
 import LoadingTemplate from "../layout/loading";
 import { redirect, useRouter, useParams } from "next/navigation";
 import toast from "react-hot-toast";
