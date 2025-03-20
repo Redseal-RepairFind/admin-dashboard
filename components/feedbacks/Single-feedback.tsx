@@ -17,6 +17,8 @@ import Card from "@/features/issues/Card";
 import useFeedbacks from "@/lib/hooks/useFeedbacks";
 import JobDayData from "@/features/dispute/components/SectionContainer";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
+import SingleLineColumn from "@/features/shared/inner-pages/single-line-column";
 
 function SingleFeedback() {
   const router = useRouter();
@@ -248,6 +250,27 @@ function SingleFeedback() {
         </div>
 
         <div className="mt-3 p-3 w-full flex flex-col gap-2">
+          <table className="mt-3 p-3 w-full flex flex-col gap-2">
+            <tbody>
+              <th className="text-[#3a3a3a]">Admin Info</th>
+              <SingleLineColumn
+                name="Admin name:"
+                value={singleFeedBack?.data?.response?.adminId?.name}
+                className="gap-8 flex items-center"
+              />
+
+              <SingleLineColumn
+                name="Admin Email:"
+                value={singleFeedBack?.data?.response?.adminId?.email}
+                className="gap-8 flex items-center"
+              />
+              {/* <SingleLineColumn
+              name="How did you settle this issue:"
+              value={action}
+              className="gap-8 flex items-center"
+            /> */}
+            </tbody>
+          </table>
           <h2 className="text-[#3a3a3a]">Admin Response</h2>
           <span className="bg-[#f9f9f9] w-full rounded-md text-[12px] p-3">
             {singleFeedBack?.data?.response?.message || "No Response yet."}
@@ -255,15 +278,16 @@ function SingleFeedback() {
         </div>
       </div>
       <JobDayData title="Medias">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col w-[600px] h-[300px] relative gap-4">
           {singleFeedBack?.data?.media.map((media: string, index: number) => {
             if (isImage(media)) {
               return (
-                <img
+                <Image
                   key={index}
                   src={media}
                   alt="Feedback Media"
                   className="rounded-[20px] max-h-[300px] object-cover"
+                  fill
                 />
               );
             }
