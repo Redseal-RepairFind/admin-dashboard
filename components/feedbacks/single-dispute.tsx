@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import { FaCaretLeft, FaArrowLeft } from "react-icons/fa";
-import TabSwitch from "./components/TabSwitch";
 import { ComplaintsState, CompletedState } from "@/public/svg";
-import JobInformation from "./components/JobInformation";
-import Chat from "./components/Chat";
 import useDisputes from "@/lib/hooks/useDisputes";
 import { useRouter } from "next/navigation";
+import TabSwitch from "@/features/dispute/components/TabSwitch";
+import JobInformation from "@/features/dispute/components/JobInformation";
+import Chat from "@/features/dispute/components/Chat";
 
 const SingleDispute = () => {
   const [currentDisputeTab, setCurrentDisputeTab] = useState("information");

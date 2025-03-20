@@ -162,7 +162,7 @@ function SingleFeedback() {
           onSubmit={handleSubmit(handleResponse)}
         >
           <h1 className="text-center font-bold text-xl">
-            Kindly Respond to User's Feedback
+            Kindly Respond to User&apos;s Feedback
           </h1>
 
           <textarea
