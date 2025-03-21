@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import useStaff from "@/lib/hooks/useStaff";
 import toast from "react-hot-toast";
@@ -30,11 +30,7 @@ interface CheckedList {
 }
 
 const AddStaff = ({ setOpen }: { setOpen: any }) => {
-  const {
-    AddStaff: InviteUser,
-    refetchStaffData,
-    teamsData,
-  } = useStaff();
+  const { AddStaff: InviteUser, refetchStaffData, teamsData } = useStaff();
 
   const [checkedList, setCheckedList] = useState<FetchedPermissions[]>([]);
 
@@ -113,86 +109,69 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
         onSubmit={handleSubmit(onSubmit)}
         className="w-full mx-auto p-4 bg-white rounded-md"
       >
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="email"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            {...register("email", { required: true })}
-            className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
-          />
-        </div>
+        <FlexDiv>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="email"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              {...register("email", { required: true })}
+              className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
+            />
+          </div>
 
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="firstName"
-          >
-            First Name
-          </label>
-          <input
-            type="text"
-            id="firstName"
-            {...register("firstName", { required: true })}
-            className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
-          />
-        </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="firstName"
+            >
+              First Name
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              {...register("firstName", { required: true })}
+              className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
+            />
+          </div>
 
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="lastName"
-          >
-            Last Name
-          </label>
-          <input
-            type="text"
-            id="lastName"
-            {...register("lastName", { required: true })}
-            className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
-          />
-        </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="lastName"
+            >
+              Last Name
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              {...register("lastName", { required: true })}
+              className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
+            />
+          </div>
 
-        {/* <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="password"
-          >
-            Password
-          </label>
-          <PasswordField
-            {...register("password", {
-              required: true,
-              minLength: {
-                value: 8,
-                message: "Password must be at least 8 characters",
-              },
-            })}
-            className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
-          />
-        </div> */}
-
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="phoneNumber"
-          >
-            Phone Number
-          </label>
-          <input
-            type="text"
-            id="phoneNumber"
-            {...register("phoneNumber", {
-              required: true,
-            })}
-            className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
-          />
-        </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="phoneNumber"
+            >
+              Phone Number
+            </label>
+            <input
+              type="text"
+              id="phoneNumber"
+              {...register("phoneNumber", {
+                required: true,
+              })}
+              className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
+            />
+          </div>
+        </FlexDiv>
 
         <div className="w-full flex flex-col gap-6 pb-8 border-b border-b-slate-600">
           <>
@@ -342,4 +321,8 @@ export function AddPermissions({
       /> */}
     </div>
   );
+}
+
+function FlexDiv({ children }: { children: ReactNode }) {
+  return <div className="grid grid-cols-2  gap-3 pb-8 w-full">{children}</div>;
 }
