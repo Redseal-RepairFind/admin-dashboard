@@ -35,6 +35,7 @@ function SingleFeedback() {
     refetchSingleFeedback,
     acceptingFeedback,
     replyingFeedback,
+    refetchData,
   } = useFeedbacks();
 
   const isImage = (url: string) => {
@@ -98,6 +99,7 @@ function SingleFeedback() {
       handleModalClose("respond");
 
       refetchSingleFeedback();
+      refetchData();
     } catch (error: any) {
       toast.remove();
       toast.error(error?.message || "Failed to respond to user feed back");
@@ -243,13 +245,54 @@ function SingleFeedback() {
         </div>
 
         <div className="mt-3 p-3 w-full flex flex-col gap-2">
-          <h2 className="text-[#3a3a3a]">Reason for Feedback</h2>
+          <h2 className="text-[#3a3a3a]">Feedback</h2>
           <span className="bg-[#f9f9f9] w-full rounded-md text-[12px] p-3">
             {singleFeedBack?.data?.remark || "No comment provided."}
           </span>
         </div>
+        <JobDayData title="Medias" className="bg-[#f9f9f9]">
+          <div className="flex flex-col w-[600px] h-[300px] relative gap-4">
+            {singleFeedBack?.data?.media.map((media: string, index: number) => {
+              if (isImage(media)) {
+                return (
+                  <Image
+                    key={index}
+                    src={media}
+                    alt="Feedback Media"
+                    className="rounded-[20px] max-h-[300px] object-cover"
+                    fill
+                  />
+                );
+              }
 
-        <div className="mt-3 p-3 w-full flex flex-col gap-2">
+              if (isVideo(media)) {
+                return (
+                  <video
+                    key={index}
+                    controls
+                    width="100%"
+                    height="300"
+                    className="rounded-[20px] max-h-[300px]"
+                  >
+                    <source src={media} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                );
+              }
+
+              // Fallback for unsupported media types
+              return (
+                <p key={index} className="text-gray-500">
+                  Unsupported media type
+                </p>
+              );
+            })}
+          </div>
+        </JobDayData>
+      </div>
+
+      {singleFeedBack?.data?.status === "CLOSED" ? (
+        <div className="mt-3  w-full flex flex-col p-3 rounded-md bg-white gap-2">
           <table className="mt-3 p-3 w-full flex flex-col gap-2">
             <tbody>
               <th className="text-[#3a3a3a]">Admin Info</th>
@@ -276,46 +319,8 @@ function SingleFeedback() {
             {singleFeedBack?.data?.response?.message || "No Response yet."}
           </span>
         </div>
-      </div>
-      <JobDayData title="Medias">
-        <div className="flex flex-col w-[600px] h-[300px] relative gap-4">
-          {singleFeedBack?.data?.media.map((media: string, index: number) => {
-            if (isImage(media)) {
-              return (
-                <Image
-                  key={index}
-                  src={media}
-                  alt="Feedback Media"
-                  className="rounded-[20px] max-h-[300px] object-cover"
-                  fill
-                />
-              );
-            }
+      ) : null}
 
-            if (isVideo(media)) {
-              return (
-                <video
-                  key={index}
-                  controls
-                  width="100%"
-                  height="300"
-                  className="rounded-[20px] max-h-[300px]"
-                >
-                  <source src={media} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              );
-            }
-
-            // Fallback for unsupported media types
-            return (
-              <p key={index} className="text-gray-500">
-                Unsupported media type
-              </p>
-            );
-          })}
-        </div>
-      </JobDayData>
       {/* TBC */}
       {/* <JobHistory /> */}
 

@@ -115,6 +115,19 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
   const mainData = dataToRender?.data?.data?.data;
   // console.log(mainData);
 
+  async function handleAcceptIssue(id: string) {
+    toast.loading("Accepting....");
+    try {
+      const data = await acceptIssue(id);
+      toast.remove();
+      toast.success("Issue accepted by an admin");
+    } catch (e: any) {
+      console.error(e);
+      toast.remove();
+      toast.error(e?.message);
+    }
+  }
+
   return (
     <TableCard>
       <div className="flex items-center justify-between">
@@ -152,7 +165,11 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
             <Thead>
               <tr>
                 {table_headings?.map((heading, index) => (
-                  <Th key={index}>{heading}</Th>
+                  <Th key={index}>
+                    {heading === "Assigned Admin" && sortValue === "PENDING"
+                      ? "Action"
+                      : heading}
+                  </Th>
                 ))}
               </tr>
             </Thead>
@@ -186,8 +203,7 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
                   </Td>
                   <Td>{formatDateToDDMMYY(issue.createdAt)}</Td>
                   <Td>
-                    <span className="flex items-center gap-2">
-                      {/* {issue?.status !== "RESOLVED" ? (
+                    {/* {issue?.status !== "RESOLVED" ? (
                         <>
                           <ComplaintsState />
                           <p className="text-danger capitalize">
@@ -203,8 +219,28 @@ function IssuesTable({ dataToRender }: { dataToRender: any }) {
                         </>
                       )} */}
 
-                      {issue?.admin?.name || "No assigned admin yet"}
-                    </span>
+                    {sortValue === "PENDING" ? (
+                      <button
+                        className={`px-3 py-2 rounded-md font-semibold w-40 border duration-500 transition-all border-black text-black    ${
+                          issue?.status === "RESOLVED"
+                            ? "bg-black hover:bg-gray-600 text-white cursor-not-allowed"
+                            : "hover:bg-black hover:text-white"
+                        }`}
+                        disabled={issue?.status === "RESOLVED"}
+                        onClick={() => {
+                          issue?.status === "RESOLVED" ||
+                          issue?.status === "REVIEWED"
+                            ? handleSinglePageRoute(issue?._id)
+                            : handleAcceptIssue(issue?._id);
+                        }}
+                      >
+                        {issue?.status === "PENDING" ? "Accept" : "View"}
+                      </button>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        {issue?.admin?.name || "No assigned admin yet"}{" "}
+                      </span>
+                    )}
                   </Td>
                   {/* <Td>
                     {/* <button
