@@ -260,7 +260,34 @@ const EditPermissions = ({
                 ? " Additional Permissions"
                 : "Edit Permissions"}
             </label>
+            <span className="flex items-center gap-2">
+              <CheckBox
+                isChecked={
+                  permissionList.length > 0 &&
+                  permissionList.length === checkedList?.permissions?.length
+                }
+                onClick={() => {
+                  const allSelected =
+                    permissionList.length > 0 &&
+                    permissionList.length === checkedList?.permissions?.length;
 
+                  setCheckedList({
+                    ...checkedList,
+                    permissions: allSelected ? [] : permissionList, // Toggle between selecting all and deselecting all
+                  });
+                }}
+              />
+              <p
+                className={` ${
+                  permissionList.length > 0 &&
+                  permissionList.length === checkedList?.permissions?.length
+                    ? "text-gray-800"
+                    : "text-gray-400"
+                } `}
+              >
+                Select All
+              </p>
+            </span>
             <div className="grid grid-cols-3 gap-2 ">
               {permissionList.map((permission: FetchedPermissions) => (
                 <span className="flex items-center gap-2" key={permission?._id}>

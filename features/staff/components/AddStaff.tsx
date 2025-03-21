@@ -30,7 +30,12 @@ interface CheckedList {
 }
 
 const AddStaff = ({ setOpen }: { setOpen: any }) => {
-  const { AddStaff: InviteUser, refetchStaffData, teamsData } = useStaff();
+  const {
+    AddStaff: InviteUser,
+    refetchStaffData,
+    teamsData,
+    permissionList,
+  } = useStaff();
 
   const [checkedList, setCheckedList] = useState<FetchedPermissions[]>([]);
 
@@ -55,7 +60,7 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
       ).values(),
     ];
 
-    console.log(teamPermissions);
+    // console.log(teamPermissions);
 
     setDefaultPermissions(teamPermissions);
     // console.log(selectedPermissions); // Log the selected permissions
@@ -280,6 +285,34 @@ export function AddPermissions({
       <label className="block text-gray-700 text-sm font-bold mb-2">
         Permissions
       </label>
+
+      <span className="flex items-center gap-2 py-4">
+        <CheckBox
+          isChecked={
+            permissionList.length > 0 &&
+            permissionList.length === defaultPermissions?.length
+          }
+          onClick={() => {
+            const allSelected =
+              permissionList.length > 0 &&
+              permissionList.length === defaultPermissions?.length;
+
+            setDefaultPermissions(
+              allSelected ? [] : permissionList // Toggle between selecting all and deselecting all
+            );
+          }}
+        />
+        <p
+          className={` ${
+            permissionList.length > 0 &&
+            permissionList.length === defaultPermissions?.length
+              ? "text-gray-800"
+              : "text-gray-400"
+          } `}
+        >
+          Select All
+        </p>
+      </span>
       <div className="grid grid-cols-3 gap-2 ">
         {permissionList.map((permission: FetchedPermissions) => (
           <span className="flex items-center gap-2" key={permission?._id}>
