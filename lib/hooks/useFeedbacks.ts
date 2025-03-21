@@ -68,7 +68,7 @@ const useFeedbacks = () => {
   const { feedbackId } = useParams();
 
   // console.log(feedbackId);
-  const { isLoading: loadingFeedbacks, data: feedbackData } = useQuery(
+  const { isLoading: loadingFeedbacks, data: feedbackData, refetch: refetchData } = useQuery(
     ["feedbacks"],
     () => feedbacks.getFeedbacks()
   );
@@ -98,6 +98,7 @@ const useFeedbacks = () => {
     refetchSingleFeedback,
     acceptingFeedback,
     replyingFeedback,
+    refetchData,
   };
 };
 

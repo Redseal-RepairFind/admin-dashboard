@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import useStaff from "@/lib/hooks/useStaff";
 import toast from "react-hot-toast";
@@ -8,8 +8,8 @@ import CustomDropdown from "@/components/shared/custom-dropdown";
 import CheckBox from "@/app/_components/Check-box";
 
 interface Permission {
-  value: string;
-  label: string;
+  name: string;
+  _id: string;
 }
 
 interface FetchedPermissions {
@@ -31,7 +31,6 @@ interface CheckedList {
 
 const AddStaff = ({ setOpen }: { setOpen: any }) => {
   const {
-    permissionList,
     AddStaff: InviteUser,
     refetchStaffData,
     teamsData,
@@ -48,6 +47,23 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm();
+
+  useEffect(() => {
+    const allData = checkedList?.map((list: any) => list.permissions);
+
+    const teamPermissions: any[] = [
+      ...new Map(
+        allData
+          ?.flatMap((subArray: any) => subArray)
+          .map((item: any) => [item?._id, item])
+      ).values(),
+    ];
+
+    console.log(teamPermissions);
+
+    setDefaultPermissions(teamPermissions);
+    // console.log(selectedPermissions); // Log the selected permissions
+  }, [checkedList]);
 
   const handleSelect = (item: any) => {
     const isAlreadySelected = checkedList?.some(
@@ -72,7 +88,7 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
 
     const payload = {
       ...data,
-      permisions: checkedList.map((permission) => permission._id),
+      permisions: defaultPermissions.map((permission) => permission._id),
     };
 
     try {
@@ -178,6 +194,38 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
           />
         </div>
 
+        <div className="w-full flex flex-col gap-6 pb-8 border-b border-b-slate-600">
+          <>
+            <label className="block text-gray-700 text-xl font-bold mb-2">
+              Teams
+            </label>
+            <div className="grid grid-cols-4 gap-4">
+              {teamsData?.map((team: any) => (
+                <span className="flex items-center gap-2" key={team?._id}>
+                  <CheckBox
+                    isChecked={checkedList?.some(
+                      (item: any) => item?._id === team?._id
+                    )}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSelect(team);
+                    }}
+                  />
+                  <p
+                    className={`${
+                      checkedList?.some((item: any) => item?._id === team?._id)
+                        ? "text-gray-800"
+                        : "text-gray-400"
+                    }`}
+                  >
+                    {team?.name}
+                  </p>
+                </span>
+              ))}
+            </div>
+          </>
+        </div>
+
         {/* <div className="grid grid-cols-3 gap-2 ">
           {permissionList.map((permission: FetchedPermissions) => (
             <span className="flex items-center gap-2" key={permission?._id}>
@@ -208,8 +256,8 @@ const AddStaff = ({ setOpen }: { setOpen: any }) => {
         </div> */}
 
         <AddPermissions
-          defaultPermissions={checkedList}
-          setDefaultPermissions={setCheckedList}
+          defaultPermissions={defaultPermissions}
+          setDefaultPermissions={setDefaultPermissions}
         />
 
         <div className="flex items-center justify-between">
@@ -227,7 +275,7 @@ export function AddPermissions({
   setDefaultPermissions,
 }: // handleSelect
 {
-  defaultPermissions: FetchedPermissions[];
+  defaultPermissions: any;
   setDefaultPermissions: any;
   // handleSelect: (item: any) => void
 }) {

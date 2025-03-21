@@ -26,7 +26,7 @@ const table_headings = [
   "Staff Name",
   "Date Joined",
   "Email Address",
-  "Team",
+  "Created By",
   "Status",
   "Action",
 ];
@@ -348,7 +348,7 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
                   <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
                   <Td>{item?.email}</Td>
                   <Td>
-                    <span className="capitalize">
+                    {/* <span className="capitalize">
                       {item?.teams.length > 0
                         ? item?.teams.map((skill: any, index: number) => (
                             <span key={skill?._id} className="text-sm">
@@ -357,7 +357,9 @@ const CustomersTable: React.FC<IProps> = ({ setLoading }) => {
                             </span>
                           ))
                         : "No Teams"}
-                    </span>
+                    </span> */}
+
+                    {item?.createdBy?.name}
                   </Td>
 
                   <Td>
