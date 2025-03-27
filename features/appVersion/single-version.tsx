@@ -33,6 +33,7 @@ function SingleVersion() {
       isOpen: false,
     },
   });
+  console.log(singleVersion);
 
   const handleOpenModal = (type: "delete" | "edit") => {
     setModalOpen((prev) => ({

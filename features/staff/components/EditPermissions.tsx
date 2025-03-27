@@ -177,8 +177,6 @@ const EditPermissions = ({
         data = await UpdatePermission(payload);
       } else {
         data = await handleAddStaffToTeam();
-
-        console.log(data);
       }
       toast.success(data?.message || "Permission updated successfully");
       setTimeout(() => {
@@ -213,45 +211,47 @@ const EditPermissions = ({
       <div className="w-full">
         <div className="mb-4 min-h-[400px] p-4 overflow-y-scroll">
           <div className="w-full flex flex-col gap-6 pb-8 border-b border-b-slate-600">
-            <div>
-              <label className="block text-gray-700 text-xl font-bold mb-2">
-                Teams
-              </label>
-              <div className="grid grid-cols-4 gap-4">
-                {teamsData?.map((team: any) => (
-                  <span className="flex items-center gap-2" key={team?._id}>
-                    <CheckBox
-                      isChecked={
-                        type.includes("editPermission") ||
-                        type.includes("addPermission")
-                          ? checkedList?.teams?.some(
-                              (item: any) => item?._id === team?._id
-                            )
-                          : checkedList?.teams?.name.includes(team?.name)
-                      }
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSelect("teams", team);
-                      }}
-                    />
-                    <p
-                      className={`${
-                        type.includes("editPermission") ||
-                        type.includes("addPermission")
-                          ? checkedList?.teams?.some(
-                              (item: any) => item?._id === team?._id
-                            )
-                          : checkedList?.teams?.name.includes(team?.name)
-                          ? "text-gray-800"
-                          : "text-gray-400"
-                      }`}
-                    >
-                      {team?.name}
-                    </p>
-                  </span>
-                ))}
+            {type === "editTeams" ? null : (
+              <div>
+                <label className="block text-gray-700 text-xl font-bold mb-2">
+                  Teams
+                </label>
+                <div className="grid grid-cols-4 gap-4">
+                  {teamsData?.map((team: any) => (
+                    <span className="flex items-center gap-2" key={team?._id}>
+                      <CheckBox
+                        isChecked={
+                          type.includes("editPermission") ||
+                          type.includes("addPermission")
+                            ? checkedList?.teams?.some(
+                                (item: any) => item?._id === team?._id
+                              )
+                            : checkedList?.teams?.name.includes(team?.name)
+                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSelect("teams", team);
+                        }}
+                      />
+                      <p
+                        className={`${
+                          type.includes("editPermission") ||
+                          type.includes("addPermission")
+                            ? checkedList?.teams?.some(
+                                (item: any) => item?._id === team?._id
+                              )
+                            : checkedList?.teams?.name.includes(team?.name)
+                            ? "text-gray-800"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {team?.name}
+                      </p>
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="mt-6 flex flex-col gap-6">

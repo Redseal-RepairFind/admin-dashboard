@@ -11,6 +11,17 @@ const useCustomise = () => {
   // const { mutateAsync: EditSkills } = useMutation(customise.editSkills);
   const { mutateAsync: DeleteSkills } = useMutation(customise.deleteSkills);
 
+  // FAQs
+  const { mutateAsync: updateFAQ, isLoading: isEditing } = useMutation(
+    customise.updateFAQ
+  );
+  const { mutateAsync: deleteFAQ, isLoading: isdeleting } = useMutation(
+    customise.deleteFAQ
+  );
+  const { mutateAsync: createFAQ, isLoading: isCreating } = useMutation(
+    customise.createFAQ
+  );
+
   const {
     data: quiz,
     isLoading,
@@ -35,6 +46,36 @@ const useCustomise = () => {
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
 
+  const {
+    data: faqs,
+    isLoading: loadingFaqs,
+    refetch: refetchFaqs,
+  } = useQuery(
+    ["faqs"],
+    () => {
+      return customise.getFAQs();
+    },
+    { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
+  );
+
+  // const {
+  //   data: singleFaq,
+  //   isLoading: loadingFaq,
+  //   refetch: refetchFaq,
+  // } = useQuery(
+  //   ["faqs", id], // Pass the id as part of the query key
+  //   ({ queryKey }) => {
+  //     const [, id] = queryKey; // Extract the id from the query key
+  //     return customise.getSingleFaq(id);
+  //   },
+  //   {
+  //     cacheTime: 30000,
+  //     staleTime: 30000,
+  //     refetchOnWindowFocus: true,
+  //     enabled: !!id, // Ensure the query only runs if id is defined
+  //   }
+  // );
+
   return {
     AddQuestion,
     AddQuiz,
@@ -49,6 +90,15 @@ const useCustomise = () => {
     refetchQuizzes,
     AddSkills,
     DeleteSkills,
+    faqs,
+    loadingFaqs,
+    refetchFaqs,
+    updateFAQ,
+    deleteFAQ,
+    createFAQ,
+    isEditing,
+    isdeleting,
+    isCreating,
   };
 };
 
