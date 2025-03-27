@@ -47,7 +47,7 @@ function Form({
       ],
     };
 
-    console.log(editPayload);
+    // console.log(editPayload);
     type === "edit"
       ? await handleSubmit({ payload: editPayload, id })
       : await handleSubmit(payload);
