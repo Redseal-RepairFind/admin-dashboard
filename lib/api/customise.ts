@@ -32,4 +32,16 @@ export const customise = {
       .patch(`/admin/skills/${skillId}`, payload)
       .then(({ data }) => data);
   },
+
+  // FAQS
+
+  getFAQs: () => client.get(`/admin/faqs`).then(({ data }) => data),
+  getSingleFaq: (id: string) =>
+    client.get(`/admin/faqs/${id}`).then(({ data }) => data),
+  createFAQ: (payload: any) =>
+    client.post(`/admin/faqs`, payload).then(({ data }) => data),
+  updateFAQ: ({ id, payload }: { id: string; payload: any }) =>
+    client.patch(`/admin/faqs/${id}`, payload).then(({ data }) => data),
+  deleteFAQ: (id: string) =>
+    client.delete(`/admin/faqs/${id}`).then(({ data }) => data),
 };
