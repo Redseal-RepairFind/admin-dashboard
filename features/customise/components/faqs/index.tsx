@@ -1,14 +1,16 @@
-import VerticalMenu from "@/components/shared/vertical-menu";
+"use client";
+
 import SubmitBtn from "@/components/ui/submit-btn";
 import LoadingTemplate from "@/features/layout/loading";
 import Heading from "@/features/shared/table/components/table-heading";
 import useCustomise from "@/lib/hooks/useCustomise";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FaEllipsisV } from "react-icons/fa";
 import { IoMdArrowDropup, IoMdArrowDropdown } from "react-icons/io";
 import Modal from "react-responsive-modal";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 function Faqs() {
   const [isDropdown, setIsDropdown] = useState<string | null>(null);
@@ -22,6 +24,24 @@ function Faqs() {
   const modalRef = useRef(null);
 
   const { faqs, loadingFaqs, deleteFAQ, refetchFaqs } = useCustomise();
+
+  const [dataToRender, setDataToRender] = useState(faqs?.data);
+
+  // console.log(faqs);
+
+  const params = useSearchParams();
+  const filter = params.get("filter") || "All";
+  useEffect(() => {
+    if (faqs?.data && filter !== "All") {
+      setDataToRender(
+        faqs?.data?.filter((faq: any) =>
+          faq?.category?.toLowerCase()?.includes(filter?.toLowerCase())
+        )
+      );
+    } else {
+      setDataToRender(faqs?.data);
+    }
+  }, [filter, faqs?.data]);
 
   const handleDelete = async () => {
     toast.loading("Deleting FAQ...");
@@ -136,15 +156,17 @@ function Faqs() {
         </div>
       </Modal>
 
-      <div>
+      <div className="flex items-center gap-20">
         <button
           className="bg-gray-800 text-gray-50 py-2 px-4 rounded-sm"
           onClick={() => setOpenModal({ ...openModal, create: true })}
         >
           Create new Question
         </button>
+
+        <Filter filterProps={["All", "contractor", "customer"]} />
       </div>
-      {faqs?.data?.map((faq: any, i: number) => (
+      {dataToRender.map((faq: any, i: number) => (
         <div key={faq?._id} className="relative">
           <div className="flex items-center gap-4">
             <div
@@ -226,9 +248,11 @@ const Form = ({
   editData?: any;
   close: () => void;
 }) => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, formState } = useForm();
   const { updateFAQ, refetchFaqs, createFAQ, isEditing, isCreating } =
     useCustomise();
+
+  const { errors } = formState;
 
   const onSubmit = async (data: any) => {
     try {
@@ -269,10 +293,15 @@ const Form = ({
         <input
           type="text"
           id="question"
-          {...register("question", { required: "Enter ba valid question" })}
+          {...register("question", { required: "Enter a valid question" })}
           className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
           defaultValue={type === "edit" ? editData?.question : ""}
         />
+        {errors.question && (
+          <p className="text-red-500 text-xs italic">
+            {errors.question.message?.toString()}
+          </p>
+        )}
       </div>
       <div className="mb-4">
         <label
@@ -291,6 +320,39 @@ const Form = ({
           className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
           defaultValue={type === "edit" ? editData?.answer : ""}
         />
+        {errors.answer && (
+          <p className="text-red-500 text-xs italic">
+            {errors?.answer?.message?.toString()}
+          </p>
+        )}
+      </div>
+      <div className="mb-4">
+        <label
+          className="block text-gray-700 text-sm font-bold mb-2"
+          htmlFor="Category"
+        >
+          Category
+        </label>
+        <select
+          id=""
+          className="w-full border border-gray-500 py-3 rounded-md"
+          {...register("category", {
+            required: "Select a category",
+          })}
+          defaultValue={type === "edit" ? editData?.category : ""}
+        >
+          <option value="" disabled>
+            Select a category
+          </option>
+          <option value="customer">Customer</option>
+          <option value="contractor">Contractor</option>
+        </select>
+
+        {errors.category && (
+          <p className="text-red-500 text-xs italic">
+            {errors.category.message?.toString()}
+          </p>
+        )}
       </div>
 
       <div className="flex items-center justify-between">
@@ -299,3 +361,107 @@ const Form = ({
     </form>
   );
 };
+
+type FilterProp = {
+  filterProps: any[];
+};
+
+function Filter({ filterProps }: FilterProp) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const param = useSearchParams();
+
+  // Fetch the initial 'sort' parameter from the URL (query)
+  const initialString = param.get("filter");
+  const initialSortValue = initialString
+    ? initialString.replace(/_/g, " ")
+    : "All";
+
+  // Set the selected sort value state, initialize with the value from URL
+  const [sortValue, setSortValue] = useState(initialSortValue);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [sortValue]);
+
+  // On page load, ensure the sort value in the state is in sync with URL
+  useEffect(() => {
+    const sortFromParam = param.get("filter");
+    if (sortFromParam) {
+      const updatedSortValue = sortFromParam.replace(/_/g, " ");
+      setSortValue(updatedSortValue); // Update state based on URL query params
+    }
+  }, [param]);
+
+  // Function to update the URL params and the state
+  function updateUrlParams(value: string) {
+    const formattedValue = value.replace(/ /g, "_").toLowerCase(); // Replace spaces with underscores
+
+    // Update the URL query parameters
+    if (value === "All") {
+      router.replace(`${pathname}`, {
+        scroll: false,
+      }); // Remove query params if 'All' is selected (default)
+    } else {
+      const params = new URLSearchParams(window.location.search);
+      params.set("filter", formattedValue); // Set the selected filter in query params
+      router.replace(`${pathname}?${params.toString()}`, {
+        scroll: false,
+      });
+    }
+
+    // Set the selected value in the state
+    setSortValue(value);
+  }
+
+  return (
+    <button
+      className="text-xs font-medium border border-gray-400 rounded-sm py-4 px-2 focus:ring-0 outline-none relative w-28 bg-white transition-all duration-500 flex justify-between items-center"
+      onClick={() => setIsOpen((is) => !is)}
+    >
+      <span className="capitalize">{sortValue}</span>
+      {isOpen ? <span>&#9650;</span> : <span>&#9660;</span>}
+      {isOpen ? (
+        <List
+          onClick={updateUrlParams}
+          state={sortValue}
+          closeModal={() => setIsOpen(false)}
+          filterProps={filterProps} // Pass the filter options to the list component
+        />
+      ) : null}
+    </button>
+  );
+}
+
+type ListProps = {
+  state: string;
+  onClick: (value: string) => void;
+  closeModal: () => void;
+  filterProps: any[]; // Array of filter options to display in the list (default is ['All', 'Customer', 'Contractor'])
+};
+
+function List({ state, onClick, closeModal, filterProps }: ListProps) {
+  function handleSelect(text: string) {
+    onClick(text);
+    closeModal(); // Close the modal when a filter is selected
+  }
+  return (
+    <ul className="absolute text-xs font-medium border border-gray-400 rounded-sm  focus:ring-0  outline-none w-28 left-0 top-14 bg-white shadow-2xl transition-all duration-500 z-30">
+      {filterProps.map((filterProp) => (
+        <li
+          className={`${
+            state.toLowerCase().includes(filterProp.toLowerCase())
+              ? "bg-black text-white"
+              : "bg-white text-black"
+          } w-full mb-2 p-2 hover:bg-black hover:text-white cursor-pointer transition-all duration-300 text-start`}
+          key={filterProp}
+          onClick={() => handleSelect(filterProp)}
+        >
+          {filterProp}
+        </li>
+      ))}
+    </ul>
+  );
+}

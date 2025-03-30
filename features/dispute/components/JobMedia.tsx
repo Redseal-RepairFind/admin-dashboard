@@ -6,6 +6,7 @@ import SectionContainer from "./SectionContainer";
 
 const JobMedia = ({ info }: { info: any }) => {
   const [currentTab, setCurrentTab] = useState("customer");
+  // console.log(info?.contractorPreJobMedia, info?.contractorPostJobMedia);
 
   const types = [
     { id: 1, title: "Customer", slug: "customer" },

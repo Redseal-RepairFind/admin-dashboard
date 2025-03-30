@@ -13,6 +13,7 @@ const CustomerMedia = ({ data }: { data: any }) => {
 
   const modalRef = useRef(null);
 
+  // console.log(data);
   return (
     <>
       <Modal
