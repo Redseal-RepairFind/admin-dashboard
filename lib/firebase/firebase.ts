@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: "repairfind-admin-app.firebaseapp.com",
-  projectId: "repairfind-admin-app",
-  storageBucket: "repairfind-admin-app.firebasestorage.app",
-  messagingSenderId: "204257946275",
-  appId: "1:204257946275:web:1c89733e771746ef486d16",
-  measurementId: "G-6Q1QKKWWV0",
+  apiKey: "AIzaSyCRMJz1ld9AExywcQfVI4lYSlQrGKMi29o",
+  authDomain: "lustrous-maxim-419405.firebaseapp.com",
+  projectId: "lustrous-maxim-419405",
+  storageBucket: "lustrous-maxim-419405.firebasestorage.app",
+  messagingSenderId: "264013304597",
+  appId: "1:264013304597:web:a234f027e118b74fb3cf1c",
+  measurementId: "G-J29QSRWYRF",
 };
 
 const app = initializeApp(firebaseConfig);
