@@ -17,6 +17,7 @@
     "axios": "^1.6.2",
     "chart.js": "^4.4.1",
     "cookies-next": "^4.1.0",
+    "firebase": "^11.6.0",
     "framer-motion": "^10.16.16",
     "js-cookie": "^3.0.5",
     "jspdf": "^1.4.0",
