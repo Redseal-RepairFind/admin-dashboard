@@ -1,5 +1,12 @@
 import { initializeApp } from "firebase/app";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import {
+  getMessaging,
+  getToken,
+  onMessage,
+  isSupported,
+  deleteToken,
+  Messaging,
+} from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCRMJz1ld9AExywcQfVI4lYSlQrGKMi29o",
@@ -11,32 +18,124 @@ const firebaseConfig = {
   measurementId: "G-J29QSRWYRF",
 };
 
+// Initialize Firebase App
 const app = initializeApp(firebaseConfig);
-export const messaging = getMessaging(app);
 
-// Request Notification Permission & Get Token
-export const requestNotificationPermission = async () => {
+// Messaging instance and token storage
+let messaging: Messaging | null = null;
+let fcmToken: string | null = null;
+
+// Initialize Messaging
+export const initializeMessaging = async () => {
+  if (typeof window === "undefined") return; // Skip in SSR
+
+  if (await isSupported()) {
+    messaging = getMessaging(app);
+    console.log("Firebase Messaging initialized");
+
+    // Handle token refreshes
+    // onTokenRefresh(messaging, async () => {
+    //   try {
+    //     fcmToken = await getToken(messaging!, {
+    //       vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
+    //     });
+    //     console.log("Token refreshed:", fcmToken);
+    //   } catch (error) {
+    //     console.error("Token refresh failed:", error);
+    //     fcmToken = null;
+    //   }
+    // });
+
+    return true;
+  }
+
+  console.warn("Firebase Messaging not supported");
+  return false;
+};
+
+/**
+ * Request Notification Permission & Get FCM Token
+ */
+export const requestNotificationPermission = async (): Promise<
+  string | null
+> => {
   try {
+    if (!messaging) {
+      console.warn("Firebase Messaging not initialized");
+      return null;
+    }
+
+    // Check existing permission
+    if (Notification.permission === "granted" && fcmToken) {
+      return fcmToken;
+    }
+
     const permission = await Notification.requestPermission();
-    if (permission === "granted") {
-      const token = await getToken(messaging, {
-        vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
-      });
-      console.log("FCM Token:", token);
-      return token;
-    } else {
+    if (permission !== "granted") {
       console.warn("Notification permission denied");
       return null;
     }
+
+    // Get new token
+    fcmToken = await getToken(messaging, {
+      vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
+    });
+
+    // console.log("New FCM Token:", fcmToken);
+    return fcmToken;
   } catch (error) {
     console.error("Error getting permission:", error);
+    return null;
   }
 };
 
-// Listen for foreground messages
-export const onMessageListener = () =>
-  new Promise((resolve) => {
+/**
+ * Get current FCM token (if available)
+ */
+export const getCurrentToken = (): string | null => {
+  return fcmToken;
+};
+
+/**
+ * Delete FCM token (for logout)
+ */
+export const deleteFCMToken = async (): Promise<void> => {
+  if (!messaging || !fcmToken) return;
+
+  try {
+    await deleteToken(messaging);
+    console.log("Token successfully deleted");
+
+    // Optional: Send revocation to your server
+    await fetch("/api/revoke-token", {
+      method: "POST",
+      body: JSON.stringify({ token: fcmToken }),
+    });
+  } catch (error) {
+    console.error("Error deleting token:", error);
+  } finally {
+    fcmToken = null;
+  }
+};
+
+/**
+ * Listen for Foreground Messages
+ */
+export const onMessageListener = () => {
+  return new Promise((resolve, reject) => {
+    if (!messaging) {
+      reject("Messaging not initialized");
+      return;
+    }
+
     onMessage(messaging, (payload) => {
+      console.log("Foreground message received:", payload);
       resolve(payload);
     });
   });
+};
+
+// Initialize messaging on module load (optional)
+if (typeof window !== "undefined") {
+  initializeMessaging();
+}

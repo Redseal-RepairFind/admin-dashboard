@@ -339,7 +339,7 @@ const ContractorsTable: React.FC<IProps> = ({
                 ))}
               </tbody>
             ) : (
-              <Empty message="No Contractors found" />
+              <Empty message="" />
             )}
           </Table>
         )}

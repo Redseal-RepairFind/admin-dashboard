@@ -35,7 +35,10 @@ export const customise = {
 
   // FAQS
 
-  getFAQs: () => client.get(`/admin/faqs`).then(({ data }) => data),
+  getFAQs: ({ page, limit }: { page: Number; limit: Number }) =>
+    client
+      .get(`/admin/faqs?page=${page}&limit=${limit}`)
+      .then(({ data }) => data),
   getSingleFaq: (id: string) =>
     client.get(`/admin/faqs/${id}`).then(({ data }) => data),
   createFAQ: (payload: any) =>
@@ -44,4 +47,19 @@ export const customise = {
     client.patch(`/admin/faqs/${id}`, payload).then(({ data }) => data),
   deleteFAQ: (id: string) =>
     client.delete(`/admin/faqs/${id}`).then(({ data }) => data),
+
+  // TIPS
+
+  getTips: ({ page, limit }: { page: Number; limit: Number }) =>
+    client
+      .get(`/admin/tips?page=${page}&limit=${limit}`)
+      .then(({ data }) => data),
+  getSingleTip: (id: string) =>
+    client.get(`/admin/tips/${id}`).then(({ data }) => data),
+  createTIP: (payload: any) =>
+    client.post(`/admin/tips`, payload).then(({ data }) => data),
+  updateTIP: ({ id, payload }: { id: string; payload: any }) =>
+    client.patch(`/admin/tips/${id}`, payload).then(({ data }) => data),
+  deleteTIP: (id: string) =>
+    client.delete(`/admin/tips/${id}`).then(({ data }) => data),
 };

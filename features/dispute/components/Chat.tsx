@@ -119,15 +119,29 @@ const Chat = () => {
           )}
           {messages?.data?.map((message: any) => (
             <div
-              className={`w-full rounded-lg mb-2 flex items-center ${
-                message?.senderType !== "contractors"
+              className={`w-full rounded-lg mb-3 flex items-center ${
+                message?.senderType === "contractors" &&
+                message?.messageType !== "ALERT"
+                  ? "justify-end"
+                  : (message?.messageType === "ALERT" &&
+                      message?.senderType === "contractors") ||
+                    (message?.messageType === "ALERT" &&
+                      message?.senderType === "customers")
+                  ? "justify-center"
+                  : message?.senderType === "customers" &&
+                    message?.messageType !== "ALERT"
                   ? "justify-start"
-                  : "justify-end"
+                  : ""
               }`}
               key={message?._id}
             >
               {message?.senderType !== "contractors" ? (
                 <div className="bg-gray-300 text-black font-medium text-sm w-fit rounded-tr-lg rounded-bl-lg rounded-br-lg px-5 py-2">
+                  {/* {message?.message} */}
+                  <ShowMessage message={message} type={message?.messageType} />
+                </div>
+              ) : message?.messageType === "ALERT" ? (
+                <div className="bg-gray-300 text-black font-medium text-sm w-fit rounded-tr-lg justify-center rounded-bl-lg rounded-br-lg px-5 py-2">
                   {/* {message?.message} */}
                   <ShowMessage message={message} type={message?.messageType} />
                 </div>

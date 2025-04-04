@@ -47,3 +47,4 @@ videos/*
 !videos/*.js
 !videos/*.ts
 public/_next-video
+repairfind-admin-app-firebase-adminsdk-fbsvc-3b7c087d0e.json

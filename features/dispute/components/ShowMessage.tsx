@@ -34,7 +34,7 @@ const ShowMessage = ({
   type: "IMAGE" | "VIDEO" | "TEXT" | "ALERT" | "FILE" | "MEDIA";
   message: any;
 }) => {
-  // console.log(message);
+  // console.log(message, type);
 
   const [open, setOpen] = useState<boolean>(false);
 
@@ -113,7 +113,7 @@ const ShowMessage = ({
         );
       case "ALERT":
         return (
-          <span className="flex items-center gap-1">
+          <span className="flex  items-center gap-1">
             <SuspendedState />
             {message?.message}
           </span>

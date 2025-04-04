@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
     )
   ) {
     // Redirect to a "not authorized" page if the user lacks permissions
-    return NextResponse.redirect(new URL("/not-authorized", request.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   // Allow the request to proceed if permissions are sufficient

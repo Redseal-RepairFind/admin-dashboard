@@ -77,9 +77,11 @@ export const customers = {
           customersWithBooking
             ? `&customersWithBooking=${customersWithBooking}`
             : ""
-        }${search ? `&searchFields=firstName,lastName&search=${search}` : ""}${
-          type ? `&type=${type}` : ""
         }${
+          search
+            ? `&searchFields=firstName,lastName,email&search=${search}`
+            : ""
+        }${type ? `&type=${type}` : ""}${
           status && route === "disputes"
             ? `&status=${status?.toUpperCase()}`
             : ""
@@ -138,9 +140,11 @@ export const customers = {
           customersWithBooking
             ? `&customersWithBooking=${customersWithBooking}`
             : ""
-        }${search ? `&searchFields=firstName,lastName&search=${search}` : ""}${
-          type ? `&type=${type}` : ""
         }${
+          search
+            ? `&searchFields=firstName,lastName,email&search=${search}`
+            : ""
+        }${type ? `&type=${type}` : ""}${
           status && route === "disputes"
             ? `&status=${status?.toUpperCase()}`
             : ""

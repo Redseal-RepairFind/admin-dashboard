@@ -90,12 +90,18 @@ export function SubmitBtn({
 export function Header({
   title,
   className,
+  size = "medium",
 }: {
   title: string;
   className?: string;
+  size?: "small" | "medium" | "large";
 }) {
   return (
-    <h1 className={`text-xl md:text-2xl xl:text-4xl font-bold ${className}`}>
+    <h1
+      className={`text-xl ${
+        size === "small" ? "text-xl" : "md:text-2xl xl:text-4xl"
+      } font-bold ${className}`}
+    >
       {title}
     </h1>
   );

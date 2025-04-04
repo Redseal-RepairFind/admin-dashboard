@@ -1,6 +1,5 @@
 "use client";
 import React, { useLayoutEffect, useRef, useState } from "react";
-import Header from "../../shared/inner-pages/header";
 import Wrapper from "@/features/shared/inner-pages/wrapper";
 import BorderRectangle from "@/features/shared/inner-pages/bordered-rect";
 import ProfileColumn from "@/features/shared/inner-pages/profile-column";
@@ -17,8 +16,10 @@ import GoBack from "@/features/shared/go-back-button/go-back";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { RootState } from "@/lib/redux/store";
 import Reciept from "@/features/shared/reciept";
-import { useJobTable } from "../hooks/table";
 import LoadingTemplate from "@/features/layout/loading";
+import { useJobTable } from "../jobs/hooks/table";
+import Header from "../shared/inner-pages/header";
+// import Header from "../layout/header/header";
 
 const Invoice = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
