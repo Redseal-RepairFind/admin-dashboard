@@ -258,7 +258,7 @@ function Tips() {
               <p className="text-gray-400 text-sm">{faq?.answer}</p>
               <Header title="Media" size="small" />
 
-              <div className="flex flex-wrap">
+              <div className="flex flex-wrap gap-4">
                 {faq?.media?.map((media: any, i: number) => {
                   if (media?.type === "IMAGE") {
                     return (
