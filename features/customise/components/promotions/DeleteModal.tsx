@@ -55,10 +55,10 @@ function DeleteModal({
   };
 
   const handleDelete = async () => {
-    if (!adminPermissions.data.includes("delete_contractor")) {
-      toast.error("You don't have permission to delete contractors");
-      return;
-    }
+    // if (!adminPermissions.data.includes("delete_contractor")) {
+    //   toast.error("You don't have permission to delete contractors");
+    //   return;
+    // }
     try {
       toast.loading("Deleting Contractor");
       const payload = { confirmationCode: email.email.toLowerCase() };
