@@ -131,7 +131,7 @@ const JobsTable: React.FC<IProps> = ({
               <tr
                 className="cursor-pointer"
                 key={index}
-                onClick={() => handleViewInvoice(item)}
+                // onClick={() => handleViewInvoice(item)}
               >
                 <td className="flex items-center justify-center gap-2 h-12 pl-2 w-8">
                   <CheckBox

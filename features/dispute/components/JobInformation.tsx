@@ -19,6 +19,7 @@ import io, { Socket } from "socket.io-client";
 import toast from "react-hot-toast";
 import IssueCard from "@/features/issues/Issue-card";
 import { useSortedData } from "@/lib/hooks/useSortedData";
+import Heading from "@/features/shared/table/components/table-heading";
 
 const JobInformation = () => {
   const { singleDispute, loadingSingleDispute, refetchDispute } = useDisputes();
@@ -253,6 +254,13 @@ const JobInformation = () => {
             refetch={refetchCustomer}
           />
         </div>
+
+        {/* <div className="w-full rounded-md bg-white p-3 mt-5 flex flex-col gap-4">
+          <Heading name={singleDispute?.data?.job?.category} />
+          <p className="text-gray-400">
+            {singleDispute?.data?.job?.description}
+          </p>
+        </div> */}
         <JobDayData info={singleDispute?.data?.jobDay} />
         <JobDetail info={singleDispute?.data?.job} />
         <JobMedia info={singleDispute?.data?.jobDay} />

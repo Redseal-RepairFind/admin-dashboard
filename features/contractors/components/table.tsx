@@ -153,7 +153,7 @@ const ContractorsTable: React.FC<IProps> = ({
               Update selected Contractors
             </button>
             {open.edit ? (
-              <div className="flex flex-col gap-4 absolute inset-0 p-4 h-[150px] top-12 bg-white rounded-md shadow-xl">
+              <div className="flex flex-col gap-4 absolute inset-0 p-4 h-[150px] top-12 bg-white rounded-md shadow-xl z-50">
                 <ActionButton
                   actionName="Manually assign Certn."
                   onClick={() => openModal("manualCertn")}
@@ -339,7 +339,7 @@ const ContractorsTable: React.FC<IProps> = ({
                 ))}
               </tbody>
             ) : (
-              <Empty message="No Contractors found" />
+              <Empty message="" />
             )}
           </Table>
         )}

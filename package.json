@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -H 0.0.0.0 & npx next-video sync -w",
+    "dev": "next dev --experimental-https -H 0.0.0.0 & npx next-video sync -w",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.779.0",
+    "@aws-sdk/s3-request-presigner": "^3.779.0",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.1.1",
     "@react-google-maps/api": "^2.19.3",
@@ -17,6 +19,7 @@
     "axios": "^1.6.2",
     "chart.js": "^4.4.1",
     "cookies-next": "^4.1.0",
+    "firebase": "^11.6.0",
     "framer-motion": "^10.16.16",
     "js-cookie": "^3.0.5",
     "jspdf": "^1.4.0",

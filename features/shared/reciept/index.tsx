@@ -115,7 +115,7 @@ const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
       <div className="flex justify-between mt-10">
         <div className="">
           <p className="text-xs font-[600] text-[#A7A7A7]">From</p>
-          <p className="font-[600]">{jobDetail.customer?.name}</p>
+          <p className="font-[600]">{jobDetail?.customer?.name}</p>
           <p className="text-sm text-[#555]">
             {trimString(jobDetail?.customer?.email || "", 20)}
           </p>
@@ -164,10 +164,10 @@ const Reciept: React.FC<any> = ({ closeModal, jobDetail }) => {
                 {/* <td className="text-sm py-3 px-4 capitalize">
                   {item.material}
                 </td> */}
-                <td className="text-sm py-3 px-4">{item.rate}</td>
-                <td className="text-sm py-3 px-4">{item.quantity}</td>
-                <td className="text-sm py-3 px-4">{item.amount}</td>
-                <td className="text-sm py-3 px-4">{item.description}</td>
+                <td className="text-sm py-3 px-4">{item?.rate}</td>
+                <td className="text-sm py-3 px-4">{item?.quantity}</td>
+                <td className="text-sm py-3 px-4">{item?.amount}</td>
+                <td className="text-sm py-3 px-4">{item?.description}</td>
               </tr>
             ))}
             {/* 
