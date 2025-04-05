@@ -40,7 +40,7 @@ const useAuth = () => {
       try {
         const token = await requestNotificationPermission();
         setDeviceToken(token); // Save the device token to state
-        console.log("Device Token:", token);
+        // console.log("Device Token:", token);
       } catch (error) {
         console.error("Error fetching device token:", error);
       }

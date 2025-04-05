@@ -32,6 +32,8 @@ const Invoice = () => {
 
   const jobDetail = aingleJob?.data;
 
+  // console.log(jobDetail);
+
   const router = useRouter();
   // useLayoutEffect(() => {
   //   if (jobDetail._id === "") {

@@ -132,7 +132,7 @@ export const requestNotificationPermission = async (): Promise<
         vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
         serviceWorkerRegistration: registration,
       });
-      console.log("FCM Token:", fcmToken);
+      // console.log("FCM Token:", fcmToken);
       return fcmToken;
     } catch (tokenError) {
       console.error("Error getting FCM token:", tokenError);

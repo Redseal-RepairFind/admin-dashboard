@@ -17,8 +17,8 @@ const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { adminPermissions } = useAdminPermissions();
-  const { isLoading, setLoading } = useLoader();
+  // const { adminPermissions } = useAdminPermissions();
+  const { setLoading } = useLoader();
 
   const logOut = () => {
     router.push("/login");
@@ -27,15 +27,15 @@ const Sidebar = () => {
     Cookies.remove("user");
   };
 
-  const filteredNavLinks = navLinks?.filter((link) => {
-    // Include routes with no readPermissions or matching permissions
-    return (
-      link?.readPermissions.length === 0 ||
-      link?.readPermissions.some((permission) =>
-        adminPermissions?.data?.includes(permission)
-      )
-    );
-  });
+  // const filteredNavLinks = navLinks?.filter((link) => {
+  //   // Include routes with no readPermissions or matching permissions
+  //   return (
+  //     link?.readPermissions.length === 0 ||
+  //     link?.readPermissions.some((permission) =>
+  //       adminPermissions?.data?.includes(permission)
+  //     )
+  //   );
+  // });
 
   return (
     <div className="max-w-[280px] w-[21%] min-w-[250px] bg-white overflow-y-auto scrollbar-thin z-30 max-h-screen">
@@ -47,7 +47,7 @@ const Sidebar = () => {
         </div>
 
         {/* Navigation */}
-        {filteredNavLinks.map((link, index) => (
+        {navLinks.map((link, index) => (
           <Link
             key={index}
             className={`flex gap-2 text-sm items-center pl-14 py-3 transition-all duration-500 
