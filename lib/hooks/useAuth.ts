@@ -2,10 +2,11 @@ import { auth } from "../api/auth";
 import { useMutation } from "react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/user-context";
-
 import Cookies from "js-cookie";
+import { getMessaging, getToken, isSupported } from "firebase/messaging";
+import { requestNotificationPermission } from "@/lib/firebase/firebase"; // Update with your actual path
 
 const useAuth = () => {
   const { mutateAsync: Login } = useMutation(auth.login);
@@ -14,17 +15,52 @@ const useAuth = () => {
   const { mutateAsync: ResetPassword } = useMutation(auth.resetPassword);
   const { mutateAsync: ChangePassword } = useMutation(auth.changePassword);
   const { mutateAsync: VerifyEmail } = useMutation(auth.verifyEmail);
+  const [deviceToken, setDeviceToken] = useState<string | null>(null);
 
   const { setCurrentUser } = useContext(UserContext);
-
   const router = useRouter();
 
-  const handleLogin = async (values: any) => {
-    // console.log(values);
-    try {
-      const data = await Login(values);
-      // console.log(data);
+  // // Get FCM Token with proper typing
+  // const getFCMToken = async (): Promise<string | null> => {
+  //   try {
+  //     const fcmToken = await requestNotificationPermission();
 
+  //     console.log("FCM Token:", fcmToken);
+  //     return fcmToken;
+  //   } catch (error) {
+  //     console.error("FCM Token Error:", error);
+  //     return null;
+  //   } finally {
+  //     console.log("Notification permission:", Notification.permission);
+  //   }
+  // };
+
+  useEffect(() => {
+    const fetchFCMToken = async () => {
+      try {
+        const token = await requestNotificationPermission();
+        setDeviceToken(token); // Save the device token to state
+        // console.log("Device Token:", token);
+      } catch (error) {
+        console.error("Error fetching device token:", error);
+      }
+    };
+
+    fetchFCMToken(); // Call the function to fetch device token on component mount
+  }, []);
+
+  const handleLogin = async (values: any) => {
+    try {
+      // Prepare login payload with device token
+      const loginPayload = {
+        ...values,
+        deviceToken: deviceToken,
+      };
+
+      // Execute login mutation
+      const data = await Login(loginPayload);
+
+      // Handle user session
       setCurrentUser(data?.profile);
       sessionStorage.setItem("userToken", data?.Token);
       sessionStorage.setItem(
@@ -32,27 +68,31 @@ const useAuth = () => {
         JSON.stringify(data?.profile)
       );
       Cookies.set("user", JSON.stringify(data?.profile), { expires: 1 });
+
+      // Handle weak password case
       if (data?.profile?.hasWeakPassword) {
         toast.error("Kindly change your password...");
         return router.push(`/change-password?email=${values?.email}`);
       }
+
+      // Redirect on success
       router.push("/");
       toast.success(data?.message);
     } catch (e: any) {
-      console.log(e);
+      console.error("Login Error:", e);
       toast.remove();
-      toast.error(e?.response?.data?.message);
+      toast.error(e?.response?.data?.message || "Login failed");
     }
   };
 
+  // Rest of your authentication functions
   const handleRegister = async (values: any) => {
-    // console.log(values);
     try {
       const data = await Register(values);
       router.push(`/verify-email?id=${values?.email}`);
       toast.success(data?.message);
     } catch (e: any) {
-      console.log(e);
+      console.error("Registration Error:", e);
       toast.remove();
       toast.error(e?.response?.data?.message);
     }
@@ -61,15 +101,15 @@ const useAuth = () => {
   const handleForgotPassword = async (values: any) => {
     try {
       const data = await ForgotPassword(values);
-      //   console.log(data);
       router.push(`/reset-password?email=${values.email}`);
       toast.success(data?.message);
     } catch (e: any) {
-      console.log(e);
+      console.error("Forgot Password Error:", e);
       toast.remove();
       toast.error(e?.response?.data?.message);
     }
   };
+
   return {
     handleLogin,
     handleRegister,

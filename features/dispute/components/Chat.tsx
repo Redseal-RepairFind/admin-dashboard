@@ -117,28 +117,56 @@ const Chat = () => {
               <SyncLoader size={10} color="#000" />
             </div>
           )}
-          {messages?.data?.map((message: any) => (
-            <div
-              className={`w-full rounded-lg mb-2 flex items-center ${
-                message?.senderType !== "contractors"
-                  ? "justify-start"
-                  : "justify-end"
-              }`}
-              key={message?._id}
-            >
-              {message?.senderType !== "contractors" ? (
-                <div className="bg-gray-300 text-black font-medium text-sm w-fit rounded-tr-lg rounded-bl-lg rounded-br-lg px-5 py-2">
-                  {/* {message?.message} */}
-                  <ShowMessage message={message} type={message?.messageType} />
-                </div>
-              ) : (
-                <div className="bg-black text-white font-medium text-sm w-fit rounded-tl-lg rounded-bl-lg rounded-br-lg px-5 py-2">
-                  {/* {message?.message} */}
-                  <ShowMessage message={message} type={message?.messageType} />
-                </div>
-              )}
-            </div>
-          ))}
+          {messages?.data
+            ?.slice()
+            ?.reverse()
+            ?.map((message: any) => (
+              <div
+                className={`w-full rounded-lg mb-3 flex items-center ${
+                  message?.senderType === "contractors" &&
+                  message?.messageType !== "ALERT"
+                    ? "justify-end"
+                    : (message?.messageType === "ALERT" &&
+                        message?.senderType === "contractors") ||
+                      (message?.messageType === "ALERT" &&
+                        message?.senderType === "admins") ||
+                      (message?.messageType === "ALERT" &&
+                        message?.senderType === "customers")
+                    ? "justify-center"
+                    : message?.senderType === "customers" &&
+                      message?.messageType !== "ALERT"
+                    ? "justify-start"
+                    : ""
+                }`}
+                key={message?._id}
+              >
+                {message?.senderType !== "contractors" ? (
+                  <div className="bg-gray-300 text-black font-medium text-sm w-fit rounded-tr-lg rounded-bl-lg rounded-br-lg px-5 py-2">
+                    {/* {message?.message} */}
+                    <ShowMessage
+                      message={message}
+                      type={message?.messageType}
+                    />
+                  </div>
+                ) : message?.messageType === "ALERT" ? (
+                  <div className="bg-gray-300 text-black font-medium text-sm w-fit rounded-tr-lg justify-center rounded-bl-lg rounded-br-lg px-5 py-2">
+                    {/* {message?.message} */}
+                    <ShowMessage
+                      message={message}
+                      type={message?.messageType}
+                    />
+                  </div>
+                ) : (
+                  <div className="bg-black text-white font-medium text-sm w-fit rounded-tl-lg rounded-bl-lg rounded-br-lg px-5 py-2">
+                    {/* {message?.message} */}
+                    <ShowMessage
+                      message={message}
+                      type={message?.messageType}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
         </div>
         <div className="flex items-center justify-start gap-5 mt-4">
           <button

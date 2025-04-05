@@ -6,6 +6,8 @@ import Image from "next/image";
 import SubmitBtn from "@/components/ui/submit-btn";
 import useAuth from "@/lib/hooks/useAuth";
 import PasswordField from "@/components/ui/password-input";
+import { useEffect } from "react";
+import { requestNotificationPermission } from "@/lib/firebase/firebase";
 
 export default function Login() {
   const {

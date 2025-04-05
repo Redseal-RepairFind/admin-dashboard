@@ -166,7 +166,7 @@ function Faqs() {
 
         <Filter filterProps={["All", "contractor", "customer"]} />
       </div>
-      {dataToRender.map((faq: any, i: number) => (
+      {dataToRender?.map((faq: any, i: number) => (
         <div key={faq?._id} className="relative">
           <div className="flex items-center gap-4">
             <div

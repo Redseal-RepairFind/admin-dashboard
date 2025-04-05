@@ -1,29 +1,33 @@
 "use client";
-import { useEffect, useState, useContext, useRef, useMemo } from "react";
 import { NotificationBell } from "@/public/svg";
 import Image from "next/image";
+import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
 import Link from "next/link";
-import toast from "react-hot-toast";
-import {
-  requestNotificationPermission,
-  onMessageListener,
-} from "@/lib/firebase/firebase";
+import { getTotalUnseenNotification } from "@/lib/api/api";
 import { UserContext } from "@/context/user-context";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import Notifications from "@/features/notifications/notifications";
 import useNotifications from "@/lib/hooks/useNotifications";
 import useSoundNotification from "@/lib/hooks/useSoundNotification";
+import toast from "react-hot-toast";
 import io, { Socket } from "socket.io-client";
 
-const Header: React.FC = ({ children }: { children?: React.ReactNode }) => {
-  const [image, setImage] = useState("");
+interface IProps {
+  children?: React.ReactNode;
+}
 
-  const [permission, setPermission] = useState<boolean>(true);
+const Header: React.FC<IProps> = ({ children }) => {
+  const [image, setImage] = useState("");
+  const [permission, setPermission] = useState<any>(true);
+
   const playNotification = useSoundNotification("/sounds/notification.mp3");
+
   const { currentUser } = useContext(UserContext);
+
   const [open, setOpen] = useState<boolean>(false);
   const modalRef = useRef(null);
+
   const { data, MarkAllAsRead, refetch } = useNotifications();
 
   const unreadCount = useMemo(() => {
@@ -31,6 +35,8 @@ const Header: React.FC = ({ children }: { children?: React.ReactNode }) => {
       return item.readAt === null ? count + 1 : count;
     }, 0);
   }, [data]);
+
+  // console.log(data);
 
   const markNotifications = async () => {
     if (!unreadCount) return setOpen(true);
@@ -50,39 +56,85 @@ const Header: React.FC = ({ children }: { children?: React.ReactNode }) => {
     }
   };
 
-  // Request Notification Permission & Get Token
+  const token =
+    typeof window !== "undefined" ? sessionStorage.getItem("userToken") : "";
+
+  const url = process.env.NEXT_PUBLIC_SOCKET_URL;
+
+  // Request permission for Notifications on initial load
   useEffect(() => {
-    requestNotificationPermission()
-      .then((token: any) => {
-        if (token) {
-          // console.log("FCM Token received:", token);
-          // TODO: Send token to your backend for push notifications
-        }
-      })
-      .catch((error: any) => console.error("FCM Token error:", error));
+    if (typeof Notification !== "undefined") {
+      if (Notification.permission !== "granted") {
+        Notification.requestPermission().then((permission) => {
+          if (permission !== "granted") {
+            console.warn("Notification permission not granted");
+            setPermission(false);
+          }
+        });
+      }
+    } else {
+      console.warn("Browser does not support notifications");
+    }
   }, []);
 
-  // Listen for incoming FCM messages
   useEffect(() => {
-    const unsubscribePromise = onMessageListener().then((payload: any) => {
-      // console.log("FCM Message received:", payload);
-      playNotification();
+    let socket: Socket;
 
-      // Show a toast notification
-      toast.success(payload?.notification?.title || "New Notification");
+    if (token) {
+      socket = io(`${url}`, {
+        extraHeaders: {
+          token,
+        },
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+      });
 
-      // Optionally refetch notifications
-      setTimeout(() => {
-        refetch();
-      }, 500);
-    });
+      socket.on("connect", () => {
+        console.log("Connected to Socket.IO server");
+      });
+
+      socket.on("NEW_NOTIFICATION", (data: any) => {
+        console.log("Received notification event:", data);
+
+        // Display browser notification
+        if (Notification.permission === "granted") {
+          new Notification(data?.heading?.name || "New Notification", {
+            body: data?.message || "You have a new notification.",
+            icon: data?.heading?.image || "/default-icon.png",
+          });
+        }
+
+        // Play notification sound
+        const audio = new Audio("/sounds/notification.mp3");
+        audio
+          .play()
+          .catch((error) => console.error("Error playing sound:", error));
+
+        // Display a toast notification for additional user feedback
+        toast.success("You have a new notification");
+
+        // Optionally refetch data after a delay
+        setTimeout(() => {
+          refetch();
+        }, 500);
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Disconnected from Socket.IO server");
+      });
+
+      socket.on("error", (error: any) => {
+        console.error("Socket.IO error:", error);
+      });
+    }
 
     return () => {
-      unsubscribePromise.catch((error) =>
-        console.error("Error unsubscribing:", error)
-      );
+      if (socket) {
+        socket.disconnect();
+      }
     };
-  }, [playNotification, refetch]);
+  }, [token, url, playNotification, refetch]);
 
   function handleNotification() {
     setPermission(true);
@@ -126,10 +178,14 @@ const Header: React.FC = ({ children }: { children?: React.ReactNode }) => {
             >
               I understand
             </button>
+            {/* <button className="bg-red-600 py-2 px-4 rounded-md">Cancel</button> */}
           </div>
         </div>
       ) : null}
-      <div className="flex px-[3vw] pt-8 pb-6 justify-between border-b-[#ddd] border-b items-center sticky top-[0px] gap-x-[200px] overflow-x-auto bg-[#F0F0F0] z-20">
+      <div
+        className="flex px-[3vw] pt-8 pb-6 justify-between border-b-[#ddd] border-b 
+    items-center sticky top-[0px] gap-x-[200px] overflow-x-auto bg-[#F0F0F0] z-20"
+      >
         {/* Name */}
         <p className="text-xl font-[500] whitespace-nowrap">
           Welcome,{" "}
@@ -145,7 +201,10 @@ const Header: React.FC = ({ children }: { children?: React.ReactNode }) => {
           >
             <NotificationBell />
             {unreadCount > 0 && (
-              <div className="bg-red-500 w-5 h-5 rounded-full absolute top-1.5 right-1.5 text-sm text-white flex items-center justify-center">
+              <div
+                className="bg-red-500 w-5 h-5 rounded-full absolute top-1.5
+          right-1.5 text-sm text-white flex items-center justify-center"
+              >
                 {unreadCount}
               </div>
             )}
@@ -173,7 +232,7 @@ const Header: React.FC = ({ children }: { children?: React.ReactNode }) => {
                 </p>
               </div>
             )}
-            <div>
+            <div className="">
               <p className="font-[500]">
                 {currentUser?.firstName
                   ? `${currentUser?.firstName} ${currentUser?.lastName}`

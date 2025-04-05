@@ -48,7 +48,7 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
     }
   );
 
-  // console.log(contractorChat, "contractor");
+  // console.log(contractorChat?.data, "contractor");
 
   function validateUrl(url: string) {
     // Regular expression to validate URL starting with https://
@@ -141,7 +141,7 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
     }
   };
 
-  //   console.log(singleDispute);
+  console.log(singleDispute);
 
   const token = sessionStorage.getItem("userToken");
 
@@ -234,7 +234,20 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
         {contractorChat?.data?.map((message: any) => (
           <div
             className={`w-full rounded-lg mb-2 flex items-center ${
-              message?.senderType === "admins" ? "justify-end" : "justify-start"
+              message?.senderType === "contractors" &&
+              message?.messageType !== "ALERT"
+                ? "justify-start"
+                : (message?.messageType === "ALERT" &&
+                    message?.senderType === "admins") ||
+                  (message?.messageType === "ALERT" &&
+                    message?.senderType === "contractors") ||
+                  (message?.messageType === "ALERT" &&
+                    message?.senderType === "customers")
+                ? "justify-center"
+                : message?.senderType === "customers" &&
+                  message?.messageType !== "ALERT"
+                ? "justify-start"
+                : "justify-end"
             }`}
             key={message?._id}
           >
