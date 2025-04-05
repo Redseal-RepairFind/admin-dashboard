@@ -7,6 +7,7 @@ import SubmitBtn from "@/components/ui/submit-btn";
 import useAuth from "@/lib/hooks/useAuth";
 import PasswordField from "@/components/ui/password-input";
 import { useEffect } from "react";
+import { requestNotificationPermission } from "@/lib/firebase/firebase";
 
 export default function Login() {
   const {
@@ -14,23 +15,6 @@ export default function Login() {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm();
-
-  useEffect(() => {
-    const registerServiceWorker = async () => {
-      if ("serviceWorker" in navigator) {
-        try {
-          const registration = await navigator.serviceWorker.register(
-            "/firebase-messaging-sw.js"
-          );
-          console.log("Service Worker registered:", registration);
-        } catch (error) {
-          console.error("Service Worker registration failed:", error);
-        }
-      }
-    };
-
-    registerServiceWorker();
-  });
 
   const { handleLogin } = useAuth();
 

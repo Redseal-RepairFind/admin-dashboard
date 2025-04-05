@@ -2,7 +2,7 @@ import { auth } from "../api/auth";
 import { useMutation } from "react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/user-context";
 import Cookies from "js-cookie";
 import { getMessaging, getToken, isSupported } from "firebase/messaging";
@@ -15,27 +15,42 @@ const useAuth = () => {
   const { mutateAsync: ResetPassword } = useMutation(auth.resetPassword);
   const { mutateAsync: ChangePassword } = useMutation(auth.changePassword);
   const { mutateAsync: VerifyEmail } = useMutation(auth.verifyEmail);
+  const [deviceToken, setDeviceToken] = useState<string | null>(null);
 
   const { setCurrentUser } = useContext(UserContext);
   const router = useRouter();
 
-  // Get FCM Token with proper typing
-  const getFCMToken = async (): Promise<string | null> => {
-    try {
-      const fcmToken = await requestNotificationPermission();
+  // // Get FCM Token with proper typing
+  // const getFCMToken = async (): Promise<string | null> => {
+  //   try {
+  //     const fcmToken = await requestNotificationPermission();
 
-      return fcmToken;
-    } catch (error) {
-      console.error("FCM Token Error:", error);
-      return null;
-    }
-  };
+  //     console.log("FCM Token:", fcmToken);
+  //     return fcmToken;
+  //   } catch (error) {
+  //     console.error("FCM Token Error:", error);
+  //     return null;
+  //   } finally {
+  //     console.log("Notification permission:", Notification.permission);
+  //   }
+  // };
+
+  useEffect(() => {
+    const fetchFCMToken = async () => {
+      try {
+        const token = await requestNotificationPermission();
+        setDeviceToken(token); // Save the device token to state
+        console.log("Device Token:", token);
+      } catch (error) {
+        console.error("Error fetching device token:", error);
+      }
+    };
+
+    fetchFCMToken(); // Call the function to fetch device token on component mount
+  }, []);
 
   const handleLogin = async (values: any) => {
     try {
-      // Get FCM token before login
-      const deviceToken = await getFCMToken();
-
       // Prepare login payload with device token
       const loginPayload = {
         ...values,

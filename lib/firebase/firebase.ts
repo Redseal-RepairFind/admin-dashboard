@@ -8,7 +8,7 @@ import {
   Messaging,
 } from "firebase/messaging";
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyCRMJz1ld9AExywcQfVI4lYSlQrGKMi29o",
   authDomain: "lustrous-maxim-419405.firebaseapp.com",
   projectId: "lustrous-maxim-419405",
@@ -65,9 +65,60 @@ export const requestNotificationPermission = async (): Promise<
       return null;
     }
 
-    // Check existing permission
-    if (Notification.permission === "granted" && fcmToken) {
-      return fcmToken;
+    if (!("serviceWorker" in navigator)) {
+      console.error("Service Workers not supported");
+      return null;
+    }
+
+    let registration: ServiceWorkerRegistration | undefined;
+
+    try {
+      // Try to get existing registration first
+      registration = await navigator.serviceWorker.getRegistration();
+
+      if (!registration) {
+        console.log("Registering new service worker...");
+        registration = await navigator.serviceWorker.register(
+          "/firebase-messaging-sw.js",
+          { scope: "/" }
+        );
+        console.log("Service Worker registered:", registration);
+      }
+
+      // Wait for service worker to be ready
+      await new Promise<void>((resolve, reject) => {
+        if (registration?.active) {
+          return resolve();
+        }
+
+        const worker = registration?.installing || registration?.waiting;
+        if (!worker) {
+          return resolve();
+        }
+
+        worker.addEventListener("statechange", () => {
+          if (worker.state === "activated") {
+            resolve();
+          }
+        });
+
+        setTimeout(() => {
+          reject(new Error("Service Worker activation timeout"));
+        }, 10000);
+      });
+    } catch (swError) {
+      console.error("Service Worker registration failed:", swError);
+      return null;
+    }
+
+    if (!registration?.active) {
+      console.error("No active service worker found");
+      return null;
+    }
+
+    if (!("PushManager" in window)) {
+      console.error("Push notifications not supported");
+      return null;
     }
 
     const permission = await Notification.requestPermission();
@@ -76,15 +127,19 @@ export const requestNotificationPermission = async (): Promise<
       return null;
     }
 
-    // Get new token
-    fcmToken = await getToken(messaging, {
-      vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
-    });
-
-    // console.log("New FCM Token:", fcmToken);
-    return fcmToken;
+    try {
+      fcmToken = await getToken(messaging, {
+        vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
+        serviceWorkerRegistration: registration,
+      });
+      console.log("FCM Token:", fcmToken);
+      return fcmToken;
+    } catch (tokenError) {
+      console.error("Error getting FCM token:", tokenError);
+      return null;
+    }
   } catch (error) {
-    console.error("Error getting permission:", error);
+    console.error("Error in requestNotificationPermission:", error);
     return null;
   }
 };
