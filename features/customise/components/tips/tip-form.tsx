@@ -129,8 +129,11 @@ export const Form = ({
       }
 
       return { success: true, files: [] }; // If no new files, return empty response
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      toast.remove();
+      toast.error(error?.message || "File Upload failed");
+      return { success: false, files: [] }; // If no new files, return empty response
     } finally {
       setUploadingImage({ ...uploadingImage, uploading: false });
     }
@@ -149,6 +152,14 @@ export const Form = ({
 
         // Upload new files (images/videos)
         const media = await uploadFile();
+
+        if (!media.success) {
+          toast.remove();
+          toast.error("File Upload failed");
+          setUploadingImage({ ...uploadingImage, uploading: false });
+
+          return;
+        }
         if (media.success) {
           // Combine new files with existing files
           medias = [
