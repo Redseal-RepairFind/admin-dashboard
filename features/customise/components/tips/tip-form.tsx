@@ -254,6 +254,36 @@ export const Form = ({
           className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="Category"
         >
+          Category
+        </label>
+        <select
+          id=""
+          className="w-full border border-gray-500 py-3 rounded-md"
+          {...register("category", {
+            required: "Select a category",
+          })}
+          defaultValue={type === "edit" ? editData?.category : ""}
+        >
+          <option value="" disabled>
+            Select a category
+          </option>
+          <option value="general">General</option>
+          <option value="customer">Customer</option>
+          <option value="contractor">Contractor</option>
+        </select>
+
+        {errors.category && (
+          <p className="text-red-500 text-xs italic">
+            {errors.category.message?.toString()}
+          </p>
+        )}
+      </div>
+
+      <div className="mb-4">
+        <label
+          className="block text-gray-700 text-sm font-bold mb-2"
+          htmlFor="Category"
+        >
           Medias
         </label>
         <div className="flex flex-col gap-3">

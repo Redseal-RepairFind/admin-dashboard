@@ -366,16 +366,16 @@ type FilterProp = {
   filterProps: any[];
 };
 
-function Filter({ filterProps }: FilterProp) {
+export function Filter({ filterProps }: FilterProp) {
   const pathname = usePathname();
   const router = useRouter();
   const param = useSearchParams();
 
   // Fetch the initial 'sort' parameter from the URL (query)
-  const initialString = param.get("filter");
+  const initialString = param.get("filter") || filterProps[0];
   const initialSortValue = initialString
     ? initialString.replace(/_/g, " ")
-    : "All";
+    : filterProps[0];
 
   // Set the selected sort value state, initialize with the value from URL
   const [sortValue, setSortValue] = useState(initialSortValue);

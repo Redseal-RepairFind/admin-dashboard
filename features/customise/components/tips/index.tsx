@@ -4,7 +4,7 @@ import SubmitBtn from "@/components/ui/submit-btn";
 import LoadingTemplate from "@/features/layout/loading";
 import Heading from "@/features/shared/table/components/table-heading";
 import useCustomise from "@/lib/hooks/useCustomise";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { FaEllipsisV } from "react-icons/fa";
 import { IoMdArrowDropup, IoMdArrowDropdown } from "react-icons/io";
@@ -15,6 +15,7 @@ import { Header } from "@/features/quiz/components";
 import { Form } from "./tip-form";
 import Image from "next/image";
 import { AnyAaaaRecord } from "dns";
+import { Filter } from "../faqs";
 
 function Tips() {
   const [isDropdown, setIsDropdown] = useState<string | null>(null);
@@ -31,16 +32,28 @@ function Tips() {
 
   const [viewItem, setViewItem] = useState<any>({});
 
-  // const [dataToRender, setDataToRender] = useState(faqs?.data);
+  const [dataToRender, setDataToRender] = useState(tips?.data?.data);
 
-  // console.log(tips);
+  const params = useSearchParams();
+  const perPage = params.get("perPage") || 10;
+
+  const filter = params.get("filter") || "general";
+  // console.log(filter);
+  useEffect(() => {
+    if (tips?.data?.data && filter !== "general") {
+      setDataToRender(
+        tips?.data?.data?.filter((faq: any) =>
+          faq?.category?.toLowerCase()?.includes(filter?.toLowerCase())
+        )
+      );
+    } else {
+      setDataToRender(tips?.data?.data);
+    }
+  }, [filter, tips?.data?.data]);
 
   const pageProps = {
     data: tips?.data,
   };
-
-  const params = useSearchParams();
-  const perPage = params.get("perPage") || 10;
 
   const handleDelete = async () => {
     toast.loading("Deleting Tips...");
@@ -191,9 +204,9 @@ function Tips() {
           Create new Tip
         </button>
 
-        {/* <Filter filterProps={["All", "contractor", "customer"]} /> */}
+        <Filter filterProps={["general", "contractor", "customer"]} />
       </div>
-      {tips?.data?.data?.map((faq: any, i: number) => (
+      {dataToRender?.map((faq: any, i: number) => (
         <div key={faq?._id} className="relative">
           <div className="flex items-center gap-4">
             <div
