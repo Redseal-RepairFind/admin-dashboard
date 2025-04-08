@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import axios from "axios";
+import { getSignUrls } from "@/lib/aws/aws-action";
 
 export const Form = ({
   type,
@@ -100,11 +102,117 @@ export const Form = ({
   const { errors } = formState;
 
   // Handle file uploads
-  const uploadFile: any = async () => {
-    if (!uploadingImage.new) return;
-    try {
-      const formData = new FormData();
+  // const uploadFile: any = async () => {
+  //   if (!uploadingImage.new) return;
+  //   try {
+  //     const formData = new FormData();
 
+  //     const newFiles = [
+  //       ...files.images.filter(
+  //         (file) =>
+  //           !initialFiles.images.some((initial) => initial.name === file.name)
+  //       ),
+  //       ...files.videos.filter(
+  //         (file) =>
+  //           !initialFiles.videos.some((initial) => initial.name === file.name)
+  //       ),
+  //     ];
+
+  //     if (newFiles.length) {
+  //       newFiles.forEach((file) => formData.append("files", file));
+
+  //       const response = await fetch("/api/upload", {
+  //         method: "POST",
+  //         body: formData,
+  //       });
+
+  //       const result = await response.json();
+  //       return result;
+  //     }
+
+  //     return { success: true, files: [] }; // If no new files, return empty response
+  //   } catch (error: any) {
+  //     console.error(error);
+  //     toast.remove();
+  //     toast.error(error?.message || "File Upload failed");
+  //     return { success: false, files: [] }; // If no new files, return empty response
+  //   } finally {
+  //     setUploadingImage({ ...uploadingImage, uploading: false });
+  //   }
+  // };
+
+  // const uploadFile = async () => {
+  //   if (!uploadingImage.new) return;
+
+  //   try {
+  //     const newFiles = [
+  //       ...files.images.filter(
+  //         (file) =>
+  //           !initialFiles.images.some((initial) => initial.name === file.name)
+  //       ),
+  //       ...files.videos.filter(
+  //         (file) =>
+  //           !initialFiles.videos.some((initial) => initial.name === file.name)
+  //       ),
+  //     ];
+
+  //     if (!newFiles.length) return { success: true, files: [] };
+
+  //     // Step 1: Get presigned URLs
+  //     const presignRes = await fetch("/api/upload_url", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         files: newFiles.map((file) => ({
+  //           filename: file.name,
+  //           fileType: file.type,
+  //         })),
+  //       }),
+  //     });
+
+  //     const { success, urls, error } = await presignRes.json();
+  //     if (!success) throw new Error(error || "Could not get presigned URLs");
+
+  //     // Step 2: Upload each file using the corresponding presigned URL
+  //     const uploadedFiles = await Promise.all(
+  //       urls.map(async ({ url, key, publicUrl }: any, index: number) => {
+  //         const file = newFiles[index];
+
+  //         try {
+  //           const res = await axios.put(url, file, {
+  //             headers: {
+  //               "Content-Type": file.type,
+  //             },
+  //           });
+
+  //           return {
+  //             name: file.name,
+  //             type: file.type,
+  //             url: publicUrl,
+  //             key,
+  //           };
+  //         } catch (err: any) {
+  //           console.error("Upload error for", file.name, err?.response || err);
+  //           throw new Error(`Upload failed for ${file.name}`);
+  //         }
+  //       })
+  //     );
+
+  //     return { success: true, files: uploadedFiles };
+  //   } catch (error: any) {
+  //     console.error(error);
+  //     toast.remove();
+  //     toast.error(error?.message || "File Upload failed");
+  //     return { success: false, files: [] };
+  //   } finally {
+  //     setUploadingImage({ ...uploadingImage, uploading: false });
+  //   }
+  // };
+
+  const uploadFile = async () => {
+    if (!uploadingImage.new) return;
+
+    try {
       const newFiles = [
         ...files.images.filter(
           (file) =>
@@ -116,26 +224,55 @@ export const Form = ({
         ),
       ];
 
-      if (newFiles.length) {
-        newFiles.forEach((file) => formData.append("files", file));
+      if (!newFiles.length) return { success: true, files: [] };
 
-        const response = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
+      // Step 1: Get signed URLs from the server action
+      const { success, urls, error } = await getSignUrls(
+        newFiles.map((file) => ({
+          filename: file.name,
+          fileType: file.type,
+        }))
+      );
 
-        const result = await response.json();
-        return result;
-      }
+      if (!success || !urls)
+        throw new Error(error || "Failed to get signed URLs");
 
-      return { success: true, files: [] }; // If no new files, return empty response
+      // Step 2: Upload each file to its signed URL
+      const uploadedFiles = await Promise.all(
+        urls.map(async ({ url, key, publicUrl }: any, index: number) => {
+          const file = newFiles[index];
+
+          try {
+            await axios.put(url, file, {
+              headers: {
+                "Content-Type": file.type,
+              },
+            });
+
+            return {
+              name: file.name,
+              type: file.type,
+              url: publicUrl,
+              key,
+            };
+          } catch (err: any) {
+            console.error(
+              `Upload failed for ${file.name}`,
+              err?.response || err
+            );
+            throw new Error(`Upload failed for ${file.name}`);
+          }
+        })
+      );
+
+      return { success: true, files: uploadedFiles };
     } catch (error: any) {
-      console.error(error);
+      console.error("Upload error:", error);
       toast.remove();
-      toast.error(error?.message || "File Upload failed");
-      return { success: false, files: [] }; // If no new files, return empty response
+      toast.error(error?.message || "File upload failed");
+      return { success: false, files: [] };
     } finally {
-      setUploadingImage({ ...uploadingImage, uploading: false });
+      setUploadingImage((prev) => ({ ...prev, uploading: false }));
     }
   };
 
@@ -153,14 +290,14 @@ export const Form = ({
         // Upload new files (images/videos)
         const media = await uploadFile();
 
-        if (!media.success) {
+        if (!media?.success) {
           toast.remove();
           toast.error("File Upload failed");
           setUploadingImage({ ...uploadingImage, uploading: false });
 
           return;
         }
-        if (media.success) {
+        if (media?.success) {
           // Combine new files with existing files
           medias = [
             ...initialFiles.images.map((file: any) => ({
@@ -173,7 +310,7 @@ export const Form = ({
             })),
             ...media.files.map((med: any) => ({
               type: med.type?.includes("video") ? "VIDEO" : "IMAGE",
-              url: `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${med.filename}`,
+              url: med.url, // New uploaded file URLs
             })),
           ];
 

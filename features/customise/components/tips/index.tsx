@@ -38,7 +38,7 @@ function Tips() {
   const perPage = params.get("perPage") || 10;
 
   const filter = params.get("filter") || "general";
-  console.log(dataToRender);
+  // console.log(dataToRender);
   useEffect(() => {
     if (tips?.data?.data && filter !== "general") {
       setDataToRender(

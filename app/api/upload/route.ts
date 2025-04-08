@@ -21,23 +21,35 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     const files = formData.getAll("files") as File[];
 
+    if (files.length === 0) {
+      return NextResponse.json(
+        { success: false, error: "No files uploaded" },
+        { status: 400 }
+      );
+    }
+
     const uploadPromises = files.map(async (file) => {
       const buffer = Buffer.from(await file.arrayBuffer());
       const filename = sanitizeFilename(file.name);
 
-      await s3Client.send(
-        new PutObjectCommand({
-          Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET,
-          Key: filename,
-          Body: buffer,
-          ContentType: file.type || "application/octet-stream",
-        })
-      );
+      try {
+        await s3Client.send(
+          new PutObjectCommand({
+            Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET!,
+            Key: filename,
+            Body: buffer,
+            ContentType: file.type || "application/octet-stream",
+          })
+        );
 
-      return {
-        filename,
-        type: file.type,
-      };
+        return {
+          filename,
+          type: file.type,
+        };
+      } catch (error: any) {
+        console.error(`Error uploading file ${file.name}:`, error);
+        throw new Error(`Failed to upload ${file.name}`);
+      }
     });
 
     const uploadedFiles = await Promise.all(uploadPromises);
