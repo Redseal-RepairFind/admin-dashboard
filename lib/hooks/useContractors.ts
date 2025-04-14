@@ -23,11 +23,15 @@ const useContractors = () => {
     contractors.deleteMultipleContractors
   );
 
+  const { mutateAsync: unsuspend, isLoading: unsuspending } = useMutation(
+    contractors.unsuspend
+  );
+
   const [search, setSearch] = useState("");
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: contractorData, isLoading: loadingContractors } = useQuery(
+  const { data: contractorData, isLoading: loadingContractors, refetch: refetchContractors } = useQuery(
     ["Contractors", search, perPage, currentPage],
     () => {
       return contractors.getContractors({
@@ -70,6 +74,9 @@ const useContractors = () => {
     isDeleting,
     giveMultipleManualCertn,
     deleteMultipleContractor,
+    unsuspend,
+    unsuspending,
+    refetchContractors,
   };
 };
 

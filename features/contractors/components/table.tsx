@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import TableCard from "@/features/shared/table/components/table-card";
 import Heading from "@/features/shared/table/components/table-heading";
 import TableOverflow from "@/features/shared/table/components/table-overflow";
@@ -23,12 +23,14 @@ import toast from "react-hot-toast";
 import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
 import LoadingTemplate from "@/features/layout/loading";
 import Empty from "@/components/ui/empty-data";
+import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 
 const table_headings = [
   "Select All",
   "Contractor’s Name",
   "Email Address",
   "Skill",
+  "Sign-up Date",
   "Sign-up Stage",
   "Certn. Method",
   "Certn. Status",
@@ -58,8 +60,13 @@ const ContractorsTable: React.FC<IProps> = ({
 }) => {
   const { handleViewAContractors } = useContractorTable({ setLoading });
 
-  const { giveMultipleManualCertn, deleteMultipleContractor } =
-    useContractors();
+  const {
+    giveMultipleManualCertn,
+    deleteMultipleContractor,
+    unsuspend,
+    unsuspending,
+    refetchContractors,
+  } = useContractors();
   const queryClient = useQueryClient();
 
   const mainData = contractorData?.data;
@@ -67,15 +74,22 @@ const ContractorsTable: React.FC<IProps> = ({
     manualCertn: false,
     delete: false,
     edit: false,
+    unsuspend: false,
   });
+  const [suspendedIds, setSuspendedIds] = useState([]);
   const editRef = useRef();
   const deleteRef = useRef();
-  function openModal(name: "manualCertn" | "delete" | "edit") {
+  function openModal(name: "manualCertn" | "delete" | "edit" | "unsuspend") {
     setOpen({ ...open, [name]: true });
   }
 
   function closeModal() {
-    setOpen({ edit: false, manualCertn: false, delete: false });
+    setOpen({
+      edit: false,
+      manualCertn: false,
+      delete: false,
+      unsuspend: false,
+    });
   }
 
   const pageProps = {
@@ -106,6 +120,44 @@ const ContractorsTable: React.FC<IProps> = ({
 
   const ids = checkedList?.map((data: any) => data?._id);
 
+  const suspendedFolksIds = useMemo(() => {
+    if (ids && mainData?.data) {
+      return mainData.data
+        .filter((data: any) => ids.includes(data._id))
+        .filter((folks: any) => folks.accountStatus === "SUSPENDED")
+        .map((folk: any) => folk._id);
+    }
+    return [];
+  }, [ids, mainData?.data]); // Depend on mainData.data instead of mainData
+
+  useEffect(() => {
+    setSuspendedIds((prevIds) => {
+      // Check if the new IDs are the same as previous to prevent unnecessary update
+      if (JSON.stringify(prevIds) === JSON.stringify(suspendedFolksIds)) {
+        return prevIds;
+      }
+      return suspendedFolksIds;
+    });
+  }, [suspendedFolksIds]);
+  const handleUnsuspensions = async () => {
+    try {
+      toast.loading("Unsuspending contractor(s)...");
+
+      await unsuspend({
+        contractorIds: [...suspendedIds],
+      });
+      toast.remove();
+      toast.success("Contractors unsuspended successfully");
+      closeModal();
+      setCheckedList([]);
+      refetchContractors();
+    } catch (error: any) {
+      console.error(error);
+      toast.remove();
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
   async function handleMultipleCertns() {
     if (!adminPermissions.data.includes("manage_contractors")) {
       toast.error("You don't have permission to update contractor");
@@ -123,6 +175,7 @@ const ContractorsTable: React.FC<IProps> = ({
       queryClient.invalidateQueries("sortData");
       setCheckedList([]);
       closeModal();
+      refetchContractors();
     } catch (error: any) {
       console.error("Error while updating multiple contractors: ", error);
       toast.remove();
@@ -165,6 +218,13 @@ const ContractorsTable: React.FC<IProps> = ({
                   onClick={() => openModal("delete")}
                   color="border-red-600 text-red-600"
                 />
+                {suspendedIds?.length > 0 ? (
+                  <ActionButton
+                    actionName="Unsuspend Contractor"
+                    onClick={() => openModal("unsuspend")}
+                    color="border-blue-600 text-blue-600"
+                  />
+                ) : null}
               </div>
             ) : null}
           </div>
@@ -201,6 +261,37 @@ const ContractorsTable: React.FC<IProps> = ({
         />
       </Modal>
 
+      <Modal
+        onClose={() => closeModal()}
+        open={open.unsuspend}
+        center
+        classNames={{
+          modal: "customModal",
+        }}
+        container={editRef.current}
+      >
+        <div className="max-w-[400px] px-4">
+          <h1 className="font-semibold text-center text-xl">
+            Are you sure you want to Manually Unsuspend contractor(s)?
+          </h1>
+
+          <p className="text-gray-400 text-center text-sm">
+            Make sure they passed the necessary criteria before you proceed
+          </p>
+
+          <div className="w-full items-center mt-6 flex gap-3">
+            <button
+              className="bg-gray-200 h-12 w-full  flex items-center rounded-md justify-center text-gray-800"
+              onClick={() => {
+                closeModal();
+              }}
+            >
+              Cancel
+            </button>
+            <SubmitBtn onClick={handleUnsuspensions}>Proceed</SubmitBtn>
+          </div>
+        </div>
+      </Modal>
       <Modal
         onClose={() => closeModal()}
         open={open.manualCertn}
@@ -308,6 +399,7 @@ const ContractorsTable: React.FC<IProps> = ({
                           "No Skills"}
                       </span>
                     </Td>
+                    <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
                     <Td>{item?.onboarding?.stage?.label}</Td>
                     <Td>
                       {item?.certnStatus === "COMPLETE" && item?.hasManualCertn

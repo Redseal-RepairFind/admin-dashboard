@@ -6,6 +6,7 @@ import ContractorInfo from "./ContractorInfo";
 import JobDayData from "./JobDayData";
 import JobDetail from "./JobDetail";
 import DisputeForm from "./DisputeForm";
+import SectionContainer from "./SectionContainer";
 import ResolvedForm from "./ResolvedForm";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
@@ -265,6 +266,14 @@ const JobInformation = () => {
         <JobDetail info={singleDispute?.data?.job} />
         <JobMedia info={singleDispute?.data?.jobDay} />
         <DisputeForm info={singleDispute?.data?.description} />
+        <SectionContainer title="Resolved by">
+          <div className="w-full mt-4 pb-5">
+            <div className="p-4 bg-gray-100 flex flex-col gap-4 text-sm font-medium rounded-md">
+              <p>Admin Name: {singleDispute?.data?.arbitrator?.name}</p>{" "}
+              <p>Remark: {singleDispute?.data?.remark}</p>
+            </div>
+          </div>
+        </SectionContainer>
         {singleDispute?.data?.status === "RESOLVED" ? null : (
           <div className="w-full flex items-center justify-start gap-5">
             <Modal

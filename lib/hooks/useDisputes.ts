@@ -27,6 +27,7 @@ const useDisputes = () => {
   const params = useSearchParams();
 
   const status = params.get("disputeStatus")?.toUpperCase() || "OPEN";
+  const filterByAdmin = params.get("filterByAdmin") || "";
 
   const {
     sortedData,

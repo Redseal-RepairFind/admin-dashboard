@@ -47,6 +47,8 @@ export const customers = {
     type,
     customersWithBooking,
     accountStatus,
+    skills,
+    filterByAdmin,
   }: {
     route:
       | "customers"
@@ -65,6 +67,8 @@ export const customers = {
     type?: string;
     customersWithBooking?: boolean;
     accountStatus: string;
+    skills?: string;
+    filterByAdmin?: string;
   }) =>
     route &&
     client
@@ -83,7 +87,9 @@ export const customers = {
             : ""
         }${type ? `&type=${type}` : ""}${
           status && route === "disputes"
-            ? `&status=${status?.toUpperCase()}`
+            ? `&status=${status?.toUpperCase()}${
+                status === "resolved" ? `&filterByAdmin=${filterByAdmin}` : ""
+              }`
             : ""
         }${
           status && route === "transactions"
@@ -91,7 +97,7 @@ export const customers = {
             : ""
         }${
           status && route === "issues" ? `&status=${status?.toUpperCase()}` : ""
-        }`
+        }${skills && route === "contractors" ? `&skills=${skills}` : ""}`
       )
       .then(({ data }) => data),
 
@@ -107,6 +113,8 @@ export const customers = {
     type,
     customersWithBooking,
     accountStatus,
+    skills,
+    filterByAdmin,
   }: {
     page: number;
     limit: number;
@@ -128,6 +136,8 @@ export const customers = {
     type?: string;
     customersWithBooking?: boolean;
     accountStatus: string;
+    skills?: string;
+    filterByAdmin?: string;
   }) =>
     route &&
     client
@@ -146,7 +156,9 @@ export const customers = {
             : ""
         }${type ? `&type=${type}` : ""}${
           status && route === "disputes"
-            ? `&status=${status?.toUpperCase()}`
+            ? `&status=${status?.toUpperCase()}${
+                status === "resolved" ? `&filterByAdmin=${filterByAdmin}` : ""
+              }`
             : ""
         }${
           status && route === "transactions"
@@ -154,7 +166,7 @@ export const customers = {
             : ""
         }${
           status && route === "issues" ? `&status=${status?.toUpperCase()}` : ""
-        }`
+        }${skills && route === "contractors" ? `&skills=${skills}` : ""}`
       )
       .then(({ data }) => data),
 

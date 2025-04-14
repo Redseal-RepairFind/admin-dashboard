@@ -28,6 +28,8 @@ import { downloadPDF } from "@/lib/utils/downloadPdf";
 import Heading from "../shared/table/components/table-heading";
 import "./modalAnimations.css";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import useCustomise from "@/lib/hooks/useCustomise";
+import FilterModal from "./searchFilterModal";
 
 export type ModalType = {
   isOpen: boolean;
@@ -62,6 +64,7 @@ const Contractors = () => {
   const [dataToRender, setDataToRender] = useState<any>();
   const stats = sortedData?.data?.stats;
   const nodeRef = useRef(null);
+  const { skills, loadingSkills } = useCustomise();
 
   // useEffect(() => {
   //   isQuerying
@@ -167,13 +170,14 @@ const Contractors = () => {
   return (
     <>
       <Header />
-      {loadingSortedData && !isQuerying ? (
+      {loadingSkills || (loadingSortedData && !isQuerying) ? (
         <LoadingTemplate />
       ) : (
         <PageBody>
           <div className="flex justify-between mb-6 items-center">
             <PageHeading page_title="Contractors" />
             <Filter />
+            <FilterModal skills={skills?.data} />
             <DownloadButton
               text="Download Contractor’S LIST"
               onClick={handleModalOpen}

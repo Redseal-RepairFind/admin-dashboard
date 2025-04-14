@@ -7,6 +7,7 @@ import DeleteModal from "./promotions/DeleteModal";
 import Heading from "@/features/shared/table/components/table-heading";
 import toast from "react-hot-toast";
 import { customise } from "@/lib/api/customise";
+import SingleSkillForm from "./skills-form";
 
 interface Skill {
   _id: string;
@@ -113,46 +114,13 @@ export default function Skills() {
               container={editRef.current}
               classNames={{ modal: "customModal" }}
             >
-              <div className="px-3 flex flex-col gap-4 w-[440px]">
-                <Heading name={`Edit ${skill?.name} Skill?`} />
-                <input
-                  type="text"
-                  className="h-12 w-full border border-gray-700 rounded-md px-2"
-                  defaultValue={skill?.name}
-                  placeholder="Edit Skill"
-                  // value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
-                />
+              <Heading name={`Edit ${skill?.name} Skill?`} />
 
-                <span className="mt-4 mb-6 flex items-center gap-4 w-[60%]">
-                  <label htmlFor="Verifiable">Verifiable</label>
-                  <select
-                    name="verifiable"
-                    id={`verifiable-${i}`}
-                    className="w-1/2 p-2 border "
-                    defaultValue={skill?.verifiable}
-                    onChange={(e) => setVerifiable(e.target.value)}
-                  >
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
-                  </select>
-                </span>
-
-                <div className="grid grid-cols-2 gap-2 items-center gap">
-                  <button
-                    className="bg-gray-200 h-12 w-full flex items-center rounded-md justify-center text-gray-800"
-                    onClick={() => closeModal("edit")}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="bg-gray-600 h-12 w-full flex items-center rounded-md justify-center text-gray-100"
-                    onClick={() => mutateSkill(skill?._id, "edit", skill?.name)}
-                  >
-                    Edit Skill
-                  </button>
-                </div>
-              </div>
+              <SingleSkillForm
+                isEdit={true}
+                editData={skill}
+                closeModal={() => closeModal("edit")}
+              />
             </Modal>
 
             <Modal

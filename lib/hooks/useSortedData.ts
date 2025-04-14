@@ -38,9 +38,13 @@ export function useSortedData(
   const accountStatus = searchParams.get("accountStatus") || "";
   const transactionStatus = searchParams.get("status") || "";
   const issuesStatus = searchParams.get("issuesStatus") || "PENDING";
+  const skills = searchParams.get("skills") || "";
+  const filterByAdmin = searchParams.get("filterByAdmin") || "";
 
   const pathname = usePathname();
   const router = useRouter();
+
+  // console.log(skills);
 
   const { mutateAsync: acceptIssue, isLoading: isAccepting } = useMutation(
     customers.acceptIssue
@@ -98,6 +102,8 @@ export function useSortedData(
       criteria,
       isQuerying,
       searchTerm,
+      skills,
+      filterByAdmin,
     ],
     () =>
       params === "All"
@@ -116,6 +122,8 @@ export function useSortedData(
             customersWithBooking: !!customersWithBooking,
             accountStatus,
             search: searchTerm,
+            skills,
+            filterByAdmin,
           })
         : customers.getSortingAnalytics({
             page: searchTerm ? 1 : Number(currentPage) || 1,
@@ -134,6 +142,8 @@ export function useSortedData(
             customersWithBooking: !!customersWithBooking,
             accountStatus,
             search: searchTerm,
+            skills,
+            filterByAdmin,
           }),
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );

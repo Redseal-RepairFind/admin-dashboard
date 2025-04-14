@@ -41,4 +41,6 @@ export const contractors = {
     client.post(`/admin/contractors/multiple-certn-approvals`, payload),
   deleteMultipleContractors: (payload: any) =>
     client.post(`/admin/contractors/delete-multiple`, payload),
+  unsuspend: (payload: { contractorIds: string[] }) =>
+    client.post(`/admin/contractors/restore`, payload),
 };
