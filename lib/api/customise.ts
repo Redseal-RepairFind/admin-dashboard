@@ -62,4 +62,10 @@ export const customise = {
     client.patch(`/admin/tips/${id}`, payload).then(({ data }) => data),
   deleteTIP: (id: string) =>
     client.delete(`/admin/tips/${id}`).then(({ data }) => data),
+
+  // settings
+
+  getSettings: () => client.get(`/admin/settings`).then(({ data }) => data),
+  updateSettings: ({ id, payload }: { id: string; payload: any }) =>
+    client.post(`/admin/settings/${id}`, payload).then(({ data }) => data),
 };

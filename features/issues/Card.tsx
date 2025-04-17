@@ -64,7 +64,7 @@ function Card({
   );
 }
 
-function Tag({ tag, name }: { tag: any; name: string }) {
+export function Tag({ tag, name }: { tag: any; name: string }) {
   return (
     <span
       className={`${

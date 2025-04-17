@@ -60,6 +60,7 @@ const Contractors = () => {
     statusDataToRender,
     allData,
     setSearchTerm,
+    refetch: refetchContractors,
   } = useSortedData("contractors");
   const [dataToRender, setDataToRender] = useState<any>();
   const stats = sortedData?.data?.stats;
@@ -277,6 +278,7 @@ const Contractors = () => {
             setSearchTerm={setSearchTerm}
             loadingSortedData={loadingSortedData}
             isQuerying={isQuerying}
+            refetchContractors={refetchContractors}
           />
         </PageBody>
       )}

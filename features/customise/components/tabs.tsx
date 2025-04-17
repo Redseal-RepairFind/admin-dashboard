@@ -10,6 +10,7 @@ import Promotion from "./promotions/Promotion";
 import SkillsTab from "./skills-tab";
 import Faqs from "./faqs";
 import Tips from "./tips";
+import Settings from "./settings";
 
 const Tabs: React.FC = () => {
   const currentSessionTab =
@@ -104,6 +105,16 @@ const Tabs: React.FC = () => {
         >
           Tips
         </button>
+        <button
+          className={`px-6 py-2 text-sm rounded transition-all duration-300 ${
+            activeTab === 6
+              ? "bg-white border border-[#262626] text-[#262626]"
+              : "bg-white"
+          }`}
+          onClick={() => handleTabChange(6)}
+        >
+          Settings
+        </button>
 
         {/* <button
           className={`px-6 py-2 text-sm rounded transition-all duration-300 ${
@@ -122,6 +133,7 @@ const Tabs: React.FC = () => {
         {activeTab === 3 && <SkillsTab />}
         {activeTab === 4 && <Faqs />}
         {activeTab === 5 && <Tips />}
+        {activeTab === 6 && <Settings />}
 
         {/* {activeTab === 4 && <Promotion />} */}
       </div>

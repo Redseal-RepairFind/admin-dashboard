@@ -38,6 +38,9 @@ const useCustomise = () => {
   const { mutateAsync: createTIPS, isLoading: isCreatingTips } = useMutation(
     customise.createTIP
   );
+  const { mutateAsync: updateSettings, isLoading: isUpdating } = useMutation(
+    customise.updateSettings
+  );
 
   const {
     data: quiz,
@@ -88,6 +91,17 @@ const useCustomise = () => {
         page: Number(currentPage),
         limit: Number(perPage),
       });
+    },
+    { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
+  );
+  const {
+    data: settings,
+    isLoading: loadingSettings,
+    refetch: refetchSettings,
+  } = useQuery(
+    ["settings"],
+    () => {
+      return customise.getSettings();
     },
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
@@ -142,6 +156,11 @@ const useCustomise = () => {
     tips,
     loadingTips,
     refetchTips,
+    updateSettings,
+    isUpdating,
+    settings,
+    loadingSettings,
+    refetchSettings,
   };
 };
 

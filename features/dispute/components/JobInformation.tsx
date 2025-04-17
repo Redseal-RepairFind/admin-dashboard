@@ -247,12 +247,22 @@ const JobInformation = () => {
             count={unreadContractorCount}
             info={singleDispute?.data?.contractor}
             refetch={refetchContractor}
+            disputerType={
+              singleDispute?.data?.disputerType === "contractors"
+                ? singleDispute?.data?.disputerType
+                : ""
+            }
           />
           <ContractorInfo
             title={"Customer"}
             count={unreadCustomerCount}
             info={singleDispute?.data?.customer}
             refetch={refetchCustomer}
+            disputerType={
+              singleDispute?.data?.disputerType === "customers"
+                ? singleDispute?.data?.disputerType
+                : ""
+            }
           />
         </div>
 
@@ -266,19 +276,22 @@ const JobInformation = () => {
         <JobDetail info={singleDispute?.data?.job} />
         <JobMedia info={singleDispute?.data?.jobDay} />
         <DisputeForm info={singleDispute?.data?.description} />
-        <SectionContainer title="Resolved by">
-          <div className="w-full mt-4 pb-5">
-            <div className="p-4 bg-gray-100 flex flex-col gap-4 text-sm font-medium rounded-md">
-              <p>Admin Name: {singleDispute?.data?.arbitrator?.name}</p>{" "}
-              <p>Remark: {singleDispute?.data?.remark}</p>
+        {singleDispute?.data?.status === "RESOLVED" ? (
+          <SectionContainer title="Resolved by">
+            <div className="w-full mt-4 pb-5">
+              <div className="p-4 bg-gray-100 flex flex-col gap-4 text-sm font-medium rounded-md">
+                <p>Admin Name: {singleDispute?.data?.arbitrator?.name}</p>{" "}
+                <p>Remark: {singleDispute?.data?.remark}</p>
+              </div>
             </div>
-          </div>
-        </SectionContainer>
+          </SectionContainer>
+        ) : null}
         {singleDispute?.data?.status === "RESOLVED" ? null : (
           <div className="w-full flex items-center justify-start gap-5">
             <Modal
               open={openModal}
               onClose={() => handleModalClose()}
+              center
               classNames={{
                 modal: "customModal",
               }}

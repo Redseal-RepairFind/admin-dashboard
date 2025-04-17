@@ -47,6 +47,7 @@ interface IProps {
   loadingSortedData: boolean;
   isQuerying: boolean;
   setSearchTerm: any;
+  refetchContractors: any;
 }
 
 const ContractorsTable: React.FC<IProps> = ({
@@ -57,6 +58,7 @@ const ContractorsTable: React.FC<IProps> = ({
   loadingSortedData,
   isQuerying,
   setSearchTerm,
+  refetchContractors,
 }) => {
   const { handleViewAContractors } = useContractorTable({ setLoading });
 
@@ -65,7 +67,6 @@ const ContractorsTable: React.FC<IProps> = ({
     deleteMultipleContractor,
     unsuspend,
     unsuspending,
-    refetchContractors,
   } = useContractors();
   const queryClient = useQueryClient();
 
@@ -148,9 +149,9 @@ const ContractorsTable: React.FC<IProps> = ({
       });
       toast.remove();
       toast.success("Contractors unsuspended successfully");
+      refetchContractors();
       closeModal();
       setCheckedList([]);
-      refetchContractors();
     } catch (error: any) {
       console.error(error);
       toast.remove();

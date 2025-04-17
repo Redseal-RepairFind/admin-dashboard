@@ -7,24 +7,27 @@ import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import CustomerChat from "./CustomerChat";
 import ContractorChat from "./ContractorChat";
+import { Tag } from "@/features/issues/Card";
 
 const ContractorInfo = ({
   info,
   title,
   count,
   refetch,
+  disputerType,
 }: {
   info: any;
   title: any;
   count?: any;
   refetch?: any;
+  disputerType?: string;
 }) => {
   const [openCustomer, setOpenCustomer] = useState<boolean>(false);
   const customerModalRef = useRef(null);
   const [openContractor, setOpenContractor] = useState<boolean>(false);
   const contractorModalRef = useRef(null);
 
-  // console.log(info);
+  // console.log(info, disputerType);
 
   return (
     <>
@@ -56,7 +59,10 @@ const ContractorInfo = ({
           <Img url={info?.profilePhoto?.url} />
         </div>
         <div className="flex-1">
-          <p className="text-gray-400">{title}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-gray-400">{title}</p>
+            {disputerType ? <Tag name="Initiator" tag={"reporter"} /> : null}
+          </div>
           <p className="font-semibold mt-2">
             {info?.firstName} {info?.lastName}
           </p>
