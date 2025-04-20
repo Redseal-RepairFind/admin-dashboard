@@ -272,9 +272,9 @@ const CustomersTable: React.FC<IProps> = ({
                   </tr>
                 ))}
               </tbody>
-            ) : (
-              <Empty message="No Customers found" />
-            )}
+            ) : null
+            // <Empty message="No Customers found" />
+            }
           </Table>
         )}
       </TableOverflow>

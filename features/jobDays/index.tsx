@@ -27,6 +27,7 @@ import { trimString } from "@/lib/utils/trim-string";
 import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 import JobsTable from "./components/table";
 import AnalyticCard from "../jobs/components/analytic-card";
+import FilterCalendar from "../contractors/components/filter-calendar";
 const Jobs = () => {
   const [loading, setLoading] = useState(true);
   const [dataToRender, setDataToRender] = useState<any>();
@@ -195,7 +196,8 @@ const Jobs = () => {
       <PageBody>
         <div className="flex justify-between mb-6 items-center">
           <PageHeading page_title="Jobs" />
-          <Filter />
+          <FilterCalendar />
+          <div></div>
         </div>
         <Modal
           open={openModal}

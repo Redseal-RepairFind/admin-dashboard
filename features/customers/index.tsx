@@ -22,6 +22,7 @@ import Modal from "react-responsive-modal";
 import ExportModal from "@/app/_components/ExportModal";
 import { ConfirmModal, ModalType } from "../contractors";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import FilterCalendar from "../contractors/components/filter-calendar";
 
 type FilterData = {
   customers: any[];
@@ -160,7 +161,7 @@ const Customers = () => {
         <PageBody>
           <div className="flex justify-between mb-6 items-center">
             <PageHeading page_title="Customers" />
-            <Filter />
+            <FilterCalendar />
             <DownloadButton
               text="Download Customer's LIST"
               onClick={handleModalOpen}

@@ -18,8 +18,8 @@ export function useSortedData(
   const searchParams = useSearchParams();
   const param = new URLSearchParams(window.location.search);
   const initialState = useMemo(() => new Date(1999, 9, 14), []);
-  const [startDate, setStartDate] = useState<any>();
-  const [endDate, setEndDate] = useState<any>();
+  // const [startDate, setStartDate] = useState<any>();
+  // const [endDate, setEndDate] = useState<any>();
   const [searchTerm, setSearchTerm] = useState("");
   const [queryedList, setQueryedList] = useState<any[]>([]);
   const [isQuerying, setIsQuerying] = useState(false);
@@ -40,11 +40,13 @@ export function useSortedData(
   const issuesStatus = searchParams.get("issuesStatus") || "PENDING";
   const skills = searchParams.get("skills") || "";
   const filterByAdmin = searchParams.get("filterByAdmin") || "";
+  const startDate = searchParams.get("startDate") || "";
+  const endDate = searchParams.get("endDate") || "";
 
   const pathname = usePathname();
   const router = useRouter();
 
-  // console.log(skills);
+  // console.log(startDate, endDate);
 
   const { mutateAsync: acceptIssue, isLoading: isAccepting } = useMutation(
     customers.acceptIssue
@@ -58,27 +60,27 @@ export function useSortedData(
   // Use effect to handle sorting by date
 
   // console.log(status);
-  useEffect(() => {
-    const sortParam = params.toLowerCase().replaceAll("_", " ");
-    const now = new Date();
-    const critria = searchParams.get("sortList") || "firstName";
+  // useEffect(() => {
+  //   const sortParam = params.toLowerCase().replaceAll("_", " ");
+  //   const now = new Date();
+  //   const critria = searchParams.get("sortList") || "firstName";
 
-    if (sortParam === "last 24h") {
-      setStartDate(new Date(now.getTime() - 24 * 60 * 60 * 1000));
-      setEndDate(now);
-    } else if (sortParam === "last 7 days") {
-      setStartDate(new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000));
-      setEndDate(now);
-    } else if (sortParam === "last 30 days") {
-      setStartDate(new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000));
-      setEndDate(now);
-    } else {
-      setStartDate("");
-      setEndDate("");
-    }
+  //   if (sortParam === "last 24h") {
+  //     setStartDate(new Date(now.getTime() - 24 * 60 * 60 * 1000));
+  //     setEndDate(now);
+  //   } else if (sortParam === "last 7 days") {
+  //     setStartDate(new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000));
+  //     setEndDate(now);
+  //   } else if (sortParam === "last 30 days") {
+  //     setStartDate(new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000));
+  //     setEndDate(now);
+  //   } else {
+  //     setStartDate("");
+  //     setEndDate("");
+  //   }
 
-    setCriteria(critria);
-  }, [params, initialState, searchParams, criteria]);
+  //   setCriteria(critria);
+  // }, [params, initialState, searchParams, criteria]);
   // console.log(startDate);
 
   // Fetch sorted data
@@ -124,6 +126,8 @@ export function useSortedData(
             search: searchTerm,
             skills,
             filterByAdmin,
+            startDate,
+            endDate,
           })
         : customers.getSortingAnalytics({
             page: searchTerm ? 1 : Number(currentPage) || 1,

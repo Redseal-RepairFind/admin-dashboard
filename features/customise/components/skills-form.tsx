@@ -53,7 +53,7 @@ const SingleSkillForm = ({
   };
   const [singleSkill, setSingleSkill] = useState<any>(initialState);
   const [itsSingle, setItsSingle] = useState(true);
-  const [language, setLanguage] = useState(initLanguage);
+  // const [language, setLanguage] = useState(initLanguage);
   const { AddSkill, refetchSkills } = useCustomise();
 
   // console.log(editData);
@@ -69,17 +69,17 @@ const SingleSkillForm = ({
     }));
   };
 
-  const handleLanguageChange = (lang: { name: string; label: string }) => {
-    if (!singleSkill.name) {
-      toast.error("Enter a Skill to be translated");
-    }
-    if (singleSkill.translations[language.label] === "") {
-      toast.error("Kindly Translate the current Language before you proceed");
-      return;
-    }
+  // const handleLanguageChange = (lang: { name: string; label: string }) => {
+  //   if (!singleSkill.name) {
+  //     toast.error("Enter a Skill to be translated");
+  //   }
+  //   if (singleSkill.translations[language.label] === "") {
+  //     toast.error("Kindly Translate the current Language before you proceed");
+  //     return;
+  //   }
 
-    setLanguage(lang);
-  };
+  //   setLanguage(lang);
+  // };
 
   const submit = async () => {
     if (itsSingle) {
@@ -88,7 +88,7 @@ const SingleSkillForm = ({
       }
       if (
         !singleSkill.translations.es ||
-        !singleSkill.translations.en ||
+        // !singleSkill.translations.en ||
         !singleSkill.translations.fr ||
         !singleSkill.translations.zh ||
         !singleSkill.translations.pa
@@ -103,9 +103,12 @@ const SingleSkillForm = ({
         translations: {
           name: {
             ...singleSkill.translations,
+            en: singleSkill.name,
           },
         },
       };
+
+      console.log(payload);
 
       if (isEdit) {
         await customise.editSkills(editData?._id, payload);
@@ -115,7 +118,7 @@ const SingleSkillForm = ({
         toast.success(`${editData?.name} skills successfully updated`);
         setSingleSkill(initialState);
 
-        setLanguage(initLanguage);
+        // setLanguage(initLanguage);
         refetchSkills();
 
         return;
@@ -123,7 +126,7 @@ const SingleSkillForm = ({
 
       await AddSkill(payload);
       setSingleSkill(initialState);
-      setLanguage(initLanguage);
+      // setLanguage(initLanguage);
       toast.remove();
 
       toast.success(` Skill successfully created`);
@@ -155,60 +158,7 @@ const SingleSkillForm = ({
         </div>
       </div>
 
-      <div className="w-full flex flex-col gap-5">
-        <div className="flex items-center gap-2">
-          {translateSkills.map(
-            (
-              trns: {
-                name: string;
-                label: string;
-              },
-              i
-            ) => (
-              <button
-                className="flex items-center gap-2"
-                key={i}
-                onClick={() => handleLanguageChange(trns)}
-              >
-                <span
-                  className={` ${
-                    trns.name === language.name
-                      ? "bg-black"
-                      : "bg-gray-300 border-black border"
-                  } h-5 w-5 rounded-full flex items-center justify-center shadow-lg`}
-                >
-                  {trns.name === language.name ? (
-                    <span className="text-white">&#10003;</span>
-                  ) : null}
-                </span>
-                <p
-                  className={`text-sm ${
-                    trns.name === language.name ? "text-black" : "text-gray-400"
-                  }`}
-                >
-                  {trns.name}
-                </p>
-              </button>
-            )
-          )}
-        </div>
-        <div className="flex flex-col gap-2 w-full">
-          <label htmlFor="skillname">{language?.name}</label>
-          <input
-            type="text"
-            name="skill"
-            // autoComplete="skill"
-            className={` rounded-md py-2 px-3 mt-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 capitalize ${
-              isEdit ? "border border-gray-600 w-full" : "w-[60%]  border-0"
-            }`}
-            placeholder=""
-            value={singleSkill.translations[language.label]}
-            onChange={(e) => handleSingleSkill(language.label, e.target.value)}
-          />
-        </div>
-      </div>
-
-      <span className={`mt-4 mb-6 flex flex-col items-cente gap-2 w-[60%]`}>
+      <span className={` flex flex-col items-cente gap-2 w-[60%]`}>
         <label htmlFor="Verifiable">Verifiable</label>
         <select
           name="verifiable"
@@ -228,6 +178,83 @@ const SingleSkillForm = ({
           <option value="true">Yes</option>
         </select>
       </span>
+
+      <div className="w-full flex flex-col gap-5">
+        <p>Translations</p>
+        <div className={`grid grid-cols-2 gap-2 ${isEdit ? "" : "pr-4"} `}>
+          {translateSkills.map(
+            (
+              trns: {
+                name: string;
+                label: string;
+              },
+              i
+            ) => (
+              // <button
+              //   className="flex items-center gap-2"
+              //   key={i}
+              //   onClick={() => handleLanguageChange(trns)}
+              // >
+              //   <span
+              //     className={` ${
+              //       trns.name === language.name
+              //         ? "bg-black"
+              //         : "bg-gray-300 border-black border"
+              //     } h-5 w-5 rounded-full flex items-center justify-center shadow-lg`}
+              //   >
+              //     {trns.name === language.name ? (
+              //       <span className="text-white">&#10003;</span>
+              //     ) : null}
+              //   </span>
+              //   <p
+              //     className={`text-sm ${
+              //       trns.name === language.name ? "text-black" : "text-gray-400"
+              //     }`}
+              //   >
+              //     {trns.name}
+              //   </p>
+              // </button>
+              <div className="flex flex-col  w-full" key={i}>
+                <label htmlFor="skillname">{trns?.name}</label>
+
+                <input
+                  type="text"
+                  name={trns.label}
+                  // autoComplete="skill"
+                  className={` rounded-md py-2 px-3 mt-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 capitalize ${
+                    isEdit
+                      ? "border border-gray-600 w-full"
+                      : "w-full  border-0"
+                  }`}
+                  placeholder={`translate to ${trns.name}`}
+                  value={
+                    trns.name === "English"
+                      ? singleSkill.name
+                      : singleSkill.translations[trns.label]
+                  }
+                  onChange={(e) =>
+                    handleSingleSkill(trns.label, e.target.value)
+                  }
+                />
+              </div>
+            )
+          )}
+        </div>
+        {/* <div className="flex flex-col gap-2 w-full">
+          <label htmlFor="skillname">{language?.name}</label>
+          <input
+            type="text"
+            name="skill"
+            // autoComplete="skill"
+            className={` rounded-md py-2 px-3 mt-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 capitalize ${
+              isEdit ? "border border-gray-600 w-full" : "w-[60%]  border-0"
+            }`}
+            placeholder=""
+            value={singleSkill.translations[language.label]}
+            onChange={(e) => handleSingleSkill(language.label, e.target.value)}
+          />
+        </div> */}
+      </div>
 
       <div className="flex mt-10 items-center gap-2">
         <button

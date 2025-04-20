@@ -23,6 +23,7 @@ const Settings = () => {
     edit: false,
     editValue: "",
   });
+  const [mutableValue, setMutableValue] = useState<any>(null);
 
   const modalRef = useRef();
 
@@ -32,6 +33,7 @@ const Settings = () => {
       action: (item: any) => {
         setOpenModal({ ...openModal, edit: true });
         setCurrentSetting(item);
+        setMutableValue(item?.value);
       },
     },
   ];
@@ -41,6 +43,17 @@ const Settings = () => {
   const dataToRender = settings?.data;
 
   const onSubmit = async (data: any) => {
+    console.log(data?.value);
+
+    if (
+      currentSetting?.name === "app_regions" &&
+      currentSetting?.value?.length === mutableValue?.length &&
+      !data?.value
+    ) {
+      toast.error("Please add or remove Region");
+
+      return;
+    }
     const payload = {
       value:
         typeof currentSetting?.value === "boolean"
@@ -48,7 +61,9 @@ const Settings = () => {
             ? true
             : false
           : currentSetting?.name === "app_regions"
-          ? [...currentSetting?.value, data?.value]
+          ? data?.value
+            ? [...mutableValue, data?.value]
+            : mutableValue
           : Number(data?.value?.replace("$", "")),
     };
     // console.log(payload);
@@ -73,7 +88,7 @@ const Settings = () => {
   // console.log(dataToRender);
   if (loadingSettings) return <LoadingTemplate />;
   return (
-    <div className="flex flex-col  gap-4 max-w-[700px]">
+    <div className="flex flex-col  gap-4 max-w-[700px] ">
       <Modal
         open={openModal?.edit}
         onClose={() => {
@@ -87,27 +102,62 @@ const Settings = () => {
         container={modalRef.current}
       >
         <form
-          className="w-[400px] flex flex-col gap-4"
+          className={`flex flex-col gap-4 ${
+            currentSetting?.name === "app_regions"
+              ? "min-w-[600px]"
+              : "min-w-[400px]"
+          }`}
           onSubmit={handleSubmit(onSubmit)}
         >
           <Header
             title={
               currentSetting?.name === "app_regions"
-                ? "Add New Region"
+                ? "Add/Remove Region"
                 : `Edit ${currentSetting?.name?.replaceAll("_", " ")}`
             }
             size="small"
           />
           {currentSetting?.name === "app_regions" ? (
-            <input
-              type="text"
-              id="question"
-              className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
-              placeholder="New Region"
-              {...register("value", {
-                required: "Value is required",
-              })}
-            />
+            <div className="flex flex-col gap-4">
+              <input
+                type="text"
+                id="question"
+                className="block w-full border border-gray-200 focus:ring-0 focus:border-black duration-200 rounded-md py-3 px-4 sm:text-sm outline-none"
+                placeholder="New Region"
+                {...register("value")}
+              />
+              {/* {formState?.errors?.value?.message &&
+              currentSetting?.name === "app_regions" ? (
+                <p className="text-red-600">
+                  {formState?.errors?.value?.message?.toString()}
+                </p>
+              ) : null} */}
+              {mutableValue?.length ? (
+                <h2 className="text-xl font-bold ">Regions</h2>
+              ) : null}
+              <div className="grid grid-cols-3 gap-3">
+                {mutableValue?.map((item: string, i: number) => (
+                  <span
+                    key={i}
+                    className="bg-gray-200 px-4 py-2 rounded-md  gap-2 grid grid-cols-[1fr,24px]"
+                  >
+                    <p>{item}</p>
+                    <button
+                      type="button"
+                      className="text-gray-500 h-full w-full bg-red-100 flex items-center justify-center"
+                      onClick={() => {
+                        const newValue = mutableValue?.filter(
+                          (region: string) => region !== item
+                        );
+                        setMutableValue(newValue);
+                      }}
+                    >
+                      &times;
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
           ) : typeof currentSetting?.value === "number" ? (
             <input
               type="text"
@@ -134,13 +184,14 @@ const Settings = () => {
               <option value="false">False</option>
             </select>
           )}
-          {formState?.errors?.value?.message ? (
+          {formState?.errors?.value?.message &&
+          currentSetting?.name !== "app_regions" ? (
             <p className="text-red-600">
               {formState?.errors?.value?.message?.toString()}
             </p>
           ) : null}
           <SubmitBtn isSubmitting={false}>
-            {currentSetting?.name === "app_regions" ? "Proceed" : "Edit"}
+            {currentSetting?.name === "app_regions" ? "Save" : "Update"}
           </SubmitBtn>
         </form>
       </Modal>

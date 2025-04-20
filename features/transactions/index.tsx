@@ -27,6 +27,7 @@ import { useCheckedList } from "@/context/checked-context";
 import * as XLSX from "xlsx";
 import Modal from "react-responsive-modal";
 import ExportModal from "@/app/_components/ExportModal";
+import FilterCalendar from "../contractors/components/filter-calendar";
 
 const Transactions = () => {
   const [loading, setLoading] = useState(true);
@@ -140,7 +141,7 @@ const Transactions = () => {
       <PageBody>
         <div className="flex justify-between mb-6 items-center">
           <PageHeading page_title="Transactions" />
-          <Filter />
+          <FilterCalendar />
 
           <DownloadButton
             text="Download Transaction’s LIST"

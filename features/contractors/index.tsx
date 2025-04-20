@@ -30,6 +30,7 @@ import "./modalAnimations.css";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import useCustomise from "@/lib/hooks/useCustomise";
 import FilterModal from "./searchFilterModal";
+import FilterCalendar from "./components/filter-calendar";
 
 export type ModalType = {
   isOpen: boolean;
@@ -177,7 +178,8 @@ const Contractors = () => {
         <PageBody>
           <div className="flex justify-between mb-6 items-center">
             <PageHeading page_title="Contractors" />
-            <Filter />
+            {/* <Filter /> */}
+            <FilterCalendar />
             <FilterModal skills={skills?.data} />
             <DownloadButton
               text="Download Contractor’S LIST"

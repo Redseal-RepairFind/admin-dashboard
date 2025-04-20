@@ -51,9 +51,20 @@ export const dispute = {
         payload
       )
       .then(({ data }) => data),
-  enableSiteVisit: (id: string) =>
+  enableSiteVisit: ({
+    id,
+    payload,
+  }: {
+    id: string;
+    payload?: {
+      remark: string;
+    };
+  }) =>
     client
-      .post(`/admin/disputes/${id}/change-to-site-visit`)
+      .post(
+        `/admin/disputes/${id}/change-to-site-visit`,
+        payload ? payload : null
+      )
       .then(({ data }) => data),
   settleDisputeIssue: (id: string) =>
     client.post(`/admin/disputes/${id}/settle`).then(({ data }) => data),

@@ -49,6 +49,8 @@ export const customers = {
     accountStatus,
     skills,
     filterByAdmin,
+    startDate,
+    endDate,
   }: {
     route:
       | "customers"
@@ -69,11 +71,13 @@ export const customers = {
     accountStatus: string;
     skills?: string;
     filterByAdmin?: string;
+    startDate: string;
+    endDate: string;
   }) =>
     route &&
     client
       .get(
-        `/admin/${route}?limit=${limit}&page=${page}${
+        `/admin/${route}?limit=${limit}&page=${page}&startDate=${startDate}&endDate=${endDate}${
           criteria ? `&sort=${criteria}` : ""
         }${
           accountStatus ? `&accountStatus=${accountStatus.toUpperCase()}` : ""

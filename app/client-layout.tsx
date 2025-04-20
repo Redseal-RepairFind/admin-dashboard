@@ -8,6 +8,7 @@ import { UserProvider } from "context/user-context";
 import { CheckedProvider } from "context/checked-context";
 import { LoaderProvider } from "@/context/LoaderContext";
 import GlobalLayout from "./Global";
+import { FilterProvider } from "@/context/filter-context";
 
 const queryClient = new QueryClient();
 
@@ -17,7 +18,9 @@ function ClientLayout({ children }: { children: ReactNode }) {
       <UserProvider>
         <LoaderProvider>
           <GlobalLayout>
-            <CheckedProvider>{children}</CheckedProvider>
+            <FilterProvider>
+              <CheckedProvider>{children}</CheckedProvider>
+            </FilterProvider>
           </GlobalLayout>
         </LoaderProvider>
       </UserProvider>

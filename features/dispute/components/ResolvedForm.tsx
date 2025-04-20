@@ -6,18 +6,22 @@ import useDisputes from "@/lib/hooks/useDisputes";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import SubmitBtn from "@/components/ui/submit-btn";
+import { dispute } from "@/lib/api/dispute";
 
 const SettleEmergency = ({
   id,
   setOpen,
   resolveType,
+  handleSubmission,
+  siteVisit = false,
 }: {
   id: any;
   setOpen: any;
   resolveType: any;
+  handleSubmission?: any;
+  siteVisit?: boolean;
 }) => {
-  // console.log(emergencyID);
-
+  // console.log(siteVisit);
   const {
     register,
     handleSubmit,
@@ -29,13 +33,16 @@ const SettleEmergency = ({
 
   const handleSettle = async (payload: any) => {
     try {
-      const response = await SettleDispute({ id, payload, type: resolveType });
+      const response = siteVisit
+        ? await dispute.enableSiteVisit({ id, payload })
+        : await SettleDispute({ id, payload, type: resolveType });
       toast.remove();
       toast.success(response?.message);
       setTimeout(() => {
-        setOpen();
+        setOpen?.();
         refetchDispute();
       }, 1000);
+      handleSubmission?.();
     } catch (e: any) {
       toast.remove();
       //   console.log({ e });
@@ -43,12 +50,29 @@ const SettleEmergency = ({
     }
   };
 
+  // async function handleRevisitSite(id: string) {
+  //   toast.loading("Enabling site visit...");
+  //   try {
+  //     await dispute.enableSiteVisit(id);
+  //     toast.remove();
+  //     toast.success("Site visit enabled successfully");
+  //     refetchDispute();
+  //     handleModalClose();
+  //   } catch (error) {
+  //     toast.remove();
+  //     toast.error("Failed to enable site visit");
+  //     console.error(error);
+  //   }
+  // }
+
   return (
     <div className="md:w-[500px] mx-2 w-full mt-7">
       <form onSubmit={handleSubmit(handleSettle)} className="w-full">
         <div className="w-full">
           <label className="block text-sm font-medium leading-6 text-gray-900">
-            {resolveType === "customer"
+            {siteVisit
+              ? "Enable Site Visit - "
+              : resolveType === "customer"
               ? "Refund Customer - "
               : resolveType === "revisit"
               ? "Enable Revisit - "

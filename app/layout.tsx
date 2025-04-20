@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Toaster } from "react-hot-toast";
 import ClientLayout from "./client-layout";
+import "react-datepicker/dist/react-datepicker.css";
 
 export const metadata: Metadata = {
   title: "Repairfind Admin",

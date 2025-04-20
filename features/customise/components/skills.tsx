@@ -115,12 +115,13 @@ export default function Skills() {
               classNames={{ modal: "customModal" }}
             >
               <Heading name={`Edit ${skill?.name} Skill?`} />
-
-              <SingleSkillForm
-                isEdit={true}
-                editData={skill}
-                closeModal={() => closeModal("edit")}
-              />
+              <div className="w-[600px]">
+                <SingleSkillForm
+                  isEdit={true}
+                  editData={skill}
+                  closeModal={() => closeModal("edit")}
+                />
+              </div>
             </Modal>
 
             <Modal

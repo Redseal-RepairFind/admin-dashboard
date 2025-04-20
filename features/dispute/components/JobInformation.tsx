@@ -50,7 +50,7 @@ const JobInformation = () => {
   const modalRef = useRef(null);
   const { id } = useParams();
   const [openDialog, setopenDialog] = useState(false);
-
+  const [siteVisit, setSiteVisit] = useState(false);
   const [resolveType, setResolveType] = useState<string>("");
 
   const { currentUser } = useContext(UserContext);
@@ -75,21 +75,6 @@ const JobInformation = () => {
   );
 
   const { data: handleSiteVisit } = useMutation(dispute.enableSiteVisit);
-
-  async function handleRevisitSite(id: string) {
-    toast.loading("Enabling site visit...");
-    try {
-      await dispute.enableSiteVisit(id);
-      toast.remove();
-      toast.success("Site visit enabled successfully");
-      refetchDispute();
-      handleModalClose();
-    } catch (error) {
-      toast.remove();
-      toast.error("Failed to enable site visit");
-      console.error(error);
-    }
-  }
 
   async function handleSettleDispute(id: string) {
     toast.loading("Settling dispute...");
@@ -183,6 +168,7 @@ const JobInformation = () => {
   }, [token]);
 
   // console.log(singleDispute);
+  // console.log(siteVisit);
 
   async function handleStrikeUser() {
     toast.loading(
@@ -228,6 +214,34 @@ const JobInformation = () => {
   return (
     <>
       {loadingSingleDispute && <LoadingTemplate />}
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        center
+        classNames={{
+          modal: "customModal",
+        }}
+        container={modalRef.current}
+      >
+        <ResolvedForm resolveType={resolveType} setOpen={setOpen} id={id} />
+      </Modal>
+      <Modal
+        open={siteVisit}
+        onClose={() => setSiteVisit(false)}
+        center
+        classNames={{
+          modal: "customModal",
+        }}
+        container={modalRef.current}
+      >
+        <ResolvedForm
+          resolveType={resolveType}
+          setOpen={siteVisit}
+          id={id}
+          siteVisit
+          handleSubmission={() => setSiteVisit(false)}
+        />
+      </Modal>
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -302,7 +316,9 @@ const JobInformation = () => {
               <div className="min-w-80 gap-4 flex items-center mt-6 justify-between">
                 <button
                   onClick={() => {
-                    handleRevisitSite(singleDispute?.data?._id);
+                    // setTimeout(() => setSiteVisit(true), 100);
+                    setSiteVisit(true);
+                    handleModalClose();
                   }}
                   className={`text-white px-8 py-3 rounded-md text-sm bg-black`}
                 >

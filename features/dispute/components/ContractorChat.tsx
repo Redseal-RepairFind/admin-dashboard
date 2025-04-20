@@ -141,7 +141,7 @@ const CustomerChat = ({ refetch: refetchConversation }: { refetch?: any }) => {
     }
   };
 
-  console.log(singleDispute);
+  // console.log(singleDispute);
 
   const token = sessionStorage.getItem("userToken");
 
