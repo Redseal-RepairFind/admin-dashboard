@@ -64,7 +64,7 @@ const Index = () => {
 
   // Function to update the URL params and the state
 
-  const { dataToRender: sortedData } = useDisputes();
+  const { sortedData } = useDisputes();
   // console.log(initialString);
 
   const totalDisputes = sortedData?.data.totalItems;

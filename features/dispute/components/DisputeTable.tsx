@@ -29,6 +29,7 @@ const table_headings = [
   "Disputer",
   "Description",
   "Dispute date",
+  "Dispute Reference ID",
   "Action",
 ];
 
@@ -46,14 +47,17 @@ const DisputeTable = () => {
     handleAccept,
     search,
     setSearch,
-    dataToRender,
+    sortedData,
     handleQuery,
     setIsQuerying,
     isQuerying,
     queryedList,
+    searchTerm, setSearchTerm
   } = useDisputes();
 
-  // const { sortedData, loadingSortedData } = useSortedData("disputes");
+  // const { setSearchTerm, loadingSortedData } = useSortedData("disputes");
+
+  // console.log(dataToRender);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -77,7 +81,7 @@ const DisputeTable = () => {
   };
 
   const pageProps = {
-    data: dataToRender?.data,
+    data: sortedData?.data,
   };
 
   // Fetch the initial 'sort' parameter from the URL (query)
@@ -143,16 +147,17 @@ const DisputeTable = () => {
           ))}
         </div>
         <Search
-          search={search}
+          search={searchTerm}
           setSearch={handleQuery}
-          placeholder="Search..."
+          placeholder="Search by Ticked ID..."
           setIsQuerying={setIsQuerying}
+          handleEmpty={setSearchTerm}
         />
       </div>
-      {loadingDisputes ? (
-        <LoadingTemplate />
-      ) : (
-        <TableOverflow>
+      <TableOverflow>
+        {loadingDisputes && isQuerying ? (
+          <LoadingTemplate />
+        ) : (
           <Table>
             <Thead>
               <tr>
@@ -163,7 +168,7 @@ const DisputeTable = () => {
             </Thead>
 
             <tbody>
-              {dataToRender?.data?.data?.map((item: any, index: number) => (
+              {sortedData?.data?.data?.map((item: any, index: number) => (
                 <tr key={index} className="border-b border-gray-100">
                   <Td>{index + 1}</Td>
                   <Td>
@@ -176,6 +181,7 @@ const DisputeTable = () => {
                     </span>
                   </Td>
                   <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
+                  <Td>{item?.reference}</Td>
                   <Td>
                     <button
                       // disabled={status === "RESOLVED"}
@@ -200,8 +206,8 @@ const DisputeTable = () => {
               ))}
             </tbody>
           </Table>
-        </TableOverflow>
-      )}
+        )}
+      </TableOverflow>
       <div className="w-full mt-2">
         <Pagination {...pageProps} />
       </div>

@@ -48,6 +48,8 @@ export function useSortedData(
 
   // console.log(startDate, endDate);
 
+  // console.log(listStatus);
+
   const { mutateAsync: acceptIssue, isLoading: isAccepting } = useMutation(
     customers.acceptIssue
   );
@@ -188,7 +190,7 @@ export function useSortedData(
     ["allData"],
     () => customers.getAllData({ route }),
     {
-      enabled: isQuerying || listStatus !== "All", // Fetch only when isQuerying is true
+      enabled: (isQuerying && route !== "disputes") || listStatus !== "All", // Fetch only when isQuerying is true
     }
   );
   // const allData ={

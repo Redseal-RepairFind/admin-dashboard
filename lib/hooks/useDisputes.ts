@@ -37,11 +37,9 @@ const useDisputes = () => {
     isQuerying,
     queryedList,
     refetch,
+    setSearchTerm,
+    searchTerm,
   } = useSortedData("disputes");
-
-  useEffect(() => {
-    isQuerying ? setDataToRender(queryedList) : setDataToRender(sortedData);
-  }, [isQuerying, queryedList, setDataToRender, sortedData]);
 
   // useEffect(() => {
   //   // if (sessionStatus === "OPEN") {
@@ -173,11 +171,13 @@ const useDisputes = () => {
     setCurrentPage,
     search,
     setSearch,
-    dataToRender,
+    sortedData,
     handleQuery,
     setIsQuerying,
     isQuerying,
     queryedList,
+    setSearchTerm,
+    searchTerm,
   };
 };
 

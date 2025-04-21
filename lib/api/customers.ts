@@ -86,7 +86,9 @@ export const customers = {
             ? `&customersWithBooking=${customersWithBooking}`
             : ""
         }${
-          search
+          search && route === "disputes"
+            ? `&searchFields=reference&search=${search}`
+            : search && route !== "disputes"
             ? `&searchFields=firstName,lastName,email&search=${search}`
             : ""
         }${type ? `&type=${type}` : ""}${
@@ -155,7 +157,9 @@ export const customers = {
             ? `&customersWithBooking=${customersWithBooking}`
             : ""
         }${
-          search
+          search && route === "disputes"
+            ? `&searchFields=reference&search=${search}`
+            : search && route !== "disputes"
             ? `&searchFields=firstName,lastName,email&search=${search}`
             : ""
         }${type ? `&type=${type}` : ""}${
