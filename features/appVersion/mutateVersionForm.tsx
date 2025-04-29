@@ -36,21 +36,24 @@ function Form({
       ],
     };
 
-    const editPayload = {
-      ...formData,
-      changelogs: [
-        ...data.changelogs,
-        {
-          title: formData.title,
-          description: formData.description,
-        },
-      ],
-    };
+    if (type === "edit") {
+      const editPayload = {
+        ...formData,
+        changelogs: [
+          ...data?.changelogs,
+          {
+            title: formData.title,
+            description: formData.description,
+          },
+        ],
+      };
 
+      await handleSubmit({ payload: editPayload, id });
+      closeModal?.();
+      return;
+    }
     // console.log(editPayload);
-    type === "edit"
-      ? await handleSubmit({ payload: editPayload, id })
-      : await handleSubmit(payload);
+    await handleSubmit(payload);
     closeModal?.();
   }
 

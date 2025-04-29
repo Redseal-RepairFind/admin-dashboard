@@ -35,7 +35,7 @@ const table_headings = [
   "Certn. Method",
   "Certn. Status",
   "Account Status",
-  // "No of Jobs",
+  "Region",
   "Strikes",
 ];
 
@@ -418,6 +418,7 @@ const ContractorsTable: React.FC<IProps> = ({
                         ? "ACTIVE"
                         : item?.accountStatus}
                     </Td>
+                    <Td>{item?.region?.name || "No Region"}</Td>
 
                     <Td>
                       {/* <Ratings rating={item?.rating} /> */}

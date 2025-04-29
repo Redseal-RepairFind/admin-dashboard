@@ -1,5 +1,11 @@
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+
+declare module "jspdf" {
+  interface jsPDF {
+    autoTable: (options: any) => jsPDF;
+  }
+}
 
 export function downloadPDF(
   columns: string[],
@@ -9,34 +15,32 @@ export function downloadPDF(
 ) {
   const doc = new jsPDF();
 
-  // Add a title
   doc.setFontSize(12);
   doc.text(title, 14, 16);
 
-  autoTable(doc, {
+  doc.autoTable({
     head: [columns],
     body: rows,
     styles: {
-      fontSize: 10, // Set default font size
-      cellPadding: 4, // Padding for cells
-      halign: "center", // Horizontal alignment
-      valign: "middle", // Vertical alignment
-      lineWidth: 0.1, // Width of the border lines
-      lineColor: [240, 240, 240], // Line color for borders (black)
+      fontSize: 10,
+      cellPadding: 4,
+      halign: "center",
+      valign: "middle",
+      lineWidth: 0.1,
+      lineColor: [240, 240, 240],
     },
-    // Customize header styles
     headStyles: {
-      fillColor: [240, 240, 240], // Light green background color for headers
-      textColor: [0, 0, 0], // Black text color for headers
+      fillColor: [240, 240, 240],
+      textColor: [0, 0, 0],
     },
     columnStyles: {
-      0: { halign: "left" }, // Align first column to the left
-      3: { halign: "left" }, // Align email column to the right
+      0: { halign: "left" },
+      3: { halign: "left" },
     },
     alternateRowStyles: {
-      fillColor: [255, 255, 255], // Light gray for alternate rows
+      fillColor: [255, 255, 255],
     },
-    margin: { top: 30 }, // Top margin
+    margin: { top: 30 },
   });
 
   doc.save(fileName);

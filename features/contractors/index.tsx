@@ -63,7 +63,6 @@ const Contractors = () => {
     setSearchTerm,
     refetch: refetchContractors,
   } = useSortedData("contractors");
-  const [dataToRender, setDataToRender] = useState<any>();
   const stats = sortedData?.data?.stats;
   const nodeRef = useRef(null);
   const { skills, loadingSkills } = useCustomise();
@@ -80,7 +79,6 @@ const Contractors = () => {
   //   }
   // }, [openModal.content, setIsQuerying]);
 
-  // console.log(sortedData);
   const columns = [
     "Contractor's Name",
     "Skill",
@@ -88,6 +86,7 @@ const Contractors = () => {
     "Email",
     "Stage",
     "Strikes",
+    "Phone Number",
   ];
 
   const rowsData =
@@ -96,13 +95,17 @@ const Contractors = () => {
       : checkedList?.length > 0
       ? checkedList
       : sortedData?.data?.data;
+
+  // console.log(rowsData);
+
   const rows = rowsData?.map((item: any) => [
     item?.name,
     item?.profile?.skill === undefined ? "Not Submitted" : item?.profile?.skill,
     item?.accountStatus,
     item?.email,
     item?.onboarding?.stage?.label,
-    item?.rating,
+    item?.sanctions?.length,
+    item?.phoneNumberFull,
   ]);
 
   const exportToExcel = (data: any, fileName: string) => {
@@ -116,10 +119,11 @@ const Contractors = () => {
       { wch: 50 }, // Address column width
       { wch: 15 }, // Date column width
       { wch: 20 }, // Status column width
+      { wch: 40 },
     ];
 
     // Apply header styling (assuming headers start at A1)
-    const headerCells = ["A1", "B1", "C1", "D1", "E1", "F1"];
+    const headerCells = ["A1", "B1", "C1", "D1", "E1", "F1", "G1"];
     headerCells.forEach((cell) => {
       if (worksheet[cell]) {
         worksheet[cell].s = {
@@ -136,7 +140,7 @@ const Contractors = () => {
   };
 
   function handleDownloadPdf(type: "excel" | "pdf") {
-    const dataToExport = rowsData.map((item: any) => {
+    const dataToExport = rowsData?.map((item: any) => {
       return {
         ContractorName: item?.name,
         // Date_Joined: formatDateToDDMMYY(item.createdAt),
@@ -147,7 +151,8 @@ const Contractors = () => {
         Status: item?.accountStatus,
         Email: item?.email,
         Stage: item?.onboarding?.stage?.label,
-        Ratings: item?.sanctions?.length,
+        Strikes: item?.sanctions?.length,
+        Contact: item?.phoneNumberFull,
       };
     });
     if (!dataToExport) return;

@@ -6,11 +6,11 @@ function Empty({
   className?: string;
 }) {
   return (
-    <div
+    <span
       className={` h-[160px]  inset-0 ${className}  flex items-center justify-center`}
     >
       <p className="text-center">{message}</p>
-    </div>
+    </span>
   );
 }
 
