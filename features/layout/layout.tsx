@@ -32,10 +32,17 @@ const Layout: React.FC<IProps> = ({ children }) => {
 export default Layout;
 
 export const LayoutElement: React.FC<IProps> = ({ children }) => {
+  const [expandBar, setExpandBar] = useState(true);
   return (
     <div className="flex min-h-screen relative">
-      <Sidebar />
-      <div className="bg-[#F0F0F0] min-w-[calc(100vw-280px)] w-[calc(100vw-21%)] max-h-screen overflow-y-scroll">
+      <Sidebar expandBar={expandBar} setExpandBar={setExpandBar} />
+      <div
+        className={`bg-[#F0F0F0] ${
+          expandBar
+            ? "min-w-[calc(100vw-280px)]  w-[calc(100vw-21%)]"
+            : "w-[calc(100vw-10%)]"
+        } max-h-screen overflow-y-scroll`}
+      >
         {children}
       </div>
     </div>

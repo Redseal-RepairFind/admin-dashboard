@@ -180,6 +180,10 @@ export const customers = {
 
   getAllData: ({
     route,
+    startDate,
+    endDate,
+    accountStatus,
+    skills,
   }: {
     route:
       | "customers"
@@ -190,9 +194,20 @@ export const customers = {
       | "jobdays"
       | "transactions"
       | "issues";
+    startDate: any;
+    endDate: any;
+    accountStatus: any;
+    skills: string;
   }) =>
     route &&
-    client.get(`/admin/${route}?limit=1000000000`).then(({ data }) => data),
+    client
+      .get(
+        `/admin/${route}?limit=1000000000&startDate=${startDate}&endDate=${endDate}
+${accountStatus ? `&accountStatus=${accountStatus.toUpperCase()}` : ""}${
+          skills && route === "contractors" ? `&skills=${skills}` : ""
+        }`
+      )
+      .then(({ data }) => data),
 
   getSearchSort: ({
     page,

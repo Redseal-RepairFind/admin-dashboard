@@ -85,6 +85,12 @@ export const navLinks: INavLinks[] = [
     route: "/feedbacks",
     readPermissions: ["manage_staffs"],
   },
+  {
+    name: "Push Notifications",
+    svg: <AppVersion />,
+    route: "/push_notifications",
+    readPermissions: [""],
+  },
 
   {
     name: "Emergency",
@@ -111,6 +117,7 @@ export const navLinks: INavLinks[] = [
     route: "/App_version",
     readPermissions: ["manage_app_versions"],
   },
+
   // { name: "Transactions", svg: <Transactions />, route: "/transactions" },
   {
     name: "Gst Validation",

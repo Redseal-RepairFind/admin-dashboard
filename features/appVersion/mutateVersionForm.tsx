@@ -223,15 +223,15 @@ function Form({
 
 export default Form;
 
-function Column({ children }: { children: React.ReactNode }) {
+export function Column({ children }: { children: React.ReactNode }) {
   return <div className="flex flex-col gap-2">{children}</div>;
 }
 
-function Row({ children }: { children: React.ReactNode }) {
+export function Row({ children }: { children: React.ReactNode }) {
   return <div className="grid grid-cols-2 gap-4">{children}</div>;
 }
 
-function Label({
+export function Label({
   children,
   htmlFor,
 }: {
@@ -245,6 +245,6 @@ function Label({
   );
 }
 
-function Errors({ children }: { children: any }) {
+export function Errors({ children }: { children: any }) {
   return <p className="font-semibold text-[12px] text-red-600">{children}</p>;
 }

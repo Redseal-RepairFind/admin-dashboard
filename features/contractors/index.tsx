@@ -87,6 +87,8 @@ const Contractors = () => {
     "Stage",
     "Strikes",
     "Phone Number",
+    "Region",
+    "Account Status",
   ];
 
   const rowsData =
@@ -100,12 +102,20 @@ const Contractors = () => {
 
   const rows = rowsData?.map((item: any) => [
     item?.name,
-    item?.profile?.skill === undefined ? "Not Submitted" : item?.profile?.skill,
+
+    item?.profile?.skill ?? item?.profile?.skills?.join(", ") ?? "No Skills",
+
     item?.accountStatus,
     item?.email,
     item?.onboarding?.stage?.label,
     item?.sanctions?.length,
     item?.phoneNumberFull,
+    item?.region?.name || "No Region",
+    item?.accountStatus === "REVIEWING"
+      ? "INACTIVE"
+      : item?.accountStatus.includes("APPROVE")
+      ? "ACTIVE"
+      : item?.accountStatus,
   ]);
 
   const exportToExcel = (data: any, fileName: string) => {
@@ -114,12 +124,14 @@ const Contractors = () => {
     // Apply column widths
     worksheet["!cols"] = [
       { wch: 20 }, // CustomerName column width
-      { wch: 15 }, // ID column width
+      { wch: 40 }, // ID column width
       { wch: 25 }, // ContractorName column width
       { wch: 50 }, // Address column width
       { wch: 15 }, // Date column width
       { wch: 20 }, // Status column width
       { wch: 40 },
+      { wch: 15 }, // Status column width
+      { wch: 20 }, // Status column width
     ];
 
     // Apply header styling (assuming headers start at A1)
@@ -145,14 +157,22 @@ const Contractors = () => {
         ContractorName: item?.name,
         // Date_Joined: formatDateToDDMMYY(item.createdAt),
         Skill:
-          item?.profile?.skill === undefined
-            ? "Not Submitted"
-            : item?.profile?.skill,
+          item?.profile?.skill ??
+          item?.profile?.skills?.join(", ") ??
+          "No Skills",
+
         Status: item?.accountStatus,
         Email: item?.email,
         Stage: item?.onboarding?.stage?.label,
         Strikes: item?.sanctions?.length,
         Contact: item?.phoneNumberFull,
+        region: item?.region?.name || "No Region",
+        AccountStatus:
+          item?.accountStatus === "REVIEWING"
+            ? "INACTIVE"
+            : item?.accountStatus.includes("APPROVE")
+            ? "ACTIVE"
+            : item?.accountStatus,
       };
     });
     if (!dataToExport) return;

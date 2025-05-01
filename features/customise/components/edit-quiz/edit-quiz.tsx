@@ -35,7 +35,7 @@ const EditQuiz = ({
     options: ["", "", ""],
   });
   const [isUpdating, setIsUpdating] = useState<boolean>(true);
-  const [isDropdown, setIsDropdown] = useState<boolean>(false);
+  const [isDropdown, setIsDropdown] = useState<boolean>(true);
 
   const handleFormPreview = (data: PreviewData) => {
     setPreview(data);
@@ -63,9 +63,9 @@ const EditQuiz = ({
     <>
       {isLoading && <LoadingTemplate />}
       <div ref={ref}>
-        <div
+        <button
           className="bg-white px-6 py-2.5 flex rounded-md max-w-[700px] items-center justify-between"
-          onClick={() => setIsDropdown(!isDropdown)}
+          onClick={() => setIsDropdown((is) => !is)}
         >
           <div className="flex">
             <p className="font-[500] pr-4">{index}</p>
@@ -76,7 +76,7 @@ const EditQuiz = ({
               {isDropdown ? <IoMdArrowDropup /> : <IoMdArrowDropdown />}
             </div>
           }
-        </div>
+        </button>
 
         {isDropdown && (
           <div className="mx-auto my-8 w-full overflow-x-auto border-b border-b-[#555]/20 pb-8">

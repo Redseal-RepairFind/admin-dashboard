@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef, ReactNode } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  ReactNode,
+  useCallback,
+} from "react";
 import ReactDOM from "react-dom";
 import { FaEllipsisV } from "react-icons/fa";
 
@@ -29,22 +35,25 @@ const VerticalMenu = ({
   });
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (
-      menuRef.current &&
-      !menuRef.current.contains(event.target as Node) &&
-      !(event.target as HTMLElement).closest(".ellipsis-icon")
-    ) {
-      closeMenu();
-    }
-  };
-
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setIsMenuOpen(false);
     if (currentOpenMenu === closeMenu) {
       currentOpenMenu = null; // Unset the current open menu
     }
-  };
+  }, []);
+
+  const handleOutsideClick = useCallback(
+    (event: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        !(event.target as HTMLElement).closest(".ellipsis-icon")
+      ) {
+        closeMenu();
+      }
+    },
+    [closeMenu]
+  );
 
   const handleClick = (event: React.MouseEvent) => {
     // Close any other currently open menu

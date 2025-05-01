@@ -13,6 +13,7 @@ import useCustomise from "@/lib/hooks/useCustomise";
 import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
 import VerticalMenu from "@/components/shared/vertical-menu";
+import { FaEllipsisV } from "react-icons/fa";
 
 export interface OptionAnswer {
   id: number;
@@ -40,9 +41,12 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [openId, setOpend] = useState<any>();
 
   const { DeleteQuestion, UpdateQuestion, AddQuestion, refetchQuizzes } =
     useCustomise();
+
+  // console.log(answer);
 
   useEffect(() => {
     setQuestion(oldQuestions[currentQuestionIDx]?.question);
@@ -87,6 +91,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
   // };
 
   const handleQuestionIDx = (value: number) => {
+    // console.log(value);
     return () => setCurrentQuestionIDx(value);
   };
 
@@ -106,10 +111,13 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
 
       if (!existingAnswer?.text) {
         // Add the option to the answer array if it's not already present
-        return [...prevAnswer, option];
+
+        setOpend(null);
+        return [option];
       }
 
       // If the option already exists, return the current state unchanged
+      setOpend(null);
       return prevAnswer;
     });
   };
@@ -123,10 +131,12 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
 
       if (existingAnswer) {
         // Remove the option from the answer array if it exists
+        setOpend(null);
         return prevAnswer.filter((answer) => answer.text !== option.text);
       }
 
       // If the option doesn't exist, return the current state unchanged
+      setOpend(null);
       return prevAnswer;
     });
   };
@@ -259,7 +269,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
   };
 
   return (
-    <div className="max-w-[800px] w-full p-2 gap-2 flex items-start justify-start flex-col">
+    <div className="max-w-[800px] w-full p-2 gap-2 flex items-start justify-start flex-col relative">
       <div className="bg-white rounded-md mb-5 p-2 w-full flex items-start justify-start gap-2 overflow-x-scroll">
         {[...Array(oldQuestions.length)].map((_, index) => (
           <button
@@ -275,7 +285,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
           </button>
         ))}
       </div>
-      <form className="w-full">
+      <div className="w-full">
         <label className="block font-medium text-gray-700">Question:</label>
         <textarea
           value={question}
@@ -311,27 +321,35 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
           focus:border-[#333]/30 focus:border transition-all duration-300 bg-white/90`}
                 required
               />
-              <VerticalMenu
-                className="bg-white/90 py-[12.5px] px-4 border border-gray-200 rounded-md"
-                isBackground
+
+              <button
+                className="p-3 bg-white border rounded-md"
+                onClick={() =>
+                  setOpend((id: any) => (id === option.id ? null : option.id))
+                }
               >
-                <div className="w-full">
-                  <button
-                    onClick={() => addAnswer(option)}
-                    type="button"
-                    className="w-full hover:bg-gray-100 border-b gray-200 flex items-center justify-center text-sm py-2 gap-2"
-                  >
-                    Set as correct
-                  </button>
-                  <button
-                    onClick={() => removeAnswer(option)}
-                    type="button"
-                    className="w-full hover:bg-gray-100 flex items-center justify-center text-sm py-2 gap-2"
-                  >
-                    Remove from correct
+                <FaEllipsisV />
+              </button>
+              {openId === option.id ? (
+                <div className="bg-white/90 shadow-lg py-[12.5px] px-4 absolute border border-gray-200 rounded-md right-[-150px]">
+                  <button className="w-full">
+                    <span
+                      onClick={() => addAnswer(option)}
+                      // type="button"
+                      className="w-full hover:bg-gray-100 border-b gray-200 flex items-center justify-center text-sm py-2 gap-2"
+                    >
+                      Set as correct
+                    </span>
+                    <button
+                      onClick={() => removeAnswer(option)}
+                      // type="button"
+                      className="w-full hover:bg-gray-100 flex items-center justify-center text-sm py-2 gap-2"
+                    >
+                      Remove from correct
+                    </button>
                   </button>
                 </div>
-              </VerticalMenu>
+              ) : null}
             </div>
           );
         })}
@@ -374,7 +392,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
             Add New Question
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

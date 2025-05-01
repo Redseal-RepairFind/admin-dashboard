@@ -8,12 +8,18 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import useAdminPermissions from "@/lib/hooks/useAdminPermissions";
 import { navLinks } from "@/lib/utils/utils";
-import { Logout } from "@/public/svg";
+import { Logout, SideBarIcon } from "@/public/svg";
 import { useLoader } from "@/context/LoaderContext";
 import LoadingPage from "@/app/loading";
 import { fetchPermissionsFromAPI } from "@/lib/api/fetchPermissions";
 
-const Sidebar = () => {
+const Sidebar = ({
+  expandBar,
+  setExpandBar,
+}: {
+  expandBar: boolean;
+  setExpandBar: any;
+}) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -38,8 +44,22 @@ const Sidebar = () => {
   // });
 
   return (
-    <div className="max-w-[280px] w-[21%] min-w-[250px] bg-white overflow-y-auto scrollbar-thin z-30 max-h-screen">
+    <div
+      className={`${
+        expandBar
+          ? "max-w-[280px] w-[21%] min-w-[250px]"
+          : "w-[10%] min-w-[120px]"
+      } bg-white overflow-y-auto scrollbar-thin z-30 max-h-screen`}
+    >
       <div className="flex flex-col gap-4">
+        <div className="w-full px-4">
+          <button
+            className="shadow-lg p-2"
+            onClick={() => setExpandBar((bar: boolean) => !bar)}
+          >
+            <SideBarIcon />
+          </button>
+        </div>
         {/* Logo Container */}
         <div className="flex flex-col items-center py-10">
           <Image src={logo} alt="Logo" width={32} height={32} />
@@ -60,7 +80,7 @@ const Sidebar = () => {
             onClick={() => setLoading(true)}
           >
             <span>{link.svg}</span>
-            {link.name}
+            {expandBar ? link.name : ""}
           </Link>
         ))}
 
@@ -74,7 +94,7 @@ const Sidebar = () => {
             <span>
               <Logout />
             </span>
-            Logout
+            {expandBar ? "Logout" : ""}
           </button>
         </div>
       </div>

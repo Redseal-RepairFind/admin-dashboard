@@ -187,8 +187,15 @@ export function useSortedData(
   // all data for search
 
   const { isLoading: loadingAllData, data: allData } = useQuery(
-    ["allData"],
-    () => customers.getAllData({ route }),
+    ["allData", route, startDate, endDate, accountStatus, skills],
+    () =>
+      customers.getAllData({
+        route,
+        startDate,
+        endDate,
+        accountStatus,
+        skills,
+      }),
     {
       enabled: (isQuerying && route !== "disputes") || listStatus !== "All", // Fetch only when isQuerying is true
     }
