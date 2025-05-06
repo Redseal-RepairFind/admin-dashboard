@@ -99,7 +99,7 @@ const SkillModal = ({
       setFilteredSkills(skills);
     } else {
       const filtered = skills.filter((skill: any) =>
-        skill?.name?.toLowerCase().includes(value.toLowerCase())
+        skill?.name?.toLowerCase()?.includes(value?.toLowerCase())
       );
       setFilteredSkills(filtered);
     }

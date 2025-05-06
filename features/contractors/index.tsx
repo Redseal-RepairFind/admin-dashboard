@@ -82,7 +82,6 @@ const Contractors = () => {
   const columns = [
     "Contractor's Name",
     "Skill",
-    "Certn. Status",
     "Email",
     "Stage",
     "Strikes",
@@ -105,7 +104,6 @@ const Contractors = () => {
 
     item?.profile?.skill ?? item?.profile?.skills?.join(", ") ?? "No Skills",
 
-    item?.accountStatus,
     item?.email,
     item?.onboarding?.stage?.label,
     item?.sanctions?.length,
@@ -113,7 +111,7 @@ const Contractors = () => {
     item?.region?.name || "No Region",
     item?.accountStatus === "REVIEWING"
       ? "INACTIVE"
-      : item?.accountStatus.includes("APPROVE")
+      : item?.accountStatus?.includes("APPROVE")
       ? "ACTIVE"
       : item?.accountStatus,
   ]);
@@ -125,9 +123,7 @@ const Contractors = () => {
     worksheet["!cols"] = [
       { wch: 20 }, // CustomerName column width
       { wch: 40 }, // ID column width
-      { wch: 25 }, // ContractorName column width
       { wch: 50 }, // Address column width
-      { wch: 15 }, // Date column width
       { wch: 20 }, // Status column width
       { wch: 40 },
       { wch: 15 }, // Status column width
@@ -135,7 +131,7 @@ const Contractors = () => {
     ];
 
     // Apply header styling (assuming headers start at A1)
-    const headerCells = ["A1", "B1", "C1", "D1", "E1", "F1", "G1"];
+    const headerCells = ["A1", "B1", "C1", "D1", "E1", "F1"];
     headerCells.forEach((cell) => {
       if (worksheet[cell]) {
         worksheet[cell].s = {
@@ -161,7 +157,6 @@ const Contractors = () => {
           item?.profile?.skills?.join(", ") ??
           "No Skills",
 
-        Status: item?.accountStatus,
         Email: item?.email,
         Stage: item?.onboarding?.stage?.label,
         Strikes: item?.sanctions?.length,
