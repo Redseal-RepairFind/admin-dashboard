@@ -13,6 +13,7 @@ import CheckBox from "@/app/_components/Check-box";
 import Image from "next/image";
 import axios from "axios";
 import { getSignUrls } from "@/lib/aws/aws-action";
+import { ArrowDown, ChevronDown } from "lucide-react";
 
 const initContracSegs = {
   byAccountType: [],
@@ -32,6 +33,8 @@ const initCustSegs = {
   byRating: [],
   byStatus: [],
   byReferral: [],
+  byLocationc: [],
+  byStatusc: [],
 };
 
 type SegmentType = {
@@ -46,11 +49,15 @@ type SegmentType = {
   createdBefore: string[];
   noBackgroundCheck: string[];
   noProfile_After_Hours: string[];
+  byLocationc?: string[];
+  byStatusc?: string[];
 };
 
 type SelectSegment =
   | "byAccountType"
   | "byLocation"
+  | "byLocationc"
+  | "byStatusc"
   | "byOnboardingStage"
   | "byRating"
   | "byReferral"
@@ -62,9 +69,29 @@ type SelectSegment =
   | "noProfile_After_Hours";
 type Isegment = "" | "All" | "Contractor" | "Customers";
 
-const frequency = ["MINUTE", "HOURLY", "DAILY", "WEEKLY", "MONTHLY", "YEARLY"];
+const frequency = ["HOURLY", "DAILY", "WEEKLY", "MONTHLY", "YEARLY"];
 const status = ["SENT", "SCHEDULED", "CANCELLED"];
 const segmnt: Isegment[] = ["All", "Contractor", "Customers"];
+type Iopen =
+  | "byLocation"
+  | "byLocationc"
+  | "byRating"
+  | "byStatus"
+  | "byStatusc"
+  | "byReferral"
+  | "byAccountType"
+  | "byLocation"
+  | "byOnboardingStage"
+  | "byRating"
+  | "byReferral"
+  | "bySkills"
+  | "byStatus"
+  | "createdAfter"
+  | "createdBefore"
+  | "noBackgroundCheck"
+  | "noProfile_After_Hours"
+  | "";
+type TypeType = "contractors" | "customers" | "";
 
 const Form = ({
   type,
@@ -85,7 +112,6 @@ const Form = ({
     handleSubmit,
   } = useForm();
 
-  const { checkedList, setCheckedList } = useCheckedList();
   const {
     refetchPushCamps,
     createCampaign,
@@ -107,6 +133,11 @@ const Form = ({
   const [segment, setSegment] = useState<Isegment>(
     type === "edit" ? "All" : ""
   );
+  const [modalString, setModalString] = useState<{
+    type: TypeType;
+    open: Iopen;
+  }>();
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -163,7 +194,7 @@ const Form = ({
     item: string
   ) => {
     const toggleItem = (list: string[]) =>
-      list.includes(item) ? list.filter((i) => i !== item) : [...list, item];
+      list?.includes(item) ? list.filter((i) => i !== item) : [...list, item];
 
     if (category === "contractors") {
       setPushSegmentsContractors((prev: any) => ({
@@ -285,7 +316,14 @@ const Form = ({
     }
   };
   return (
-    <div className="w-full flex flex-col gap-6">
+    <div
+      className="w-full flex flex-col gap-6"
+      onClick={() => {
+        if (modalString?.open !== "") {
+          setModalString({ open: "", type: "" });
+        }
+      }}
+    >
       <Column>
         <Label htmlFor="Title">Title</Label>
         <input
@@ -503,14 +541,14 @@ const Form = ({
         Select Segment
       </h2>
       <div className="flex items-center gap-2">
-        <button
+        {/* <button
           className={`px-4 py-2 border rounded-md ${
             segment === "" ? "bg-gray-800 text-white" : ""
           }`}
           onClick={() => setSegment("")}
         >
           None
-        </button>
+        </button> */}
         {segmnt.map((sgt) => (
           <button
             key={sgt}
@@ -541,6 +579,8 @@ const Form = ({
                   type="contractors"
                   selectSegment={selectSegment}
                   selectedSegments={pushSegmentsContractors?.byAccountType}
+                  modalString={modalString as any}
+                  setModalString={setModalString}
                 />
               ) : (
                 <select
@@ -577,6 +617,8 @@ const Form = ({
                   type="contractors"
                   selectSegment={selectSegment}
                   selectedSegments={pushSegmentsContractors?.byLocation}
+                  modalString={modalString as any}
+                  setModalString={setModalString}
                 />
               ) : (
                 <select
@@ -612,6 +654,8 @@ const Form = ({
                   type="contractors"
                   selectSegment={selectSegment}
                   selectedSegments={pushSegmentsContractors?.byOnboardingStage}
+                  modalString={modalString as any}
+                  setModalString={setModalString}
                 />
               ) : (
                 <select
@@ -649,6 +693,8 @@ const Form = ({
                   type="contractors"
                   selectSegment={selectSegment}
                   selectedSegments={pushSegmentsContractors?.byStatus}
+                  modalString={modalString as any}
+                  setModalString={setModalString}
                 />
               ) : (
                 <select
@@ -706,6 +752,8 @@ const Form = ({
                   type="contractors"
                   selectSegment={selectSegment}
                   selectedSegments={pushSegmentsContractors?.bySkills}
+                  modalString={modalString as any}
+                  setModalString={setModalString}
                 />
               ) : (
                 <select
@@ -882,6 +930,8 @@ const Form = ({
                   type="customers"
                   selectSegment={selectSegment}
                   selectedSegments={pushSegmentsCustomers?.byLocation}
+                  modalString={modalString as any}
+                  setModalString={setModalString}
                 />
               ) : (
                 // customerSecments?.byLocation?.map((acc: any, i: number) => (
@@ -942,6 +992,8 @@ const Form = ({
                   type="customers"
                   selectSegment={selectSegment}
                   selectedSegments={pushSegmentsCustomers?.byStatus}
+                  modalString={modalString as any}
+                  setModalString={setModalString}
                 />
               ) : (
                 <select
@@ -1031,51 +1083,44 @@ const Form = ({
 
 export default Form;
 
-type Iopen =
-  | "byLocation"
-  | "byRating"
-  | "byStatus"
-  | "byReferral"
-  | "byAccountType"
-  | "byLocation"
-  | "byOnboardingStage"
-  | "byRating"
-  | "byReferral"
-  | "bySkills"
-  | "byStatus"
-  | "createdAfter"
-  | "createdBefore"
-  | "noBackgroundCheck"
-  | "noProfile_After_Hours"
-  | "";
-
-type TypeType = "contractors" | "customers";
 const SegmentsSelection = ({
   selectedSegments,
   segments,
   open,
   selectSegment,
   type,
+  modalString,
+  setModalString,
 }: {
   selectedSegments: string[];
   segments: string[];
   open: Iopen;
   selectSegment: any;
   type: TypeType;
+  modalString: {
+    open: Iopen;
+    type: TypeType;
+  };
+  setModalString: any;
 }) => {
-  const [modalString, setModalString] = useState<Iopen>("");
   const [myType, setMytype] = useState<TypeType>();
 
   useEffect(() => {
     setMytype(type);
   }, [type]);
-  // console.log(modalString, open);
+  // console.log(type);
 
   return (
     <div className="relative">
       <button
-        className="px-2 border-gray-700 border rounded-md py-3 text-sm w-full"
-        onClick={() => setModalString((item) => (item ? "" : open))}
+        className="px-2 border-gray-700 border rounded-md py-3 text-sm w-full flex items-center justify-between"
+        onClick={(e) => {
+          e.stopPropagation();
+          setModalString({
+            open: open === modalString?.open ? "" : open,
+            type: type,
+          });
+        }}
       >
         {`${
           selectedSegments.length === 1
@@ -1084,15 +1129,20 @@ const SegmentsSelection = ({
             ? `${selectedSegments[0]} & ${selectedSegments?.length - 1} others`
             : `-- Select ${open} --`
         } `}
+
+        {selectedSegments.length === 0 ? <ChevronDown size={16} /> : null}
       </button>
 
-      {type === myType && open === modalString ? (
+      {modalString.type === myType && open === modalString.open ? (
         <div className="absolute z-50 py-2 px-2 max-h-[200px] overflow-y-auto bg-white rounded-md shadow-xl w-full top-[32px]">
           {[...segments].map((acc: any, i: number) => (
             <span
               className="flex gap-3 items-center cursor-pointer"
               key={i}
-              onClick={() => selectSegment(open, type, acc)}
+              onClick={(e) => {
+                e.stopPropagation();
+                selectSegment(open, type, acc);
+              }}
             >
               <CheckBox
                 isChecked={selectedSegments?.some((data: any) => data === acc)}
