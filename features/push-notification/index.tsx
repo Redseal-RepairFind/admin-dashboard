@@ -37,7 +37,8 @@ const PushNotification = () => {
   const [openModal, setOpenModal] = useState(false);
   const [openModalEdit, setOpenModalEdit] = useState(false);
   const [openPush, setOpenPush] = useState(false);
-  const [item, setItem] = useState<any>();
+  const [openMessage, setOpenMessage] = useState(false);
+  const [item, setItem] = useState(null);
   const modalRef = useRef();
 
   const pageProps = {
@@ -113,6 +114,21 @@ const PushNotification = () => {
           />
         </div>
       </Modal>
+      <Modal
+        open={openMessage}
+        onClose={() => setOpenMessage(false)}
+        center
+        classNames={{
+          modal: "customModal",
+        }}
+        container={modalRef.current}
+      >
+        <div className="w-[700px] max-h-[700px] overflow-y-auto pt-6">
+          <h2 className="text-xl mb-4 font-bold">Send Message</h2>
+
+          <Form type="message" close={() => setOpenMessage(false)} />
+        </div>
+      </Modal>
       <Header />
       <PageBody>
         <div className="flex justify-between items-center gap-5 mb-6">
@@ -121,12 +137,17 @@ const PushNotification = () => {
 
         <TableCard>
           <div className=" flex justify-between">
-            <button
-              className="py-2 px-4 border border-gray-800 rounded-lg"
-              onClick={() => setOpenPush(true)}
-            >
-              Send Push Notification
-            </button>
+            <div className="flex items-center gap-4">
+              <SubmitBtn onClick={() => setOpenMessage(true)}>
+                Send Inbox message
+              </SubmitBtn>
+              <button
+                className="py-2 px-4 border border-gray-800 rounded-lg"
+                onClick={() => setOpenPush(true)}
+              >
+                Send Push Notification
+              </button>
+            </div>
             <SubmitBtn onClick={() => setOpenModal(true)}>
               Create new Campaign
             </SubmitBtn>

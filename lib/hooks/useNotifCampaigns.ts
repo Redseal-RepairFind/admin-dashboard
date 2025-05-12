@@ -12,6 +12,9 @@ export const useNotifsCampaign = () => {
   const { mutateAsync: sendNotif } = useMutation(
     campaigns.sendPushNotification
   );
+  const { mutateAsync: sendMessage } = useMutation(
+    campaigns.sendPushInboxMessage
+  );
 
   const {
     data: pushCampaigns,
@@ -39,5 +42,6 @@ export const useNotifsCampaign = () => {
     refetchSegments,
     updateCampaign,
     sendNotif,
+    sendMessage,
   };
 };

@@ -16,4 +16,6 @@ export const campaigns = {
     client.get(`${url}/user-segments`).then(({ data }) => data),
   sendPushNotification: (payload: any) =>
     client.post(`${url}/push-notifications`, payload).then(({ data }) => data),
+  sendPushInboxMessage: (payload: any) =>
+    client.post(`${url}/send-inbox-messages`, payload).then(({ data }) => data),
 };

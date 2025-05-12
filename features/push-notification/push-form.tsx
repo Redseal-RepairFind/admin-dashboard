@@ -98,7 +98,7 @@ const Form = ({
   editData,
   close,
 }: {
-  type: "edit" | "new" | "push";
+  type: "edit" | "new" | "push" | "message";
   editData?: any;
   close: any;
 }) => {
@@ -118,6 +118,7 @@ const Form = ({
     segments,
     updateCampaign,
     sendNotif,
+    sendMessage,
   } = useNotifsCampaign();
   const contractorSecments = segments?.data?.contractor;
   const customerSecments = segments?.data?.customer;
@@ -258,6 +259,8 @@ const Form = ({
           ? "Creating Campaign..."
           : type === "push"
           ? "Sending Push notifications..."
+          : type === "message"
+          ? "Sending Inbox messages"
           : "Updating Campaign..."
       );
 
@@ -294,6 +297,42 @@ const Form = ({
 
         // console.log(pushPayload);
       }
+      if (type === "message") {
+        const url = await handleUpload();
+        const messagePayload = {
+          body: data?.message,
+          media: [{ url }],
+          segments: {
+            contractors: {
+              byRating: [data?.byRating],
+              byReferral: [data?.byReferral],
+              createdAfter: [data?.createdAfter],
+              createdBefore: [data?.createdBefore],
+              noBackgroundCheck: [data?.noBackgroundCheck],
+              noProfile_After_Hours: [Number(data?.noProfile_After_Hours)],
+              byAccountType: pushSegmentsContractors.byAccountType,
+              byLocation: pushSegmentsContractors.byLocation,
+              byOnboardingStage: pushSegmentsContractors.byOnboardingStage,
+              bySkills: pushSegmentsContractors.bySkills,
+              byStatus: pushSegmentsContractors.byStatus,
+              allContractors:
+                data?.allContractors?.toLowerCase() === "true" ? true : false,
+            },
+            customers: {
+              byRating: [data?.byRatingc],
+              byReferral: [data?.byReferralc],
+              byLocation: pushSegmentsCustomers.byLocation,
+              byStatus: pushSegmentsCustomers.byStatus,
+              allCustomers:
+                data?.allCustomers?.toLowerCase() === "true" ? true : false,
+            },
+          },
+        };
+
+        await sendMessage(messagePayload);
+
+        // console.log(pushPayload);
+      }
       if (type === "new") await createCampaign(payload);
       if (type === "edit") await updateCampaign({ payload, id: editData?._id });
 
@@ -324,21 +363,23 @@ const Form = ({
         }
       }}
     >
-      <Column>
-        <Label htmlFor="Title">Title</Label>
-        <input
-          type="text"
-          className="border border-gray-700  rounded-md w-full h-12 px-2"
-          placeholder="Campaign Title"
-          {...register("title", {
-            required: "Campaign title is required",
-          })}
-          defaultValue={type === "edit" ? editData?.title : ""}
-        />
-        {errors?.title?.message ? (
-          <Errors>{errors?.title?.message}</Errors>
-        ) : null}
-      </Column>
+      {type === "message" ? null : (
+        <Column>
+          <Label htmlFor="Title">Title</Label>
+          <input
+            type="text"
+            className="border border-gray-700  rounded-md w-full h-12 px-2"
+            placeholder="Campaign Title"
+            {...register("title", {
+              required: "Campaign title is required",
+            })}
+            defaultValue={type === "edit" ? editData?.title : ""}
+          />
+          {errors?.title?.message ? (
+            <Errors>{errors?.title?.message}</Errors>
+          ) : null}
+        </Column>
+      )}
       <Column>
         <Label htmlFor="Message">Message</Label>
         <textarea
@@ -356,7 +397,7 @@ const Form = ({
         ) : null}
       </Column>
 
-      {type === "push" ? (
+      {type === "push" || type === "message" ? (
         <div className="space-y-4">
           <div>
             <button
@@ -403,7 +444,7 @@ const Form = ({
         </div>
       ) : null}
       <div className="grid grid-cols-3 gap-2">
-        {type === "push" ? null : (
+        {type === "push" || type == "message" ? null : (
           <>
             <h2 className="text-xl mb-4">Schedules (Required)</h2> <div></div>{" "}
             <div></div>
@@ -570,9 +611,29 @@ const Form = ({
             Contractor Segments (optional)
           </h2>
           <div className="grid grid-cols-3 gap-2">
+            {type === "message" ? (
+              <Column>
+                <Label htmlFor="allContractors">All Contractors:</Label>
+                <select
+                  id="allContractors"
+                  className="h-12 px-2 border-gray-700 border rounded-md"
+                  {...register("allContractors")}
+                >
+                  <option value="" className="cursor-not-allowed">
+                    -- Select --
+                  </option>
+                  <option value="true" className="cursor-not-allowed">
+                    True
+                  </option>
+                  <option value="false" className="cursor-not-allowed">
+                    False
+                  </option>
+                </select>
+              </Column>
+            ) : null}
             <Column>
               <Label htmlFor="Account">By Account Type:</Label>
-              {type === "push" ? (
+              {type === "push" || type === "message" ? (
                 <SegmentsSelection
                   segments={contractorSecments?.byAccountType}
                   open={"byAccountType"}
@@ -610,7 +671,7 @@ const Form = ({
             </Column>
             <Column>
               <Label htmlFor="Location">By Location:</Label>
-              {type === "push" ? (
+              {type === "push" || type === "message" ? (
                 <SegmentsSelection
                   segments={contractorSecments?.byLocation}
                   open={"byLocation"}
@@ -921,9 +982,30 @@ const Form = ({
             Customers Segments (optional)
           </h2>
           <div className="grid grid-cols-3 gap-2">
+            {type === "message" ? (
+              <Column>
+                <Label htmlFor="allContractors">All Customers:</Label>
+
+                <select
+                  id="allCustomers"
+                  className="h-12 px-2 border-gray-700 border rounded-md"
+                  {...register("allCustomers")}
+                >
+                  <option value="" className="cursor-not-allowed">
+                    -- Select --
+                  </option>
+                  <option value="true" className="cursor-not-allowed">
+                    True
+                  </option>
+                  <option value="false" className="cursor-not-allowed">
+                    False
+                  </option>
+                </select>
+              </Column>
+            ) : null}
             <Column>
               <Label htmlFor="Location">By Location:</Label>
-              {type === "push" ? (
+              {type === "push" || type === "message" ? (
                 <SegmentsSelection
                   segments={customerSecments?.byLocation}
                   open={"byLocation"}
@@ -985,7 +1067,7 @@ const Form = ({
             </Column>
             <Column>
               <Label htmlFor="byStatus">By Status:</Label>
-              {type === "push" ? (
+              {type === "push" || type === "message" ? (
                 <SegmentsSelection
                   segments={customerSecments?.byStatus}
                   open={"byStatus"}
@@ -1075,6 +1157,8 @@ const Form = ({
           ? "Create Campaign"
           : type === "push"
           ? "Send Notification"
+          : type === "message"
+          ? "Send Inbox message"
           : "Update Campaign"}
       </SubmitBtn>
     </div>
