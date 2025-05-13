@@ -16,7 +16,8 @@ import { getSignUrls } from "@/lib/aws/aws-action";
 import { ArrowDown, ChevronDown } from "lucide-react";
 
 const initContracSegs = {
-  byAccountType: [],
+  // byAccountType: [],
+
   byLocation: [],
   byOnboardingStage: [],
   byRating: [],
@@ -38,7 +39,7 @@ const initCustSegs = {
 };
 
 type SegmentType = {
-  byAccountType: string[];
+  // byAccountType: string[];
   byLocation: string[];
   byOnboardingStage: string[];
   byRating: string[];
@@ -54,7 +55,7 @@ type SegmentType = {
 };
 
 type SelectSegment =
-  | "byAccountType"
+  // | "byAccountType"
   | "byLocation"
   | "byLocationc"
   | "byStatusc"
@@ -79,7 +80,7 @@ type Iopen =
   | "byStatus"
   | "byStatusc"
   | "byReferral"
-  | "byAccountType"
+  // | "byAccountType"
   | "byLocation"
   | "byOnboardingStage"
   | "byRating"
@@ -226,29 +227,56 @@ const Form = ({
       status: data?.status,
       schedule: {
         startDate: selectedDate,
-        recurring: data?.recurring === "true" ? true : false,
+        recurring: data?.recurring === "true",
         interval: Number(data?.interval),
         frequency: data?.frequency,
       },
-      contractorSegment: {
-        byAccountType: data?.byAccountType,
-        byLocation: data?.byLocation,
-        byOnboardingStage: data?.byOnboardingStage,
-        byRating: data?.byRating,
-        byReferral: data?.byReferral,
-        bySkills: data?.bySkills,
-        byStatus: data?.byStatus,
-        createdAfter: data?.createdAfter,
-        createdBefore: data?.createdBefore,
-        noBackgroundCheck: data?.noBackgroundCheck,
-        noProfile_After_Hours: data?.noProfile_After_Hours,
-      },
-      customerSegment: {
-        byRating: data?.byRatingc,
-        byReferral: data?.byReferralc,
-        byLocation: pushSegmentsCustomers.byLocation,
-        byStatus: pushSegmentsCustomers.byStatus,
-      },
+      ...(// data?.byAccountType ||
+      (data?.byLocation ||
+        data?.byOnboardingStage ||
+        data?.byRating ||
+        data?.byReferral ||
+        data?.bySkills ||
+        data?.byStatus ||
+        data?.createdAfter ||
+        data?.createdBefore ||
+        data?.noBackgroundCheck ||
+        data?.noProfile_After_Hours) && {
+        contractorSegment: {
+          // ...(data?.byAccountType && { byAccountType: data.byAccountType }),
+          ...(data?.byLocation && { byLocation: data.byLocation }),
+          ...(data?.byOnboardingStage && {
+            byOnboardingStage: data.byOnboardingStage,
+          }),
+          ...(data?.byRating && { byRating: data.byRating }),
+          ...(data?.byReferral && { byReferral: data.byReferral }),
+          ...(data?.bySkills && { bySkills: data.bySkills }),
+          ...(data?.byStatus && { byStatus: data.byStatus }),
+          ...(data?.createdAfter && { createdAfter: data.createdAfter }),
+          ...(data?.createdBefore && { createdBefore: data.createdBefore }),
+          ...(data?.noBackgroundCheck && {
+            noBackgroundCheck: data.noBackgroundCheck,
+          }),
+          ...(data?.noProfile_After_Hours && {
+            noProfile_After_Hours: data.noProfile_After_Hours,
+          }),
+        },
+      }),
+      ...((data?.byRatingc ||
+        data?.byReferralc ||
+        pushSegmentsCustomers.byLocation?.length ||
+        pushSegmentsCustomers.byStatus) && {
+        customerSegment: {
+          ...(data?.byRatingc && { byRating: data.byRatingc }),
+          ...(data?.byReferralc && { byReferral: data.byReferralc }),
+          ...(pushSegmentsCustomers.byLocation?.length && {
+            byLocation: pushSegmentsCustomers.byLocation,
+          }),
+          ...(pushSegmentsCustomers.byStatus?.length && {
+            byStatus: pushSegmentsCustomers.byStatus,
+          }),
+        },
+      }),
     };
 
     // console.log(payload);
@@ -269,28 +297,85 @@ const Form = ({
         const pushPayload = {
           title: data?.title,
           body: data?.message,
-          imageUrl: url,
-          segments: {
-            contractors: {
-              byRating: [data?.byRating],
-              byReferral: [data?.byReferral],
-              createdAfter: [data?.createdAfter],
-              createdBefore: [data?.createdBefore],
-              noBackgroundCheck: [data?.noBackgroundCheck],
-              noProfile_After_Hours: [Number(data?.noProfile_After_Hours)],
-              byAccountType: pushSegmentsContractors.byAccountType,
-              byLocation: pushSegmentsContractors.byLocation,
-              byOnboardingStage: pushSegmentsContractors.byOnboardingStage,
-              bySkills: pushSegmentsContractors.bySkills,
-              byStatus: pushSegmentsContractors.byStatus,
+          ...(url && { imageUrl: url }),
+          ...((data?.byRating ||
+            data?.byReferral ||
+            data?.createdAfter ||
+            data?.createdBefore ||
+            data?.noBackgroundCheck ||
+            data?.noProfile_After_Hours ||
+            data?.allContractors ||
+            Object.values(pushSegmentsContractors).some(Boolean) ||
+            data?.byRatingc ||
+            data?.byReferralc ||
+            data?.allCustomers ||
+            Object.values(pushSegmentsCustomers).some(Boolean)) && {
+            segments: {
+              ...((data?.byRating ||
+                data?.byReferral ||
+                data?.createdAfter ||
+                data?.createdBefore ||
+                data?.noBackgroundCheck ||
+                data?.noProfile_After_Hours ||
+                data?.allContractors ||
+                Object.values(pushSegmentsContractors).some(Boolean)) && {
+                contractors: {
+                  ...(data?.byRating && { byRating: [data.byRating] }),
+                  ...(data?.byReferral && { byReferral: [data.byReferral] }),
+                  ...(data?.createdAfter && {
+                    createdAfter: [data.createdAfter],
+                  }),
+                  ...(data?.createdBefore && {
+                    createdBefore: [data.createdBefore],
+                  }),
+                  ...(data?.noBackgroundCheck && {
+                    noBackgroundCheck: [data.noBackgroundCheck],
+                  }),
+                  ...(data?.noProfile_After_Hours && {
+                    noProfile_After_Hours: [Number(data.noProfile_After_Hours)],
+                  }),
+                  ...(data?.allContractors && {
+                    allContractors:
+                      data.allContractors.toLowerCase() === "true",
+                  }),
+                  // ...(pushSegmentsContractors.byAccountType?.length && {
+                  //   byAccountType: pushSegmentsContractors.byAccountType,
+                  // }),
+                  ...(pushSegmentsContractors.byLocation?.length && {
+                    byLocation: pushSegmentsContractors.byLocation,
+                  }),
+                  ...(pushSegmentsContractors.byOnboardingStage?.length && {
+                    byOnboardingStage:
+                      pushSegmentsContractors.byOnboardingStage,
+                  }),
+                  ...(pushSegmentsContractors.bySkills?.length && {
+                    bySkills: pushSegmentsContractors.bySkills,
+                  }),
+                  ...(pushSegmentsContractors.byStatus?.length && {
+                    byStatus: pushSegmentsContractors.byStatus,
+                  }),
+                },
+              }),
+              ...((data?.byRatingc ||
+                data?.byReferralc ||
+                data?.allCustomers ||
+                Object.values(pushSegmentsCustomers).some(Boolean)) && {
+                customers: {
+                  ...(data?.byRatingc && { byRating: [data.byRatingc] }),
+                  ...(data?.byReferralc && { byReferral: [data.byReferralc] }),
+                  ...(data?.allCustomers && {
+                    allCustomers: data.allCustomers.toLowerCase() === "true",
+                  }),
+                  ...(pushSegmentsCustomers.byLocation.length && {
+                    byLocation: pushSegmentsCustomers.byLocation,
+                  }),
+                  ...(pushSegmentsCustomers.byStatus.length && {
+                    byStatus: pushSegmentsCustomers.byStatus,
+                  }),
+                },
+              }),
             },
-            customers: {
-              byRating: [data?.byRatingc],
-              byReferral: [data?.byReferralc],
-              byLocation: pushSegmentsCustomers.byLocation,
-              byStatus: pushSegmentsCustomers.byStatus,
-            },
-          },
+          }),
         };
 
         await sendNotif(pushPayload);
@@ -301,30 +386,54 @@ const Form = ({
         const url = await handleUpload();
         const messagePayload = {
           body: data?.message,
-          media: [{ url }],
+          ...(url && { media: [{ url }] }),
           segments: {
             contractors: {
-              byRating: [data?.byRating],
-              byReferral: [data?.byReferral],
-              createdAfter: [data?.createdAfter],
-              createdBefore: [data?.createdBefore],
-              noBackgroundCheck: [data?.noBackgroundCheck],
-              noProfile_After_Hours: [Number(data?.noProfile_After_Hours)],
-              byAccountType: pushSegmentsContractors.byAccountType,
-              byLocation: pushSegmentsContractors.byLocation,
-              byOnboardingStage: pushSegmentsContractors.byOnboardingStage,
-              bySkills: pushSegmentsContractors.bySkills,
-              byStatus: pushSegmentsContractors.byStatus,
-              allContractors:
-                data?.allContractors?.toLowerCase() === "true" ? true : false,
+              ...(data?.byRating && { byRating: [data.byRating] }),
+              ...(data?.byReferral && { byReferral: [data.byReferral] }),
+              ...(data?.createdAfter && { createdAfter: [data.createdAfter] }),
+              ...(data?.createdBefore && {
+                createdBefore: [data.createdBefore],
+              }),
+              ...(data?.noBackgroundCheck && {
+                noBackgroundCheck: [data.noBackgroundCheck],
+              }),
+              ...(data?.noProfile_After_Hours !== undefined &&
+                data?.noProfile_After_Hours && {
+                  noProfile_After_Hours: [Number(data.noProfile_After_Hours)],
+                }),
+              // ...(pushSegmentsContractors?.byAccountType?.length && {
+              //   byAccountType: pushSegmentsContractors.byAccountType,
+              // }),
+              ...(pushSegmentsContractors?.byLocation?.length && {
+                byLocation: pushSegmentsContractors.byLocation,
+              }),
+              ...(pushSegmentsContractors?.byOnboardingStage?.length && {
+                byOnboardingStage: pushSegmentsContractors.byOnboardingStage,
+              }),
+              ...(pushSegmentsContractors?.bySkills?.length && {
+                bySkills: pushSegmentsContractors.bySkills,
+              }),
+              ...(pushSegmentsContractors?.byStatus?.length && {
+                byStatus: pushSegmentsContractors.byStatus,
+              }),
+              ...(typeof data?.allContractors === "string" && {
+                allContractors: data.allContractors.toLowerCase() === "true",
+              }),
             },
+
             customers: {
-              byRating: [data?.byRatingc],
-              byReferral: [data?.byReferralc],
-              byLocation: pushSegmentsCustomers.byLocation,
-              byStatus: pushSegmentsCustomers.byStatus,
-              allCustomers:
-                data?.allCustomers?.toLowerCase() === "true" ? true : false,
+              ...(data?.byRatingc && { byRating: [data.byRatingc] }),
+              ...(data?.byReferralc && { byReferral: [data.byReferralc] }),
+              ...(pushSegmentsCustomers?.byLocation?.length && {
+                byLocation: pushSegmentsCustomers.byLocation,
+              }),
+              ...(pushSegmentsCustomers?.byStatus?.length && {
+                byStatus: pushSegmentsCustomers.byStatus,
+              }),
+              ...(typeof data?.allCustomers === "string" && {
+                allCustomers: data.allCustomers.toLowerCase() === "true",
+              }),
             },
           },
         };
@@ -631,7 +740,7 @@ const Form = ({
                 </select>
               </Column>
             ) : null}
-            <Column>
+            {/* <Column>
               <Label htmlFor="Account">By Account Type:</Label>
               {type === "push" || type === "message" ? (
                 <SegmentsSelection
@@ -668,7 +777,7 @@ const Form = ({
                   )}
                 </select>
               )}
-            </Column>
+            </Column> */}
             <Column>
               <Label htmlFor="Location">By Location:</Label>
               {type === "push" || type === "message" ? (
