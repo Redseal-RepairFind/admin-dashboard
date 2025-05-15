@@ -107,6 +107,8 @@ const Form = ({
     type === "edit" ? editData?.schedule?.startDate : new Date()
   );
 
+  // console.log(editData);
+
   const {
     register,
     formState: { errors },
@@ -231,8 +233,8 @@ const Form = ({
         interval: Number(data?.interval),
         frequency: data?.frequency,
       },
-      ...(// data?.byAccountType ||
-      (data?.byLocation ||
+      ...// data?.byAccountType ||
+      ((data?.byLocation ||
         data?.byOnboardingStage ||
         data?.byRating ||
         data?.byReferral ||
@@ -241,6 +243,7 @@ const Form = ({
         data?.createdAfter ||
         data?.createdBefore ||
         data?.noBackgroundCheck ||
+        data?.allContractors ||
         data?.noProfile_After_Hours) && {
         contractorSegment: {
           // ...(data?.byAccountType && { byAccountType: data.byAccountType }),
@@ -252,6 +255,9 @@ const Form = ({
           ...(data?.byReferral && { byReferral: data.byReferral }),
           ...(data?.bySkills && { bySkills: data.bySkills }),
           ...(data?.byStatus && { byStatus: data.byStatus }),
+          ...(data?.allContractors && {
+            allContractors: data.allContractors.toLowerCase() === "true",
+          }),
           ...(data?.createdAfter && { createdAfter: data.createdAfter }),
           ...(data?.createdBefore && { createdBefore: data.createdBefore }),
           ...(data?.noBackgroundCheck && {
@@ -264,11 +270,15 @@ const Form = ({
       }),
       ...((data?.byRatingc ||
         data?.byReferralc ||
+        data?.allCustomers ||
         pushSegmentsCustomers.byLocation?.length ||
         pushSegmentsCustomers.byStatus) && {
         customerSegment: {
           ...(data?.byRatingc && { byRating: data.byRatingc }),
           ...(data?.byReferralc && { byReferral: data.byReferralc }),
+          ...(data?.allCustomers && {
+            allCustomers: data.allCustomers.toLowerCase() === "true",
+          }),
           ...(pushSegmentsCustomers.byLocation?.length && {
             byLocation: pushSegmentsCustomers.byLocation,
           }),
@@ -720,26 +730,30 @@ const Form = ({
             Contractor Segments (optional)
           </h2>
           <div className="grid grid-cols-3 gap-2">
-            {type === "message" ? (
-              <Column>
-                <Label htmlFor="allContractors">All Contractors:</Label>
-                <select
-                  id="allContractors"
-                  className="h-12 px-2 border-gray-700 border rounded-md"
-                  {...register("allContractors")}
-                >
-                  <option value="" className="cursor-not-allowed">
-                    -- Select --
-                  </option>
-                  <option value="true" className="cursor-not-allowed">
-                    True
-                  </option>
-                  <option value="false" className="cursor-not-allowed">
-                    False
-                  </option>
-                </select>
-              </Column>
-            ) : null}
+            <Column>
+              <Label htmlFor="allContractors">All Contractors:</Label>
+              <select
+                id="allContractors"
+                className="h-12 px-2 border-gray-700 border rounded-md"
+                {...register("allContractors")}
+                defaultValue={
+                  type === "edit"
+                    ? editData?.contractorSegment.allContractors
+                    : ""
+                }
+              >
+                <option value="" className="cursor-not-allowed">
+                  -- Select --
+                </option>
+                <option value="true" className="cursor-not-allowed">
+                  True
+                </option>
+                <option value="false" className="cursor-not-allowed">
+                  False
+                </option>
+              </select>
+            </Column>
+
             {/* <Column>
               <Label htmlFor="Account">By Account Type:</Label>
               {type === "push" || type === "message" ? (
@@ -853,7 +867,6 @@ const Form = ({
                 </select>
               )}
             </Column>
-
             <Column>
               <Label htmlFor="byStatus">By Status:</Label>
               {type === "push" ? (
@@ -1091,27 +1104,29 @@ const Form = ({
             Customers Segments (optional)
           </h2>
           <div className="grid grid-cols-3 gap-2">
-            {type === "message" ? (
-              <Column>
-                <Label htmlFor="allContractors">All Customers:</Label>
+            <Column>
+              <Label htmlFor="allCustomers">All Customers:</Label>
 
-                <select
-                  id="allCustomers"
-                  className="h-12 px-2 border-gray-700 border rounded-md"
-                  {...register("allCustomers")}
-                >
-                  <option value="" className="cursor-not-allowed">
-                    -- Select --
-                  </option>
-                  <option value="true" className="cursor-not-allowed">
-                    True
-                  </option>
-                  <option value="false" className="cursor-not-allowed">
-                    False
-                  </option>
-                </select>
-              </Column>
-            ) : null}
+              <select
+                id="allCustomers"
+                className="h-12 px-2 border-gray-700 border rounded-md"
+                {...register("allCustomers")}
+                defaultValue={
+                  type === "edit" ? editData?.customerSegment?.allCustomers : ""
+                }
+              >
+                <option value="" className="cursor-not-allowed">
+                  -- Select --
+                </option>
+                <option value="true" className="cursor-not-allowed">
+                  True
+                </option>
+                <option value="false" className="cursor-not-allowed">
+                  False
+                </option>
+              </select>
+            </Column>
+
             <Column>
               <Label htmlFor="Location">By Location:</Label>
               {type === "push" || type === "message" ? (
