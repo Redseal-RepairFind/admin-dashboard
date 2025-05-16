@@ -22,10 +22,6 @@ const Index = () => {
   const [status, setStatus] = useState("All");
   const { handleNavigation } = useLoader();
 
-  // const [dataToRender, setDataToRender] = useState<any>([]);
-
-  // console.log(sortedData?.data?.data?.data);
-
   const router = useRouter();
   const pathname = usePathname();
   const param = useSearchParams();
@@ -34,39 +30,31 @@ const Index = () => {
   const initialSortValue =
     param.get("stafsStatus")?.replace(/_/g, " ") || "STAFFS";
 
-  // // Set the selected sort value state, initialize with the value from URL
   const [sortValue, setSortValue] = useState(initialSortValue);
-  // const { adminPermissions } = useAdminPermissions();
 
-  // const [isOpen, setIsOpen] = useState(false);
-
-  // On page load, ensure the sort value in the state is in sync with URL
   useEffect(() => {
     const sortFromParam = param.get("stafsStatus");
     if (sortFromParam) {
       const updatedSortValue = sortFromParam.replace(/_/g, " ");
-      setSortValue(updatedSortValue); // Update state based on URL query params
+      setSortValue(updatedSortValue);
     }
   }, [param]);
 
-  // Function to update the URL params and the state
   function updateUrlParams(value: string) {
-    const formattedValue = value.replace(/ /g, "_").toLowerCase(); // Replace spaces with underscores
+    const formattedValue = value.replace(/ /g, "_").toLowerCase();
 
-    // Update the URL query parameters
     if (value === "OPEN") {
       router.replace(`${pathname}`, {
         scroll: false,
-      }); // Remove query params if 'All' is selected (default)
+      });
     } else {
       const params = new URLSearchParams(window.location.search);
-      params.set("stafsStatus", formattedValue); // Set the selected filter in query params
+      params.set("stafsStatus", formattedValue);
       router.replace(`${pathname}?${params.toString()}`, {
         scroll: false,
       });
     }
 
-    // Set the selected value in the state
     setSortValue(value);
     setStatus(value);
   }
@@ -97,12 +85,6 @@ const Index = () => {
               </button>
             ))}
           </div>
-          {/* <Search
-          search={""}
-          setSearch={handleQuery}
-          placeholder="Search..."
-          setIsQuerying={setIsQuerying}
-        /> */}
         </div>
 
         {sortValue?.toLowerCase().includes("staff") ? (

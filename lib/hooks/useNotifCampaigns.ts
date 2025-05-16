@@ -1,12 +1,16 @@
 import { useMutation, useQuery } from "react-query";
 import { campaigns } from "../api/push-notifs";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export const useNotifsCampaign = () => {
   const params = useSearchParams();
   const limit = Number(params.get("perPage") || 10);
   const page = Number(params.get("page") || 1);
+  const channel = params.get("channels") || "PUSH";
 
+  const [campaignData, setCampaignData] = useState([]);
+  const { reportId } = useParams();
   const { mutateAsync: createCampaign } = useMutation(campaigns.createCampaign);
   const { mutateAsync: updateCampaign } = useMutation(campaigns.updateCampaign);
   const { mutateAsync: sendNotif } = useMutation(
@@ -15,6 +19,8 @@ export const useNotifsCampaign = () => {
   const { mutateAsync: sendMessage } = useMutation(
     campaigns.sendPushInboxMessage
   );
+
+  console.log(reportId);
 
   const {
     data: pushCampaigns,
@@ -31,6 +37,30 @@ export const useNotifsCampaign = () => {
     isLoading: isLoadingSegments,
     refetch: refetchSegments,
   } = useQuery(["user-segments"], () => campaigns.getUserSegments());
+  const {
+    data: reports,
+    isLoading: isLoadingreports,
+    refetch: refetchReports,
+  } = useQuery(
+    ["campaign-reports", reportId],
+    () => campaigns.getCampaignReports(reportId as string),
+    {
+      enabled: !!reportId,
+    }
+  );
+
+  useEffect(() => {
+    const rawData = pushCampaigns?.data?.data?.data;
+
+    if (!Array.isArray(rawData)) return;
+
+    const filtered = rawData.filter((item: any) => {
+      const hasInbox = item?.channels?.includes("INBOX");
+      return channel.toLowerCase() === "inbox" ? hasInbox : !hasInbox;
+    });
+
+    setCampaignData(filtered as []);
+  }, [channel, pushCampaigns?.data?.data?.data]);
 
   return {
     pushCampaigns,
@@ -43,5 +73,9 @@ export const useNotifsCampaign = () => {
     updateCampaign,
     sendNotif,
     sendMessage,
+    campaignData,
+    reports,
+    isLoadingreports,
+    refetchReports,
   };
 };

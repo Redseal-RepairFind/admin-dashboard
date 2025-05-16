@@ -18,4 +18,6 @@ export const campaigns = {
     client.post(`${url}/push-notifications`, payload).then(({ data }) => data),
   sendPushInboxMessage: (payload: any) =>
     client.post(`${url}/send-inbox-messages`, payload).then(({ data }) => data),
+  getCampaignReports: (id: string) =>
+    client.get(`${url}/campaigns/${id}/reports`).then(({ data }) => data),
 };

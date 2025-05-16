@@ -15,12 +15,15 @@ import Pagination from "@/components/shared/pagination";
 import Td from "../shared/table/components/td";
 import { formatTimeDDMMYY } from "@/lib/utils/format-date";
 import VerticalMenu from "@/components/shared/vertical-menu";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Modal from "react-responsive-modal";
 
 import Form from "./push-form";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import PushCampaign from "./push-campaign";
+import InboxCampaign from "./inbox-campaign";
 
-const table_headings = [
+export const table_headings = [
   "Title",
   "Message",
   "StartDate",
@@ -29,6 +32,12 @@ const table_headings = [
   "Intervals",
   "Status",
   "Action",
+];
+
+const types = [
+  // { id: 1, value: "Staff", slug: "ALL" },
+  { id: 3, value: "Push Campaign", slug: "PUSH" },
+  { id: 2, value: "Inbox Campaign", slug: "INBOX" },
 ];
 
 const PushNotification = () => {
@@ -44,6 +53,46 @@ const PushNotification = () => {
   const pageProps = {
     data: pushCampaigns?.data?.data,
   };
+
+  const [loading, setLoading] = useState(true);
+
+  const [status, setStatus] = useState("PUSH");
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const param = useSearchParams();
+
+  const initialString = param.get("channels");
+  const initialSortValue = param.get("channels")?.replace(/_/g, " ") || "PUSH";
+
+  const [sortValue, setSortValue] = useState(initialSortValue);
+
+  useEffect(() => {
+    const sortFromParam = param.get("channels");
+    if (sortFromParam) {
+      const updatedSortValue = sortFromParam.replace(/_/g, " ");
+      setSortValue(updatedSortValue);
+    }
+  }, [param]);
+
+  function updateUrlParams(value: string) {
+    const formattedValue = value.replace(/ /g, "_").toLowerCase();
+
+    if (value === "PUSH") {
+      router.replace(`${pathname}`, {
+        scroll: false,
+      });
+    } else {
+      const params = new URLSearchParams(window.location.search);
+      params.set("channels", formattedValue);
+      router.replace(`${pathname}?${params.toString()}`, {
+        scroll: false,
+      });
+    }
+
+    setSortValue(value);
+    setStatus(value);
+  }
 
   let rowOptions = [
     {
@@ -62,7 +111,9 @@ const PushNotification = () => {
     // },
   ];
 
-  const dataToRender = pushCampaigns?.data?.data?.data;
+  // const dataToRender = pushCampaigns?.data?.data?.data;
+
+  // console.log(dataToRender);
 
   if (isLoadingPushCamp || isLoadingSegments) return <LoadingTemplate />;
   return (
@@ -135,81 +186,32 @@ const PushNotification = () => {
           <PageHeading page_title={"Push Notification Campaigns"} />
         </div>
 
-        <TableCard>
-          <div className=" flex justify-between">
-            <div className="flex items-center gap-4">
-              <SubmitBtn onClick={() => setOpenMessage(true)}>
-                Send Inbox message
-              </SubmitBtn>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center justify-start gap-5 bg-white px-4 py-3 rounded-t-md">
+            {types.map((type: any, index: number) => (
               <button
-                className="py-2 px-4 border border-gray-800 rounded-lg"
-                onClick={() => setOpenPush(true)}
+                className={
+                  sortValue.toLowerCase() === type?.slug.toLowerCase()
+                    ? "font-semibold border-b-2 border-black"
+                    : "text-gray-400"
+                }
+                onClick={() => {
+                  // sessionStorage.setItem("session_dispute_status", type.slug);
+                  updateUrlParams(type.slug);
+                }}
+                key={index}
               >
-                Send Push Notification
+                {type.value.includes("Reviewed") ? "Ongoing" : type.value}
               </button>
-            </div>
-            <SubmitBtn onClick={() => setOpenModal(true)}>
-              Create new Campaign
-            </SubmitBtn>
+            ))}
           </div>
-          <TableOverflow>
-            <Table>
-              <Thead>
-                <tr>
-                  {table_headings?.map((heading, index) => (
-                    <Th key={index}>{heading}</Th>
-                  ))}
-                </tr>
-              </Thead>
+        </div>
 
-              <tbody>
-                {dataToRender?.map((data: any) => (
-                  <tr key={data?._id} className="border-b border-gray-100">
-                    <Td>{data?.title}</Td>
-                    <Td>
-                      <span className="max-w-[100px] text-[12px]">
-                        {data?.message}
-                      </span>
-                    </Td>
-                    <Td>
-                      {formatTimeDDMMYY(
-                        data?.schedule?.startDate || new Date()
-                      )}
-                    </Td>
-                    <Td>{data?.schedule?.recurring ? "True" : "False"}</Td>
-                    <Td>{data?.schedule?.frequency}</Td>
-                    <Td>{data?.schedule?.interval}</Td>
-                    <Td>{data?.status}</Td>
-                    <Td className="z-0">
-                      <div className="relative w-fit z-50 overflow-visible">
-                        <VerticalMenu
-                          isBackground={true}
-                          width=""
-                          className="relative z-50"
-                        >
-                          <div onClick={(e) => e.stopPropagation()}>
-                            {rowOptions?.map((option, index) => (
-                              <button
-                                key={index}
-                                onClick={() => option?.action(data)}
-                                className="block  border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-                              >
-                                {option?.name}
-                              </button>
-                            ))}
-                          </div>
-                        </VerticalMenu>
-                      </div>
-                    </Td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </TableOverflow>
-          <div className="w-full mt-2">
-            <Pagination {...pageProps} />
-          </div>
-        </TableCard>
+        {sortValue.toLowerCase() === "inbox" ? (
+          <InboxCampaign />
+        ) : (
+          <PushCampaign />
+        )}
       </PageBody>
     </>
   );

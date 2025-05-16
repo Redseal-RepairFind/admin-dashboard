@@ -86,9 +86,9 @@ export const navLinks: INavLinks[] = [
     readPermissions: ["manage_staffs"],
   },
   {
-    name: "Push Notifications",
-    svg: <AppVersion />,
-    route: "/push_notifications",
+    name: "Marketing",
+    svg: <TotalJobs />,
+    route: "/marketing",
     readPermissions: [""],
   },
 
