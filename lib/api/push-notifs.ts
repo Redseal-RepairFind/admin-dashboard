@@ -4,9 +4,21 @@ const client = apiClient();
 
 const url = "/admin/marketing";
 export const campaigns = {
-  getAllCampaigns: ({ page, limit }: { page: number; limit: number }) =>
+  getAllCampaigns: ({
+    page,
+    limit,
+    channels,
+  }: {
+    page: number;
+    limit: number;
+    channels?: string;
+  }) =>
     client
-      .get(`${url}/campaigns?limit=${limit}&page=${page}`)
+      .get(
+        `${url}/campaigns?limit=${limit}&page=${page}${
+          channels ? `&channels=${channels}` : ""
+        }`
+      )
       .then(({ data }) => data),
   createCampaign: (payload: any) =>
     client.post(`${url}/campaigns`, payload).then(({ data }) => data),
@@ -20,4 +32,6 @@ export const campaigns = {
     client.post(`${url}/send-inbox-messages`, payload).then(({ data }) => data),
   getCampaignReports: (id: string) =>
     client.get(`${url}/campaigns/${id}/reports`).then(({ data }) => data),
+  deleteCampaign: (id: string) =>
+    client.delete(`${url}/campaigns/${id}`).then(({ data }) => data),
 };

@@ -7,7 +7,7 @@ export const useNotifsCampaign = () => {
   const params = useSearchParams();
   const limit = Number(params.get("perPage") || 10);
   const page = Number(params.get("page") || 1);
-  const channel = params.get("channels") || "PUSH";
+  const channel = params.get("channels") || "ALL";
 
   const [campaignData, setCampaignData] = useState([]);
   const { reportId } = useParams();
@@ -16,20 +16,22 @@ export const useNotifsCampaign = () => {
   const { mutateAsync: sendNotif } = useMutation(
     campaigns.sendPushNotification
   );
+  const { mutateAsync: deleteCampaign } = useMutation(campaigns.deleteCampaign);
   const { mutateAsync: sendMessage } = useMutation(
     campaigns.sendPushInboxMessage
   );
 
-  console.log(reportId);
+  // console.log(channel);
 
   const {
     data: pushCampaigns,
     isLoading: isLoadingPushCamp,
     refetch: refetchPushCamps,
-  } = useQuery(["notifications Campaign", page, limit], () =>
+  } = useQuery(["notifications Campaign", page, limit, channel], () =>
     campaigns.getAllCampaigns({
       page,
       limit,
+      channels: channel === "ALL" ? "" : channel,
     })
   );
   const {
@@ -77,5 +79,6 @@ export const useNotifsCampaign = () => {
     reports,
     isLoadingreports,
     refetchReports,
+    deleteCampaign,
   };
 };

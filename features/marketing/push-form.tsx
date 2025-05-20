@@ -113,7 +113,13 @@ const Form = ({
     register,
     formState: { errors },
     handleSubmit,
+    watch,
   } = useForm();
+
+  const allContractors = watch("allContractors");
+  const allCustomers = watch("allCustomers");
+
+  // console.log(allContractors);
 
   const {
     refetchPushCamps,
@@ -125,6 +131,8 @@ const Form = ({
   } = useNotifsCampaign();
   const contractorSecments = segments?.data?.contractor;
   const customerSecments = segments?.data?.customer;
+
+  // console.log(contractorSecments);
 
   const [pushSegmentsContractors, setPushSegmentsContractors] =
     useState<SegmentType>(initContracSegs);
@@ -739,7 +747,7 @@ const Form = ({
                 defaultValue={
                   type === "edit"
                     ? editData?.contractorSegment.allContractors
-                    : ""
+                    : "true"
                 }
               >
                 <option value="" className="cursor-not-allowed">
@@ -792,305 +800,321 @@ const Form = ({
                 </select>
               )}
             </Column> */}
-            <Column>
-              <Label htmlFor="Location">By Location:</Label>
-              {type === "push" || type === "message" ? (
-                <SegmentsSelection
-                  segments={contractorSecments?.byLocation}
-                  open={"byLocation"}
-                  type="contractors"
-                  selectSegment={selectSegment}
-                  selectedSegments={pushSegmentsContractors?.byLocation}
-                  modalString={modalString as any}
-                  setModalString={setModalString}
-                />
-              ) : (
-                <select
-                  id="byLocation"
-                  className="h-12 px-2 border-gray-700 border rounded-md"
-                  {...register("byLocation")}
-                  defaultValue={
-                    type === "edit"
-                      ? editData?.contractorSegment?.byLocation
-                      : ""
-                  }
-                >
-                  <option value="" className="cursor-not-allowed">
-                    -- Select Location --
-                  </option>
-
-                  {contractorSecments?.byLocation?.map(
-                    (item: any, index: number) => (
-                      <option key={index} value={item}>
-                        {item}
+            {allContractors === "true" ? null : (
+              <>
+                <Column>
+                  <Label htmlFor="Location">By Location:</Label>
+                  {type === "push" || type === "message" ? (
+                    <SegmentsSelection
+                      segments={contractorSecments?.byLocation}
+                      open={"byLocation"}
+                      type="contractors"
+                      selectSegment={selectSegment}
+                      selectedSegments={pushSegmentsContractors?.byLocation}
+                      modalString={modalString as any}
+                      setModalString={setModalString}
+                    />
+                  ) : (
+                    <select
+                      id="byLocation"
+                      className="h-12 px-2 border-gray-700 border rounded-md"
+                      {...register("byLocation")}
+                      defaultValue={
+                        type === "edit"
+                          ? editData?.contractorSegment?.byLocation
+                          : ""
+                      }
+                    >
+                      <option value="" className="cursor-not-allowed">
+                        -- Select Location --
                       </option>
-                    )
-                  )}
-                </select>
-              )}
-            </Column>
-            <Column>
-              <Label htmlFor="stage">By Onboarding stage:</Label>
-              {type === "push" ? (
-                <SegmentsSelection
-                  segments={contractorSecments?.byOnboardingStage}
-                  open={"byOnboardingStage"}
-                  type="contractors"
-                  selectSegment={selectSegment}
-                  selectedSegments={pushSegmentsContractors?.byOnboardingStage}
-                  modalString={modalString as any}
-                  setModalString={setModalString}
-                />
-              ) : (
-                <select
-                  id="byOnboardingStage"
-                  className="h-12 px-2 border-gray-700 border rounded-md"
-                  {...register("byOnboardingStage")}
-                  defaultValue={
-                    type === "edit"
-                      ? editData?.contractorSegment?.byOnboardingStage
-                      : ""
-                  }
-                >
-                  <option value="" className="cursor-not-allowed">
-                    {" "}
-                    -- Select Stage --{" "}
-                  </option>
 
-                  {contractorSecments?.byOnboardingStage?.map(
-                    (item: any, index: number) => (
-                      <option key={index} value={item}>
-                        {item}
+                      {contractorSecments?.byLocation?.map(
+                        (item: any, index: number) => (
+                          <option key={index} value={item}>
+                            {item}
+                          </option>
+                        )
+                      )}
+                    </select>
+                  )}
+                </Column>
+                <Column>
+                  <Label htmlFor="stage">By Onboarding stage:</Label>
+                  {type === "push" ? (
+                    <SegmentsSelection
+                      segments={contractorSecments?.byOnboardingStage}
+                      open={"byOnboardingStage"}
+                      type="contractors"
+                      selectSegment={selectSegment}
+                      selectedSegments={
+                        pushSegmentsContractors?.byOnboardingStage
+                      }
+                      modalString={modalString as any}
+                      setModalString={setModalString}
+                    />
+                  ) : (
+                    <select
+                      id="byOnboardingStage"
+                      className="h-12 px-2 border-gray-700 border rounded-md"
+                      {...register("byOnboardingStage")}
+                      defaultValue={
+                        type === "edit"
+                          ? editData?.contractorSegment?.byOnboardingStage
+                          : ""
+                      }
+                    >
+                      <option value="" className="cursor-not-allowed">
+                        {" "}
+                        -- Select Stage --{" "}
                       </option>
-                    )
-                  )}
-                </select>
-              )}
-            </Column>
-            <Column>
-              <Label htmlFor="byStatus">By Status:</Label>
-              {type === "push" ? (
-                <SegmentsSelection
-                  segments={contractorSecments?.byStatus}
-                  open={"byStatus"}
-                  type="contractors"
-                  selectSegment={selectSegment}
-                  selectedSegments={pushSegmentsContractors?.byStatus}
-                  modalString={modalString as any}
-                  setModalString={setModalString}
-                />
-              ) : (
-                <select
-                  id="byStatus"
-                  className="h-12 px-2 border-gray-700 border rounded-md"
-                  {...register("byStatus")}
-                  defaultValue={
-                    type === "edit" ? editData?.contractorSegment?.byStatus : ""
-                  }
-                >
-                  <option value="" className="cursor-not-allowed">
-                    {" "}
-                    -- Select status --{" "}
-                  </option>
 
-                  {contractorSecments?.byStatus?.map(
-                    (item: any, index: number) => (
-                      <option key={index} value={item}>
-                        {item}
+                      {contractorSecments?.byOnboardingStage?.map(
+                        (item: any, index: number) => (
+                          <option key={index} value={item}>
+                            {item}
+                          </option>
+                        )
+                      )}
+                    </select>
+                  )}
+                </Column>
+                <Column>
+                  <Label htmlFor="byStatus">By Status:</Label>
+                  {type === "push" ? (
+                    <SegmentsSelection
+                      segments={contractorSecments?.byStatus}
+                      open={"byStatus"}
+                      type="contractors"
+                      selectSegment={selectSegment}
+                      selectedSegments={pushSegmentsContractors?.byStatus}
+                      modalString={modalString as any}
+                      setModalString={setModalString}
+                    />
+                  ) : (
+                    <select
+                      id="byStatus"
+                      className="h-12 px-2 border-gray-700 border rounded-md"
+                      {...register("byStatus")}
+                      defaultValue={
+                        type === "edit"
+                          ? editData?.contractorSegment?.byStatus
+                          : ""
+                      }
+                    >
+                      <option value="" className="cursor-not-allowed">
+                        {" "}
+                        -- Select status --{" "}
                       </option>
-                    )
+
+                      {contractorSecments?.byStatus?.map(
+                        (item: any, index: number) => (
+                          <option key={index} value={item}>
+                            {item}
+                          </option>
+                        )
+                      )}
+                    </select>
                   )}
-                </select>
-              )}
-            </Column>
-            <Column>
-              <Label htmlFor="referal">By Rating:</Label>
-              <select
-                id="byRating"
-                className="h-12 px-2 border-gray-700 border rounded-md"
-                {...register("byRating")}
-                defaultValue={
-                  type === "edit" ? editData?.contractorSegment?.byRating : ""
-                }
-              >
-                <option value="" className="cursor-not-allowed">
-                  -- Select Rating --
-                </option>
-
-                {contractorSecments?.byRating?.map(
-                  (item: any, index: number) => (
-                    <option key={index} value={item}>
-                      {item}
+                </Column>
+                <Column>
+                  <Label htmlFor="referal">By Rating:</Label>
+                  <select
+                    id="byRating"
+                    className="h-12 px-2 border-gray-700 border rounded-md"
+                    {...register("byRating")}
+                    defaultValue={
+                      type === "edit"
+                        ? editData?.contractorSegment?.byRating
+                        : ""
+                    }
+                  >
+                    <option value="" className="cursor-not-allowed">
+                      -- Select Rating --
                     </option>
-                  )
-                )}
-              </select>
-            </Column>
-            <Column>
-              <Label htmlFor="bySkills">By Skills:</Label>
-              {type === "push" ? (
-                <SegmentsSelection
-                  segments={contractorSecments?.bySkills}
-                  open={"bySkills"}
-                  type="contractors"
-                  selectSegment={selectSegment}
-                  selectedSegments={pushSegmentsContractors?.bySkills}
-                  modalString={modalString as any}
-                  setModalString={setModalString}
-                />
-              ) : (
-                <select
-                  id="bySkills"
-                  className="h-12 px-2 border-gray-700 border rounded-md"
-                  {...register("bySkills")}
-                  defaultValue={
-                    type === "edit" ? editData?.contractorSegment?.bySkills : ""
-                  }
-                >
-                  <option value="" className="cursor-not-allowed">
-                    {" "}
-                    -- Select skills --{" "}
-                  </option>
 
-                  {contractorSecments?.bySkills?.map(
-                    (item: any, index: number) => (
-                      <option key={index} value={item}>
-                        {item}
+                    {contractorSecments?.byRating?.map(
+                      (item: any, index: number) => (
+                        <option key={index} value={item}>
+                          {item}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </Column>
+                <Column>
+                  <Label htmlFor="bySkills">By Skills:</Label>
+                  {type === "push" ? (
+                    <SegmentsSelection
+                      segments={contractorSecments?.bySkills}
+                      open={"bySkills"}
+                      type="contractors"
+                      selectSegment={selectSegment}
+                      selectedSegments={pushSegmentsContractors?.bySkills}
+                      modalString={modalString as any}
+                      setModalString={setModalString}
+                    />
+                  ) : (
+                    <select
+                      id="bySkills"
+                      className="h-12 px-2 border-gray-700 border rounded-md"
+                      {...register("bySkills")}
+                      defaultValue={
+                        type === "edit"
+                          ? editData?.contractorSegment?.bySkills
+                          : ""
+                      }
+                    >
+                      <option value="" className="cursor-not-allowed">
+                        {" "}
+                        -- Select skills --{" "}
                       </option>
-                    )
+
+                      {contractorSecments?.bySkills?.map(
+                        (item: any, index: number) => (
+                          <option key={index} value={item}>
+                            {item}
+                          </option>
+                        )
+                      )}
+                    </select>
                   )}
-                </select>
-              )}
-            </Column>
-            <Column>
-              <Label htmlFor="byReferral">By Referral:</Label>
-              <select
-                id="byReferral"
-                className="h-12 px-2 border-gray-700 border rounded-md"
-                {...register("byReferral")}
-                defaultValue={
-                  type === "edit" ? editData?.contractorSegment?.byReferral : ""
-                }
-              >
-                <option value="" className="cursor-not-allowed">
-                  -- Select by Referral --
-                </option>
-
-                {contractorSecments?.byReferral?.map(
-                  (item: any, index: number) => (
-                    <option key={index} value={item}>
-                      {item}
+                </Column>
+                <Column>
+                  <Label htmlFor="byReferral">By Referral:</Label>
+                  <select
+                    id="byReferral"
+                    className="h-12 px-2 border-gray-700 border rounded-md"
+                    {...register("byReferral")}
+                    defaultValue={
+                      type === "edit"
+                        ? editData?.contractorSegment?.byReferral
+                        : ""
+                    }
+                  >
+                    <option value="" className="cursor-not-allowed">
+                      -- Select by Referral --
                     </option>
-                  )
-                )}
-              </select>
-            </Column>
-            <Column>
-              <Label htmlFor="createdAfter">CreatedAfter:</Label>
-              <select
-                id="createdAfter"
-                className="h-12 px-2 border-gray-700 border rounded-md"
-                {...register("createdAfter")}
-                defaultValue={
-                  type === "edit"
-                    ? editData?.contractorSegment?.createdAfter
-                    : ""
-                }
-              >
-                <option value="" className="cursor-not-allowed">
-                  -- Select createdAfter --
-                </option>
 
-                {contractorSecments?.createdAfter?.map(
-                  (item: any, index: number) => (
-                    <option key={index} value={item}>
-                      {item}
+                    {contractorSecments?.byReferral?.map(
+                      (item: any, index: number) => (
+                        <option key={index} value={item}>
+                          {item}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </Column>
+                <Column>
+                  <Label htmlFor="createdAfter">CreatedAfter:</Label>
+                  <select
+                    id="createdAfter"
+                    className="h-12 px-2 border-gray-700 border rounded-md"
+                    {...register("createdAfter")}
+                    defaultValue={
+                      type === "edit"
+                        ? editData?.contractorSegment?.createdAfter
+                        : ""
+                    }
+                  >
+                    <option value="" className="cursor-not-allowed">
+                      -- Select createdAfter --
                     </option>
-                  )
-                )}
-              </select>
-            </Column>
-            <Column>
-              <Label htmlFor="createdBefore">CreatedBefore:</Label>
-              <select
-                id="createdBefore"
-                className="h-12 px-2 border-gray-700 border rounded-md"
-                {...register("createdBefore")}
-                defaultValue={
-                  type === "edit"
-                    ? editData?.contractorSegment?.createdBefore
-                    : ""
-                }
-              >
-                <option value="" className="cursor-not-allowed">
-                  {" "}
-                  -- Select createdBefore --{" "}
-                </option>
 
-                {contractorSecments?.createdBefore?.map(
-                  (item: any, index: number) => (
-                    <option key={index} value={item}>
-                      {item}
+                    {contractorSecments?.createdAfter?.map(
+                      (item: any, index: number) => (
+                        <option key={index} value={item}>
+                          {item}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </Column>
+                <Column>
+                  <Label htmlFor="createdBefore">CreatedBefore:</Label>
+                  <select
+                    id="createdBefore"
+                    className="h-12 px-2 border-gray-700 border rounded-md"
+                    {...register("createdBefore")}
+                    defaultValue={
+                      type === "edit"
+                        ? editData?.contractorSegment?.createdBefore
+                        : ""
+                    }
+                  >
+                    <option value="" className="cursor-not-allowed">
+                      {" "}
+                      -- Select createdBefore --{" "}
                     </option>
-                  )
-                )}
-              </select>
-            </Column>
-            <Column>
-              <Label htmlFor="noBackgroundCheck">No Background Check:</Label>
-              <select
-                id="noBackgroundCheck"
-                className="h-12 px-2 border-gray-700 border rounded-md"
-                {...register("noBackgroundCheck")}
-                defaultValue={
-                  type === "edit"
-                    ? editData?.contractorSegment?.noBackgroundCheck
-                    : ""
-                }
-              >
-                <option value="" className="cursor-not-allowed">
-                  {" "}
-                  -- Select Background Check --{" "}
-                </option>
 
-                {contractorSecments?.noBackgroundCheck?.map(
-                  (item: any, index: number) => (
-                    <option key={index} value={item}>
-                      {item}
+                    {contractorSecments?.createdBefore?.map(
+                      (item: any, index: number) => (
+                        <option key={index} value={item}>
+                          {item}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </Column>
+                <Column>
+                  <Label htmlFor="noBackgroundCheck">
+                    No Background Check:
+                  </Label>
+                  <select
+                    id="noBackgroundCheck"
+                    className="h-12 px-2 border-gray-700 border rounded-md"
+                    {...register("noBackgroundCheck")}
+                    defaultValue={
+                      type === "edit"
+                        ? editData?.contractorSegment?.noBackgroundCheck
+                        : ""
+                    }
+                  >
+                    <option value="" className="cursor-not-allowed">
+                      {" "}
+                      -- Select Background Check --{" "}
                     </option>
-                  )
-                )}
-              </select>
-            </Column>
-            <Column>
-              <Label htmlFor="noProfile_After_Hours">
-                No Profile After Hours:
-              </Label>
-              <select
-                id="noProfile_After_Hours"
-                className="h-12 px-2 border-gray-700 border rounded-md"
-                {...register("noProfile_After_Hours")}
-                defaultValue={
-                  type === "edit"
-                    ? editData?.contractorSegment?.noProfile_After_Hours
-                    : ""
-                }
-              >
-                <option value="" className="cursor-not-allowed">
-                  {" "}
-                  -- Select Hour Mark --{" "}
-                </option>
 
-                {contractorSecments?.noProfile_After_Hours?.map(
-                  (item: any, index: number) => (
-                    <option key={index} value={item}>
-                      {item}
+                    {contractorSecments?.noBackgroundCheck?.map(
+                      (item: any, index: number) => (
+                        <option key={index} value={item}>
+                          {item}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </Column>
+                <Column>
+                  <Label htmlFor="noProfile_After_Hours">
+                    No Profile After Hours:
+                  </Label>
+                  <select
+                    id="noProfile_After_Hours"
+                    className="h-12 px-2 border-gray-700 border rounded-md"
+                    {...register("noProfile_After_Hours")}
+                    defaultValue={
+                      type === "edit"
+                        ? editData?.contractorSegment?.noProfile_After_Hours
+                        : ""
+                    }
+                  >
+                    <option value="" className="cursor-not-allowed">
+                      {" "}
+                      -- Select Hour Mark --{" "}
                     </option>
-                  )
-                )}
-              </select>
-            </Column>
-            <div></div>
+
+                    {contractorSecments?.noProfile_After_Hours?.map(
+                      (item: any, index: number) => (
+                        <option key={index} value={item}>
+                          {item}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </Column>
+                <div></div>
+              </>
+            )}
           </div>
         </>
       ) : null}
@@ -1112,7 +1136,9 @@ const Form = ({
                 className="h-12 px-2 border-gray-700 border rounded-md"
                 {...register("allCustomers")}
                 defaultValue={
-                  type === "edit" ? editData?.customerSegment?.allCustomers : ""
+                  type === "edit"
+                    ? editData?.customerSegment?.allCustomers
+                    : "true"
                 }
               >
                 <option value="" className="cursor-not-allowed">
@@ -1127,148 +1153,160 @@ const Form = ({
               </select>
             </Column>
 
-            <Column>
-              <Label htmlFor="Location">By Location:</Label>
-              {type === "push" || type === "message" ? (
-                <SegmentsSelection
-                  segments={customerSecments?.byLocation}
-                  open={"byLocation"}
-                  type="customers"
-                  selectSegment={selectSegment}
-                  selectedSegments={pushSegmentsCustomers?.byLocation}
-                  modalString={modalString as any}
-                  setModalString={setModalString}
-                />
-              ) : (
-                // customerSecments?.byLocation?.map((acc: any, i: number) => (
-                //   <span
-                //     className="flex gap-3 items-center cursor-pointer"
-                //     key={i}
-                //     onClick={() =>
-                //       selectSegment("byLocation", "customers", acc)
-                //     }
-                //   >
-                //     <CheckBox
-                //       isChecked={pushSegmentsCustomers?.byLocation?.some(
-                //         (data: any) => data === acc
-                //       )}
-                //       onClick={() => {}}
-                //     />
-                //     <span
-                //       className={`${
-                //         pushSegmentsCustomers?.byLocation?.some(
-                //           (data: any) => data === acc
-                //         )
-                //           ? "text-gray-800"
-                //           : "text-gray-400"
-                //       }`}
-                //     >
-                //       {acc}
-                //     </span>
-                //   </span>
-                // ))
-                <select
-                  id="byLocationc"
-                  className="h-12 px-2 border-gray-700 border rounded-md"
-                  {...register("byLocationc")}
-                  defaultValue={
-                    type === "edit" ? editData?.customerSegment?.byLocation : ""
-                  }
-                >
-                  <option value="" className="cursor-not-allowed">
-                    -- Select Location --
-                  </option>
-
-                  {customerSecments?.byLocation?.map(
-                    (item: any, index: number) => (
-                      <option key={index} value={item}>
-                        {item}
+            {allCustomers === "true" ? null : (
+              <>
+                <Column>
+                  <Label htmlFor="Location">By Location:</Label>
+                  {type === "push" || type === "message" ? (
+                    <SegmentsSelection
+                      segments={customerSecments?.byLocation}
+                      open={"byLocation"}
+                      type="customers"
+                      selectSegment={selectSegment}
+                      selectedSegments={pushSegmentsCustomers?.byLocation}
+                      modalString={modalString as any}
+                      setModalString={setModalString}
+                    />
+                  ) : (
+                    // customerSecments?.byLocation?.map((acc: any, i: number) => (
+                    //   <span
+                    //     className="flex gap-3 items-center cursor-pointer"
+                    //     key={i}
+                    //     onClick={() =>
+                    //       selectSegment("byLocation", "customers", acc)
+                    //     }
+                    //   >
+                    //     <CheckBox
+                    //       isChecked={pushSegmentsCustomers?.byLocation?.some(
+                    //         (data: any) => data === acc
+                    //       )}
+                    //       onClick={() => {}}
+                    //     />
+                    //     <span
+                    //       className={`${
+                    //         pushSegmentsCustomers?.byLocation?.some(
+                    //           (data: any) => data === acc
+                    //         )
+                    //           ? "text-gray-800"
+                    //           : "text-gray-400"
+                    //       }`}
+                    //     >
+                    //       {acc}
+                    //     </span>
+                    //   </span>
+                    // ))
+                    <select
+                      id="byLocationc"
+                      className="h-12 px-2 border-gray-700 border rounded-md"
+                      {...register("byLocationc")}
+                      defaultValue={
+                        type === "edit"
+                          ? editData?.customerSegment?.byLocation
+                          : ""
+                      }
+                    >
+                      <option value="" className="cursor-not-allowed">
+                        -- Select Location --
                       </option>
-                    )
-                  )}
-                </select>
-              )}
-            </Column>
-            <Column>
-              <Label htmlFor="byStatus">By Status:</Label>
-              {type === "push" || type === "message" ? (
-                <SegmentsSelection
-                  segments={customerSecments?.byStatus}
-                  open={"byStatus"}
-                  type="customers"
-                  selectSegment={selectSegment}
-                  selectedSegments={pushSegmentsCustomers?.byStatus}
-                  modalString={modalString as any}
-                  setModalString={setModalString}
-                />
-              ) : (
-                <select
-                  id="byStatus"
-                  className="h-12 px-2 border-gray-700 border rounded-md"
-                  {...register("byStatusc")}
-                  defaultValue={
-                    type === "edit" ? editData?.customerSegment?.byStatus : ""
-                  }
-                >
-                  <option value="" className="cursor-not-allowed">
-                    {" "}
-                    -- Select status --{" "}
-                  </option>
 
-                  {customerSecments?.byStatus?.map(
-                    (item: any, index: number) => (
-                      <option key={index} value={item}>
-                        {item}
+                      {customerSecments?.byLocation?.map(
+                        (item: any, index: number) => (
+                          <option key={index} value={item}>
+                            {item}
+                          </option>
+                        )
+                      )}
+                    </select>
+                  )}
+                </Column>
+                <Column>
+                  <Label htmlFor="byStatus">By Status:</Label>
+                  {type === "push" || type === "message" ? (
+                    <SegmentsSelection
+                      segments={customerSecments?.byStatus}
+                      open={"byStatus"}
+                      type="customers"
+                      selectSegment={selectSegment}
+                      selectedSegments={pushSegmentsCustomers?.byStatus}
+                      modalString={modalString as any}
+                      setModalString={setModalString}
+                    />
+                  ) : (
+                    <select
+                      id="byStatus"
+                      className="h-12 px-2 border-gray-700 border rounded-md"
+                      {...register("byStatusc")}
+                      defaultValue={
+                        type === "edit"
+                          ? editData?.customerSegment?.byStatus
+                          : ""
+                      }
+                    >
+                      <option value="" className="cursor-not-allowed">
+                        {" "}
+                        -- Select status --{" "}
                       </option>
-                    )
+
+                      {customerSecments?.byStatus?.map(
+                        (item: any, index: number) => (
+                          <option key={index} value={item}>
+                            {item}
+                          </option>
+                        )
+                      )}
+                    </select>
                   )}
-                </select>
-              )}
-            </Column>
-            <Column>
-              <Label htmlFor="referal">By Rating:</Label>
-              <select
-                id="byRating"
-                className="h-12 px-2 border-gray-700 border rounded-md"
-                {...register("byRatingc")}
-                defaultValue={
-                  type === "edit" ? editData?.customerSegment?.byRating : ""
-                }
-              >
-                <option value="" className="cursor-not-allowed">
-                  -- Select Rating --
-                </option>
-
-                {customerSecments?.byRating?.map((item: any, index: number) => (
-                  <option key={index} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </Column>
-            <Column>
-              <Label htmlFor="byReferral">By Referral:</Label>
-              <select
-                id="byReferral"
-                className="h-12 px-2 border-gray-700 border rounded-md"
-                {...register("byReferralc")}
-                defaultValue={
-                  type === "edit" ? editData?.customerSegment?.byReferral : ""
-                }
-              >
-                <option value="" className="cursor-not-allowed">
-                  -- Select by Referral --
-                </option>
-
-                {customerSecments?.byReferral?.map(
-                  (item: any, index: number) => (
-                    <option key={index} value={item}>
-                      {item}
+                </Column>
+                <Column>
+                  <Label htmlFor="referal">By Rating:</Label>
+                  <select
+                    id="byRating"
+                    className="h-12 px-2 border-gray-700 border rounded-md"
+                    {...register("byRatingc")}
+                    defaultValue={
+                      type === "edit" ? editData?.customerSegment?.byRating : ""
+                    }
+                  >
+                    <option value="" className="cursor-not-allowed">
+                      -- Select Rating --
                     </option>
-                  )
-                )}
-              </select>
-            </Column>
+
+                    {customerSecments?.byRating?.map(
+                      (item: any, index: number) => (
+                        <option key={index} value={item}>
+                          {item}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </Column>
+                <Column>
+                  <Label htmlFor="byReferral">By Referral:</Label>
+                  <select
+                    id="byReferral"
+                    className="h-12 px-2 border-gray-700 border rounded-md"
+                    {...register("byReferralc")}
+                    defaultValue={
+                      type === "edit"
+                        ? editData?.customerSegment?.byReferral
+                        : ""
+                    }
+                  >
+                    <option value="" className="cursor-not-allowed">
+                      -- Select by Referral --
+                    </option>
+
+                    {customerSecments?.byReferral?.map(
+                      (item: any, index: number) => (
+                        <option key={index} value={item}>
+                          {item}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </Column>
+              </>
+            )}
           </div>
         </>
       ) : null}

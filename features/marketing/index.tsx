@@ -35,7 +35,7 @@ export const table_headings = [
 ];
 
 const types = [
-  // { id: 1, value: "Staff", slug: "ALL" },
+  { id: 1, value: "All", slug: "ALL" },
   { id: 3, value: "Push Campaign", slug: "PUSH" },
   { id: 2, value: "Inbox Campaign", slug: "INBOX" },
 ];
@@ -63,7 +63,7 @@ const PushNotification = () => {
   const param = useSearchParams();
 
   const initialString = param.get("channels");
-  const initialSortValue = param.get("channels")?.replace(/_/g, " ") || "PUSH";
+  const initialSortValue = param.get("channels")?.replace(/_/g, " ") || "All";
 
   const [sortValue, setSortValue] = useState(initialSortValue);
 
@@ -78,7 +78,7 @@ const PushNotification = () => {
   function updateUrlParams(value: string) {
     const formattedValue = value.replace(/ /g, "_").toLowerCase();
 
-    if (value === "PUSH") {
+    if (value === "ALL") {
       router.replace(`${pathname}`, {
         scroll: false,
       });
@@ -183,7 +183,7 @@ const PushNotification = () => {
       <Header />
       <PageBody>
         <div className="flex justify-between items-center gap-5 mb-6">
-          <PageHeading page_title={"Push Notification Campaigns"} />
+          <PageHeading page_title={"Marketing Campaigns"} />
         </div>
 
         <div className="flex items-center justify-between">

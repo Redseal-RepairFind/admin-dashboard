@@ -62,24 +62,32 @@ export function SubmitBtn({
   onClick,
   className,
   href,
+  shade,
 }: {
   children: ReactNode;
   onClick?: () => void;
   className?: string;
   href?: string;
+  shade?: "danger" | "";
 }) {
   if (href)
     return (
       <Link
         href={href}
-        className={`py-2 px-16 ${className} rounded-md text-white bg-black flex items-center gap-2 hover:bg-gray-700 transition duration-300 ease-in-out`}
+        className={`py-2 px-16 ${className} rounded-md text-white ${
+          shade === "danger" ? "bg-red-600" : "bg-black"
+        } flex items-center gap-2 hover:bg-gray-700 transition duration-300 ease-in-out`}
       >
         {children}
       </Link>
     );
   return (
     <button
-      className={`py-2 px-16 ${className} rounded-md text-white bg-black flex items-center gap-2 hover:bg-gray-700 transition duration-300 ease-in-out`}
+      className={`py-2 px-16 ${className} rounded-md text-white ${
+        shade === "danger"
+          ? "bg-red-600  hover:bg-red-400 "
+          : "bg-black  hover:bg-gray-700 "
+      } flex items-center gap-2transition duration-300 ease-in-out`}
       onClick={onClick}
     >
       {children}
