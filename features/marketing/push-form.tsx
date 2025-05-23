@@ -5,7 +5,7 @@ import { SubmitBtn } from "../quiz/components";
 
 import { useEffect, useRef, useState } from "react";
 import { Column, Label, Errors } from "../appVersion/mutateVersionForm";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
 import { useCheckedList } from "@/context/checked-context";
@@ -114,12 +114,29 @@ const Form = ({
     formState: { errors },
     handleSubmit,
     watch,
+    getValues,
+    control,
   } = useForm();
 
-  const allContractors = watch("allContractors");
-  const allCustomers = watch("allCustomers");
+  const allContractors = useWatch({ control, name: "allContractors" });
+  const allCustomers = useWatch({ control, name: "allCustomers" });
 
   // console.log(allContractors);
+
+  // const [allContractors, setAllContractors] = useState("true");
+  // const [allCustomers, setAllCustomers] = useState("true");
+  // // console.log(allContractors);
+
+  // useEffect(() => {
+  //   const contractors = watch("allContractors");
+  //   const customers = watch("allCustomers");
+
+  //   console.log(contractors);
+
+  //   setAllContractors(contractors);
+  //   setAllCustomers(customers);
+  //   // console.log({ contractors, customers });
+  // }, [getValues]);
 
   const {
     refetchPushCamps,
@@ -800,7 +817,8 @@ const Form = ({
                 </select>
               )}
             </Column> */}
-            {allContractors === "true" ? null : (
+            {allContractors === "true" ||
+            allContractors === undefined ? null : (
               <>
                 <Column>
                   <Label htmlFor="Location">By Location:</Label>
@@ -1153,7 +1171,7 @@ const Form = ({
               </select>
             </Column>
 
-            {allCustomers === "true" ? null : (
+            {allCustomers === "true" || allCustomers === undefined ? null : (
               <>
                 <Column>
                   <Label htmlFor="Location">By Location:</Label>
