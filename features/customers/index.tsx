@@ -45,6 +45,7 @@ const Customers = () => {
     queryedList,
     allData,
     setSearchTerm,
+    loadingAllData,
   } = useSortedData("customers");
 
   const [openModal, setOpenModal] = useState<ModalType>({
@@ -79,7 +80,7 @@ const Customers = () => {
 
   // console.log(mainData?.data?.map((data) => data?.status));
 
-  const columns = ["Customer's Name", "Date Joined", "Email", "Phone Number"];
+  const columns = ["CustomerName", "Date_Joined", "Email", "PhoneNumber"];
 
   const rowsData =
     openModal.content === "full" && isQuerying
@@ -221,6 +222,18 @@ const Customers = () => {
                       title="Customer's List"
                       exportExcel={() => handleDownloadPdf("excel")}
                       exportPDF={() => handleDownloadPdf("pdf")}
+                      data={rowsData}
+                      loading={loadingAllData}
+                      headers={columns}
+                      name="Customer's List"
+                      rowMapper={(item: any) => ({
+                        CustomerName: item?.name,
+                        Date_Joined: formatDateToDDMMYY(item.createdAt),
+                        Email: item?.email,
+                        PhoneNumber: `${item?.phoneNumber?.code} ${item?.phoneNumber?.number}`,
+                      })}
+                      close={handleModalClose}
+                      size="A4"
                     />
                   )}
                 </div>

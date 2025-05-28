@@ -28,16 +28,25 @@ import { formatDateToDDMMYY } from "@/lib/utils/format-date";
 import JobsTable from "./components/table";
 import AnalyticCard from "../jobs/components/analytic-card";
 import FilterCalendar from "../contractors/components/filter-calendar";
+import { ConfirmModal, ModalType } from "../contractors";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 const Jobs = () => {
   const [loading, setLoading] = useState(true);
   const [dataToRender, setDataToRender] = useState<any>();
-  const [openModal, setOpenModal] = useState(false);
+  // const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState<ModalType>({
+    isOpen: false,
+    content: "",
+  });
   const { checkedList } = useCheckedList();
   const ref = useRef();
+  const nodeRef = useRef(null);
 
-  const handleModalOpen = () => setOpenModal(true);
-  const handleModalClose = () => setOpenModal(false);
-
+  const handleModalOpen = () => setOpenModal({ ...openModal, isOpen: true });
+  const handleModalClose = () => {
+    setOpenModal({ ...openModal, isOpen: false, content: "" });
+    setIsQuerying(false);
+  };
   const {
     sortedData,
     loadingSortedData,
@@ -46,6 +55,8 @@ const Jobs = () => {
     isQuerying,
     queryedList,
     statusDataToRender,
+    loadingAllData,
+    allData,
   } = useSortedData("jobdays");
 
   // console.log(statusDataToRender?.data?.data[1]?.status?.toLowerCase().trim());
@@ -62,13 +73,13 @@ const Jobs = () => {
   const isLoading = loadingSortedData || loading;
 
   const columns = [
-    "Customer’s Name",
-    "Job ID",
-    "Contractors’s Name",
-    "Job Category",
-    "Job Address",
+    "CustomerName",
+    "JobID",
+    "ContractorName",
+    "Category",
+    "Address",
     "Date",
-    "Job Status",
+    "Status",
   ];
 
   // console.log(sortedData);
@@ -84,7 +95,11 @@ const Jobs = () => {
   // const rows = sortedData?.data?.data?.map((item: any) =>
 
   const rowsData =
-    checkedList?.length > 0 ? checkedList : sortedData?.data?.data;
+    openModal.content === "full" && isQuerying
+      ? allData?.data?.data
+      : checkedList?.length > 0
+      ? checkedList
+      : sortedData?.data?.data;
   const rows = rowsData?.map((item: any) => [
     item?.customer?.name,
     trimString(item?._id, 12),
@@ -127,16 +142,26 @@ const Jobs = () => {
     XLSX.writeFile(workbook, `${fileName}.xlsx`);
   };
 
+  function handleSelected(type: "" | "full" | "selected") {
+    setOpenModal({ ...openModal, content: type });
+
+    if (type === "full") {
+      setIsQuerying(true);
+    } else {
+      setIsQuerying(false);
+    }
+  }
+
   function handleDownloadPdf(type: "excel" | "pdf") {
     const dataToExport = rowsData.map((item: any) => {
       return {
         CustomerName: item?.customer?.name,
         JobID: trimString(item?._id, 400),
         ContractorName: contName(item),
+        Category: trimString(item?.job?.category, 22),
         Address: trimString(item?.location?.address, 400),
         Date: formatDateToDDMMYY(item?.createdAt),
         Status: trimString(item?.status, 22),
-        Category: trimString(item?.job?.category, 22),
       };
     });
 
@@ -200,18 +225,48 @@ const Jobs = () => {
           <div></div>
         </div>
         <Modal
-          open={openModal}
+          open={openModal.isOpen}
           onClose={handleModalClose}
           classNames={{
             modal: "customModal",
           }}
           container={ref.current}
+          center
         >
-          <ExportModal
-            title="JobDay's List"
-            exportExcel={() => handleDownloadPdf("excel")}
-            exportPDF={() => handleDownloadPdf("pdf")}
-          />
+          <TransitionGroup>
+            <CSSTransition
+              key={openModal.content}
+              timeout={1000}
+              classNames="fade"
+              nodeRef={nodeRef} // Add the ref here
+            >
+              <div ref={nodeRef}>
+                {openModal.content === "" ? (
+                  <ConfirmModal onHandleSelected={handleSelected} />
+                ) : (
+                  <ExportModal
+                    title="JobDay's List"
+                    exportExcel={() => handleDownloadPdf("excel")}
+                    exportPDF={() => handleDownloadPdf("pdf")}
+                    name="Jobday List"
+                    data={rowsData}
+                    headers={columns}
+                    loading={loadingAllData}
+                    rowMapper={(item: any) => ({
+                      CustomerName: item?.customer?.name,
+                      JobID: trimString(item?._id, 400),
+                      ContractorName: contName(item),
+                      Category: trimString(item?.job?.category, 22),
+                      Address: trimString(item?.location?.address, 400),
+                      Date: formatDateToDDMMYY(item?.createdAt),
+                      Status: trimString(item?.status, 22),
+                    })}
+                    close={handleModalClose}
+                  />
+                )}
+              </div>
+            </CSSTransition>
+          </TransitionGroup>
         </Modal>
         {/* Analytic Cards */}
         <div className="overflow-x-auto mb-6">

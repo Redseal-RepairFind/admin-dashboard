@@ -24,7 +24,6 @@ export function useSortedData(
   const [queryedList, setQueryedList] = useState<any[]>([]);
   const [isQuerying, setIsQuerying] = useState(false);
   const [notFound, setNotFound] = useState(false);
-  const [criteria, setCriteria] = useState("");
   const [statusDataToRender, setStatusDataToRender] = useState();
   const [transactionsToRender, setTransactionsToRender] = useState<any>();
 
@@ -42,6 +41,7 @@ export function useSortedData(
   const filterByAdmin = searchParams.get("filterByAdmin") || "";
   const startDate = searchParams.get("startDate") || "";
   const endDate = searchParams.get("endDate") || "";
+  const criteria = searchParams.get("sortList") || "firstName";
 
   const pathname = usePathname();
   const router = useRouter();
@@ -65,7 +65,6 @@ export function useSortedData(
   // useEffect(() => {
   //   const sortParam = params.toLowerCase().replaceAll("_", " ");
   //   const now = new Date();
-  //   const critria = searchParams.get("sortList") || "firstName";
 
   //   if (sortParam === "last 24h") {
   //     setStartDate(new Date(now.getTime() - 24 * 60 * 60 * 1000));
@@ -462,5 +461,6 @@ export function useSortedData(
     allData,
     setSearchTerm,
     handleFrontEndQuery,
+    loadingAllData,
   };
 }

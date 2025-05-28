@@ -41,16 +41,27 @@ import Modal from "react-responsive-modal";
 import ExportModal from "@/app/_components/ExportModal";
 import { useCheckedList } from "@/context/checked-context";
 import FilterCalendar from "../contractors/components/filter-calendar";
+import { ConfirmModal, ModalType } from "../contractors";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const Jobs = () => {
   const [loading, setLoading] = useState(true);
   // const [dataToRender, setDataToRender] = useState<any>();
   const [dataToRender, setDataToRender] = useState<any>();
-  const [openModal, setOpenModal] = useState(false);
   const { checkedList } = useCheckedList();
   const searchParams = useSearchParams();
   const listStatus = searchParams.get("listStatus") || "All";
+  const [openModal, setOpenModal] = useState<ModalType>({
+    isOpen: false,
+    content: "",
+  });
+  const nodeRef = useRef(null);
 
+  const handleModalOpen = () => setOpenModal({ ...openModal, isOpen: true });
+  const handleModalClose = () => {
+    setOpenModal({ ...openModal, isOpen: false, content: "" });
+    setIsQuerying(false);
+  };
   const ref = useRef();
   const {
     sortedData,
@@ -60,6 +71,8 @@ const Jobs = () => {
     isQuerying,
     queryedList,
     statusDataToRender,
+    loadingAllData,
+    allData,
   } = useSortedData("jobs");
 
   // console.log(listStatus, statusDataToRender);
@@ -75,12 +88,12 @@ const Jobs = () => {
   const isLoading = loadingSortedData || loading;
 
   const columns = [
-    "Customer's Name",
-    "Job ID",
-    "Contractor's Name",
-    "Job Address",
+    "CustomerName",
+    "JobID",
+    "ContractorName",
+    "Address",
     "Date",
-    "status",
+    "Status",
   ];
 
   // console.log(statusDataToRender);
@@ -92,11 +105,12 @@ const Jobs = () => {
 
     return contractorName;
   }
-  const handleModalOpen = () => setOpenModal(true);
-  const handleModalClose = () => setOpenModal(false);
-
   const rowsData =
-    checkedList?.length > 0 ? checkedList : sortedData?.data?.data;
+    openModal.content === "full" && isQuerying
+      ? allData?.data?.data
+      : checkedList?.length > 0
+      ? checkedList
+      : sortedData?.data?.data;
   const rows = rowsData?.map((item: any) => [
     item?.customer?.name,
     trimString(item?._id, 12),
@@ -152,6 +166,16 @@ const Jobs = () => {
       : downloadPDF(columns, rows, "Job's.pdf", "Job's List");
 
     handleModalClose();
+  }
+
+  function handleSelected(type: "" | "full" | "selected") {
+    setOpenModal({ ...openModal, content: type });
+
+    if (type === "full") {
+      setIsQuerying(true);
+    } else {
+      setIsQuerying(false);
+    }
   }
 
   const analyticCards = [
@@ -324,18 +348,47 @@ const Jobs = () => {
         </div>
 
         <Modal
-          open={openModal}
+          open={openModal.isOpen}
           onClose={handleModalClose}
           classNames={{
             modal: "customModal",
           }}
           container={ref.current}
+          center
         >
-          <ExportModal
-            title="Job's List"
-            exportExcel={() => handleDownloadPdf("excel")}
-            exportPDF={() => handleDownloadPdf("pdf")}
-          />
+          <TransitionGroup>
+            <CSSTransition
+              key={openModal.content}
+              timeout={1000}
+              classNames="fade"
+              nodeRef={nodeRef} // Add the ref here
+            >
+              <div ref={nodeRef}>
+                {openModal.content === "" ? (
+                  <ConfirmModal onHandleSelected={handleSelected} />
+                ) : (
+                  <ExportModal
+                    title="Job's List"
+                    exportExcel={() => handleDownloadPdf("excel")}
+                    exportPDF={() => handleDownloadPdf("pdf")}
+                    name="Job List"
+                    data={rowsData}
+                    headers={columns}
+                    loading={loadingAllData}
+                    rowMapper={(item: any) => ({
+                      CustomerName: item?.customer?.name,
+                      JobID: trimString(item?._id, 400),
+                      ContractorName: contName(item),
+                      Address: trimString(item?.location?.address, 400),
+                      Date: formatDateToDDMMYY(item?.createdAt),
+                      Status: trimString(item?.status, 22),
+                    })}
+                    close={handleModalClose}
+                  />
+                )}
+              </div>
+            </CSSTransition>
+          </TransitionGroup>
         </Modal>
 
         {/* Analytic Cards */}

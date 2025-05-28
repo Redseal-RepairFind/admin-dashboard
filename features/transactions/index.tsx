@@ -28,17 +28,25 @@ import * as XLSX from "xlsx";
 import Modal from "react-responsive-modal";
 import ExportModal from "@/app/_components/ExportModal";
 import FilterCalendar from "../contractors/components/filter-calendar";
+import { ConfirmModal, ModalType } from "../contractors";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const Transactions = () => {
   const [loading, setLoading] = useState(true);
   const [dataToRender, setDataToRender] = useState<any>();
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState<ModalType>({
+    isOpen: false,
+    content: "",
+  });
   const { checkedList } = useCheckedList();
   const ref = useRef();
+  const nodeRef = useRef<any>();
 
-  const handleModalOpen = () => setOpenModal(true);
-  const handleModalClose = () => setOpenModal(false);
-
+  const handleModalOpen = () => setOpenModal({ ...openModal, isOpen: true });
+  const handleModalClose = () => {
+    setOpenModal({ ...openModal, isOpen: false, content: "" });
+    setIsQuerying(false);
+  };
   const {
     sortedData,
     loadingSortedData,
@@ -47,6 +55,8 @@ const Transactions = () => {
     isQuerying,
     queryedList,
     transactionsToRender,
+    allData,
+    loadingAllData,
   } = useSortedData("transactions");
 
   useEffect(() => {
@@ -60,17 +70,21 @@ const Transactions = () => {
   // console.log(transactionsToRender);
 
   const columns = [
-    "Initiator's Name",
+    "Initiator",
     "Receiver",
     "Type",
-    "Description",
     "Date",
+    "Description",
     "Amount",
     "Status",
   ];
 
   const rowsData =
-    checkedList?.length > 0 ? checkedList : sortedData?.data?.data;
+    openModal.content === "full" && isQuerying
+      ? allData?.data?.data
+      : checkedList?.length > 0
+      ? checkedList
+      : sortedData?.data?.data;
   const rows = rowsData?.map((item: any) => [
     item?.fromUser?.name || "User not found ",
     item?.toUser?.name || "User not found ",
@@ -131,6 +145,16 @@ const Transactions = () => {
       : downloadPDF(columns, rows, "TransactionsList", "Transactions List");
 
     handleModalClose();
+  }
+
+  function handleSelected(type: "" | "full" | "selected") {
+    setOpenModal({ ...openModal, content: type });
+
+    if (type === "full") {
+      setIsQuerying(true);
+    } else {
+      setIsQuerying(false);
+    }
   }
 
   return (
@@ -241,18 +265,48 @@ const Transactions = () => {
             />
           </div>
           <Modal
-            open={openModal}
+            open={openModal.isOpen}
             onClose={handleModalClose}
             classNames={{
               modal: "customModal",
             }}
             container={ref.current}
+            center
           >
-            <ExportModal
-              title="Transaction's List"
-              exportExcel={() => handleDownloadPdf("excel")}
-              exportPDF={() => handleDownloadPdf("pdf")}
-            />
+            <TransitionGroup>
+              <CSSTransition
+                key={openModal.content}
+                timeout={1000}
+                classNames="fade"
+                nodeRef={nodeRef} // Add the ref here
+              >
+                <div ref={nodeRef}>
+                  {openModal.content === "" ? (
+                    <ConfirmModal onHandleSelected={handleSelected} />
+                  ) : (
+                    <ExportModal
+                      title="Job's List"
+                      exportExcel={() => handleDownloadPdf("excel")}
+                      exportPDF={() => handleDownloadPdf("pdf")}
+                      name="Job List"
+                      data={rowsData}
+                      headers={columns}
+                      loading={loadingAllData}
+                      rowMapper={(item: any) => ({
+                        Initiator: item?.fromUser?.name || "User not found ",
+                        Receiver: item?.toUser?.name || "User not found ",
+                        Type: trimString(item?.type, 28),
+                        Date: formatDateToDDMMYY(item.createdAt),
+                        Description: trimString(item?.description, 22),
+                        Amount: formatCurrency(item?.amount),
+                        Status: item?.status,
+                      })}
+                      close={handleModalClose}
+                    />
+                  )}
+                </div>
+              </CSSTransition>
+            </TransitionGroup>
           </Modal>
         </div>
         <CustomersTable

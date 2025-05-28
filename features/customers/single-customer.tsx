@@ -139,7 +139,14 @@ const SingleCustomer = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
     XLSX.writeFile(workbook, `${fileName}.xlsx`);
   };
-  const columns = ["Name", "Title", "Date", "Address", "Type", "Status"];
+  const columns = [
+    "ContractorName",
+    "JobTitle",
+    "Date_Joined",
+    "Address",
+    "Type",
+    "Status",
+  ];
 
   function handleDownloadPdf(type: "excel" | "pdf") {
     const dataToExport = jobInfo?.jobs?.map((item: any) => {
@@ -270,6 +277,20 @@ const SingleCustomer = () => {
             title="Job History"
             exportExcel={() => handleDownloadPdf("excel")}
             exportPDF={() => handleDownloadPdf("pdf")}
+            name="Job History"
+            headers={columns}
+            data={jobInfo?.jobs}
+            loading={isLoading}
+            rowMapper={(item: any) => ({
+              ContractorName: item.contractor?.name,
+              JobTitle: item?.title,
+              Date_Joined: formatTimeDDMMYY(item?.date),
+              Address: item?.location?.address,
+              Type: item?.type,
+              Status: item?.status,
+            })}
+            close={handleModalClose}
+            size="A3"
           />
         </Modal>
         <div className="mt-24 mb-10 flex flex-col">

@@ -61,6 +61,7 @@ const Contractors = () => {
     statusDataToRender,
     allData,
     setSearchTerm,
+    loadingAllData,
     refetch: refetchContractors,
   } = useSortedData("contractors");
   const stats = sortedData?.data?.stats;
@@ -80,14 +81,14 @@ const Contractors = () => {
   // }, [openModal.content, setIsQuerying]);
 
   const columns = [
-    "Contractor's Name",
+    "ContractorName",
     "Skill",
     "Email",
     "Stage",
     "Strikes",
-    "Phone Number",
+    "Contact",
     "Region",
-    "Account Status",
+    "Account_Status",
   ];
 
   const rowsData =
@@ -106,7 +107,7 @@ const Contractors = () => {
 
     item?.email,
     item?.onboarding?.stage?.label,
-    item?.sanctions?.length,
+    item?.sanctions?.length || 0,
     item?.phoneNumberFull,
     item?.region?.name || "No Region",
     item?.accountStatus === "REVIEWING"
@@ -161,8 +162,8 @@ const Contractors = () => {
         Stage: item?.onboarding?.stage?.label,
         Strikes: item?.sanctions?.length,
         Contact: item?.phoneNumberFull,
-        region: item?.region?.name || "No Region",
-        AccountStatus:
+        Region: item?.region?.name || "No Region",
+        Account_Status:
           item?.accountStatus === "REVIEWING"
             ? "INACTIVE"
             : item?.accountStatus.includes("APPROVE")
@@ -286,6 +287,31 @@ const Contractors = () => {
                       title="Contractor's List"
                       exportExcel={() => handleDownloadPdf("excel")}
                       exportPDF={() => handleDownloadPdf("pdf")}
+                      data={rowsData}
+                      headers={columns}
+                      name="Contractor's List"
+                      loading={loadingAllData}
+                      rowMapper={(item: any) => ({
+                        ContractorName: item?.name,
+                        // Date_Joined: formatDateToDDMMYY(item.createdAt),
+                        Skill:
+                          item?.profile?.skill ??
+                          item?.profile?.skills?.join(", ") ??
+                          "No Skills",
+
+                        Email: item?.email,
+                        Stage: item?.onboarding?.stage?.label,
+                        Strikes: item?.sanctions?.length,
+                        Contact: item?.phoneNumberFull,
+                        Region: item?.region?.name || "No Region",
+                        Account_Status:
+                          item?.accountStatus === "REVIEWING"
+                            ? "INACTIVE"
+                            : item?.accountStatus.includes("APPROVE")
+                            ? "ACTIVE"
+                            : item?.accountStatus,
+                      })}
+                      close={handleModalClose}
                     />
                   )}
                 </div>
