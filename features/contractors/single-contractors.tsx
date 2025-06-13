@@ -96,7 +96,7 @@ const SingleContractor = () => {
   );
 
   const contractorInfo = data?.contractor;
-  // console.log(contractorInfo);
+  // console.log(contractorInfo?.sanctions);
 
   const handleChangeStatus = async () => {
     if (!adminPermissions.data.includes("manage_contractors")) {
@@ -313,10 +313,23 @@ const SingleContractor = () => {
                     value={contractorInfo?.companyName}
                   />
                 ) : null}
-                <SingleLineColumn
-                  name="Strikes"
-                  value={contractorInfo?.sanctions?.length}
-                />
+
+                <>
+                  <SingleLineColumn
+                    name="Strikes"
+                    value={contractorInfo?.sanctions?.length}
+                  />
+                </>
+
+                {contractorInfo?.sanctions?.length > 0 &&
+                  contractorInfo?.sanctions?.map((item: any, i: number) => (
+                    <SingleLineColumn
+                      name={`Strike ${i + 1} reason`}
+                      value={item?.reason}
+                      key={item?._id || i}
+                    />
+                  ))}
+
                 <SingleLineColumn
                   name="Account status"
                   value={contractorInfo?.status}

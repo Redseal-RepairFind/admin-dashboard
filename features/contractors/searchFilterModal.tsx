@@ -63,7 +63,7 @@ const SkillModal = ({
   // Function to update the URL params and the state
   function updateUrlParams() {
     const strings = checkedList?.map((ski: any) => ski.name).join(",");
-    const formattedValue = strings.replace(/ /g, "_").toLowerCase(); // Replace spaces with underscores
+    const formattedValue = strings.toLowerCase(); // Replace spaces with underscores
 
     // console.log(formattedValue);
 

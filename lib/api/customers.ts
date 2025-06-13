@@ -103,7 +103,11 @@ export const customers = {
             : ""
         }${
           status && route === "issues" ? `&status=${status?.toUpperCase()}` : ""
-        }${skills && route === "contractors" ? `&skills=${skills}` : ""}`
+        }${
+          skills && route === "contractors"
+            ? `&skills=${skills.replaceAll("_", " ")}`
+            : ""
+        }`
       )
       .then(({ data }) => data),
 
@@ -174,7 +178,11 @@ export const customers = {
             : ""
         }${
           status && route === "issues" ? `&status=${status?.toUpperCase()}` : ""
-        }${skills && route === "contractors" ? `&skills=${skills}` : ""}`
+        }${
+          skills && route === "contractors"
+            ? `&skills=${skills.replaceAll("_", " ")}`
+            : ""
+        }`
       )
       .then(({ data }) => data),
 
@@ -204,7 +212,9 @@ export const customers = {
       .get(
         `/admin/${route}?limit=1000000000&startDate=${startDate}&endDate=${endDate}
 ${accountStatus ? `&accountStatus=${accountStatus.toUpperCase()}` : ""}${
-          skills && route === "contractors" ? `&skills=${skills}` : ""
+          skills && route === "contractors"
+            ? `&skills=${skills.replaceAll("_", " ")}`
+            : ""
         }`
       )
       .then(({ data }) => data),

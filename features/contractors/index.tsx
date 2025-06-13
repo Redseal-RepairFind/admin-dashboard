@@ -68,18 +68,6 @@ const Contractors = () => {
   const nodeRef = useRef(null);
   const { skills, loadingSkills } = useCustomise();
 
-  // useEffect(() => {
-  //   isQuerying
-  //     ? setDataToRender(queryedList)
-  //     : setDataToRender(statusDataToRender);
-  // }, [isQuerying, queryedList, setDataToRender, statusDataToRender]);
-
-  // useEffect(() => {
-  //   if (openModal.content === "full") {
-  //     setIsQuerying(true);
-  //   }
-  // }, [openModal.content, setIsQuerying]);
-
   const columns = [
     "ContractorName",
     "Skill",
