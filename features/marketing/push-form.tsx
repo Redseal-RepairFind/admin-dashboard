@@ -762,9 +762,10 @@ const Form = ({
                 className="h-12 px-2 border-gray-700 border rounded-md"
                 {...register("allContractors")}
                 defaultValue={
-                  type === "edit"
-                    ? editData?.contractorSegment.allContractors
-                    : "true"
+                  type === "edit" &&
+                  editData?.contractorSegment?.allContractors !== undefined
+                    ? String(editData.contractorSegment.allContractors)
+                    : ""
                 }
               >
                 <option value="" className="cursor-not-allowed">
@@ -1154,9 +1155,10 @@ const Form = ({
                 className="h-12 px-2 border-gray-700 border rounded-md"
                 {...register("allCustomers")}
                 defaultValue={
-                  type === "edit"
-                    ? editData?.customerSegment?.allCustomers
-                    : "true"
+                  type === "edit" &&
+                  editData?.customerSegment?.allCustomers !== undefined
+                    ? String(editData?.customerSegment?.allCustomers)
+                    : ""
                 }
               >
                 <option value="" className="cursor-not-allowed">
