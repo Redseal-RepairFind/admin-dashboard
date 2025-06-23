@@ -43,4 +43,18 @@ export const contractors = {
     client.post(`/admin/contractors/delete-multiple`, payload),
   unsuspend: (payload: { contractorIds: string[] }) =>
     client.post(`/admin/contractors/restore`, payload),
+  getAllModerations: () =>
+    client.get(`/admin/moderations`).then(({ data }) => data),
+  moderateImg: ({
+    id,
+    payload,
+  }: {
+    id: string;
+    payload: {
+      comment: string;
+      containsPII: boolean;
+      containsExplicitContent: boolean;
+    };
+  }) =>
+    client.post(`/admin/moderations/${id}`, payload).then(({ data }) => data),
 };

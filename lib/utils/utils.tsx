@@ -40,12 +40,12 @@ export const navLinks: INavLinks[] = [
     route: "/staff",
     readPermissions: [],
   },
-  // {
-  //   name: "Teams ",
-  //   svg: <Jobs />,
-  //   route: "/teams",
-  //   readPermissions: ["manage_staffs"],
-  // },
+  {
+    name: "File Moderations ",
+    svg: <Jobs />,
+    route: "/file_moderations",
+    readPermissions: ["manage_staffs"],
+  },
   // { name: "Analytics", svg: <Analytics />, route: "/analytics" },
 
   {

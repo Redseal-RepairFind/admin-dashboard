@@ -7,6 +7,7 @@ const nextConfig = {
       "ipalas3bucket.s3.us-east-2.amazonaws.com",
       "repairfindbucket.s3.eu-west-3.amazonaws.com",
       "/lh3.googleusercontent.com",
+      "picsum.photos",
     ], // Include other domains as needed
 
     remotePatterns: [
@@ -27,6 +28,12 @@ const nextConfig = {
         hostname: "lh3.googleusercontent.com",
         port: "",
         pathname: "/a/**",
+      },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        port: "",
+        pathname: "/**",
       },
     ],
   },
