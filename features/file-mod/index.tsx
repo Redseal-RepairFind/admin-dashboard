@@ -221,7 +221,7 @@ const ModTable = () => {
             container={modalRef.current}
           >
             <div className="p-3 h-[500px] flex flex-col justify-between">
-              <div className="w-[600px] h-[300px]  mb-4">
+              <div className="w-[600px] h-[300px]  mb-4 relative">
                 {modal?.item?.url?.toLowerCase()?.includes("mp4") ||
                 modal?.item?.url?.toLowerCase()?.includes("mov") ? (
                   <video
