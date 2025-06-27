@@ -13,12 +13,13 @@ import Header from "../layout/header/header";
 import { useModerations } from "@/lib/hooks/useModerations";
 import LoadingTemplate from "../layout/loading";
 import VerticalMenu from "@/components/shared/vertical-menu";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Modal from "react-responsive-modal";
 import Image from "next/image";
 import SubmitBtn from "@/components/ui/submit-btn";
 import { Column } from "../appVersion/mutateVersionForm";
 import toast from "react-hot-toast";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 const theader = [
   "Uploader's Name",
@@ -28,6 +29,12 @@ const theader = [
   "Moderator",
   "Mod's comment",
   "Action",
+];
+
+const types = [
+  // { id: 1, value: "All", slug: "ALL" },
+  { id: 2, value: "Pending", slug: "" },
+  { id: 3, value: "Reviewed", slug: "REVIEWED" },
 ];
 
 const FileMod = () => {
@@ -56,7 +63,10 @@ const ModTable = () => {
   } = useModerations();
 
   const modData = moderationsData?.data?.data?.data;
-  // console.log(modData);
+
+  const totalItems = moderationsData?.data?.data?.totalItems;
+
+  // console.log(totalItems);
 
   const pageProps = {
     data: moderationsData?.data?.data,
@@ -69,6 +79,7 @@ const ModTable = () => {
     personalInfo: boolean;
     explicitContent: boolean;
     item: any;
+    curIndex: number | undefined;
   }>({
     openView: false,
     openApprove: false,
@@ -76,7 +87,42 @@ const ModTable = () => {
     personalInfo: false,
     explicitContent: false,
     item: null,
+    curIndex: undefined,
   });
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const param = useSearchParams();
+
+  const initialSortValue = param.get("isModerated")?.replace(/_/g, " ") || "";
+
+  const [sortValue, setSortValue] = useState(initialSortValue);
+
+  useEffect(() => {
+    const sortFromParam = param.get("isModerated");
+    if (sortFromParam) {
+      const updatedSortValue = sortFromParam.replace(/_/g, " ");
+      setSortValue(updatedSortValue);
+    }
+  }, [param]);
+
+  function updateUrlParams(value: string) {
+    const formattedValue = value.replace(/ /g, "_").toLowerCase();
+
+    if (value === "") {
+      router.replace(`${pathname}`, {
+        scroll: false,
+      });
+    } else {
+      const params = new URLSearchParams(window.location.search);
+      params.set("isModerated", formattedValue);
+      router.replace(`${pathname}?${params.toString()}`, {
+        scroll: false,
+      });
+    }
+
+    setSortValue(value);
+  }
 
   const rowOptions = [
     {
@@ -90,31 +136,37 @@ const ModTable = () => {
     },
   ];
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (type: "accept" | "reject") => {
     toast.loading("Verifying.. .. .. .. ");
     try {
+      // Send moderation request
       await moderateImg({
         id: modal.item?._id,
         payload: {
-          comment: modal.comment,
-          containsPII: modal.personalInfo,
-          containsExplicitContent: modal.explicitContent,
+          comment: type === "accept" ? "Media looks good" : modal.comment,
+          containsPII: type === "accept" ? false : modal.personalInfo,
+          containsExplicitContent:
+            type === "accept" ? false : modal.explicitContent,
         },
       });
 
       toast.remove();
       toast.success("File Verified successfully");
 
-      setModal({
+      const { data: updatedList } = await refetchMode();
+      console.log(updatedList);
+
+      const nextItem = updatedList?.data?.data?.data?.[0] || null;
+
+      setModal((prev) => ({
+        ...prev,
         openApprove: false,
-        openView: false,
+        openView: Boolean(nextItem),
         comment: "",
         explicitContent: false,
         personalInfo: false,
-        item: null,
-      });
-      refetchMode();
-      // console.log(modal);
+        item: nextItem,
+      }));
     } catch (error: any) {
       console.error(error);
       toast.remove();
@@ -126,6 +178,26 @@ const ModTable = () => {
 
   return (
     <TableCard>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center justify-start gap-5">
+          {types.map((type: any, index: number) => (
+            <button
+              className={
+                sortValue.toLowerCase() === type?.slug.toLowerCase()
+                  ? "font-semibold border-b-2 border-black"
+                  : "text-gray-400"
+              }
+              onClick={() => {
+                // sessionStorage.setItem("session_dispute_status", type.slug);
+                updateUrlParams(type.slug);
+              }}
+              key={index}
+            >
+              {type.value.includes("Reviewed") ? "Reviewd files" : type.value}
+            </button>
+          ))}
+        </div>
+      </div>
       {isLoadingModerationsData || isRefetchingMods ? (
         <LoadingTemplate />
       ) : (
@@ -200,7 +272,10 @@ const ModTable = () => {
               </Column>
 
               <div className="flex items-center justify-between">
-                <SubmitBtn isSubmitting={false} onClick={handleSubmit}>
+                <SubmitBtn
+                  isSubmitting={false}
+                  onClick={() => handleSubmit("reject")}
+                >
                   Proceed
                 </SubmitBtn>
               </div>
@@ -236,19 +311,30 @@ const ModTable = () => {
                   <Image src={modal?.item?.url} alt="Image" fill />
                 )}
               </div>
+
+              {modal?.item?.name}
               {modal?.item?.isModerated ? null : (
-                <SubmitBtn
-                  isSubmitting={false}
-                  onClick={() =>
-                    setModal((prev) => ({
-                      ...prev,
-                      openApprove: true,
-                      openView: false,
-                    }))
-                  }
-                >
-                  Verify file
-                </SubmitBtn>
+                <div className="flex items-center gap-4">
+                  <button
+                    className="w-full py-2 px-6 border border-black rounded-md text-black "
+                    onClick={() =>
+                      setModal((prev) => ({
+                        ...prev,
+                        openApprove: true,
+                        openView: false,
+                      }))
+                    }
+                  >
+                    Reject file
+                  </button>
+                  <SubmitBtn
+                    isSubmitting={false}
+                    spaceUp=""
+                    onClick={() => handleSubmit("accept")}
+                  >
+                    Approve file
+                  </SubmitBtn>
+                </div>
               )}
             </div>
           </Modal>
@@ -264,6 +350,9 @@ const ModTable = () => {
               <tbody
                 className="border-b border-gray-100 cursor-pointer hover:bg-slate-200 transition-all duration-300"
                 key={mod?._id}
+                onClick={() => {
+                  setModal((prev) => ({ ...prev, item: mod, openView: true }));
+                }}
               >
                 <Td>
                   {`${mod?.entityId?.firstName} ${mod?.entityId?.lastName}`}
@@ -286,9 +375,6 @@ const ModTable = () => {
                     {rowOptions?.map((option, index) => (
                       <button
                         key={index}
-                        onClick={() => {
-                          option?.action(mod);
-                        }}
                         className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
                       >
                         {mod?.isModerated ? "Media verified" : option?.name}

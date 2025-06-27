@@ -8,6 +8,7 @@ const nextConfig = {
       "repairfindbucket.s3.eu-west-3.amazonaws.com",
       "/lh3.googleusercontent.com",
       "picsum.photos",
+      "unsplash.com",
     ], // Include other domains as needed
 
     remotePatterns: [
@@ -32,6 +33,12 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "picsum.photos",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "unsplash.com",
         port: "",
         pathname: "/**",
       },

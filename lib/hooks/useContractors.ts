@@ -26,12 +26,18 @@ const useContractors = () => {
   const { mutateAsync: unsuspend, isLoading: unsuspending } = useMutation(
     contractors.unsuspend
   );
+  const { mutateAsync: removeSanction, isLoading: unRemovingSanction } =
+    useMutation(contractors.removeSanction);
 
   const [search, setSearch] = useState("");
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: contractorData, isLoading: loadingContractors, refetch: refetchContractors } = useQuery(
+  const {
+    data: contractorData,
+    isLoading: loadingContractors,
+    refetch: refetchContractors,
+  } = useQuery(
     ["Contractors", search, perPage, currentPage],
     () => {
       return contractors.getContractors({
@@ -77,6 +83,8 @@ const useContractors = () => {
     unsuspend,
     unsuspending,
     refetchContractors,
+    removeSanction,
+    unRemovingSanction,
   };
 };
 

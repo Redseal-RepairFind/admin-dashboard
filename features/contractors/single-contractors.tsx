@@ -29,9 +29,16 @@ const SingleContractor = () => {
   //   (state: RootState) => state.singleContractorDetail
   // );
 
-  const [open, setOpen] = useState({
+  const [open, setOpen] = useState<{
+    manualCertn: boolean;
+    delete: boolean;
+    openModal: boolean;
+    sanction: any;
+  }>({
     manualCertn: false,
     delete: false,
+    openModal: false,
+    sanction: null,
   });
 
   const router = useRouter();
@@ -44,14 +51,15 @@ const SingleContractor = () => {
     isUpdating,
     deleteContractor,
     isDeleting,
+    removeSanction,
   } = useContractors();
   const queryClient = useQueryClient();
 
-  function openModal(name: "manualCertn" | "delete") {
+  function openModal(name: "manualCertn" | "delete" | "openModal") {
     setOpen({ ...open, [name]: true });
   }
 
-  function closeModal(name: "manualCertn" | "delete") {
+  function closeModal(name: "manualCertn" | "delete" | "openModal") {
     setOpen({ ...open, [name]: false });
   }
   const { adminPermissions } = useAdminPermissions();
@@ -82,7 +90,12 @@ const SingleContractor = () => {
 
   // console.log(current_contractor_jobs);
 
-  const { isLoading: loadingInfo, data } = useQuery(
+  const {
+    isLoading: loadingInfo,
+    data,
+    refetch: refetchSingle,
+    isRefetching,
+  } = useQuery(
     ["Contractor Information", id],
     () => {
       return contractors.getContractorDetails({
@@ -109,6 +122,7 @@ const SingleContractor = () => {
 
       toast.remove();
       toast.success("Certn given successfully");
+      refetchSingle();
       router.push(`/contractors/${id}`);
       closeModal("manualCertn");
       queryClient.invalidateQueries("Contractor Information"); // Invalidate the query to re-fetch data
@@ -120,11 +134,35 @@ const SingleContractor = () => {
     }
   };
 
-  // console.log(contractorInfo);
+  const handleRemoveSanction = async () => {
+    try {
+      toast.loading("Processing...");
+
+      await removeSanction({
+        id: id as string,
+        ...(open?.sanction && {
+          payload: {
+            sanctionId: open?.sanction,
+          },
+        }),
+      });
+
+      toast.remove();
+      refetchSingle();
+
+      toast.success("Sanction removed successfully");
+      closeModal("openModal");
+    } catch (error: any) {
+      toast.remove();
+      toast.error(
+        error?.response?.data?.message || "unable to remove sanction"
+      );
+    }
+  };
 
   return (
     <>
-      {loadingInfo && <LoadingTemplate />}
+      {loadingInfo || isRefetching ? <LoadingTemplate /> : null}
       <Header>
         <Wrapper>
           <div className="flex gap-x-6 item-center">
@@ -150,6 +188,67 @@ const SingleContractor = () => {
                   </p>
                 </div>
               )}
+
+              <Modal
+                onClose={() =>
+                  setOpen((prev) => ({
+                    ...prev,
+                    openModal: false,
+                  }))
+                }
+                open={open.openModal}
+                center
+                classNames={{
+                  modal: "customModal",
+                }}
+                container={editRef.current}
+              >
+                <div className="w-[400px] px-4">
+                  <h1 className="font-semibold text-center text-xl mb-4">
+                    Remove Sanction
+                  </h1>
+
+                  <div className="flex flex-col gap-2">
+                    <p>Select the sanction to remove (optional)</p>
+                    <select
+                      name=""
+                      id=""
+                      className="border py-2 w-full"
+                      onChange={(e) =>
+                        setOpen((prev) => ({
+                          ...prev,
+                          sanction: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="">All</option>
+                      {contractorInfo?.sanctions?.map(
+                        (item: any, i: number) => (
+                          <option value={item?._id} key={item?._id}>
+                            {item?.reason}
+                          </option>
+                        )
+                      )}
+                    </select>
+                  </div>
+
+                  <div className="w-full items-center mt-6 flex gap-3">
+                    {/* <button
+                      className="bg-gray-200 h-12 w-full  flex items-center rounded-md justify-center text-gray-800"
+                      onClick={() => {}}
+                    >
+                      Cancel
+                    </button> */}
+                    <SubmitBtn
+                      onClick={handleRemoveSanction}
+                      isSubmitting={false}
+                      spaceUp=""
+                    >
+                      Proceed
+                    </SubmitBtn>
+                  </div>
+                </div>
+              </Modal>
 
               <Modal
                 onClose={() => closeModal("delete")}
@@ -335,7 +434,7 @@ const SingleContractor = () => {
                   value={contractorInfo?.status}
                 />
                 <ActionColumn>
-                  <div className="flex gap-x-4">
+                  <div className="flex items-center gap-x-4">
                     {contractorInfo?.certnStatus !== "COMPLETE" && (
                       <ActionButton
                         actionName="Manually assign Certn."
@@ -349,6 +448,13 @@ const SingleContractor = () => {
                       onClick={() => openModal("delete")}
                       color="border-red-600 text-red-600"
                     />
+                    {contractorInfo?.sanctions?.length > 0 && (
+                      <ActionButton
+                        actionName="Remove Sanction"
+                        onClick={() => openModal("openModal")}
+                        color="border-yellow-500 text-yellow-500"
+                      />
+                    )}
                   </div>
                 </ActionColumn>
               </tbody>
