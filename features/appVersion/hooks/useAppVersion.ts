@@ -61,6 +61,7 @@ function useAppVersion() {
       cacheTime: 30000,
       staleTime: 30000,
       refetchOnWindowFocus: true,
+      enabled: Boolean(param?.id), // Only fetch if id is available
     }
   );
 
