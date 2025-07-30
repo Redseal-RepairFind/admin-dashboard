@@ -67,6 +67,12 @@ export const navLinks: INavLinks[] = [
     readPermissions: [],
   },
   {
+    name: "Web Jobs",
+    svg: <JobIcon />,
+    route: "/webjobs",
+    readPermissions: [],
+  },
+  {
     name: "Booking Analysis",
     svg: <TotalJobs />,
     route: "/job_days",

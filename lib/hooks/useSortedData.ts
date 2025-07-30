@@ -14,6 +14,7 @@ export function useSortedData(
     | "jobdays"
     | "transactions"
     | "issues"
+    | "web-jobs"
 ) {
   const searchParams = useSearchParams();
   const param = new URLSearchParams(window.location.search);

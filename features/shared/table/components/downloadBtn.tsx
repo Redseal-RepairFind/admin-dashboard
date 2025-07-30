@@ -19,6 +19,8 @@ const DownloadPDFButton = ({
   close: () => void;
   size?: "A1" | "A2" | "A3" | "A4";
 }) => {
+  console.log(rowMapper);
+
   return (
     <PDFDownloadLink
       document={

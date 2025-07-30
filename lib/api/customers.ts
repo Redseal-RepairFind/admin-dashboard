@@ -60,7 +60,8 @@ export const customers = {
       | "emergencies"
       | "jobdays"
       | "transactions"
-      | "issues";
+      | "issues"
+      | "web-jobs";
     limit: number;
     page: number;
     criteria: string;
@@ -138,7 +139,8 @@ export const customers = {
       | "emergencies"
       | "jobdays"
       | "transactions"
-      | "issues";
+      | "issues"
+      | "web-jobs";
 
     criteria: string;
     search?: string;
@@ -201,7 +203,8 @@ export const customers = {
       | "emergencies"
       | "jobdays"
       | "transactions"
-      | "issues";
+      | "issues"
+      | "web-jobs";
     startDate: any;
     endDate: any;
     accountStatus: any;

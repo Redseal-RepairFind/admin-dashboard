@@ -55,16 +55,6 @@ const styles = StyleSheet.create({
 });
 
 // Define headers in order
-const defaultHeaders = [
-  "Contractor",
-  "Skill",
-  "Email",
-  "Stage",
-  "Strikes",
-  "Contact",
-  "Region",
-  "Account Status",
-];
 
 const ContractorsTablePDF = ({
   data,
