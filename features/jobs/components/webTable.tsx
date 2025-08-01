@@ -23,7 +23,7 @@ import { useCheckedList } from "@/context/checked-context";
 // This Template defines how you can implement any table on your page
 
 const table_headings = [
-  "",
+  "Select All",
   "Job creation date",
   "Requester's FullName",
   "Requester's email",
@@ -31,9 +31,9 @@ const table_headings = [
   "Requester has used app",
   "Last Login Date",
   "Number of estimates submitted",
-  "Booked Site visits",
-  "Is site visit booked",
-  "Is Site visit completed",
+  "No. of site vistis requested",
+  "Was site visit booked",
+  "Was Site visit completed",
   "Has booked Job",
   "Is Job completed",
 ];
@@ -145,7 +145,7 @@ const WebJobsTable: React.FC<IProps> = ({
               <tr
                 className="cursor-pointer"
                 key={index}
-                onClick={() => handleViewInvoice(item)}
+                // onClick={() => handleViewInvoice(item)}
               >
                 <td className="flex items-center justify-center gap-2 h-12 pl-2 w-8">
                   <CheckBox
@@ -160,7 +160,7 @@ const WebJobsTable: React.FC<IProps> = ({
                 <Td>{`${item?.requesterFirstName} ${item?.requesterLastName}`}</Td>
                 <Td>{`${item?.requesterEmail}`}</Td>
                 <Td>{`${item?.requesterPhone || "__"}`}</Td>
-                <Td>{`${item?.hasLoggedIn ? "True" : "False"}`}</Td>
+                <Td>{`${item?.hasLoggedIn ? "Yes" : "No"}`}</Td>
                 <Td>
                   {item?.lastLogin
                     ? formatDateToDDMMYY(item?.lastLogin)
@@ -169,10 +169,10 @@ const WebJobsTable: React.FC<IProps> = ({
 
                 <Td>{item?.estimatesCount}</Td>
                 <Td>{item?.siteVisitsCount}</Td>
-                <Td>{item?.siteVisitBooked ? "True" : "False"}</Td>
-                <Td>{item?.siteVisitCompleted ? "True" : "False"}</Td>
-                <Td>{item?.hasJobScheduled ? "True" : "False"}</Td>
-                <Td>{item?.jobCompleted ? "True" : "False"}</Td>
+                <Td>{item?.wasSiteVisitBooked ? "Yes" : "No"}</Td>
+                <Td>{item?.wasSiteVisitCompleted ? "Yes" : "No"}</Td>
+                <Td>{item?.jobScheduled ? "Yes" : "No"}</Td>
+                <Td>{item?.jobCompleted ? "Yes" : "No"}</Td>
               </tr>
             ))}
           </tbody>

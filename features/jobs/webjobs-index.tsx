@@ -92,9 +92,9 @@ const WebJobs = () => {
     "Requester has used app",
     "Last Login Date",
     "Number of estimates submitted",
-    "Booked Site visits",
-    "Is site visit booked",
-    "Is Site visit completed",
+    "No. of site vistis requested",
+    "Was site visit booked",
+    "Was Site visit completed",
     "Has booked Job",
     "Is Job completed",
   ];
@@ -119,14 +119,14 @@ const WebJobs = () => {
     `${item?.requesterFirstName || "--"} ${item?.requesterLastName || "--"}`,
     item?.requesterEmail || "--",
     item?.requesterPhone || "--",
-    item?.hasLoggedIn ? "True" : "False",
+    item?.hasLoggedIn ? "Yes" : "No",
     item?.lastLogin ? formatDateToDDMMYY(item?.lastLogin) : "Not logged in yet",
     item?.estimatesCount || "0",
     item?.siteVisitsCount || "0",
-    item?.siteVisitBooked ? "True" : "False",
-    item?.siteVisitCompleted ? "Yes" : "No site visit completed",
-    item?.hasJobScheduled ? "True" : "False",
-    item?.jobCompleted ? "True" : "False",
+    item?.wasSiteVisitBooked ? "Yes" : "No",
+    item?.wasSiteVisitCompleted ? "Yes" : "No",
+    item?.jobScheduled ? "Yes" : "No",
+    item?.jobCompleted ? "Yes" : "No",
   ]);
 
   const exportToExcel = (data: any, fileName: string) => {
@@ -187,18 +187,16 @@ const WebJobs = () => {
         }`,
         RequesterEmail: item?.requesterEmail || "--",
         RequesterPhone: item?.requesterPhone || "--",
-        RequesterHasUsedApp: item?.hasLoggedIn ? "True" : "False",
+        RequesterHasUsedApp: item?.hasLoggedIn ? "Yes" : "No",
         LastLoginDate: item?.lastLogin
           ? formatDateToDDMMYY(item?.lastLogin)
           : "Not logged in yet",
         NumberOfEstimatesSubmitted: item?.estimatesCount || "0",
         NumberOfBookedSiteVisit: item?.siteVisitsCount || "0",
-        HasBookedSiteVisit: item?.siteVisitBooked ? "True" : "False",
-        IsSiteVisitCompleted: item?.siteVisitCompleted
-          ? "Yes"
-          : "No site visit completed",
-        HasBookedJob: item?.hasJobScheduled ? "True" : "False",
-        IsJobCompleted: item?.jobCompleted ? "True" : "False",
+        HasBookedSiteVisit: item?.wasSiteVisitBooked ? "Yes" : "No",
+        IsSiteVisitCompleted: item?.wasSiteVisitCompleted ? "Yes" : "No",
+        HasBookedJob: item?.jobScheduled ? "Yes" : "No",
+        IsJobCompleted: item?.jobCompleted ? "Yes" : "No",
       };
     });
     type === "excel"
@@ -313,20 +311,20 @@ const WebJobs = () => {
                       }`,
                       RequesterEmail: item?.requesterEmail || "--",
                       RequesterPhone: item?.requesterPhone || "--",
-                      RequesterHasUsedApp: item?.hasLoggedIn ? "True" : "False",
+                      RequesterHasUsedApp: item?.hasLoggedIn ? "Yes" : "No",
                       LastLoginDate: item?.lastLogin
                         ? formatDateToDDMMYY(item?.lastLogin)
                         : "Not logged in yet",
                       NumberOfEstimatesSubmitted: item?.estimatesCount || "0",
                       NumberOfBookedSiteVisit: item?.siteVisitsCount || "0",
-                      HasBookedSiteVisit: item?.siteVisitBooked
-                        ? "True"
-                        : "False",
-                      IsSiteVisitCompleted: item?.siteVisitCompleted
+                      HasBookedSiteVisit: item?.wasSiteVisitBooked
                         ? "Yes"
-                        : "No site visit completed",
-                      HasBookedJob: item?.hasJobScheduled ? "True" : "False",
-                      IsJobCompleted: item?.jobCompleted ? "True" : "False",
+                        : "No",
+                      IsSiteVisitCompleted: item?.wasSiteVisitCompleted
+                        ? "Yes"
+                        : "No",
+                      HasBookedJob: item?.jobScheduled ? "Yes" : "No",
+                      IsJobCompleted: item?.jobCompleted ? "Yes" : "No",
                     })}
                     close={handleModalClose}
                   />
