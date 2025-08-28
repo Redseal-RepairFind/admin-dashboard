@@ -78,7 +78,9 @@ export const customers = {
     route &&
     client
       .get(
-        `/admin/${route}?limit=${limit}&page=${page}&startDate=${startDate}&endDate=${endDate}${
+        `/admin/${route}?limit=${limit}&page=${page}${
+          startDate ? `&startDate=${startDate}` : ""
+        }${endDate ? `&endDate=${endDate}` : ""}${
           criteria ? `&sort=${criteria}` : ""
         }${
           accountStatus ? `&accountStatus=${accountStatus.toUpperCase()}` : ""
@@ -154,7 +156,9 @@ export const customers = {
     route &&
     client
       .get(
-        `/admin/${route}?limit=${limit}&page=${page}&startDate=${startDate}&endDate=${endDate}${
+        `/admin/${route}?limit=${limit}&page=${page}${
+          startDate ? `&startDate=${startDate}` : ""
+        }${endDate ? `&endDate=${endDate}` : ""}${
           criteria ? `&sort=${criteria}` : ""
         }${
           accountStatus ? `&accountStatus=${accountStatus.toUpperCase()}` : ""

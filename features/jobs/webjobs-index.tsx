@@ -42,7 +42,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import WebJobsTable from "./components/webTable";
 
 const WebJobs = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   // const [dataToRender, setDataToRender] = useState<any>();
   const [dataToRender, setDataToRender] = useState<any>();
   const { checkedList } = useCheckedList();
@@ -97,6 +97,7 @@ const WebJobs = () => {
     "Was Site visit completed",
     "Has booked Job",
     "Is Job completed",
+    "Job category",
   ];
 
   // console.log(allData, sortedData);
@@ -127,6 +128,7 @@ const WebJobs = () => {
     item?.wasSiteVisitCompleted ? "Yes" : "No",
     item?.jobScheduled ? "Yes" : "No",
     item?.jobCompleted ? "Yes" : "No",
+    item?.category ? item?.category : "",
   ]);
 
   const exportToExcel = (data: any, fileName: string) => {
@@ -146,6 +148,7 @@ const WebJobs = () => {
       { wch: 15 }, // Date column width
       { wch: 20 }, // Status column width
       { wch: 20 }, // Status column width
+      { wch: 20 }, // Status column width
     ];
 
     // Apply header styling (assuming headers start at A1)
@@ -161,7 +164,8 @@ const WebJobs = () => {
       "I1",
       "J1",
       "K1",
-      "l1",
+      "L1",
+      "M1",
     ];
     headerCells.forEach((cell) => {
       if (worksheet[cell]) {
@@ -197,6 +201,7 @@ const WebJobs = () => {
         IsSiteVisitCompleted: item?.wasSiteVisitCompleted ? "Yes" : "No",
         HasBookedJob: item?.jobScheduled ? "Yes" : "No",
         IsJobCompleted: item?.jobCompleted ? "Yes" : "No",
+        JobCategory: item?.category,
       };
     });
     type === "excel"
@@ -266,7 +271,7 @@ const WebJobs = () => {
     <>
       <Header />
       {/* Page Body - Use for side padding on the top and sides */}
-      {isLoading && <LoadingTemplate />}
+      {isLoading ? <LoadingTemplate /> : null}
       <PageBody>
         <div className="flex justify-between mb-6 items-center">
           <PageHeading page_title="Jobs" />
@@ -325,6 +330,7 @@ const WebJobs = () => {
                         : "No",
                       HasBookedJob: item?.jobScheduled ? "Yes" : "No",
                       IsJobCompleted: item?.jobCompleted ? "Yes" : "No",
+                      JobCategory: item?.category ,
                     })}
                     close={handleModalClose}
                   />

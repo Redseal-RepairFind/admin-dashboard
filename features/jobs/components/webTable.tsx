@@ -28,6 +28,7 @@ const table_headings = [
   "Requester's FullName",
   "Requester's email",
   "Requester's phone",
+  "Job category",
   "Requester has used app",
   "Last Login Date",
   "Number of estimates submitted",
@@ -51,20 +52,6 @@ const WebJobsTable: React.FC<IProps> = ({
   handleSearch,
   setIsQuerying,
 }) => {
-  const {
-    handleQuery,
-    notFound,
-    showFilters,
-    setShowFilters,
-    handleRatingFiltering,
-    handleMonthFiltering,
-    handleYearFiltering,
-    availableYears,
-    currentJobsList,
-    handleViewInvoice,
-    totalJobs,
-  } = useJobTable({ setLoading });
-
   const pageProps = {
     data: filteredData?.data,
   };
@@ -160,6 +147,7 @@ const WebJobsTable: React.FC<IProps> = ({
                 <Td>{`${item?.requesterFirstName} ${item?.requesterLastName}`}</Td>
                 <Td>{`${item?.requesterEmail}`}</Td>
                 <Td>{`${item?.requesterPhone || "__"}`}</Td>
+                <Td>{item?.category}</Td>
                 <Td>{`${item?.hasLoggedIn ? "Yes" : "No"}`}</Td>
                 <Td>
                   {item?.lastLogin
