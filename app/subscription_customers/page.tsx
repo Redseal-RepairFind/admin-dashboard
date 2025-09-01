@@ -7,7 +7,7 @@ export default function CustomersPage() {
   return (
     <>
       <Layout>
-        <Customers type="norm" />
+        <Customers type="sub" />
       </Layout>
     </>
   );

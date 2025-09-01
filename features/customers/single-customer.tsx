@@ -28,14 +28,20 @@ import * as XLSX from "xlsx";
 import { useJobInfo } from "./components/useJobInfo";
 import Modal from "react-responsive-modal";
 import ExportModal from "@/app/_components/ExportModal";
+import ActionColumn from "../shared/inner-pages/action-column";
+import ActionButton from "../shared/inner-pages/action-button";
+import SubmitBtn from "@/components/ui/submit-btn";
 
 const SingleCustomer = () => {
-  const [dataToRender, setDataToRender] = useState<any>();
+  const [rewardPercent, setRewardPercent] = useState<string>();
 
   const [openModal, setOpenModal] = useState(false);
+  const [openModalToggle, setOpenModalToggle] = useState(false);
   const ref = useRef();
   const handleModalOpen = () => setOpenModal(true);
   const handleModalClose = () => setOpenModal(false);
+  const handleModalToggleOpen = () => setOpenModalToggle(true);
+  const handleModalToggleClose = () => setOpenModalToggle(false);
 
   const { value: customerDetails } = useAppSelector(
     (state: RootState) => state.singleCustomerDetail
@@ -43,7 +49,8 @@ const SingleCustomer = () => {
 
   const params = useParams();
 
-  const { SuspendCustomer } = useCustomers();
+  const { SuspendCustomer, toggleCustomerElite, isTogglingCustomerElite } =
+    useCustomers();
 
   const id = params?.slug;
   const { jobInfo } = useJobInfo(id);
@@ -51,7 +58,12 @@ const SingleCustomer = () => {
   // console.log(id);
   // console.log(jobInfo);
 
-  const { isLoading, data: customer } = useQuery(
+  const {
+    isLoading,
+    data: customer,
+    refetch: refetchCustomer,
+    isRefetching: isRefetchingCustomer,
+  } = useQuery(
     ["Customer Information", id],
     () => {
       return customers.getCustomerDetails({
@@ -65,7 +77,7 @@ const SingleCustomer = () => {
   );
 
   const customerInfo = customer?.customer;
-
+  const isElite = customerInfo?.isElite;
   // console.log(customerInfo);
 
   const router = useRouter();
@@ -75,6 +87,43 @@ const SingleCustomer = () => {
   //     router.push("/customers");
   //   }
   // }, []);
+
+  const handleToggle = async () => {
+    if (!rewardPercent && !isElite) {
+      toast.error("Kindly specify the customers earning percentage per job");
+      return;
+    }
+    try {
+      toast.loading(
+        isElite
+          ? "Demoting customer.. .. .. .."
+          : "Promoting customer.. .. .. .."
+      );
+
+      await toggleCustomerElite({
+        payload: {
+          rewardPercent: Number(rewardPercent) || 0,
+          email: customerInfo?.email,
+        },
+        id: customerInfo?.id,
+      });
+
+      toast.remove();
+      toast.success(
+        isElite
+          ? "Customer demoted successfully"
+          : "Customer  promoted successfully"
+      );
+
+      handleModalToggleClose();
+      // closeModal("promote");
+      await refetchCustomer();
+    } catch (error: any) {
+      toast.remove();
+      toast.error(error?.response?.data?.message);
+      console.error(error);
+    }
+  };
 
   const handleChangeStatus = async (status: string) => {
     if (confirm("Kindly confirm this action")) {
@@ -165,9 +214,7 @@ const SingleCustomer = () => {
 
     handleModalClose();
   }
-
-  if (isLoading) return <LoadingTemplate />;
-
+  if (isLoading || isRefetchingCustomer) return <LoadingTemplate />;
   return (
     <>
       <Header>
@@ -240,30 +287,74 @@ const SingleCustomer = () => {
                   name="NO. of jobs"
                   value={customer?.jobCounts}
                 />
+                <SingleLineColumn
+                  name="Type"
+                  value={isElite ? "Elite Customer" : "Normal Customer"}
+                />
                 {/* <SingleLineColumn name="Payment account" value="" /> */}
                 {/* <SingleLineColumn name="Address" value="" /> */}
-                {/* <ActionColumn>
+                <ActionColumn>
                   <div className="flex gap-x-4">
-                    {customerInfo?.status !== "active" && (
+                    {
                       <ActionButton
-                        actionName="Activate"
-                        onClick={() => handleChangeStatus("ACTIVE")}
-                        color="border-green-600 text-green-600"
+                        actionName={
+                          isElite
+                            ? "Demote To Normal Customer"
+                            : "Promote To Elite Customer"
+                        }
+                        onClick={() => handleModalToggleOpen()}
+                        color={
+                          isElite
+                            ? "text-red-600 border-red-600"
+                            : "text-green-600 border-green-600"
+                        }
                       />
-                    )}
-                    {customerInfo?.status === "active" && (
-                      <ActionButton
-                        actionName="Suspend"
-                        onClick={() => handleChangeStatus("suspend")}
-                        color="border-red-600 text-red-600"
-                      />
-                    )}
+                    }
                   </div>
-                </ActionColumn> */}
+                </ActionColumn>
               </tbody>
             </table>
           </BorderRectangle>
         </div>
+        <Modal
+          onClose={() => handleModalToggleClose()}
+          open={openModalToggle}
+          center
+          classNames={{
+            modal: "customModal",
+          }}
+          container={ref.current}
+        >
+          <div className="w-full max-w-[450px] py-8">
+            <h1 className="font-semibold text-center">
+              You are about to {isElite ? "Demote" : "promote "}{" "}
+              <span className={isElite ? "text-red-600" : "text-green-600"}>
+                {customerInfo?.name}
+              </span>{" "}
+              {isElite ? "from " : " to "}
+              the elite customer status
+            </h1>
+            {isElite ? null : (
+              <input
+                type="number"
+                placeholder="Enter Percentage earnable by customer"
+                value={rewardPercent}
+                onChange={(e) => setRewardPercent(e.target.value)}
+                className={`outline-none border py-2 px-4 rounded-md w-full`}
+              />
+            )}
+
+            <p className="py-2">
+              Kindly press the proceed button to confirm this action
+            </p>
+            <SubmitBtn
+              isSubmitting={isTogglingCustomerElite}
+              onClick={handleToggle}
+            >
+              Proceed
+            </SubmitBtn>
+          </div>
+        </Modal>
         <Modal
           open={openModal}
           onClose={handleModalClose}

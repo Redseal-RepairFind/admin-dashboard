@@ -5,8 +5,14 @@ import { customers } from "../api/customers";
 import { useMutation, useQuery } from "react-query";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
+import { contractors } from "../api/contractors";
 
 const useCustomers = () => {
+  const {
+    mutateAsync: toggleCustomerElite,
+    isLoading: isTogglingCustomerElite,
+  } = useMutation(contractors.toggleCustomerElite);
+
   //   const [perPage, setPerPage] = useState(10);
   //   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -15,7 +21,9 @@ const useCustomers = () => {
 
   const currentPage = searchParams.get("page") || 1;
   const perPage = searchParams.get("perPage") || 10;
+  const sub = searchParams.get("sub") || "all";
 
+  // console.log(sub);
   const { mutateAsync: SuspendCustomer } = useMutation(
     customers.suspendCustomer
   );
@@ -41,6 +49,8 @@ const useCustomers = () => {
     currentPage,
     search,
     setSearch,
+    toggleCustomerElite,
+    isTogglingCustomerElite,
   };
 };
 

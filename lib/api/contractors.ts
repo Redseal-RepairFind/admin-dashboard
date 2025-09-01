@@ -32,6 +32,20 @@ export const contractors = {
     client
       .get(`/admin/customer/job/detail/${id}?page=1&limit=50`)
       .then(({ data }) => data),
+  promoteContractor: (payload: { email: string }) =>
+    client.post(`/admin/contractors/promote`, payload).then(({ data }) => data),
+  demoteContractor: (payload: { email: string }) =>
+    client.post(`/admin/contractors/demote`, payload).then(({ data }) => data),
+  toggleCustomerElite: ({
+    payload,
+    id,
+  }: {
+    payload: { rewardPercent: number; email: string };
+    id: string;
+  }) =>
+    client
+      .post(`/admin/customers/${id}/toggle-elite`, payload)
+      .then(({ data }) => data),
 
   giveManualCertn: ({ id }: { id: any }) =>
     client.post(`/admin/contractors/${id}/approve-certn`),

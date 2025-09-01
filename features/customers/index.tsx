@@ -10,7 +10,7 @@ import useCustomers from "@/lib/hooks/useCustomers";
 import Filter from "@/app/_components/Filter";
 import AnalyticCard from "../jobs/components/analytic-card";
 import { Customers as CustomerIcon, QuotesGivenMetrics } from "@/public/svg";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { filterData } from "./hooks/filterByDate";
 import { useSortedData } from "@/lib/hooks/useSortedData";
 import DownloadButton from "../shared/page-body/download-button";
@@ -23,6 +23,8 @@ import ExportModal from "@/app/_components/ExportModal";
 import { ConfirmModal, ModalType } from "../contractors";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import FilterCalendar from "../contractors/components/filter-calendar";
+import { useSubscription } from "@/lib/hooks/useSubscriptions";
+import { formatCurrency } from "@/lib/utils/curencyConverter";
 
 type FilterData = {
   customers: any[];
@@ -33,7 +35,13 @@ export type Checked = {
   items: any;
 };
 
-const Customers = () => {
+const types = [
+  // { id: 1, value: "Staff", slug: "ALL" },
+  { id: 2, value: "All Subscribed Customers", slug: "ALL" },
+  { id: 3, value: "Unknown Equpment age", slug: "UNKNOWN" },
+];
+
+const Customers = ({ type = "norm" }: { type: "sub" | "norm" }) => {
   // Fetching customers data
 
   const {
@@ -46,7 +54,18 @@ const Customers = () => {
     allData,
     setSearchTerm,
     loadingAllData,
+    refetch,
+    isRefetchingSortedData,
   } = useSortedData("customers");
+
+  const {
+    subAnalytics,
+    isLoadingSubAnalytics,
+    subData,
+    loadingSubData,
+    isRefetchingSubData,
+    refetchSubData,
+  } = useSubscription(type);
 
   const [openModal, setOpenModal] = useState<ModalType>({
     isOpen: false,
@@ -61,6 +80,42 @@ const Customers = () => {
     setOpenModal({ ...openModal, isOpen: false, content: "" });
     setIsQuerying(false);
   };
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const param = useSearchParams();
+
+  const initialString = param.get("sub");
+  const initialSortValue = param.get("sub")?.replace(/_/g, " ") || "all";
+
+  const [sortValue, setSortValue] = useState(initialSortValue);
+
+  useEffect(() => {
+    const sortFromParam = param.get("sub");
+    if (sortFromParam) {
+      const updatedSortValue = sortFromParam.replace(/_/g, " ");
+      setSortValue(updatedSortValue);
+    }
+  }, [param]);
+
+  function updateUrlParams(value: string) {
+    const formattedValue = value.replace(/ /g, "_").toLowerCase();
+
+    if (value === "OPEN") {
+      router.replace(`${pathname}`, {
+        scroll: false,
+      });
+    } else {
+      const params = new URLSearchParams(window.location.search);
+      params.set("sub", formattedValue);
+      router.replace(`${pathname}?${params.toString()}`, {
+        scroll: false,
+      });
+    }
+
+    setSortValue(value);
+    // setStatus(value);
+  }
 
   // useEffect(() => {
   //   isQuerying ? setDataToRender(sortedData) : setDataToRender(sortedData);
@@ -153,15 +208,26 @@ const Customers = () => {
     }
   }
 
+  // console.log(subData);
+
+  const itisLoading =
+    loadingSortedData || isLoadingSubAnalytics || loadingSubData;
+  // ||
+  // isRefetchingSubData;
+
   return (
     <>
       <Header />
-      {loadingSortedData && !isQuerying ? (
+      {itisLoading && !isQuerying ? (
         <LoadingTemplate />
       ) : (
         <PageBody>
           <div className="flex justify-between mb-6 items-center">
-            <PageHeading page_title="Customers" />
+            <PageHeading
+              page_title={
+                type === "norm" ? "Customers" : "Subscription Customers"
+              }
+            />
             <FilterCalendar />
             <DownloadButton
               text="Download Customer's LIST"
@@ -170,27 +236,69 @@ const Customers = () => {
           </div>
 
           <div className="overflow-x-auto mb-6">
-            <div className="flex gap-8 min-w-[1200px]">
-              <AnalyticCard
-                icon={<CustomerIcon />}
-                iconColor="bg-[#C398C7]"
-                borderColor="border-l-[#721279]"
-                name="Total Customers"
-                info={totalCustumers?.toLocaleString()}
-                tip="The Total Customers "
-                status="All"
-              />
-              <AnalyticCard
-                icon={<QuotesGivenMetrics />}
-                iconColor="bg-[#d0f7d0]"
-                borderColor="border-l-[#0D8012]"
-                name="Total Customers with bookings"
-                info={customersWithBookings?.toLocaleString()}
-                tip="Total Customers that has bookings"
-                status="true"
-                statusName="customersWithBooking"
-              />
-            </div>
+            {type === "norm" ? (
+              <div className="flex gap-8 min-w-[1200px]">
+                <AnalyticCard
+                  icon={<CustomerIcon />}
+                  iconColor="bg-[#C398C7]"
+                  borderColor="border-l-[#721279]"
+                  name="Total Customers"
+                  info={totalCustumers?.toLocaleString()}
+                  tip="The Total Customers "
+                  status="All"
+                />
+                <AnalyticCard
+                  icon={<QuotesGivenMetrics />}
+                  iconColor="bg-[#d0f7d0]"
+                  borderColor="border-l-[#0D8012]"
+                  name="Total Customers with bookings"
+                  info={customersWithBookings?.toLocaleString()}
+                  tip="Total Customers that has bookings"
+                  status="true"
+                  statusName="customersWithBooking"
+                />
+              </div>
+            ) : (
+              <div className="flex gap-8 min-w-[1200px]">
+                <AnalyticCard
+                  icon={<CustomerIcon />}
+                  iconColor="bg-[#C398C7]"
+                  borderColor="border-l-[#721279]"
+                  name="Total Subscription Revenue"
+                  info={formatCurrency(subAnalytics?.data?.total?.revenue)}
+                  tip="The Total Revenue generated "
+                  status="All"
+                />
+                {subAnalytics?.data?.statusCounts?.map(
+                  (sub: any, i: number) => (
+                    <AnalyticCard
+                      icon={<CustomerIcon />}
+                      iconColor={
+                        sub?._id === "ACTIVE" ? "bg-[#d0f7d0]" : "bg-[#eaec8f]"
+                      }
+                      borderColor={
+                        sub?._id === "ACTIVE"
+                          ? "border-l-[#0D8012]"
+                          : "border-l-[#e5e526]"
+                      }
+                      name={
+                        sub?._id === "ACTIVE"
+                          ? "Active Subscriptions"
+                          : "Pending Subscriptions"
+                      }
+                      info={sub?.count}
+                      tip={
+                        sub?._id === "ACTIVE"
+                          ? "The Total Active customer subscriptions"
+                          : "The Total Pending Customer Subscriptions "
+                      }
+                      status="All"
+                      key={i}
+                    />
+                  )
+                )}
+              </div>
+            )}
           </div>
           <Modal
             open={openModal.isOpen}
@@ -240,15 +348,39 @@ const Customers = () => {
               </CSSTransition>
             </TransitionGroup>
           </Modal>
-
+          {type === "norm" ? null : (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center justify-start gap-5 bg-white px-4 py-3 rounded-t-md">
+                {types.map((type: any, index: number) => (
+                  <button
+                    className={
+                      sortValue.toLowerCase() === type?.slug.toLowerCase()
+                        ? "font-semibold border-b-2 border-black"
+                        : "text-gray-400"
+                    }
+                    onClick={() => {
+                      // sessionStorage.setItem("session_dispute_status", type.slug);
+                      updateUrlParams(type.slug);
+                    }}
+                    key={index}
+                  >
+                    {type.value}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <CustomersTable
-            filteredData={sortedData}
+            filteredData={type === "norm" ? sortedData : subData}
             setLoading={setLoading}
             handleSearch={handleQuery}
             setIsQuerying={setIsQuerying}
             isQuerying={isQuerying}
             loadingSortedData={loadingSortedData}
             setSearchTerm={setSearchTerm}
+            refetch={type === "norm" ? refetch : refetchSubData}
+            isRefetching={isRefetchingSortedData}
+            type={type}
           />
         </PageBody>
       )}

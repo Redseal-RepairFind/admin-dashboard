@@ -36,7 +36,32 @@ export const customers = {
     client
       .get(`/admin/customer/job/detail/${id}?page=1&limit=50`)
       .then(({ data }) => data),
-
+  getSubscriptionCustomers: ({
+    equipmentAgeUnknown,
+    limit,
+    page,
+  }: {
+    equipmentAgeUnknown: boolean;
+    limit: number;
+    page: number;
+  }) =>
+    client
+      .get(
+        `/admin/subscriptions/customers${
+          equipmentAgeUnknown
+            ? `?equipmentAgeUnknown=${equipmentAgeUnknown}`
+            : ""
+        }`
+      )
+      // client
+      //   .get(
+      //     `/admin/subscriptions/customers?limit${limit}&page=${page}${
+      //       equipmentAgeUnknown
+      //         ? `&equipmentAgeUnknown=${equipmentAgeUnknown}`
+      //         : ""
+      //     }`
+      //   )
+      .then(({ data }) => data),
   getAnalytics: ({
     route,
     limit,
@@ -113,6 +138,9 @@ export const customers = {
         }`
       )
       .then(({ data }) => data),
+
+  getSubscriptionAnalytics: () =>
+    client.get(`/admin/subscriptions/analytics`).then(({ data }) => data),
 
   getSortingAnalytics: ({
     page,
@@ -269,4 +297,23 @@ ${accountStatus ? `&accountStatus=${accountStatus.toUpperCase()}` : ""}${
 
   getSingleJob: (id: string) =>
     client.get(`/admin/jobs/${id}`).then(({ data }) => data),
+
+  updateEquipmentAge: ({
+    id,
+    equipmentAge,
+    equipmentAgeCategory,
+    verifierName,
+  }: {
+    id: string;
+    equipmentAge: number;
+    equipmentAgeCategory: string;
+    verifierName: string;
+  }) =>
+    client
+      .post(`/admin/customers/${id}/update-equipment-age`, {
+        equipmentAge,
+        equipmentAgeCategory,
+        verifierName,
+      })
+      .then(({ data }) => data),
 };
