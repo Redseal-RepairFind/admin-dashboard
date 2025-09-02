@@ -17,6 +17,7 @@ import useCustomers from "@/lib/hooks/useCustomers";
 import VerticalMenu from "@/components/shared/vertical-menu";
 import Pagination from "@/components/shared/pagination";
 import {
+  CancelIconRed,
   CompletedState,
   PendingState,
   RatingStar,
@@ -36,6 +37,10 @@ import toast from "react-hot-toast";
 import SubmitBtn from "@/components/ui/submit-btn";
 import Modal from "react-responsive-modal";
 import { useSubscription } from "@/lib/hooks/useSubscriptions";
+import { useForm } from "react-hook-form";
+import { ClipLoader } from "react-spinners";
+import { IoRemoveCircleOutline } from "react-icons/io5";
+import { TrashIcon } from "lucide-react";
 
 const table_headings = [
   "Select All",
@@ -125,6 +130,19 @@ const CustomersTable: React.FC<IProps> = ({
     ageCategory: "",
     verifierName: "",
   });
+
+  const [elite, setElite] = useState({
+    open: false,
+    id: "",
+    openAdd: false,
+  });
+  // const [email, setEmail] = useState("");
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
   // const [dataToRender, setDataToRender] = useState<any[]>();
   // filteredData?.data?.data
 
@@ -135,15 +153,6 @@ const CustomersTable: React.FC<IProps> = ({
     data: any,
     isClose?: boolean
   ) => {
-    // if (type === "open") {
-    //   setAgeModal((agem) => ({
-    //     ...agem,
-    //     open: data,
-    //   }));
-
-    //   return
-    // }
-
     if (isClose) {
       setAgeModal({
         open: false,
@@ -179,9 +188,17 @@ const CustomersTable: React.FC<IProps> = ({
     setSearch,
     toggleCustomerElite,
     isTogglingCustomerElite,
-  } = useCustomers();
+    customerTeam,
+    isLoadingCustomerTeam,
+    refetchCusTeam,
+    isRefetchingCusTeam,
+    addContractorToTeam,
+    isAddingContractorToTeam,
+    removeContractorToTeam,
+    isRemoveingContractorToTeam,
+  } = useCustomers(elite?.id);
 
-  // console.log(isQuerying);
+  console.log(customerTeam);
   let rowOptions = [
     {
       name: "View Customer",
@@ -283,7 +300,7 @@ const CustomersTable: React.FC<IProps> = ({
   };
 
   const handleUpdateEquipmentAge = async () => {
-    console.log(ageModal);
+    // console.log(ageModal);
     if (!ageModal.ageCategory || !ageModal.age) {
       toast.error("Select and enter age and age categories");
       return;
@@ -314,6 +331,60 @@ const CustomersTable: React.FC<IProps> = ({
       console.error("update sub error", error);
       toast.remove();
       toast.error(error?.response?.data?.data?.message || "Age update failted");
+    }
+  };
+
+  const handleAddContractorToTeam = async (data: any) => {
+    // if (!email) {
+    //   toast.error("Customer email is required");
+    // }
+    toast.loading("adding contractor to team.....");
+    try {
+      await addContractorToTeam({
+        id: elite.id,
+        contractorEmail: data.email,
+      });
+
+      toast.remove();
+      toast.success("Contractor added to team successfully");
+      refetchCusTeam();
+
+      setElite((el) => ({
+        ...el,
+        openAdd: false,
+      }));
+    } catch (error: any) {
+      console.error(error);
+      toast.remove();
+      const errmsg = error?.response?.data?.message;
+
+      toast.error(errmsg);
+    }
+  };
+  const handleRemoveContractorToTeam = async (email: string) => {
+    // if (!email) {
+    //   toast.error("Customer email is required");
+    // }
+    toast.loading("removing contractor from team.....");
+    try {
+      await removeContractorToTeam({
+        id: elite.id,
+        contractorEmail: email,
+      });
+
+      toast.remove();
+      toast.success("Contractor removed from team successfully");
+      refetchCusTeam();
+      setElite((el) => ({
+        ...el,
+        openAdd: false,
+      }));
+    } catch (error: any) {
+      console.error(error);
+      toast.remove();
+      const errmsg = error?.response?.data?.message;
+
+      toast.error(errmsg);
     }
   };
 
@@ -356,6 +427,120 @@ const CustomersTable: React.FC<IProps> = ({
           >
             Proceed
           </SubmitBtn>
+        </div>
+      </Modal>
+      <Modal
+        onClose={() =>
+          setElite({
+            id: "",
+            open: false,
+            openAdd: false,
+          })
+        }
+        open={elite.open}
+        center
+        classNames={{
+          modal: "customModal",
+        }}
+        container={ref.current}
+      >
+        <div className="w-full  min-w-[450px] py-8">
+          {isLoadingCustomerTeam ||
+          isRefetchingCusTeam ||
+          isRemoveingContractorToTeam ? (
+            <div className="w-full min-h-[400px] flex items-center justify-center">
+              <ClipLoader size={24} color="#000000" />{" "}
+              {isRemoveingContractorToTeam ? (
+                <span>removing contractor...</span>
+              ) : null}
+            </div>
+          ) : customerTeam?.data?.length && !elite.openAdd ? (
+            <div className="h-[400px] flex flex-col gap-2 overflow-y-auto z-50">
+              <h1 className="font-semibold mb-5">Customer Elite Team List</h1>
+
+              <div className="grid grid-cols-3 gap-4">
+                <span>Name</span>
+                <span>email</span>
+                <span>Action</span>
+
+                {customerTeam?.data?.map((data: any) => (
+                  <React.Fragment key={data?._id}>
+                    <span>{data?.name}</span>
+                    <span>{data?.email}</span>
+                    <span>
+                      <button
+                        className=""
+                        onClick={() =>
+                          handleRemoveContractorToTeam(data?.email)
+                        }
+                      >
+                        <TrashIcon size={24} color="red" />
+                      </button>
+                    </span>
+                  </React.Fragment>
+                ))}
+              </div>
+
+              <button
+                className="w-full px-4 py-2 rounded-lg border border-black mt-5"
+                onClick={() =>
+                  setElite((el) => ({
+                    ...el,
+                    openAdd: true,
+                  }))
+                }
+              >
+                Add Contractor
+              </button>
+            </div>
+          ) : elite.openAdd || customerTeam?.data?.length === 0 ? (
+            <>
+              <h1 className="font-semibold text-center">
+                Enter Contractor Email to add them to your team
+              </h1>
+              <input
+                type="email"
+                placeholder="Enter Contractor email"
+                className="outline-none border py-2 px-4 rounded-md w-full"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Enter a valid email address",
+                  },
+                })}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm">
+                  {errors.email.message?.toString()}
+                </p>
+              )}
+              <SubmitBtn
+                isSubmitting={isAddingContractorToTeam}
+                onClick={handleSubmit(handleAddContractorToTeam)}
+              >
+                Proceed
+              </SubmitBtn>
+            </>
+          ) : (
+            <div className="h-52 w-full flex items-center justify-center gap-2 flex-col">
+              <p>
+                You have no contractors on the team yet, kindly add contractors
+                below
+              </p>
+              <button
+                className="w-full px-4 py-2 rounded-lg border border-black mt-5"
+                onClick={() =>
+                  setElite((el) => ({
+                    ...el,
+                    openAdd: true,
+                  }))
+                }
+              >
+                Add Contractor
+              </button>
+            </div>
+          )}
         </div>
       </Modal>
       <Modal
@@ -581,6 +766,21 @@ const CustomersTable: React.FC<IProps> = ({
                                     }}
                                   >
                                     Update equipment age
+                                  </button>
+                                ) : null}
+
+                                {item?.isElite ? (
+                                  <button
+                                    className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                                    onClick={() =>
+                                      setElite({
+                                        id: item?._id,
+                                        open: true,
+                                        openAdd: false,
+                                      })
+                                    }
+                                  >
+                                    View Elite team
                                   </button>
                                 ) : null}
                               </div>

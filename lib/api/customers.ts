@@ -316,4 +316,28 @@ ${accountStatus ? `&accountStatus=${accountStatus.toUpperCase()}` : ""}${
         verifierName,
       })
       .then(({ data }) => data),
+
+  getCustomerEliteTeam: (id: string) =>
+    client.get(`/admin/customers/${id}/elite-team`).then(({ data }) => data),
+
+  addContractorToTeam: ({
+    id,
+    contractorEmail,
+  }: {
+    id: string;
+    contractorEmail: string;
+  }) =>
+    client
+      .post(`/admin/customers/${id}/add-contractor`, { contractorEmail })
+      .then(({ data }) => data),
+  removeContractorToTeam: ({
+    id,
+    contractorEmail,
+  }: {
+    id: string;
+    contractorEmail: string;
+  }) =>
+    client
+      .post(`/admin/customers/${id}/remove-contractor`, { contractorEmail })
+      .then(({ data }) => data),
 };

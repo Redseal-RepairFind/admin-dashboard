@@ -38,7 +38,7 @@ export type Checked = {
 const types = [
   // { id: 1, value: "Staff", slug: "ALL" },
   { id: 2, value: "All Subscribed Customers", slug: "ALL" },
-  { id: 3, value: "Unknown Equpment age", slug: "UNKNOWN" },
+  { id: 3, value: "Unknown Equipment age", slug: "UNKNOWN" },
 ];
 
 const Customers = ({ type = "norm" }: { type: "sub" | "norm" }) => {

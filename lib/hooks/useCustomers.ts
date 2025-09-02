@@ -7,11 +7,19 @@ import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { contractors } from "../api/contractors";
 
-const useCustomers = () => {
+const useCustomers = (id?: string) => {
   const {
     mutateAsync: toggleCustomerElite,
     isLoading: isTogglingCustomerElite,
   } = useMutation(contractors.toggleCustomerElite);
+  const {
+    mutateAsync: addContractorToTeam,
+    isLoading: isAddingContractorToTeam,
+  } = useMutation(customers.addContractorToTeam);
+  const {
+    mutateAsync: removeContractorToTeam,
+    isLoading: isRemoveingContractorToTeam,
+  } = useMutation(customers.removeContractorToTeam);
 
   //   const [perPage, setPerPage] = useState(10);
   //   const [currentPage, setCurrentPage] = useState(1);
@@ -39,7 +47,16 @@ const useCustomers = () => {
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
 
-  const router = useRouter();
+  const {
+    data: customerTeam,
+    isLoading: isLoadingCustomerTeam,
+    refetch: refetchCusTeam,
+    isRefetching: isRefetchingCusTeam,
+  } = useQuery({
+    queryKey: ["customer_elite-team", id],
+    queryFn: () => customers.getCustomerEliteTeam(id!),
+    enabled: Boolean(id),
+  });
 
   return {
     customerData,
@@ -51,6 +68,14 @@ const useCustomers = () => {
     setSearch,
     toggleCustomerElite,
     isTogglingCustomerElite,
+    customerTeam,
+    isLoadingCustomerTeam,
+    refetchCusTeam,
+    isRefetchingCusTeam,
+    addContractorToTeam,
+    isAddingContractorToTeam,
+    removeContractorToTeam,
+    isRemoveingContractorToTeam,
   };
 };
 

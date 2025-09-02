@@ -29,7 +29,7 @@ export const useSubscription = (type: "norm" | "sub") => {
       customers.getSubscriptionCustomers({
         limit: Number(perPage),
         page: Number(currentPage),
-        equipmentAgeUnknown: sub === "unknown",
+        equipmentAgeUnknown: sub?.toLowerCase() === "unknown",
       }),
     enabled: type === "sub",
   });
