@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { contractors } from "../api/contractors";
 
-const useCustomers = (id?: string) => {
+const useCustomers = (id?: string, email?: string) => {
   const {
     mutateAsync: toggleCustomerElite,
     isLoading: isTogglingCustomerElite,
@@ -47,6 +47,19 @@ const useCustomers = (id?: string) => {
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
 
+
+  const fetchSize = email && email?.length >= 3;
+  const {
+    data: contractorsList,
+    isLoading: isLoadingContractorsList,
+    refetch: refetchContractorsList,
+    isRefetching: isRefetchingContractorsList,
+  } = useQuery({
+    queryKey: ["contractors_team", email],
+    queryFn: () => customers.getContractorsToTeam({ field: email! }),
+    enabled: Boolean(fetchSize),
+  });
+
   const {
     data: customerTeam,
     isLoading: isLoadingCustomerTeam,
@@ -76,6 +89,10 @@ const useCustomers = (id?: string) => {
     isAddingContractorToTeam,
     removeContractorToTeam,
     isRemoveingContractorToTeam,
+    contractorsList,
+    isLoadingContractorsList,
+    refetchContractorsList,
+    isRefetchingContractorsList,
   };
 };
 

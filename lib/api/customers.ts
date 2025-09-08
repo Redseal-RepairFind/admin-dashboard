@@ -322,13 +322,13 @@ ${accountStatus ? `&accountStatus=${accountStatus.toUpperCase()}` : ""}${
 
   addContractorToTeam: ({
     id,
-    contractorEmail,
+    contractorEmails,
   }: {
     id: string;
-    contractorEmail: string;
+    contractorEmails: string[];
   }) =>
     client
-      .post(`/admin/customers/${id}/add-contractor`, { contractorEmail })
+      .post(`/admin/customers/${id}/add-contractor`, { contractorEmails })
       .then(({ data }) => data),
   removeContractorToTeam: ({
     id,
@@ -339,5 +339,11 @@ ${accountStatus ? `&accountStatus=${accountStatus.toUpperCase()}` : ""}${
   }) =>
     client
       .post(`/admin/customers/${id}/remove-contractor`, { contractorEmail })
+      .then(({ data }) => data),
+  getContractorsToTeam: ({ field }: { field: string }) =>
+    client
+      .get(
+        `/admin/contractors?searchFields=firstName,lastName,email&search=${field}`
+      )
       .then(({ data }) => data),
 };

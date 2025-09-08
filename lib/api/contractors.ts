@@ -40,7 +40,7 @@ export const contractors = {
     payload,
     id,
   }: {
-    payload: { rewardPercent: number; email: string };
+    payload: { rewardPercent: number; contractorEmails: string[] };
     id: string;
   }) =>
     client

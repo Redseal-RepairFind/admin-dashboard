@@ -18,6 +18,7 @@ import VerticalMenu from "@/components/shared/vertical-menu";
 import Pagination from "@/components/shared/pagination";
 import {
   CancelIconRed,
+  Check,
   CompletedState,
   PendingState,
   RatingStar,
@@ -39,8 +40,9 @@ import Modal from "react-responsive-modal";
 import { useSubscription } from "@/lib/hooks/useSubscriptions";
 import { useForm } from "react-hook-form";
 import { ClipLoader } from "react-spinners";
-import { IoRemoveCircleOutline } from "react-icons/io5";
+import { IoClose, IoRemoveCircleOutline } from "react-icons/io5";
 import { TrashIcon } from "lucide-react";
+import EliteCustomerModal from "./elite-customer-modal";
 
 const table_headings = [
   "Select All",
@@ -121,6 +123,7 @@ const CustomersTable: React.FC<IProps> = ({
 }) => {
   const { handleViewACustomer } = useCustomersTable({ setLoading });
   const [rewardPercent, setRewardPercent] = useState<string>();
+  const [contractorEmail, setContractorEmail] = useState<string>();
   const [openModalToggle, setOpenModalToggle] = useState(false);
   const [item, setItem] = useState<any>();
   const ref = useRef();
@@ -196,9 +199,9 @@ const CustomersTable: React.FC<IProps> = ({
     isAddingContractorToTeam,
     removeContractorToTeam,
     isRemoveingContractorToTeam,
-  } = useCustomers(elite?.id);
+  } = useCustomers(elite?.id, contractorEmail);
 
-  console.log(customerTeam);
+  // console.log(customerTeam);
   let rowOptions = [
     {
       name: "View Customer",
@@ -251,53 +254,59 @@ const CustomersTable: React.FC<IProps> = ({
 
   const { checkedList, setCheckedList, handleCheck, handleSelectAll } =
     useCheckedList();
-
+  const [selectedContractors, setSelectedContractors] = useState<
+    {
+      name: string;
+      email: string;
+      _id: string;
+    }[]
+  >([]);
   const mainData = filteredData?.data?.data;
   const param = useSearchParams();
 
   const sub = param.get("sub") || "all";
   // console.log(mainData);
 
-  const handleToggle = async () => {
-    const isElite = item?.isElite;
+  // const handleToggle = async () => {
+  //   const isElite = item?.isElite;
 
-    // console.log(isElite);
-    if (!rewardPercent && !isElite) {
-      toast.error("Kindly specify the customers earning percentage per job");
-      return;
-    }
-    try {
-      toast.loading(
-        isElite
-          ? "Demoting customer.. .. .. .."
-          : "Promoting customer.. .. .. .."
-      );
+  //   // console.log(isElite);
+  //   if (!rewardPercent && !isElite) {
+  //     toast.error("Kindly specify the customers earning percentage per job");
+  //     return;
+  //   }
+  //   try {
+  //     toast.loading(
+  //       isElite
+  //         ? "Demoting customer.. .. .. .."
+  //         : "Promoting customer.. .. .. .."
+  //     );
 
-      await toggleCustomerElite({
-        payload: {
-          rewardPercent: Number(rewardPercent) || 0,
-          email: item?.email,
-        },
-        id: item?.id,
-      });
+  //     await toggleCustomerElite({
+  //       payload: {
+  //         rewardPercent: Number(rewardPercent) || 0,
+  //         email: item?.email,
+  //       },
+  //       id: item?.id,
+  //     });
 
-      toast.remove();
-      toast.success(
-        isElite
-          ? "Customer demoted successfully"
-          : "Customer  promoted successfully"
-      );
+  //     toast.remove();
+  //     toast.success(
+  //       isElite
+  //         ? "Customer demoted successfully"
+  //         : "Customer  promoted successfully"
+  //     );
 
-      handleModalToggleClose();
+  //     handleModalToggleClose();
 
-      // closeModal("promote");
-      await refetch();
-    } catch (error: any) {
-      toast.remove();
-      toast.error(error?.response?.data?.message);
-      console.error(error);
-    }
-  };
+  //     // closeModal("promote");
+  //     await refetch();
+  //   } catch (error: any) {
+  //     toast.remove();
+  //     toast.error(error?.response?.data?.message);
+  //     console.error(error);
+  //   }
+  // };
 
   const handleUpdateEquipmentAge = async () => {
     // console.log(ageModal);
@@ -388,6 +397,7 @@ const CustomersTable: React.FC<IProps> = ({
     }
   };
 
+  // console.log(contractors);
   return (
     <TableCard>
       <Modal
@@ -399,35 +409,13 @@ const CustomersTable: React.FC<IProps> = ({
         }}
         container={ref.current}
       >
-        <div className="w-full max-w-[450px] py-8">
-          <h1 className="font-semibold text-center">
-            You are about to {item?.isElite ? "Demote" : "promote "}{" "}
-            <span className={item?.isElite ? "text-red-600" : "text-green-600"}>
-              {item?.name}
-            </span>{" "}
-            {item?.isElite ? "from " : " to "}
-            the elite customer status
-          </h1>
-          {item?.isElite ? null : (
-            <input
-              type="number"
-              placeholder="Enter Percentage earnable by customer"
-              value={rewardPercent}
-              onChange={(e) => setRewardPercent(e.target.value)}
-              className={`outline-none border py-2 px-4 rounded-md w-full`}
-            />
-          )}
-
-          <p className="py-2">
-            Kindly press the proceed button to confirm this action
-          </p>
-          <SubmitBtn
-            isSubmitting={isTogglingCustomerElite}
-            onClick={() => handleToggle()}
-          >
-            Proceed
-          </SubmitBtn>
-        </div>
+        <EliteCustomerModal
+          elite={elite}
+          item={item}
+          handleModalToggleClose={handleModalToggleClose}
+          refetch={refetch}
+          isNewTeam
+        />
       </Modal>
       <Modal
         onClose={() =>
@@ -769,7 +757,7 @@ const CustomersTable: React.FC<IProps> = ({
                                   </button>
                                 ) : null}
 
-                                {item?.isElite ? (
+                                {/* {item?.isElite ? (
                                   <button
                                     className="block w-full border border-slate-100 px-4 py-2 text-left bg-white duration-200 text-baseFont text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
                                     onClick={() =>
@@ -782,7 +770,7 @@ const CustomersTable: React.FC<IProps> = ({
                                   >
                                     View Elite team
                                   </button>
-                                ) : null}
+                                ) : null} */}
                               </div>
                             )}
                           </VerticalMenu>

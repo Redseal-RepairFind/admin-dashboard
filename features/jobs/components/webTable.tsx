@@ -28,6 +28,7 @@ const table_headings = [
   "Requester's FullName",
   "Requester's email",
   "Requester's phone",
+  "Requester Opened Email",
   "Job category",
   "Requester has used app",
   "Last Login Date",
@@ -147,6 +148,13 @@ const WebJobsTable: React.FC<IProps> = ({
                 <Td>{`${item?.requesterFirstName} ${item?.requesterLastName}`}</Td>
                 <Td>{`${item?.requesterEmail}`}</Td>
                 <Td>{`${item?.requesterPhone || "__"}`}</Td>
+                <Td>{`${
+                  item?.metadata?.isCustomerEmailOpened
+                    ? `Yes, email opened on ${formatDateToDDMMYY(
+                        item?.metadata?.customerEmailOpenedAt
+                      )}`
+                    : "Not yet"
+                }`}</Td>
                 <Td>{item?.category}</Td>
                 <Td>{`${item?.hasLoggedIn ? "Yes" : "No"}`}</Td>
                 <Td>

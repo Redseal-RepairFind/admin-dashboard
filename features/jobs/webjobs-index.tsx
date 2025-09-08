@@ -89,6 +89,7 @@ const WebJobs = () => {
     "Requester's FullName",
     "Requester's email",
     "Requester's phone",
+    "Customer Opened Email",
     "Requester has used app",
     "Last Login Date",
     "Number of estimates submitted",
@@ -100,7 +101,7 @@ const WebJobs = () => {
     "Job category",
   ];
 
-  // console.log(allData, sortedData);
+  // console.log(sortedData);
 
   function contName(item: any) {
     const contractorName = `${item?.contractor?.firstName || "--"}  ${
@@ -122,6 +123,11 @@ const WebJobs = () => {
     item?.requesterPhone || "--",
     item?.hasLoggedIn ? "Yes" : "No",
     item?.lastLogin ? formatDateToDDMMYY(item?.lastLogin) : "Not logged in yet",
+    item?.metadata?.isCustomerEmailOpened
+      ? `Yes, email opened on ${formatDateToDDMMYY(
+          item?.metadata?.customerEmailOpenedAt
+        )}`
+      : "Not yet",
     item?.estimatesCount || "0",
     item?.siteVisitsCount || "0",
     item?.wasSiteVisitBooked ? "Yes" : "No",
@@ -191,6 +197,13 @@ const WebJobs = () => {
         }`,
         RequesterEmail: item?.requesterEmail || "--",
         RequesterPhone: item?.requesterPhone || "--",
+        EmailOpened: `${
+          item?.metadata?.isCustomerEmailOpened
+            ? `Yes, email opened on ${formatDateToDDMMYY(
+                item?.metadata?.customerEmailOpenedAt
+              )}`
+            : "Not yet"
+        }`,
         RequesterHasUsedApp: item?.hasLoggedIn ? "Yes" : "No",
         LastLoginDate: item?.lastLogin
           ? formatDateToDDMMYY(item?.lastLogin)
@@ -317,6 +330,13 @@ const WebJobs = () => {
                       RequesterEmail: item?.requesterEmail || "--",
                       RequesterPhone: item?.requesterPhone || "--",
                       RequesterHasUsedApp: item?.hasLoggedIn ? "Yes" : "No",
+                      EmailOpened: `${
+                        item?.metadata?.isCustomerEmailOpened
+                          ? `Yes, email opened on ${formatDateToDDMMYY(
+                              item?.metadata?.customerEmailOpenedAt
+                            )}`
+                          : "Not yet"
+                      }`,
                       LastLoginDate: item?.lastLogin
                         ? formatDateToDDMMYY(item?.lastLogin)
                         : "Not logged in yet",
@@ -330,7 +350,7 @@ const WebJobs = () => {
                         : "No",
                       HasBookedJob: item?.jobScheduled ? "Yes" : "No",
                       IsJobCompleted: item?.jobCompleted ? "Yes" : "No",
-                      JobCategory: item?.category ,
+                      JobCategory: item?.category,
                     })}
                     close={handleModalClose}
                   />
