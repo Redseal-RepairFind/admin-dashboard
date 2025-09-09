@@ -351,7 +351,7 @@ const CustomersTable: React.FC<IProps> = ({
     try {
       await addContractorToTeam({
         id: elite.id,
-        contractorEmail: data.email,
+        contractorEmails: data.email,
       });
 
       toast.remove();
