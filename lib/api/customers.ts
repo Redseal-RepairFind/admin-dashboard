@@ -346,4 +346,16 @@ ${accountStatus ? `&accountStatus=${accountStatus.toUpperCase()}` : ""}${
         `/admin/contractors?searchFields=firstName,lastName,email&search=${field}`
       )
       .then(({ data }) => data),
+  getEliteCustomersEarnings: ({
+    page,
+    limit,
+  }: {
+    page: number;
+    limit: number;
+  }) =>
+    client
+      .get(`/admin/customers/earnings-history?page=${page}&limit=${limit}`)
+      .then(({ data }) => data),
+  getEliteCustomersEarningStats: () =>
+    client.get(`/admin/customers/earnings-stats`).then(({ data }) => data),
 };

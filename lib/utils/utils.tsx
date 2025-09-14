@@ -55,6 +55,12 @@ export const navLinks: INavLinks[] = [
     readPermissions: ["manage_customers"],
   },
   {
+    name: "Elite Customers",
+    svg: <TotalRevenue />,
+    route: "/elite_customers",
+    readPermissions: ["manage_customers"],
+  },
+  {
     name: "Subscription Customers",
     svg: <TotalJobs />,
     route: "/subscription_customers",

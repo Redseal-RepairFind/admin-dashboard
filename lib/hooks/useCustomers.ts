@@ -47,7 +47,6 @@ const useCustomers = (id?: string, email?: string) => {
     { cacheTime: 30000, staleTime: 30000, refetchOnWindowFocus: true }
   );
 
-
   const fetchSize = email && email?.length >= 3;
   const {
     data: contractorsList,
@@ -71,6 +70,20 @@ const useCustomers = (id?: string, email?: string) => {
     enabled: Boolean(id),
   });
 
+  const { data: eliteEarnings, isLoading: isLoadingEliteEarnings } = useQuery({
+    queryKey: ["elite_earnings", currentPage, perPage],
+    queryFn: () =>
+      customers.getEliteCustomersEarnings({
+        page: Number(currentPage),
+        limit: Number(perPage),
+      }),
+  });
+  const { data: eliteEarningStats, isLoading: isLoadingEliteEarningStats } =
+    useQuery({
+      queryKey: ["elite_earnings_stats"],
+      queryFn: () => customers.getEliteCustomersEarningStats(),
+    });
+
   return {
     customerData,
     loadingCustomers,
@@ -93,6 +106,10 @@ const useCustomers = (id?: string, email?: string) => {
     isLoadingContractorsList,
     refetchContractorsList,
     isRefetchingContractorsList,
+    eliteEarnings,
+    isLoadingEliteEarnings,
+    eliteEarningStats,
+    isLoadingEliteEarningStats,
   };
 };
 
