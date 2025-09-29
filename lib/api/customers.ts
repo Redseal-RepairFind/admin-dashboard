@@ -36,7 +36,32 @@ export const customers = {
     client
       .get(`/admin/customer/job/detail/${id}?page=1&limit=50`)
       .then(({ data }) => data),
-
+  getSubscriptionCustomers: ({
+    equipmentAgeUnknown,
+    limit,
+    page,
+  }: {
+    equipmentAgeUnknown: boolean;
+    limit: number;
+    page: number;
+  }) =>
+    client
+      .get(
+        `/admin/subscriptions/customers${
+          equipmentAgeUnknown
+            ? `?equipmentAgeUnknown=${equipmentAgeUnknown}`
+            : ""
+        }`
+      )
+      // client
+      //   .get(
+      //     `/admin/subscriptions/customers?limit${limit}&page=${page}${
+      //       equipmentAgeUnknown
+      //         ? `&equipmentAgeUnknown=${equipmentAgeUnknown}`
+      //         : ""
+      //     }`
+      //   )
+      .then(({ data }) => data),
   getAnalytics: ({
     route,
     limit,
@@ -113,6 +138,9 @@ export const customers = {
         }`
       )
       .then(({ data }) => data),
+
+  getSubscriptionAnalytics: () =>
+    client.get(`/admin/subscriptions/analytics`).then(({ data }) => data),
 
   getSortingAnalytics: ({
     page,
@@ -269,4 +297,65 @@ ${accountStatus ? `&accountStatus=${accountStatus.toUpperCase()}` : ""}${
 
   getSingleJob: (id: string) =>
     client.get(`/admin/jobs/${id}`).then(({ data }) => data),
+
+  updateEquipmentAge: ({
+    id,
+    equipmentAge,
+    equipmentAgeCategory,
+    verifierName,
+  }: {
+    id: string;
+    equipmentAge: number;
+    equipmentAgeCategory: string;
+    verifierName: string;
+  }) =>
+    client
+      .post(`/admin/customers/${id}/update-equipment-age`, {
+        equipmentAge,
+        equipmentAgeCategory,
+        verifierName,
+      })
+      .then(({ data }) => data),
+
+  getCustomerEliteTeam: (id: string) =>
+    client.get(`/admin/customers/${id}/elite-team`).then(({ data }) => data),
+
+  addContractorToTeam: ({
+    id,
+    contractorEmails,
+  }: {
+    id: string;
+    contractorEmails: string[];
+  }) =>
+    client
+      .post(`/admin/customers/${id}/add-contractor`, { contractorEmails })
+      .then(({ data }) => data),
+  removeContractorToTeam: ({
+    id,
+    contractorEmail,
+  }: {
+    id: string;
+    contractorEmail: string;
+  }) =>
+    client
+      .post(`/admin/customers/${id}/remove-contractor`, { contractorEmail })
+      .then(({ data }) => data),
+  getContractorsToTeam: ({ field }: { field: string }) =>
+    client
+      .get(
+        `/admin/contractors?searchFields=firstName,lastName,email&search=${field}`
+      )
+      .then(({ data }) => data),
+  getEliteCustomersEarnings: ({
+    page,
+    limit,
+  }: {
+    page: number;
+    limit: number;
+  }) =>
+    client
+      .get(`/admin/customers/earnings-history?page=${page}&limit=${limit}`)
+      .then(({ data }) => data),
+  getEliteCustomersEarningStats: () =>
+    client.get(`/admin/customers/earnings-stats`).then(({ data }) => data),
 };

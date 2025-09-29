@@ -2,7 +2,7 @@ import React from "react";
 
 const LoadingTemplate = () => {
   return (
-    <div className="flex items-center justify-center absolute inset-1 bg-white/90 z-50">
+    <div className="flex items-center justify-center absolute inset-0 bg-white/90 z-50">
       <div className="flex items-center space-x-1 text-[#333] z-[100]">
         <svg
           fill="none"

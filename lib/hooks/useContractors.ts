@@ -28,6 +28,10 @@ const useContractors = () => {
   );
   const { mutateAsync: removeSanction, isLoading: unRemovingSanction } =
     useMutation(contractors.removeSanction);
+  const { mutateAsync: promoteContractor, isLoading: isPromotingContractor } =
+    useMutation(contractors.promoteContractor);
+  const { mutateAsync: demoteContractor, isLoading: isDemotingContractor } =
+    useMutation(contractors.demoteContractor);
 
   const [search, setSearch] = useState("");
   const [perPage, setPerPage] = useState(10);
@@ -85,6 +89,10 @@ const useContractors = () => {
     refetchContractors,
     removeSanction,
     unRemovingSanction,
+    promoteContractor,
+    isPromotingContractor,
+    demoteContractor,
+    isDemotingContractor,
   };
 };
 

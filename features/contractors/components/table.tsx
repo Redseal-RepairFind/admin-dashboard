@@ -30,6 +30,7 @@ const table_headings = [
   "Contractor’s Name",
   "Email Address",
   "Skill",
+  "Contractor type",
   "Sign-up Date",
   "Sign-up Stage",
   "Certn. Method",
@@ -400,6 +401,7 @@ const ContractorsTable: React.FC<IProps> = ({
                           "No Skills"}
                       </span>
                     </Td>
+                    <Td>{item?.isElite ? "Elite Technician" : "Contractor"}</Td>
                     <Td>{formatDateToDDMMYY(item?.createdAt)}</Td>
                     <Td>{item?.onboarding?.stage?.label}</Td>
                     <Td>

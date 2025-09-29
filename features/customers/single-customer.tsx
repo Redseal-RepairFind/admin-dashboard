@@ -28,14 +28,46 @@ import * as XLSX from "xlsx";
 import { useJobInfo } from "./components/useJobInfo";
 import Modal from "react-responsive-modal";
 import ExportModal from "@/app/_components/ExportModal";
+import ActionColumn from "../shared/inner-pages/action-column";
+import ActionButton from "../shared/inner-pages/action-button";
+import SubmitBtn from "@/components/ui/submit-btn";
+import EliteCustomerModal, {
+  RemoveModal,
+} from "./components/elite-customer-modal";
+import { IoClose } from "react-icons/io5";
 
 const SingleCustomer = () => {
-  const [dataToRender, setDataToRender] = useState<any>();
+  const [rewardPercent, setRewardPercent] = useState<string>();
 
   const [openModal, setOpenModal] = useState(false);
+  const [openModalToggle, setOpenModalToggle] = useState(false);
+  const [openModalToggleAdd, setOpenModalToggleAdd] = useState(false);
+  const [openModalRemove, setOpenModalRemove] = useState(false);
+
+  const [contractorInfo, setContractorInfo] = useState<{
+    name: string;
+    email: string;
+    _id: string;
+  }>();
   const ref = useRef();
   const handleModalOpen = () => setOpenModal(true);
   const handleModalClose = () => setOpenModal(false);
+  const handleModalToggleOpen = () => setOpenModalToggle(true);
+  const handleModalToggleClose = () => setOpenModalToggle(false);
+  const handleModalToggleOpenAdd = () => setOpenModalToggleAdd(true);
+  const handleModalToggleCloseAdd = () => setOpenModalToggleAdd(false);
+  const handleModalRemoveOpen = (cont: {
+    name: string;
+    email: string;
+    _id: string;
+  }) => {
+    setOpenModalRemove(true);
+    setContractorInfo(cont);
+  };
+  const handleModalRemoveClose = () => {
+    setOpenModalRemove(false);
+    setContractorInfo(undefined);
+  };
 
   const { value: customerDetails } = useAppSelector(
     (state: RootState) => state.singleCustomerDetail
@@ -43,7 +75,8 @@ const SingleCustomer = () => {
 
   const params = useParams();
 
-  const { SuspendCustomer } = useCustomers();
+  const { SuspendCustomer, toggleCustomerElite, isTogglingCustomerElite } =
+    useCustomers();
 
   const id = params?.slug;
   const { jobInfo } = useJobInfo(id);
@@ -51,7 +84,12 @@ const SingleCustomer = () => {
   // console.log(id);
   // console.log(jobInfo);
 
-  const { isLoading, data: customer } = useQuery(
+  const {
+    isLoading,
+    data: customer,
+    refetch: refetchCustomer,
+    isRefetching: isRefetchingCustomer,
+  } = useQuery(
     ["Customer Information", id],
     () => {
       return customers.getCustomerDetails({
@@ -65,8 +103,19 @@ const SingleCustomer = () => {
   );
 
   const customerInfo = customer?.customer;
-
+  const isElite = customerInfo?.isElite;
   // console.log(customerInfo);
+
+  const {
+    customerTeam,
+    isLoadingCustomerTeam,
+    refetchCusTeam,
+    isRefetchingCusTeam,
+  } = useCustomers(customerInfo?.id);
+
+  // console.log(customerTeam);
+
+  const selectedContractors = customerTeam?.data || [];
 
   const router = useRouter();
   // useLayoutEffect(() => {
@@ -75,28 +124,6 @@ const SingleCustomer = () => {
   //     router.push("/customers");
   //   }
   // }, []);
-
-  const handleChangeStatus = async (status: string) => {
-    if (confirm("Kindly confirm this action")) {
-      // console.log({
-      //   status,
-      //   customerId: customerInfo?._id,
-      // });
-      toast.loading("Processing...");
-      try {
-        const data = await SuspendCustomer({
-          status,
-          customerId: customerInfo?._id,
-        });
-        toast.remove();
-        toast.success(data?.message);
-        router.push("/customers");
-      } catch (e: any) {
-        toast.remove();
-        toast.error(e?.response?.message);
-      }
-    }
-  };
 
   const rows = jobInfo?.jobs?.map((item: any) => [
     item.contractor?.name,
@@ -165,9 +192,13 @@ const SingleCustomer = () => {
 
     handleModalClose();
   }
-
-  if (isLoading) return <LoadingTemplate />;
-
+  if (
+    isLoading ||
+    isRefetchingCustomer ||
+    isLoadingCustomerTeam ||
+    isRefetchingCusTeam
+  )
+    return <LoadingTemplate />;
   return (
     <>
       <Header>
@@ -240,30 +271,128 @@ const SingleCustomer = () => {
                   name="NO. of jobs"
                   value={customer?.jobCounts}
                 />
+                <SingleLineColumn
+                  name="Type"
+                  value={isElite ? "Elite Customer" : "Normal Customer"}
+                />
+                {isElite && (
+                  <tr className="my-2 border-b py-4">
+                    <td className="py-4">Team Members</td>
+                    <td className="py-4">
+                      <div className=" flex items-center gap-2 w-full  flex-wrap">
+                        {selectedContractors?.map((contractor: any) => (
+                          <div
+                            className="flex items-center gap-2 border  p-1 rounded-lg bg-black text-white"
+                            key={contractor?._id}
+                          >
+                            <p className="text-xs">{contractor.name}</p>
+                            <button
+                              className="h-4 w-4 rounded-full bg-red-500"
+                              onClick={() => handleModalRemoveOpen(contractor)}
+                            >
+                              <IoClose scale={16} />
+                            </button>
+                          </div>
+                        ))}
+
+                        <button
+                          className="px-4 border rounded-sm"
+                          onClick={handleModalToggleOpenAdd}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )}
                 {/* <SingleLineColumn name="Payment account" value="" /> */}
                 {/* <SingleLineColumn name="Address" value="" /> */}
-                {/* <ActionColumn>
+                <ActionColumn>
                   <div className="flex gap-x-4">
-                    {customerInfo?.status !== "active" && (
+                    {
                       <ActionButton
-                        actionName="Activate"
-                        onClick={() => handleChangeStatus("ACTIVE")}
-                        color="border-green-600 text-green-600"
+                        actionName={
+                          isElite
+                            ? "Demote To Normal Customer"
+                            : "Promote To Elite Customer"
+                        }
+                        onClick={() => handleModalToggleOpen()}
+                        color={
+                          isElite
+                            ? "text-red-600 border-red-600"
+                            : "text-green-600 border-green-600"
+                        }
                       />
-                    )}
-                    {customerInfo?.status === "active" && (
-                      <ActionButton
-                        actionName="Suspend"
-                        onClick={() => handleChangeStatus("suspend")}
-                        color="border-red-600 text-red-600"
-                      />
-                    )}
+                    }
                   </div>
-                </ActionColumn> */}
+                </ActionColumn>
               </tbody>
             </table>
           </BorderRectangle>
         </div>
+
+        {/* toggle elite */}
+        <Modal
+          onClose={() => handleModalToggleClose()}
+          open={openModalToggle}
+          center
+          classNames={{
+            modal: "customModal",
+          }}
+          container={ref.current}
+        >
+          <EliteCustomerModal
+            elite={{
+              isElite: isElite,
+            }}
+            item={customerInfo}
+            handleModalToggleClose={handleModalToggleClose}
+            refetch={refetchCustomer}
+            isNewTeam
+          />
+        </Modal>
+
+        {/* new contractors */}
+        <Modal
+          onClose={() => handleModalToggleCloseAdd()}
+          open={openModalToggleAdd}
+          center
+          classNames={{
+            modal: "customModal",
+          }}
+          container={ref.current}
+        >
+          <EliteCustomerModal
+            elite={{
+              isElite: isElite,
+            }}
+            item={customerInfo}
+            handleModalToggleClose={handleModalToggleCloseAdd}
+            refetch={refetchCusTeam}
+            isNewTeam={false}
+          />
+        </Modal>
+
+        {/* remove contractord */}
+        <Modal
+          onClose={() => handleModalRemoveClose()}
+          open={openModalRemove}
+          center
+          classNames={{
+            modal: "customModal",
+          }}
+          container={ref.current}
+        >
+          <RemoveModal
+            name={contractorInfo?.name!}
+            id={customerInfo?._id!}
+            email={contractorInfo?.email!}
+            refetchCusTeam={refetchCusTeam}
+            closeModal={handleModalRemoveClose}
+          />
+        </Modal>
+
+        {/* others */}
         <Modal
           open={openModal}
           onClose={handleModalClose}

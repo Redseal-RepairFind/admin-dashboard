@@ -9,6 +9,7 @@ const nextConfig = {
       "/lh3.googleusercontent.com",
       "picsum.photos",
       "unsplash.com",
+      "example.com",
     ], // Include other domains as needed
 
     remotePatterns: [
@@ -39,6 +40,12 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "unsplash.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "example.com",
         port: "",
         pathname: "/**",
       },

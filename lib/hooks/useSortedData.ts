@@ -90,6 +90,7 @@ export function useSortedData(
     data: sortedData,
     isLoading: loadingSortedData,
     refetch,
+    isRefetching:isRefetchingSortedData,
     error,
   } = useQuery(
     [
@@ -463,5 +464,6 @@ export function useSortedData(
     setSearchTerm,
     handleFrontEndQuery,
     loadingAllData,
+    isRefetchingSortedData,
   };
 }

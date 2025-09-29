@@ -34,11 +34,13 @@ const SingleContractor = () => {
     delete: boolean;
     openModal: boolean;
     sanction: any;
+    promote: boolean;
   }>({
     manualCertn: false,
     delete: false,
     openModal: false,
     sanction: null,
+    promote: false,
   });
 
   const router = useRouter();
@@ -52,14 +54,20 @@ const SingleContractor = () => {
     deleteContractor,
     isDeleting,
     removeSanction,
+    promoteContractor,
+    isPromotingContractor,
+    demoteContractor,
+    isDemotingContractor,
   } = useContractors();
   const queryClient = useQueryClient();
 
-  function openModal(name: "manualCertn" | "delete" | "openModal") {
+  function openModal(name: "manualCertn" | "delete" | "openModal" | "promote") {
     setOpen({ ...open, [name]: true });
   }
 
-  function closeModal(name: "manualCertn" | "delete" | "openModal") {
+  function closeModal(
+    name: "manualCertn" | "delete" | "openModal" | "promote"
+  ) {
     setOpen({ ...open, [name]: false });
   }
   const { adminPermissions } = useAdminPermissions();
@@ -111,6 +119,40 @@ const SingleContractor = () => {
   const contractorInfo = data?.contractor;
   // console.log(contractorInfo?.sanctions);
 
+  const isElite = contractorInfo?.isElite;
+
+  const handlePromoteContractor = async () => {
+    try {
+      toast.loading(
+        isElite
+          ? "Demoting Contractor.. .. .. .."
+          : "promoting contractor.. .. .. .."
+      );
+
+      isElite
+        ? await demoteContractor({
+            email: contractorInfo?.email,
+          })
+        : await promoteContractor({
+            email: contractorInfo?.email,
+          });
+
+      toast.remove();
+      toast.success(
+        isElite
+          ? "Contractor demoted successfully"
+          : "Contractor promoted successfully"
+      );
+
+      closeModal("promote");
+      await refetchSingle();
+    } catch (error: any) {
+      toast.remove();
+      toast.error(error?.response?.data?.message);
+      console.error(error);
+    }
+  };
+
   const handleChangeStatus = async () => {
     if (!adminPermissions.data.includes("manage_contractors")) {
       toast.error("You don't have permission to update contractor");
@@ -159,6 +201,8 @@ const SingleContractor = () => {
       );
     }
   };
+
+  // console.log(contractorInfo);
 
   return (
     <>
@@ -267,6 +311,37 @@ const SingleContractor = () => {
                   title={`Are you sure you want to delete Contractor? `}
                   who="contractor"
                 />
+              </Modal>
+              <Modal
+                onClose={() => closeModal("promote")}
+                open={open.promote}
+                center
+                classNames={{
+                  modal: "customModal",
+                }}
+                container={deleteRef.current}
+              >
+                <div className="w-full max-w-[450px] px-2 py-8">
+                  <h1 className="font-semibold text-center">
+                    You are about to {isElite ? "Demote" : "promote"}{" "}
+                    <span
+                      className={isElite ? "text-red-600" : "text-blue-600"}
+                    >
+                      {contractorInfo?.name}
+                    </span>{" "}
+                    {isElite ? "from" : "to"} the elite contactor status
+                  </h1>
+
+                  <p className="py-2">
+                    Kindly press the proceed button to confirm this action
+                  </p>
+                  <SubmitBtn
+                    isSubmitting={isPromotingContractor || isDemotingContractor}
+                    onClick={handlePromoteContractor}
+                  >
+                    Proceed
+                  </SubmitBtn>
+                </div>
               </Modal>
 
               <Modal
@@ -419,6 +494,16 @@ const SingleContractor = () => {
                     value={contractorInfo?.sanctions?.length}
                   />
                 </>
+                <>
+                  <SingleLineColumn
+                    name="Type"
+                    value={
+                      contractorInfo?.isElite
+                        ? "Elite Technician"
+                        : "Contractor"
+                    }
+                  />
+                </>
 
                 {contractorInfo?.sanctions?.length > 0 &&
                   contractorInfo?.sanctions?.map((item: any, i: number) => (
@@ -448,6 +533,23 @@ const SingleContractor = () => {
                       onClick={() => openModal("delete")}
                       color="border-red-600 text-red-600"
                     />
+
+                    {
+                      <ActionButton
+                        actionName={
+                          isElite
+                            ? "Demote From Elite Technician"
+                            : "Promote To Elite Technician"
+                        }
+                        onClick={() => openModal("promote")}
+                        color={
+                          isElite
+                            ? "border-yellow-500 text-yellow-500"
+                            : "border-blue-600 text-blue-600"
+                        }
+                      />
+                    }
+
                     {contractorInfo?.sanctions?.length > 0 && (
                       <ActionButton
                         actionName="Remove Sanction"
